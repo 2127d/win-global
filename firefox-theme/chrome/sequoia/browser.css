@@ -1,0 +1,181 @@
+:root {
+  --toolbar-bgcolor: var(--se-surface) !important;
+  --toolbar-color: var(--se-text) !important;
+  --toolbar-field-background-color: var(--se-raised) !important;
+  --toolbar-field-focus-background-color: var(--se-raised) !important;
+  --toolbar-field-color: var(--se-text) !important;
+  --toolbar-field-focus-color: var(--se-text) !important;
+  --toolbar-field-border-color: transparent !important;
+  --toolbar-field-focus-border-color: var(--se-accent) !important;
+  --toolbarbutton-hover-background: var(--se-hover) !important;
+  --toolbarbutton-active-background: var(--se-selected) !important;
+  --toolbarbutton-icon-fill: var(--se-text) !important;
+  --toolbarbutton-border-radius: var(--se-control-radius) !important;
+  --tab-selected-bgcolor: var(--se-raised) !important;
+  --tab-selected-textcolor: var(--se-text) !important;
+  --tab-border-radius: 10px !important;
+  --lwt-accent-color: var(--se-canvas) !important;
+  --lwt-text-color: var(--se-text) !important;
+  --lwt-tab-text: var(--se-text) !important;
+  --lwt-selected-tab-background-color: var(--se-raised) !important;
+  --lwt-tabs-border-color: transparent !important;
+  --chrome-content-separator-color: transparent !important;
+  --sidebar-background-color: var(--se-surface) !important;
+  --sidebar-text-color: var(--se-text) !important;
+  --sidebar-border-color: transparent !important;
+  --sidebar-border-radius: var(--se-radius) !important;
+  --sidebar-box-background: var(--se-surface) !important;
+  --focus-outline-color: var(--se-accent) !important;
+  --button-background-color: var(--se-raised) !important;
+  --button-background-color-hover: var(--se-hover) !important;
+  --button-background-color-active: var(--se-selected) !important;
+  --button-text-color: var(--se-text) !important;
+  --button-border-radius: var(--se-control-radius) !important;
+  --border-radius-medium: var(--se-control-radius) !important;
+  --border-radius-large: var(--se-radius) !important;
+  --toolbox-bgcolor: var(--se-canvas) !important;
+  font-family: var(--se-font) !important;
+  accent-color: var(--se-accent);
+}
+
+#main-window, #navigator-toolbox, #browser, #customization-container {
+  background: var(--se-canvas) !important;
+  color: var(--se-text) !important;
+}
+#navigator-toolbox { border: 0 !important; box-shadow: none !important; }
+#TabsToolbar, #toolbar-menubar { background: transparent !important; color: var(--se-text) !important; }
+#TabsToolbar { padding-inline: var(--se-gap) !important; }
+#nav-bar, #PersonalToolbar {
+  margin: 0 var(--se-gap) var(--se-gap) !important;
+  border: 0 !important;
+  border-radius: var(--se-radius) !important;
+  background: var(--se-surface) !important;
+  box-shadow: var(--se-shadow) !important;
+}
+#nav-bar { padding: 3px !important; }
+#PersonalToolbar { padding: 3px 7px !important; }
+.tab-background { border: 0 !important; border-radius: 10px !important; }
+.tabbrowser-tab[visuallyselected] .tab-background {
+  background: var(--se-raised) !important;
+  box-shadow: var(--se-shadow) !important;
+}
+.tabbrowser-tab:hover:not([visuallyselected]) .tab-background { background: var(--se-hover) !important; }
+.tabbrowser-tab { color: var(--se-text) !important; }
+.tabbrowser-tab:is([multiselected], [attention]) .tab-background {
+  outline: 2px solid var(--se-accent) !important;
+  outline-offset: -2px;
+}
+/* Leave container indicators, tab audio controls, and private mode indicators intact. */
+#urlbar-background, .urlbar-background, #searchbar {
+  border-radius: 11px !important;
+  background-color: var(--se-raised) !important;
+}
+#urlbar[focused] > :is(#urlbar-background, .urlbar-background) { border-color: var(--se-accent) !important; }
+#urlbar[open] > :is(#urlbar-background, .urlbar-background) { box-shadow: var(--se-popup-shadow) !important; }
+.urlbarView { color: var(--se-text) !important; }
+.urlbarView-row-inner { border-radius: var(--se-control-radius) !important; }
+.urlbarView-row[selected] .urlbarView-row-inner {
+  background: var(--se-selected) !important;
+  color: var(--se-text) !important;
+}
+.urlbarView-url { color: var(--se-accent) !important; }
+.urlbarView-action, .urlbarView-title-separator { color: var(--se-muted) !important; }
+
+/* Native vertical tabs, launcher, and expanded sidebar are separate islands. */
+#sidebar-container, #sidebar-box {
+  margin: 0 3px var(--se-gap) var(--se-gap) !important;
+  background: var(--se-surface) !important;
+  color: var(--se-text) !important;
+  border: 0 !important;
+  border-radius: var(--se-radius) !important;
+  box-shadow: var(--se-shadow) !important;
+}
+#sidebar-box[positionend], #sidebar-container[positionend] {
+  margin-inline: 3px var(--se-gap) !important;
+}
+#sidebar-header {
+  padding: 10px !important;
+  border-bottom: 0 !important;
+  background: transparent !important;
+}
+#sidebar, .sidebar-browser-stack {
+  border-radius: var(--se-radius) !important;
+  background: var(--se-surface) !important;
+}
+.sidebar-browser-stack { overflow: clip; }
+sidebar-main {
+  color: var(--se-text) !important;
+  --sidebar-buttons-background: var(--se-selected) !important;
+  --button-background-color-ghost-hover: var(--se-hover) !important;
+  --button-background-color-ghost-active: var(--se-selected) !important;
+}
+#sidebar-splitter, #sidebar-launcher-splitter {
+  background: transparent !important;
+  border: 0 !important;
+  width: 3px !important;
+}
+#sidebar-splitter:hover, #sidebar-launcher-splitter:hover { background: var(--se-accent) !important; }
+#tabbrowser-tabbox {
+  margin: 0 var(--se-gap) var(--se-gap) !important;
+  border: 0 !important;
+  border-radius: var(--se-radius) !important;
+  box-shadow: var(--se-shadow) !important;
+  overflow: clip !important;
+}
+/* Clip content at the island boundary, never change web-page colors. */
+#tabbrowser-tabpanels { border-radius: inherit !important; }
+.browserContainer { background: var(--se-surface) !important; }
+findbar {
+  margin: var(--se-gap) !important;
+  border: 0 !important;
+  border-radius: 11px !important;
+  background: var(--se-surface) !important;
+  color: var(--se-text) !important;
+  box-shadow: var(--se-shadow) !important;
+}
+.findbar-textbox {
+  background: var(--se-raised) !important;
+  color: var(--se-text) !important;
+  border-radius: 7px !important;
+}
+#statuspanel-label {
+  margin: 0 4px 4px !important;
+  padding: 5px 9px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: var(--se-surface) !important;
+  color: var(--se-text) !important;
+}
+.dialogBox, .dialogFrame {
+  border-radius: var(--se-radius) !important;
+  background-color: var(--se-surface) !important;
+  color: var(--se-text) !important;
+}
+.dialogBox { box-shadow: var(--se-popup-shadow) !important; }
+.notificationbox-stack notification-message {
+  margin: var(--se-gap) !important;
+  border-radius: 10px !important;
+}
+/* Preserve video and DOM fullscreen edge-to-edge, and Firefox's F11 autohide. */
+:root[inDOMFullscreen] #tabbrowser-tabbox,
+:root[inFullscreen] #tabbrowser-tabbox {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tab-background, .toolbarbutton-icon { transition: none !important; }
+}
+@media (forced-colors: active) {
+  :root {
+    --se-canvas: Canvas;
+    --se-surface: Canvas;
+    --se-raised: Canvas;
+    --se-text: CanvasText;
+    --se-muted: GrayText;
+    --se-accent: Highlight;
+    --se-accent-text: HighlightText;
+    --se-hover: ButtonFace;
+    --se-selected: ButtonFace;
+  }
+}

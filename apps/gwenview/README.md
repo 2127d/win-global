@@ -1,0 +1,177 @@
+# Gwenview override
+
+Workspace for a presentation fork of Gwenview 26.08.1, matching the installed
+`gwenview-26.08.1-1.fc44.x86_64` package. The presentation fork adds a clean welcome page and a thumbnail sidebar for
+recent images, while retaining the native viewing and editing controls.
+
+## Layout
+
+- `gwenview-26.08.1/`: modified upstream sources with original licenses, translations,
+  image loading, editing, metadata, and file operations preserved.
+- `override.json`: baseline version, source URL, archive digest, and status.
+- `upstream.sha256`: SHA-256 of the downloaded upstream archive.
+
+Source archive:
+https://download.kde.org/stable/release-service/26.08.1/src/gwenview-26.08.1.tar.xz
+
+The archive is cached at `.staging/gwenview-source/` in the repository root.
+The recorded digest identifies this downloaded baseline; it is not a signature
+verification. The extracted regular files were compared byte-for-byte with
+the archive.
+
+## Presentation entry points
+
+Gwenview's main interface uses C++/Qt Widgets and KDE XMLGUI.
+
+| File within `gwenview-26.08.1/` | Responsibility |
+| --- | --- |
+| `app/gwenviewui.rc` | Menus, toolbar actions, ordering, and separators |
+| `app/mainwindow.cpp` | Window layout, action wiring, mode changes, and navigation |
+| `app/viewmainpage.cpp` | Image viewing page and thumbnail bar |
+| `app/browsemainpage.cpp` | Folder browsing and image grid |
+| `app/sidebar.cpp` | Sidebar presentation |
+| `app/infocontextmanageritem.cpp` | Image information in the sidebar |
+| `app/imageopscontextmanageritem.cpp` | Existing image-editing actions |
+| `app/fileopscontextmanageritem.cpp` | Existing file-management actions |
+| `app/fullscreencontent.cpp` | Fullscreen controls |
+| `app/spotlightmode.cpp` | Existing focused viewing mode |
+| `app/savebar.cpp` | Modified-image and save UI |
+
+## Welcome page and recent images
+
+Gwenview opens to an empty welcome page with **Add files…** and drag-and-drop
+for images. The welcome page sits in a rounded, floating panel matching the
+viewer's 8-pixel inset, 16-pixel corners, and theme surface color.
+Browse mode uses the same panel around its folder navigation, thumbnail grid,
+filters, and status controls, with inner padding and edge-to-edge fullscreen.
+Its status-bar buttons have soft shadows, adjusted for light and dark palettes,
+to separate them from the panel surface.
+The old folder-navigation sidebar is replaced by **Recent images**,
+ordered newest first. Information and editing tabs remain available. The
+existing Browse mode, menus, shortcuts, and image operations remain accessible.
+
+The sidebar uses Gwenview's existing thumbnail provider and recent-file history.
+Recent images appear as equally sized, center-cropped square previews with
+slightly rounded corners and compact gaps. Columns adapt to the sidebar width.
+Filenames and paths are available on hover; opening a tile displays the original
+full image.
+Reopening an image moves it to the top; history survives a restart and respects
+Settings → Remember history. Its context menu can remove an entry or clear
+history without deleting image files. Existing saved folder-tab selections
+migrate to the Recent tab. A single rounded, inset panel surrounds the header,
+content, and Recent/Information/Operations buttons. The panel uses the theme
+surface color, including dark mode, and keeps native tab selection behavior.
+
+The picker accepts multiple files. Multiple dropped/selected images use the
+same temporary-link approach as upstream's multi-file command line, with unique
+link names for files from different directories that have identical names.
+Next/previous and editing use the native viewer. History records original image
+paths, not temporary links; links are kept until the application closes.
+
+## Rounded viewer and floating controls
+
+In image view, the docked main toolbar is hidden and disabled. A second glass
+island at the upper right starts as a circular toggle and expands left when
+clicked, using the same animation and finish as the bottom controls. It shares
+the main toolbar's actions, including their menus, shortcuts, and enabled states.
+The copy follows toolbar customization, omitting layout-only spacers. Start and
+Browse restore the docked toolbar; returning to image view collapses the island.
+Fullscreen hides the floating main toolbar and its toggle; leaving fullscreen
+restores it collapsed. It remains available in spotlight mode.
+
+Both collapsed toolbar toggles fade out when the pointer is away from their
+corner. Moving within 48 pixels of a toggle smoothly reveals it in 180 ms;
+a wider exit boundary avoids flicker at the edge. Expanded toolbars stay visible.
+Invisible toggles pass mouse input through to the image, while keyboard focus
+reveals them for tab navigation. Disabled desktop animations switch immediately.
+
+The main image canvas has an inset, rounded outline matching the sidebar. In
+Auto background mode it uses the theme's raised surface color; explicit image
+background choices remain available. Fullscreen retains its edge-to-edge view.
+
+The old bottom toolbar is now a floating control at the lower right of the
+image area. It starts as a circular toolbar button. Clicking expands the native
+controls to the left with a 220 ms animation; clicking again collapses them.
+The expanded panel matches the toggle's 44-pixel height and circular end radius.
+The panel and toggle share a blurred glass finish with a soft vertical
+sheen and a highlighted rim, adapting to light and dark palettes. The image
+scene behind both pieces is sampled and blurred separately from the controls,
+refreshing as images, zoom, or the viewing area change. Controls have consistent
+gaps. Buttons use opaque theme-colored fills and defined borders, with
+accent-colored selected states and distinct hover and disabled appearances.
+Buttons use inset pill corners to follow the toolbar capsule; the zoom track
+and thumb are rounded as well. The editable zoom dropdown, arrow, and popup
+use the native system style. Toolbar text, control surfaces, and monochrome
+icons refresh on system theme changes without restarting, including disabled
+and selected states and an already-open zoom menu. Repeated clicks and mid-animation reversals preserve the slide;
+disabled desktop animations switch directly to the requested state.
+Zoom, Fit, image count, sidebar, thumbnails, and comparison synchronization use
+the existing controls. Opening the toolbar does not resize the image. A narrow
+pane can scroll the controls horizontally. The existing status-bar visibility
+setting controls whether the floating button is available.
+The Bird's Eye View navigation box is hidden by default when zoomed in, keeping
+the area behind the floating toolbar clear. It can still be enabled from the
+View menu.
+
+The thumbnail strip occupies a separate rounded island with 8-pixel inner
+padding and a 12-pixel gap from the viewer. Its 16-pixel corners and theme
+surface match the main canvas and sidebar. The gap remains a resize handle;
+horizontal/vertical placement, row counts, scrolling, selection, and the native
+Show Thumbnails action are preserved. Fullscreen and spotlight mode hide the
+whole island and restore it when returning to the normal view.
+
+## Build and install
+
+Install the dependencies listed by upstream CMake, including optional feature
+libraries to match the distribution build. This build retains Baloo, RAW, FITS,
+annotation, sharing, color management, and Wayland gesture support.
+The graphical installer's Gwenview selection installs these dependencies, including
+`kimageannotator-qt6-devel` and `kcolorpicker-qt6-devel` on Fedora. Both development
+packages are needed even when the corresponding runtime libraries are installed.
+Builds use all available logical CPU cores by default; `BUILD_JOBS` can set an
+explicit positive job count.
+
+From the repository root:
+
+```sh
+python3 tools/build-gwenview.py
+python3 tools/verify-gwenview.py
+python3 tools/install-gwenview.py --skip-build
+```
+
+An optional `--sdk /path/to/usr` argument accepts a local development prefix.
+On this machine the SDK is cached at `.staging/gwenview-sdk/usr`, with
+`/tmp/sequoia-gwenview-sdk` linking to that cache for existing build settings.
+Its CMake packages and Wayland pkg-config paths must resolve within that prefix;
+it is only needed at build time. Output goes to `.staging/gwenview-build/`.
+
+The installer places the executable and its matching `libgwenviewlib.so.5` in
+`~/.local/share/sequoia-eleven/gwenview/`, with a `$ORIGIN` library search path.
+A per-user `~/.local/bin/gwenview` launcher and desktop entry select this build.
+Stock executables, shared libraries, KParts, and file associations are preserved.
+The matching system package provides translations and other unchanged resources.
+The launcher falls back to the system version when the packaged executable or
+Gwenview library changes. Rebuild the fork after package upgrades.
+
+Close existing Gwenview windows and reopen it after installing. To restore the
+previous launcher and desktop entry:
+
+```sh
+python3 tools/install-gwenview.py --remove
+```
+
+Verification runs the actual application on a private session bus with isolated
+XDG configuration and disposable images. It checks the welcome page, picker,
+drag/drop, same-name multi-file navigation, MRU ordering, recent activation,
+native rotate/save, persistence, and disabled history. It also checks private
+library loading, argument forwarding, upgrade fallback, and reversible install.
+Captures and logs are written to `preview/gwenview/`.
+
+To capture all three sidebar pages with the project theme:
+
+```sh
+python3 tools/verify-gwenview.py --sidebar-preview
+python3 tools/verify-gwenview.py --sidebar-preview --dark
+python3 tools/verify-gwenview.py --sidebar-preview --transparent
+python3 tools/verify-gwenview.py --sidebar-preview --dark --transparent
+```

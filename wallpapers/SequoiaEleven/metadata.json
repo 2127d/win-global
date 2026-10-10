@@ -1,0 +1,14 @@
+{
+  "KPackageStructure": "Wallpaper/Images",
+  "KPlugin": {
+    "Id": "SequoiaEleven",
+    "Name": "Sequoia Eleven",
+    "Description": "Calm blue gradients and rounded ribbons that follow the system color scheme.",
+    "License": "MIT",
+    "Version": "1.0.0"
+  },
+  "X-KDE-PlasmaImageWallpaper-AccentColor": {
+    "Light": "#2463d4",
+    "Dark": "#8db3ff"
+  }
+}

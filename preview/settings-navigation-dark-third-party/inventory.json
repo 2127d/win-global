@@ -1,0 +1,704 @@
+[
+    {
+        "description": "Information About This System",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "ktip",
+        "id": "kcm_about-distro",
+        "keywords": "About this System about info information distribution distro system kernel qt kde version winver",
+        "name": "About this System"
+    },
+    {
+        "description": "Configure Accessibility Options",
+        "group": "accessibility",
+        "groupName": "Accessibility",
+        "icon": "preferences-desktop-accessibility",
+        "id": "kcm_access",
+        "keywords": "Accessibility access accessibility deaf impaired hearing hearing loss bell audible bell visible bell visual bell keyboard keys sticky keys bounce keys slow keys mouse navigation num pad numpad activation gestures gestures sticky modifier keys modifier locking keys screen reader narrator keyboard filters assist assistive feedback number pad cursor orca speech move mouse with num pad mouse num pad emulation mouse number pad numberpad mouse mouse emulation shake cursor shake cursor effect shake pointer shake pointer effect shake mouse shake mouse effect color color blind color blindness color correction color blind correction colorblindness correction protanopia deuteranopia tritanopia invert colors zoom magnify magnifier zoom effect  magnifier effect",
+        "name": "Accessibility"
+    },
+    {
+        "description": "Activities help you to focus on a specific task",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-activities",
+        "id": "kcm_activities",
+        "keywords": "Activities activities activity workspaces alternate desktops activity privacy virtual desktops",
+        "name": "Activities"
+    },
+    {
+        "description": "Third-party category coverage test",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-system",
+        "id": "sequoia-test-extra",
+        "keywords": "Additional Settings ",
+        "name": "Additional Settings"
+    },
+    {
+        "description": "Configure animation speed and style",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-animations",
+        "id": "kcm_animations",
+        "keywords": "Animations animations animation speed transitions effects window open close window open/close window maximize window minimize window full screen peek at desktop peek desktop virtual desktop switching fade effect glide effect scale effect stretch effect magic lamp effect squash effect eye on screen effect window aperture effect slide effect fading popups effect sliding popups effect login effect logout effect",
+        "name": "Animations"
+    },
+    {
+        "description": "Configure Application Permissions",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-security",
+        "id": "kcm_app-permissions",
+        "keywords": "Application Permissions Flatpak Flatseal permission permissions access sandbox sandboxed filesystem file files folder folders network networks networking bluetooth print printer printing audio sound login remote login ssh smart card kvm device session session bus system system bus environment environment variable",
+        "name": "Application Permissions"
+    },
+    {
+        "description": "Configure application style and behavior",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-theme-applications",
+        "id": "kcm_style",
+        "keywords": "Application Style style styles look widget icons toolbars text highlight apps windows KDE applications theme plasma menu global menu GTK GNOME application style app programs appearance skin themes light mode dark mode",
+        "name": "Application Style"
+    },
+    {
+        "description": "Audiocd IO Worker Configuration",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "media-optical-audio",
+        "id": "kcm_audiocd",
+        "keywords": "Audio CDs Audio CD CD Ogg Vorbis Encoding CDDA Bitrate",
+        "name": "Audio CDs"
+    },
+    {
+        "description": "Automatically Started Applications",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "system-run",
+        "id": "kcm_autostart",
+        "keywords": "Autostart Autostart Manager system startup plasma start cron auto start start up boot load session startup launch login",
+        "name": "Autostart"
+    },
+    {
+        "description": "Configure background services",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-system-session-services",
+        "id": "kcm_kded",
+        "keywords": "Background Services KDED daemon services background ram",
+        "name": "Background Services"
+    },
+    {
+        "description": "Manage Bluetooth devices",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-system-bluetooth",
+        "id": "kcm_bluetooth",
+        "keywords": "Bluetooth bluetooth hardware connection devices find devices connect disconnect send file receive file transfer wireless visible adapter pin trusted devices",
+        "name": "Bluetooth"
+    },
+    {
+        "description": "Configure the CDDB Retrieval",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "media-optical-audio",
+        "id": "kcm_cddb",
+        "keywords": "CDDB Retrieval ",
+        "name": "CDDB Retrieval"
+    },
+    {
+        "description": "Choose color scheme",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-color",
+        "id": "kcm_colors",
+        "keywords": "Colors color colour scheme contrast Widget colors Color Scheme color style color theme tint accent color color scheme dark mode light mode accent colour accent highlight",
+        "name": "Colors"
+    },
+    {
+        "description": "Configure generic network preferences",
+        "group": "network",
+        "groupName": "Internet & Network",
+        "icon": "preferences-system-network-connection",
+        "id": "kcm_netpref",
+        "keywords": "Connection Preferences iopref netpref network preferences ftp",
+        "name": "Connection Preferences"
+    },
+    {
+        "description": "Date and Time",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-system-time",
+        "id": "kcm_clock",
+        "keywords": "Date & Time clock date time time zone timezone ntp synchronize calendar local time region time watch location place country countries hours minutes seconds weeks months years utc",
+        "name": "Date & Time"
+    },
+    {
+        "description": "Configure the day-night cycle times",
+        "group": "display",
+        "groupName": "Displays & Sound",
+        "icon": "lighttable",
+        "id": "kcm_nighttime",
+        "keywords": "Day-Night Cycle dark light night day",
+        "name": "Day-Night Cycle"
+    },
+    {
+        "description": "Choose default Applications",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-default-applications",
+        "id": "kcm_componentchooser",
+        "keywords": "Default Applications default applications default apps components component chooser resources web browser browser internet file manager dolphin email e-mail email client terminal terminal emulator konsole defaults open with file association",
+        "name": "Default Applications"
+    },
+    {
+        "description": "Configure compositor settings for desktop effects",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-effects",
+        "id": "kcm_kwin_effects",
+        "keywords": "Desktop Effects kwin window manager effect 3D effects 2D effects graphical effects desktop effects animations various animations window management effects desktop animations rendering render snap helper effect track mouse effect blur effect fall apart effect highlight window effect mouse mark effect screenshot effect sheet effect thumbnail aside effect translucency translucency effect transparency window geometry effect wobbly windows effect startup feedback effect dialog parent effect dim inactive effect dim screen effect slide back effect eye candy candy cover switch effect desktop cube effect desktop cube animation effect desktop grid effect background contrast effect bling fading movement motion overview windows effect accessibility cursor pointer mouse hide cursor hide cursor effect hide pointer hide pointer effect hide mouse hide mouse effect",
+        "name": "Desktop Effects"
+    },
+    {
+        "description": "Desktop Session Login and Logout",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "system-log-out",
+        "id": "kcm_smserver",
+        "keywords": "Desktop Session ksmserver session login logout confirmation save restore efi uefi bios hibernate shutdown reboot save apps startup start-up start firmware",
+        "name": "Desktop Session"
+    },
+    {
+        "description": "Manage actions available to the user when connecting new devices",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "system-run",
+        "id": "kcm_solid_actions",
+        "keywords": "Device Actions Solid Devices Actions device actions open with play download browse transfer",
+        "name": "Device Actions"
+    },
+    {
+        "description": "Configure automatic mounting of disks and volumes",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "drive-removable-media",
+        "id": "kcm_device_automounter",
+        "keywords": "Device Auto-Mount Automount Mount Disk Disks Removable Device Devices Automatic",
+        "name": "Device Auto-Mount"
+    },
+    {
+        "description": "Configure Kamera",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "camera-photo",
+        "id": "kcm_kamera",
+        "keywords": "Digital Camera gphoto camera digicam webcam kamera",
+        "name": "Digital Camera"
+    },
+    {
+        "description": "Manage and configure monitors and displays",
+        "group": "display",
+        "groupName": "Displays & Sound",
+        "icon": "preferences-desktop-display-randr",
+        "id": "kcm_kscreen",
+        "keywords": "Display Configuration display monitor screen scale scaling resolution orientation rotate rotation output outputs refresh refresh rate desktop size hardware devices device fractional dpi graphics framerate frame rate fps hertz hz arrange monitors screen arrangement aspect ratio secondary screen secondary monitor secondary display vrr variable refresh rate hdr high dynamic range freesync g-sync quality hdmi display port displayport dp vga dvi type-c thunderbolt display external display external monitor external screen pixels 16:9 21:9 4:3 720p 1080p 1440p 4k 5k 8k 12k 16k display grid tablet mode rgb range washed out color profile color accuracy dim brightness screen tearing blurry latency fullscreen",
+        "name": "Display Configuration"
+    },
+    {
+        "description": "Configure drawing tablets and pens",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-desktop-tablet",
+        "id": "kcm_tablet",
+        "keywords": "Drawing Tablet drawing tablet wacom pen stylus graphics tablet",
+        "name": "Drawing Tablet"
+    },
+    {
+        "description": "Configure file associations",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-filetype-association",
+        "id": "kcm_filetypes",
+        "keywords": "File Associations Filetypes Mime Types File Patterns Files Pattern",
+        "name": "File Associations"
+    },
+    {
+        "description": "Configure File Search",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-baloo",
+        "id": "kcm_baloofile",
+        "keywords": "File Search search find files archives documents filesystem hidden files file content folders directory directories baloo index indexing indexer",
+        "name": "File Search"
+    },
+    {
+        "description": "Install, manage and preview fonts",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-font-installer",
+        "id": "kcm_fontinst",
+        "keywords": "Font Management font fonts installer truetype type1 bitmap",
+        "name": "Font Management"
+    },
+    {
+        "description": "Configure user interface fonts",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-font",
+        "id": "kcm_fonts",
+        "keywords": "Fonts fonts font size styles charsets character sets panel control panel desktops FileManager Toolbars Menu Window Title Title DPI anti-aliasing desktop fonts toolbar fonts character general fonts typography type letters hinting sub-pixel text big text change font size",
+        "name": "Fonts"
+    },
+    {
+        "description": "Test and Configure Game Controllers",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-desktop-gaming",
+        "id": "kcm_gamecontroller",
+        "keywords": "Game Controller joystick gamepad controller hardware games gaming pad devices joypad analog sticks calibrate calibration directional buttons axis videogames button buttons inputs",
+        "name": "Game Controller"
+    },
+    {
+        "description": "Configure general workspace behavior",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop",
+        "id": "kcm_workspace",
+        "keywords": "General Behavior plasma workspace shell formfactor dashboard tooltips informational tips click single click double click middle click animation speed behavior open files select files scrollbar visual feedback status click to open click to select touch tablet touch mode tablet mode copy paste selected selection primary primary selection",
+        "name": "General Behavior"
+    },
+    {
+        "description": "Choose global look and feel",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-theme-global",
+        "id": "kcm_lookandfeel",
+        "keywords": "Global Theme theme look feel global theme desktop appearance skin  global presentation themes design UI",
+        "name": "Global Theme"
+    },
+    {
+        "description": "Choose icon theme",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-icons",
+        "id": "kcm_icons",
+        "keywords": "Icons icons effects size hicolor locolor change icons buttons button theme icon theme theme iconography",
+        "name": "Icons"
+    },
+    {
+        "description": "KDE Wallet Configuration",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "kwalletmanager",
+        "id": "kcm_kwallet5",
+        "keywords": "KDE Wallet wallet form fill passwords form data secret service kwallet kdewallet kde wallet keepassxc keyring encryption decryption blowfish pgp access control confidential wallet manager",
+        "name": "KDE Wallet"
+    },
+    {
+        "description": "Manage KWin scripts",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-system-windows-actions",
+        "id": "kcm_kwin_scripts",
+        "keywords": "KWin Scripts kwin script plugins window manager",
+        "name": "KWin Scripts"
+    },
+    {
+        "description": "Keyboard Hardware and Layout",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-desktop-keyboard",
+        "id": "kcm_keyboard",
+        "keywords": "Keyboard keyboard keyboard repeat click volume input devices repeat volume numlock numpad number pad keyboard type keyboard model keyboard layout key layout language alternate keyboard keyboard switching ctrl key caps lock esperanto circumflex tilde cedilla diacritics accents function keys kill x server LED keyboard compose key hardware type typing shift meta alt alt gr fn space bar spacebar qwerty qwertz azerty dvorak",
+        "name": "Keyboard"
+    },
+    {
+        "description": "Select which keys will be globally available to legacy X11 apps",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "xorg",
+        "id": "kcm_kwinxwayland",
+        "keywords": "Legacy X11 App Support xwayland global keys forward",
+        "name": "Legacy X11 App Support"
+    },
+    {
+        "description": "Location for Personal Files",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "system-file-manager",
+        "id": "kcm_desktoppaths",
+        "keywords": "Locations konqueror dolphin files filemanager path paths desktop directory directories downloads music documents movies pictures locations file path default folders folders videos images photos songs home",
+        "name": "Locations"
+    },
+    {
+        "description": "Configure Login Manager",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-system-login",
+        "id": "kcm_plasmalogin",
+        "keywords": "Login Screen display manager themes login theme login screen login skin login visual login look authentication screen session default session default user user uid login as  authenticate as",
+        "name": "Login Screen"
+    },
+    {
+        "description": "Mouse Controls",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-desktop-mouse",
+        "id": "kcm_mouse",
+        "keywords": "Mouse mouse mouse acceleration mouse threshold mouse buttons selection cursor shape input devices button mapping click icons feedback pointers drag double click single click right click left click middle click left mapping right handed left handed pointer device mouse wheel mouse emulation mouse navigation mouse drag and drop mouse scrolling mouse sensitivity cursor sensitivity hardware cursor scrolling speed flat adaptive scroll wheel invert scroll direction reverse scroll reversed scrolling acceleration profile",
+        "name": "Mouse"
+    },
+    {
+        "description": "Adjust screen color temperature based on time",
+        "group": "display",
+        "groupName": "Displays & Sound",
+        "icon": "redshift-status-on",
+        "id": "kcm_nightlight",
+        "keywords": "Night Light kwin window manager night colors redshift eyes night mode colour dark mode dark dim sleep eye strain red shift orange yellow warm screen tint temperature blue light",
+        "name": "Night Light"
+    },
+    {
+        "description": "Event Notifications and Actions",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-notification-bell",
+        "id": "kcm_notifications",
+        "keywords": "Notifications System sounds Audio Sound Notify Alerts Notification popups disturb do not disturb quiet concentrate concentration alarm popup pop up progress badges alert sounds warning sounds dnd mute",
+        "name": "Notifications"
+    },
+    {
+        "description": "Configuration for Plasma Keyboard",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "input-keyboard",
+        "id": "kcm_plasmakeyboard",
+        "keywords": "On-Screen Keyboard onscreen osk virtualkeyboard keyboard popup characters diacritics symbols alternate long press overlay",
+        "name": "On-Screen Keyboard"
+    },
+    {
+        "description": "Configure your internet accounts such as Google, Live, Owncloud",
+        "group": "network",
+        "groupName": "Internet & Network",
+        "icon": "preferences-online-accounts",
+        "id": "kcm_kaccounts",
+        "keywords": "Online Accounts network google live owncloud sync online accounts synchronization opendesktop nextcloud youtube drive hangouts gmail google calendar",
+        "name": "Online Accounts"
+    },
+    {
+        "description": "",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-desktop-locale",
+        "id": "kcm_qtquicksettings",
+        "keywords": "Plasma Renderer ",
+        "name": "Plasma Renderer"
+    },
+    {
+        "description": "Configure search settings",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "plasma-search",
+        "id": "kcm_plasmasearch",
+        "keywords": "Plasma Search search file baloo runners krunner launcher app launcher desktop search k runner find plugins computer search overview web search keywords",
+        "name": "Plasma Search"
+    },
+    {
+        "description": "Choose Plasma style",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-plasma-theme",
+        "id": "kcm_desktoptheme",
+        "keywords": "Plasma Style Desktop Theme Plasma Theme plasma style desktop style plasma skin desktop skin theme",
+        "name": "Plasma Style"
+    },
+    {
+        "description": "Choose mouse pointer theme",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-cursors",
+        "id": "kcm_cursortheme",
+        "keywords": "Pointers Mouse pointer Cursor Theme Mouse Appearance Cursor Appearance Pointer Appearance Mouse Color Pointer Color Cursor Color Mouse Theme Pointer Theme Cursor Theme Mouse Skin Pointer Skin Cursor Skin Mouse Style Pointer Style Cursor Style Mouse Size Pointer Size Cursor Size start launch busy feedback bounce bouncing rotating spinning startup start-up program report taskbar animation loading",
+        "name": "Pointers"
+    },
+    {
+        "description": "Power Management",
+        "group": "power",
+        "groupName": "Power & Battery",
+        "icon": "preferences-system-power-management",
+        "id": "kcm_powerdevilprofilesconfig",
+        "keywords": "Power Management system power power management energy energy saving laptop battery suspension AC suspend suspending hibernating hibernate brightness performance lid power saving charging charge limit charge limit charging limit discharge discharging dim screen sleep lock screen lockscreen turn screen off turn off power button power buttons battery levels low battery low level critical level power notifications plug unplug",
+        "name": "Power Management"
+    },
+    {
+        "description": "Configure your printers",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-devices-printer",
+        "id": "kcm_printer_manager",
+        "keywords": "Printers printers print paper cups ink printing impression remote printer internet printer network printer ipps hp jetdirect ldp ldr cups-brf cups brf virtual braille brf printer share printer add printer",
+        "name": "Printers"
+    },
+    {
+        "description": "Configure the proxy servers used",
+        "group": "network",
+        "groupName": "Internet & Network",
+        "icon": "preferences-system-network-proxy",
+        "id": "kcm_proxy",
+        "keywords": "Proxy Proxy server Firewall Squid",
+        "name": "Proxy"
+    },
+    {
+        "description": "Configure notifications from online services",
+        "group": "network",
+        "groupName": "Internet & Network",
+        "icon": "network-connect",
+        "id": "kcm_push_notifications",
+        "keywords": "Push Services Push notifications unified push KUnifiedPush",
+        "name": "Push Services"
+    },
+    {
+        "description": "Landing page with some basic settings",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-desktop",
+        "id": "kcm_landingpage",
+        "keywords": "Quick Settings ",
+        "name": "Quick Settings"
+    },
+    {
+        "description": "Manage your file activity history preferences",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-system-time",
+        "id": "kcm_recentFiles",
+        "keywords": "Recent Files history recentlyused activity privacy  privacy clear history wipe",
+        "name": "Recent Files"
+    },
+    {
+        "description": "Language Setting, Numeric, Currency and Time Formats",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-desktop-locale",
+        "id": "kcm_regionandlang",
+        "keywords": "Region & Language language translation number format locale Country charsets character sets Decimal symbol Thousands separator symbol separator sign positive negative currency money fractional digits calendar time date formats week week start first paper size letter A4 measure metric English Imperial region measurement units collation sorting date format storage size data size size format data format binary dialect byte kilobyte megabyte gigabyte terabyte",
+        "name": "Region & Language"
+    },
+    {
+        "description": "Configure Remote Desktop",
+        "group": "network",
+        "groupName": "Internet & Network",
+        "icon": "preferences-system-network-remote",
+        "id": "kcm_krdpserver",
+        "keywords": "Remote Desktop KRDP remote desktop",
+        "name": "Remote Desktop"
+    },
+    {
+        "description": "Configure active screen corners and edges",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-gestures-screenedges",
+        "id": "kcm_kwinscreenedges",
+        "keywords": "Screen Edges kwin window manager effect corner edge border action switch desktop kwin screen edges desktop edges screen edges maximize windows tile windows side of screen screen behavior switch desktop virtual desktop screen corners borders screen borders desktop borders desktop corners corners sticky corners sticky edges edge barriers corner barriers",
+        "name": "Screen Edges"
+    },
+    {
+        "description": "Configure screen locking",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-desktop-user-password",
+        "id": "kcm_screenlocker",
+        "keywords": "Screen Locking lock resume screensaver screenlock locking block blocking password sleep close lid lock automatically screen lock appearance screen lock theme screen lock wallpaper lockscreen lock screen",
+        "name": "Screen Locking"
+    },
+    {
+        "description": "Configure Keyboard Shortcuts",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-keyboard-shortcut",
+        "id": "kcm_keys",
+        "keywords": "Shortcuts keys global key bindings key scheme key bindings shortcuts application shortcuts global shortcuts keyboard hotkeys macro keybind keybinds keybindings",
+        "name": "Shortcuts"
+    },
+    {
+        "description": "Configure software update behavior",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "system-software-update",
+        "id": "kcm_updates",
+        "keywords": "Software Update updates offline automatic",
+        "name": "Software Update"
+    },
+    {
+        "description": "Configure audio devices and volume",
+        "group": "display",
+        "groupName": "Displays & Sound",
+        "icon": "preferences-desktop-sound",
+        "id": "kcm_pulseaudio",
+        "keywords": "Sound sound volume output input speakers microphone audio music hardware devices alsa pulseaudio pipewire jack hdmi recording playback streams sink balance audio balance mono stereo surround sound card right speaker left speaker center speaker notification sounds analog digital headphone headphones earbuds headset earpiece channel channels 2.0 2.1 5.1 6.1 7.1",
+        "name": "Sound"
+    },
+    {
+        "description": "Spell Checker Dictionaries and Options",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "tools-check-spelling",
+        "id": "kcmspellchecking",
+        "keywords": "Spell Check spell spellings grammar check grammatical check spell check autocorrect auto correct words phrases wrong words linguistics semantic alphabet correction sonnet",
+        "name": "Spell Check"
+    },
+    {
+        "description": "Choose splash screen theme",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-system-splash",
+        "id": "kcm_splashscreen",
+        "keywords": "Splash Screen splash screen splash theme start-up startup loading starting screen loading screen logo start screen welcome screen",
+        "name": "Splash Screen"
+    },
+    {
+        "description": "Select a Sound Theme for Notifications",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "emblem-music-symbolic",
+        "id": "kcm_soundtheme",
+        "keywords": "System Sounds system sounds sound theme sound sounds alert notification bell",
+        "name": "System Sounds"
+    },
+    {
+        "description": "Navigation Through Windows",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-system-tabbox",
+        "id": "kcm_kwintabbox",
+        "keywords": "Task Switcher window windows switcher window switcher switching window switching alttab alt-tab alt+tab alt tab apps changer application changer app task switch task switcher",
+        "name": "Task Switcher"
+    },
+    {
+        "description": "Thunderbolt Device Management",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-desktop-thunderbolt",
+        "id": "kcm_bolt",
+        "keywords": "Thunderbolt thunderbolt hardware device protocol thunderbolt protocol transfer usb usb-c pci-e external devices",
+        "name": "Thunderbolt"
+    },
+    {
+        "description": "Touchpad settings",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-desktop-touchpad",
+        "id": "kcm_touchpad",
+        "keywords": "Touchpad touchpad trackpad synaptics alps elantech elan cirque libinput hardware laptop touch devices click left click right click middle click click emulation tap tap to click tap-to-click fingers two fingers tap three fingers tap four fingers tap swipe gestures natural scrolling invert scroll inverted scrolling reverse scroll reversed scrolling acceleration palm rejection left-handed mode left handed mode right-handed mode right handed mode disable while typing",
+        "name": "Touchpad"
+    },
+    {
+        "description": "",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "preferences-desktop-touchscreen",
+        "id": "kcm_touchscreen",
+        "keywords": "Touchscreen touchscreen touch laptop screen display",
+        "name": "Touchscreen"
+    },
+    {
+        "description": "Configure touch screen swipe gestures",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-gestures-touch",
+        "id": "kcm_kwintouchscreen",
+        "keywords": "Touchscreen Gestures kwin window manager effect edge border action switch desktop desktop edges screen edges side of screen screen behavior touch screen",
+        "name": "Touchscreen Gestures"
+    },
+    {
+        "description": "Configure user feedback settings",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-desktop-feedback",
+        "id": "kcm_feedback",
+        "keywords": "User Feedback feedback report contact data collection statistics usage log logging telemetry",
+        "name": "User Feedback"
+    },
+    {
+        "description": "Manage user accounts",
+        "group": "system",
+        "groupName": "System & Accounts",
+        "icon": "preferences-system-users",
+        "id": "kcm_users",
+        "keywords": "Users users accounts profile picture profile photo avatar name password passwords email e-mail administrator root user standard user profile delete user delete account pfp fingerprint biometric",
+        "name": "Users"
+    },
+    {
+        "description": "Configure navigation, number and layout of virtual desktops",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-desktop-virtual",
+        "id": "kcm_kwin_virtualdesktops",
+        "keywords": "Virtual Desktops desktop desktops number virtual desktop multiple desktops pager pager widget pager applet pager settings indicator navigation cube slide workspaces",
+        "name": "Virtual Desktops"
+    },
+    {
+        "description": "Select which virtual keyboard to use",
+        "group": "devices",
+        "groupName": "Connected Devices",
+        "icon": "input-keyboard-virtual",
+        "id": "kcm_virtualkeyboard",
+        "keywords": "Virtual Keyboard software keyboard virtual keyboard touch keyboard on screen keyboard input methods",
+        "name": "Virtual Keyboard"
+    },
+    {
+        "description": "Configure the wallpaper",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-wallpaper",
+        "id": "kcm_wallpaper",
+        "keywords": "Wallpaper wallpaper desktop background slideshow haenau hunyango picture of the day dynamic wallpaper live wallpaper animated wallpaper",
+        "name": "Wallpaper"
+    },
+    {
+        "description": "Configure Web search keywords",
+        "group": "network",
+        "groupName": "Internet & Network",
+        "icon": "preferences-web-browser-shortcuts",
+        "id": "kcm_webshortcuts",
+        "keywords": "Web Search Keywords Web Search Search Keyword Web Shortcuts Browsing WWW Internet Internet Filters Network Search Engines Shortcuts",
+        "name": "Web Search Keywords"
+    },
+    {
+        "description": "Edit network connections",
+        "group": "network",
+        "groupName": "Internet & Network",
+        "icon": "preferences-system-network",
+        "id": "kcm_networkmanagement",
+        "keywords": "Wi-Fi & Networking networks wifi wi-fi ethernet mobile cdma gsm lte wimax apn carrier 2g 3g 4g 5g 5ge broadband internet traffic connections websites web DSL infiniband wired wireless bssid ipv4 ipv6 mac address ip access point dns gateway wep leap wpa wpa2 wpa3 dhcp shared network private network public network vpn openvpn wireguard fortinet juniper l2tp pptp sstp ssh iodine ipsec anyconnect openconnect",
+        "name": "Wi-Fi & Networking"
+    },
+    {
+        "description": "Configure window actions and behavior",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-system-windows-actions",
+        "id": "kcm_kwinoptions",
+        "keywords": "Window Behavior focus placement window behavior window actions animation raise auto raise windows frame titlebar doubleclick desktop snap movement activation activate pip picture in picture picture-in-picture",
+        "name": "Window Behavior"
+    },
+    {
+        "description": "Configure window titlebars and borders",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-desktop-theme-windowdecorations",
+        "id": "kcm_kwindecoration",
+        "keywords": "Window Decorations kwin window manager border style theme look feel layout button handle edge kwm decoration window decorations titlebar window buttons window border skin shadow",
+        "name": "Window Decorations"
+    },
+    {
+        "description": "Individual Window Behavior",
+        "group": "desktop",
+        "groupName": "Desktop & Apps",
+        "icon": "preferences-system-windows-actions",
+        "id": "kcm_kwinrules",
+        "keywords": "Window Rules size position state window behavior windows specific workarounds remember rules window rules apps applications",
+        "name": "Window Rules"
+    }
+]

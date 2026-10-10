@@ -1,0 +1,78 @@
+The following modules are available:
+kcm_about-distro             - Information About This System
+kcm_access                   - Configure Accessibility Options
+kcm_activities               - Activities help you to focus on a specific task
+kcm_animations               - Configure animation speed and style
+kcm_app-permissions          - Configure Application Permissions
+kcm_audiocd                  - Audiocd IO Worker Configuration
+kcm_autostart                - Automatically Started Applications
+kcm_baloofile                - Configure File Search
+kcm_bluetooth                - Manage Bluetooth devices
+kcm_bolt                     - Thunderbolt Device Management
+kcm_cddb                     - Configure the CDDB Retrieval
+kcm_clock                    - Date and Time
+kcm_colors                   - Choose color scheme
+kcm_componentchooser         - Choose default Applications
+kcm_cursortheme              - Choose mouse pointer theme
+kcm_desktoppaths             - Location for Personal Files
+kcm_desktoptheme             - Choose Plasma style
+kcm_device_automounter       - Configure automatic mounting of disks and volumes
+kcm_feedback                 - Configure user feedback settings
+kcm_filetypes                - Configure file associations
+kcm_fontinst                 - Install, manage and preview fonts
+kcm_fonts                    - Configure user interface fonts
+kcm_gamecontroller           - Test and Configure Game Controllers
+kcm_icons                    - Choose icon theme
+kcm_kaccounts                - Configure your internet accounts such as Google, Live, Owncloud
+kcm_kamera                   - Configure Kamera
+kcm_kded                     - Configure background services
+kcm_keyboard                 - Keyboard Hardware and Layout
+kcm_keys                     - Configure Keyboard Shortcuts
+kcm_krdpserver               - Configure Remote Desktop
+kcm_kscreen                  - Manage and configure monitors and displays
+kcm_kwallet5                 - KDE Wallet Configuration
+kcm_kwin_effects             - Configure compositor settings for desktop effects
+kcm_kwin_scripts             - Manage KWin scripts
+kcm_kwin_virtualdesktops     - Configure navigation, number and layout of virtual desktops
+kcm_kwindecoration           - Configure window titlebars and borders
+kcm_kwinoptions              - Configure window actions and behavior
+kcm_kwinrules                - Individual Window Behavior
+kcm_kwinscreenedges          - Configure active screen corners and edges
+kcm_kwintabbox               - Navigation Through Windows
+kcm_kwintouchscreen          - Configure touch screen swipe gestures
+kcm_kwinxwayland             - Select which keys will be globally available to legacy X11 apps
+kcm_landingpage              - Landing page with some basic settings
+kcm_lookandfeel              - Choose global look and feel
+kcm_mouse                    - Mouse Controls
+kcm_netpref                  - Configure generic network preferences
+kcm_networkmanagement        - Edit network connections
+kcm_nightlight               - Adjust screen color temperature based on time
+kcm_nighttime                - Configure the day-night cycle times
+kcm_notifications            - Event Notifications and Actions
+kcm_plasmakeyboard           - Configuration for Plasma Keyboard
+kcm_plasmalogin              - Configure Login Manager
+kcm_plasmasearch             - Configure search settings
+kcm_powerdevilprofilesconfig - Power Management
+kcm_printer_manager          - Configure your printers
+kcm_proxy                    - Configure the proxy servers used
+kcm_pulseaudio               - Configure audio devices and volume
+kcm_push_notifications       - Configure notifications from online services
+kcm_qtquicksettings          - No description available
+kcm_recentFiles              - Manage your file activity history preferences
+kcm_regionandlang            - Language Setting, Numeric, Currency and Time Formats
+kcm_screenlocker             - Configure screen locking
+kcm_smserver                 - Desktop Session Login and Logout
+kcm_solid_actions            - Manage actions available to the user when connecting new devices
+kcm_soundtheme               - Select a Sound Theme for Notifications
+kcm_splashscreen             - Choose splash screen theme
+kcm_style                    - Configure application style and behavior
+kcm_tablet                   - Configure drawing tablets and pens
+kcm_touchpad                 - Touchpad settings
+kcm_touchscreen              - No description available
+kcm_updates                  - Configure software update behavior
+kcm_users                    - Manage user accounts
+kcm_virtualkeyboard          - Select which virtual keyboard to use
+kcm_wallpaper                - Configure the wallpaper
+kcm_webshortcuts             - Configure Web search keywords
+kcm_workspace                - Configure general workspace behavior
+kcmspellchecking             - Spell Checker Dictionaries and Options

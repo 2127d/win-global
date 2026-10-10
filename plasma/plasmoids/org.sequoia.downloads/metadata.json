@@ -1,0 +1,13 @@
+{
+  "KPlugin": {
+    "Id": "org.sequoia.downloads",
+    "Name": "Downloads Stack",
+    "Description": "Fan out the newest downloads from the dock",
+    "Icon": "folder-downloads",
+    "Version": "1.0",
+    "License": "MIT",
+    "Category": "File System"
+  },
+  "KPackageStructure": "Plasma/Applet",
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

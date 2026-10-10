@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 1312 606" preserveAspectRatio="none">
+  <title>Sequoia Eleven — Light</title>
+  <desc>Original preview backdrop, expanded to a full desktop. MIT license.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c7d7ee"/>
+      <stop offset="1" stop-color="#e8d4c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1312" height="606" fill="url(#sky)"/>
+  <rect x="800" y="-310" width="500" height="900" rx="250" fill="#b9bee1" transform="rotate(-34 1050 140)"/>
+  <rect x="900" y="-240" width="360" height="890" rx="180" fill="#d7bdd1" transform="rotate(-34 1080 205)"/>
+  <rect x="975" y="-210" width="230" height="890" rx="115" fill="#ecc4ae" transform="rotate(-34 1090 235)"/>
+</svg>

@@ -1,0 +1,127 @@
+/* Both chrome documents and content-process about: pages use this file.
+ * No blanket moz-extension: or web origin selectors: add-on UI owns its content. */
+@import url("palette.css");
+
+@-moz-document url-prefix("about:preferences"), url-prefix("about:addons"),
+  url-prefix("about:home"), url-prefix("about:newtab"), url-prefix("about:downloads"),
+  url-prefix("about:logins"), url-prefix("about:protections"), url-prefix("about:welcome"),
+  url-prefix("about:config"), url-prefix("about:profiles"), url-prefix("about:support"),
+  url-prefix("about:sessionrestore"), url-prefix("about:privatebrowsing"),
+  url-prefix("about:firefoxview"), url-prefix("chrome://browser/content/sidebar/"),
+  url-prefix("chrome://browser/content/places/"), url-prefix("chrome://browser/content/syncedtabs/"),
+  url-prefix("chrome://mozapps/content/extensions/"), url-prefix("chrome://global/content/print"),
+  url-prefix("chrome://browser/content/preferences/"),
+  url-prefix("chrome://global/content/commonDialog") {
+  :root {
+    --in-content-page-background: var(--se-canvas) !important;
+    --in-content-page-color: var(--se-text) !important;
+    --in-content-box-background: var(--se-surface) !important;
+    --in-content-box-background-odd: var(--se-hover) !important;
+    --in-content-box-info-background: var(--se-surface) !important;
+    --in-content-box-border-color: var(--se-line) !important;
+    --in-content-primary-button-background: var(--se-accent) !important;
+    --in-content-primary-button-text-color: var(--se-accent-text) !important;
+    --in-content-button-background: var(--se-raised) !important;
+    --in-content-button-background-hover: var(--se-hover) !important;
+    --in-content-button-text-color: var(--se-text) !important;
+    --in-content-item-selected: var(--se-selected) !important;
+    --in-content-item-selected-text: var(--se-text) !important;
+    --in-content-accent-color: var(--se-accent) !important;
+    --in-content-link-color: var(--se-accent) !important;
+    --background-color-canvas: var(--se-canvas) !important;
+    --background-color-box: var(--se-surface) !important;
+    --background-color-card: var(--se-surface) !important;
+    --background-color-box-info: var(--se-surface) !important;
+    --text-color: var(--se-text) !important;
+    --text-color-deemphasized: var(--se-muted) !important;
+    --color-accent-primary: var(--se-accent) !important;
+    --link-color: var(--se-accent) !important;
+    --border-color: var(--se-line) !important;
+    --border-radius-small: 7px !important;
+    --border-radius-medium: 9px !important;
+    --border-radius-large: var(--se-radius) !important;
+    --card-background-color: var(--se-surface) !important;
+    --card-border-radius: var(--se-radius) !important;
+    --card-box-shadow: var(--se-shadow) !important;
+    --sidebar-background-color: var(--se-surface) !important;
+    --sidebar-text-color: var(--se-text) !important;
+    --button-border-radius: 9px !important;
+    --button-background-color: var(--se-raised) !important;
+    --button-background-color-hover: var(--se-hover) !important;
+    --button-text-color: var(--se-text) !important;
+    --button-background-color-primary: var(--se-accent) !important;
+    --button-text-color-primary: var(--se-accent-text) !important;
+    --focus-outline-color: var(--se-accent) !important;
+    background-color: var(--se-canvas) !important;
+    color: var(--se-text) !important;
+    color-scheme: light dark !important;
+    font-family: var(--se-font) !important;
+    accent-color: var(--se-accent);
+    scrollbar-color: var(--se-muted) transparent;
+    scrollbar-width: thin;
+  }
+  body { background-color: var(--se-canvas) !important; color: var(--se-text) !important; }
+  button, input, select, textarea { border-radius: var(--se-control-radius) !important; }
+  :is(.navigation, #categories, .sidebar, #sidebar, #logins-list) {
+    background: var(--se-surface) !important;
+    color: var(--se-text) !important;
+    border: 0 !important;
+    border-radius: var(--se-radius) !important;
+    box-shadow: var(--se-shadow) !important;
+  }
+  .navigation { margin: 8px !important; padding: 12px !important; }
+  .category { border-radius: var(--se-control-radius) !important; }
+  .category[selected], .category[selected="true"] {
+    background: var(--se-selected) !important;
+    color: var(--se-text) !important;
+  }
+  .card, .addon.card, .section-main, .content-blocking-category,
+  .protections-card, .dialogBox, moz-card {
+    background: var(--se-surface) !important;
+    border-color: transparent !important;
+    border-radius: var(--se-radius) !important;
+    box-shadow: var(--se-shadow) !important;
+  }
+  .search-wrapper .search-handoff-button, .search-wrapper input,
+  .top-site-outer .tile, .ds-card, .card-outer {
+    background: var(--se-surface) !important;
+    color: var(--se-text) !important;
+    border-radius: var(--se-radius) !important;
+    box-shadow: var(--se-shadow) !important;
+  }
+  :root {
+    --newtab-background-color: var(--se-canvas) !important;
+    --newtab-background-color-secondary: var(--se-surface) !important;
+    --newtab-text-primary-color: var(--se-text) !important;
+    --newtab-text-secondary-color: var(--se-muted) !important;
+    --newtab-element-hover-color: var(--se-hover) !important;
+    --newtab-primary-action-background: var(--se-accent) !important;
+  }
+}
+/* Developer tools keep their syntax/warning colors; theme their surrounding UI. */
+@-moz-document url-prefix("chrome://devtools/content/"), url-prefix("about:devtools"),
+  url-prefix("about:debugging") {
+  :root.theme-dark, :root.theme-light, :root {
+    --theme-body-background: var(--se-surface) !important;
+    --theme-sidebar-background: var(--se-surface) !important;
+    --theme-toolbar-background: var(--se-raised) !important;
+    --theme-tab-toolbar-background: var(--se-canvas) !important;
+    --theme-body-color: var(--se-text) !important;
+    --theme-toolbar-color: var(--se-text) !important;
+    --theme-selection-background: var(--se-selected) !important;
+    --theme-selection-color: var(--se-text) !important;
+    --theme-splitter-color: var(--se-line) !important;
+    --theme-link-color: var(--se-accent) !important;
+  }
+  .devtools-toolbar, .devtools-tabbar { border-radius: 8px !important; }
+}
+@-moz-document url-prefix("chrome://browser/content/sidebar/"),
+  url-prefix("chrome://browser/content/places/"), url-prefix("chrome://browser/content/syncedtabs/") {
+  :root, body, #placesView, #placesList, #placeContent, tree {
+    background: var(--se-surface) !important;
+    color: var(--se-text) !important;
+  }
+  #search-box, .search-container, .sidebar-panel-header { border-radius: 9px !important; }
+  treechildren::-moz-tree-row(selected) { background: var(--se-selected) !important; }
+  treechildren::-moz-tree-cell-text(selected) { color: var(--se-text) !important; }
+}

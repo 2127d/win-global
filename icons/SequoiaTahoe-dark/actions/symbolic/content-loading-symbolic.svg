@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" enable-background="new" version="1.1">
+ <rect transform="rotate(90)" x="7" y="-3" width="2" height="2" rx="1" ry="1" fill="#dedede" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect transform="rotate(90)" x="7" y="-9" width="2" height="2" rx="1" ry="1" fill="#dedede" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect transform="rotate(90)" x="7" y="-15" width="2" height="2" rx="1" ry="1" fill="#dedede" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+</svg>

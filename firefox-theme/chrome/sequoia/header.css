@@ -1,0 +1,199 @@
+/* Reference layout: floating controls, pill address field, full-width tabs below.
+ * Use Firefox's real titlebar buttons so window commands remain native. */
+:root {
+  --se-header: var(--se-canvas);
+  --se-header-control: #f8f8f8;
+  --se-header-rim: rgb(255 255 255 / 95%);
+  --se-header-shadow: 0 5px 14px rgb(25 28 35 / 9%);
+  --se-tab-fill: #e8e8e8;
+  --se-traffic-close: #ff625a;
+  --se-traffic-min: #ffbd44;
+  --se-traffic-max: #30c84b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --se-header-control: #303135;
+    --se-header-rim: rgb(255 255 255 / 13%);
+    --se-header-shadow: 0 5px 14px rgb(0 0 0 / 20%);
+    --se-tab-fill: #36383e;
+  }
+}
+#navigator-toolbox {
+  background: var(--se-header) !important;
+  padding-bottom: 4px;
+}
+/* A visible canvas gap separates the sidebar/page islands from the tab strip. */
+:root:not([inDOMFullscreen], [inFullscreen]) #browser {
+  padding-block-start: 8px !important;
+}
+#toolbar-menubar { order: 0 !important; }
+#nav-bar {
+  order: 1 !important;
+  margin: 0 !important;
+  padding: 4px 6px !important;
+  min-height: 48px !important;
+  box-sizing: border-box;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  -moz-window-dragging: drag;
+}
+#TabsToolbar {
+  order: 2 !important;
+  padding-inline: 6px !important;
+  --tab-min-height: 32px;
+  --tab-block-margin: 4px;
+}
+#PersonalToolbar { order: 3 !important; }
+#notifications-toolbar { order: 4 !important; }
+#nav-bar :is(toolbarbutton, moz-button, #urlbar, #searchbar, .titlebar-buttonbox-container) {
+  -moz-window-dragging: no-drag;
+}
+
+/* Separate small floating buttons, with quiet back/forward chevrons. */
+#nav-bar .toolbarbutton-1 {
+  --toolbarbutton-border-radius: 50%;
+  --toolbarbutton-inner-padding: 9px;
+  padding-inline: 3px !important;
+}
+#nav-bar .toolbarbutton-1 > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  border-radius: 50% !important;
+  background-color: var(--se-header-control) !important;
+  box-shadow: inset 0 0 0 1px var(--se-header-rim), var(--se-header-shadow) !important;
+}
+#nav-bar .toolbarbutton-1:is(:hover, [open="true"], [checked="true"]):not([disabled="true"])
+  > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+  background-color: var(--se-hover) !important;
+}
+#nav-bar :is(#back-button, #forward-button) > .toolbarbutton-icon {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#nav-bar :is(#back-button, #forward-button):hover:not([disabled="true"]) > .toolbarbutton-icon {
+  background: var(--se-hover) !important;
+}
+#urlbar-background, .urlbar-background, #searchbar {
+  border: 1px solid var(--se-header-rim) !important;
+  border-radius: 999px !important;
+  background-color: var(--se-header-control) !important;
+  box-shadow: inset 0 1px 0 var(--se-header-rim), var(--se-header-shadow) !important;
+}
+#urlbar[open] > :is(#urlbar-background, .urlbar-background) {
+  border-radius: 18px !important;
+  box-shadow: var(--se-popup-shadow) !important;
+}
+#urlbar:not([focused]) .urlbar-input { text-align: center !important; }
+#urlbar[focused] .urlbar-input { text-align: start !important; }
+/* Keep the search-engine chooser on the left, inset from the field's edge. */
+#urlbar .urlbar-input-container > .searchmode-switcher {
+  margin-inline: 8px 0 !important;
+}
+
+/* Widen live tabs through Firefox's native sizing token. Never override the
+ * max-width property: Firefox animates it to 0.1px and waits for transitionend
+ * before removing a closed tab from the browser and saved session. */
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab:not([pinned]) {
+  --tab-max-width: 100vw;
+}
+#tabbrowser-tabs[orient="horizontal"] .tab-content { justify-content: center !important; }
+#tabbrowser-tabs[orient="horizontal"] .tab-label-container {
+  flex: 0 1 auto !important;
+  max-width: fit-content !important;
+}
+#tabbrowser-tabs[orient="horizontal"] .tab-background {
+  border-radius: 999px !important;
+}
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab[visuallyselected] .tab-background {
+  background: var(--se-tab-fill) !important;
+  box-shadow: inset 0 0 0 2px var(--se-header-rim), 0 1px 3px rgb(0 0 0 / 18%) !important;
+}
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab:not([pinned]) .tab-content {
+  position: relative;
+  padding-inline: 28px !important;
+}
+#tabbrowser-tabs[orient="horizontal"] .tab-close-button {
+  position: absolute !important;
+  inset-inline-end: 8px;
+}
+#tabbrowser-tabs[orient="horizontal"] .tabbrowser-tab:not(:hover, :focus-within) .tab-close-button {
+  opacity: 0;
+}
+
+/* Firefox 156 uses customtitlebar; tabsintitlebar supports older layouts.
+ * A native OS titlebar, when requested, keeps the system's own decorations. */
+#TabsToolbar > .titlebar-buttonbox-container,
+#toolbar-menubar > .titlebar-buttonbox-container { display: none !important; }
+#nav-bar > .titlebar-buttonbox-container {
+  order: -1 !important;
+  align-self: center !important;
+  margin: 0 10px 0 0 !important;
+  padding: 0 !important;
+  visibility: visible !important;
+}
+:root:is([customtitlebar], [tabsintitlebar]):not([inFullscreen]) #nav-bar > .titlebar-buttonbox-container {
+  display: flex !important;
+}
+#nav-bar > .titlebar-buttonbox-container > .titlebar-buttonbox {
+  appearance: none !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0 !important;
+}
+#nav-bar .titlebar-button {
+  appearance: none !important;
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  padding: 0 5px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+#nav-bar .titlebar-close { order: 0 !important; --se-light: var(--se-traffic-close); }
+#nav-bar .titlebar-min { order: 1 !important; --se-light: var(--se-traffic-min); }
+#nav-bar :is(.titlebar-max, .titlebar-restore) { order: 2 !important; --se-light: var(--se-traffic-max); }
+#nav-bar .titlebar-button > .toolbarbutton-icon {
+  appearance: none !important;
+  width: 14px !important;
+  height: 14px !important;
+  padding: 2px !important;
+  border-radius: 50% !important;
+  background-color: var(--se-light) !important;
+  background-image: none !important;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 13%) !important;
+  list-style-image: url("icons/blank.svg") !important;
+  -moz-context-properties: stroke;
+  stroke: rgb(45 38 35 / 86%);
+}
+#nav-bar .titlebar-close:is(:hover, :focus-visible) > .toolbarbutton-icon { list-style-image: url("icons/close.svg") !important; }
+#nav-bar .titlebar-min:is(:hover, :focus-visible) > .toolbarbutton-icon { list-style-image: url("icons/minimize.svg") !important; }
+#nav-bar .titlebar-max:is(:hover, :focus-visible) > .toolbarbutton-icon { list-style-image: url("icons/maximize.svg") !important; }
+#nav-bar .titlebar-restore:is(:hover, :focus-visible) > .toolbarbutton-icon { list-style-image: url("icons/restore.svg") !important; }
+#nav-bar .titlebar-button:active > .toolbarbutton-icon { filter: brightness(.87); }
+:root:-moz-window-inactive #nav-bar .titlebar-button > .toolbarbutton-icon {
+  background-color: color-mix(in srgb, var(--se-surface), var(--se-text) 28%) !important;
+}
+#nav-bar .titlebar-button:focus-visible {
+  outline: 2px solid var(--se-accent) !important;
+  outline-offset: -2px;
+  border-radius: 7px;
+}
+#nav-bar > .titlebar-spacer, #TabsToolbar > .titlebar-spacer { display: none !important; }
+:root[inFullscreen] #nav-bar > .titlebar-buttonbox-container { display: none !important; }
+@media (forced-colors: active) {
+  :root {
+    --se-header: Canvas;
+    --se-header-control: ButtonFace;
+    --se-header-rim: ButtonText;
+    --se-tab-fill: ButtonFace;
+  }
+  #nav-bar .titlebar-button > .toolbarbutton-icon { stroke: ButtonText; }
+  #nav-bar .titlebar-close > .toolbarbutton-icon { list-style-image: url("icons/close.svg") !important; }
+  #nav-bar .titlebar-min > .toolbarbutton-icon { list-style-image: url("icons/minimize.svg") !important; }
+  #nav-bar .titlebar-max > .toolbarbutton-icon { list-style-image: url("icons/maximize.svg") !important; }
+  #nav-bar .titlebar-restore > .toolbarbutton-icon { list-style-image: url("icons/restore.svg") !important; }
+}

@@ -1,0 +1,20 @@
+{
+  "AdwaitaSans-Regular.ttf": {
+    "source": "https://gitlab.gnome.org/GNOME/adwaita-fonts",
+    "package": "adwaita-sans-fonts-50.0-1.fc44.noarch",
+    "installed_source": "/usr/share/fonts/adwaita-sans-fonts/AdwaitaSans-Regular.ttf",
+    "sha256": "8381c33b9a44f066f2b99dba3d416a2342891e28c956a35dfd8d16ee2987e6d4"
+  },
+  "AdwaitaSans-Italic.ttf": {
+    "source": "https://gitlab.gnome.org/GNOME/adwaita-fonts",
+    "package": "adwaita-sans-fonts-50.0-1.fc44.noarch",
+    "installed_source": "/usr/share/fonts/adwaita-sans-fonts/AdwaitaSans-Italic.ttf",
+    "sha256": "a3dc55af75f746756596dca37f3ff7c0f0b015f2fd2e87f2cf0ef4a69d4f3015"
+  },
+  "LICENSE": {
+    "source": "https://gitlab.gnome.org/GNOME/adwaita-fonts",
+    "package": "adwaita-sans-fonts-50.0-1.fc44.noarch",
+    "installed_source": "/usr/share/licenses/adwaita-sans-fonts/LICENSE",
+    "sha256": "459687971d21c53923c1d1c9c062ec273a7ea03226b36195b79ec6af7d98dc81"
+  }
+}

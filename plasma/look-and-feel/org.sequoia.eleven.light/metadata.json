@@ -1,0 +1,11 @@
+{
+  "KPackageStructure": "Plasma/LookAndFeel",
+  "KPlugin": {
+    "Id": "org.sequoia.eleven.light",
+    "Name": "Sequoia Eleven Light",
+    "Description": "Coordinated Sequoia Eleven desktop, application style, colors, and window decoration.",
+    "Version": "2.0.0",
+    "License": "MIT"
+  },
+  "X-Plasma-APIVersion": "2"
+}

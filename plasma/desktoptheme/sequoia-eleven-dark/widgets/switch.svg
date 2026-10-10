@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+<style id="current-color-scheme" type="text/css">
+.ColorScheme-Highlight { color: #8db3ff; }
+.ColorScheme-Text { color: #f2f3f5; }
+</style>
+<g id="inactive-topleft" transform="translate(0 0)"><rect width="12" height="12" fill="#000" fill-opacity="0"/><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z" fill="#42454d" fill-opacity="1"/></g>
+<g id="inactive-top" transform="translate(12 0)"><rect width="32" height="12" fill="#000" fill-opacity="0"/><rect width="32" height="12" fill="#42454d" fill-opacity="1"/></g>
+<g id="inactive-topright" transform="translate(44 0)"><rect width="12" height="12" fill="#000" fill-opacity="0"/><g transform="translate(12 0) rotate(90)"><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z" fill="#42454d" fill-opacity="1"/></g></g>
+<g id="inactive-left" transform="translate(0 12)"><rect width="12" height="32" fill="#000" fill-opacity="0"/><rect width="12" height="32" fill="#42454d" fill-opacity="1"/></g>
+<g id="inactive-center" transform="translate(12 12)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#42454d" fill-opacity="1"/></g>
+<g id="inactive-right" transform="translate(44 12)"><rect width="12" height="32" fill="#000" fill-opacity="0"/><rect width="12" height="32" fill="#42454d" fill-opacity="1"/></g>
+<g id="inactive-bottomleft" transform="translate(0 44)"><rect width="12" height="12" fill="#000" fill-opacity="0"/><g transform="translate(0 12) rotate(-90)"><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z" fill="#42454d" fill-opacity="1"/></g></g>
+<g id="inactive-bottom" transform="translate(12 44)"><rect width="32" height="12" fill="#000" fill-opacity="0"/><rect width="32" height="12" fill="#42454d" fill-opacity="1"/></g>
+<g id="inactive-bottomright" transform="translate(44 44)"><rect width="12" height="12" fill="#000" fill-opacity="0"/><g transform="translate(12 12) rotate(180)"><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z" fill="#42454d" fill-opacity="1"/></g></g>
+<g id="active-topleft" transform="translate(0 100)"><rect width="12" height="12" fill="#000" fill-opacity="0"/><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z M 12 0.5 A 11.5 11.5 0 0 0 0.5 12 L 12 12 Z" fill-rule="evenodd" fill="#42454d" fill-opacity="0.4"/></g>
+<g id="active-top" transform="translate(12 100)"><rect width="32" height="12" fill="#000" fill-opacity="0"/><rect width="32" height="12" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/><rect x="0" y="0" width="32" height="0.5" fill="#42454d" fill-opacity="0.4"/></g>
+<g id="active-topright" transform="translate(44 100)"><rect width="12" height="12" fill="#000" fill-opacity="0"/><g transform="translate(12 0) rotate(90)"><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z M 12 0.5 A 11.5 11.5 0 0 0 0.5 12 L 12 12 Z" fill-rule="evenodd" fill="#42454d" fill-opacity="0.4"/></g></g>
+<g id="active-left" transform="translate(0 112)"><rect width="12" height="32" fill="#000" fill-opacity="0"/><rect width="12" height="32" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/><rect x="0" y="0" width="0.5" height="32" fill="#42454d" fill-opacity="0.4"/></g>
+<g id="active-center" transform="translate(12 112)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/></g>
+<g id="active-right" transform="translate(44 112)"><rect width="12" height="32" fill="#000" fill-opacity="0"/><rect width="12" height="32" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/><rect x="11.5" y="0" width="0.5" height="32" fill="#42454d" fill-opacity="0.4"/></g>
+<g id="active-bottomleft" transform="translate(0 144)"><rect width="12" height="12" fill="#000" fill-opacity="0"/><g transform="translate(0 12) rotate(-90)"><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z M 12 0.5 A 11.5 11.5 0 0 0 0.5 12 L 12 12 Z" fill-rule="evenodd" fill="#42454d" fill-opacity="0.4"/></g></g>
+<g id="active-bottom" transform="translate(12 144)"><rect width="32" height="12" fill="#000" fill-opacity="0"/><rect width="32" height="12" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/><rect x="0" y="11.5" width="32" height="0.5" fill="#42454d" fill-opacity="0.4"/></g>
+<g id="active-bottomright" transform="translate(44 144)"><rect width="12" height="12" fill="#000" fill-opacity="0"/><g transform="translate(12 12) rotate(180)"><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z" class="ColorScheme-Highlight" fill="currentColor" fill-opacity="1"/><path d="M 12 0 A 12 12 0 0 0 0 12 L 12 12 Z M 12 0.5 A 11.5 11.5 0 0 0 0.5 12 L 12 12 Z" fill-rule="evenodd" fill="#42454d" fill-opacity="0.4"/></g></g>
+<rect id="hint-bar-size" x="800" y="57" width="42" height="24" fill="#ff00ff"/>
+<g id="handle" transform="translate(0 240)">
+<rect width="24" height="24" fill="none"/>
+<circle cx="12" cy="12" r="10" fill="#ffffff"/>
+</g>
+<g id="handle-active" transform="translate(36 240)">
+<rect width="24" height="24" fill="none"/>
+<circle cx="12" cy="12" r="10" fill="#ffffff"/>
+</g>
+<g id="handle-hover" transform="translate(72 240)">
+<rect width="24" height="24" fill="none"/>
+<circle cx="12" cy="12" r="10" fill="#ffffff"/>
+</g>
+<g id="handle-pressed" transform="translate(108 240)">
+<rect width="24" height="24" fill="none"/>
+<circle cx="12" cy="12" r="10" fill="#ffffff"/>
+</g>
+<g id="handle-shadow" transform="translate(150 240)">
+<rect width="24" height="26" fill="none"/>
+<circle cx="12" cy="14" r="10" fill="#000000" fill-opacity="0.18"/>
+</g>
+<g id="handle-focus" transform="translate(190 240)">
+<rect width="28" height="28" fill="none"/>
+<circle cx="14" cy="14" r="12.5" fill="none" stroke="currentColor" class="ColorScheme-Highlight" stroke-width="2"/>
+</g>
+<rect id="hint-stretch-borders" x="800" y="75" width="1" height="1" fill="#ff00ff"/>
+</svg>

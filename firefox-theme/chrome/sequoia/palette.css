@@ -1,0 +1,35 @@
+/* Shared Sequoia Eleven desktop colors. System appearance selects the palette. */
+:root {
+  --se-canvas: #e7ebf2;
+  --se-surface: #f2f3f5;
+  --se-raised: #ffffff;
+  --se-text: #24262b;
+  --se-muted: #666b75;
+  --se-accent: #2463d4;
+  --se-accent-text: #ffffff;
+  --se-hover: #e7ebf2;
+  --se-selected: #dce7fb;
+  --se-line: rgb(36 38 43 / 12%);
+  --se-shadow: 0 2px 7px rgb(24 30 45 / 10%), 0 1px 2px rgb(24 30 45 / 5%);
+  --se-popup-shadow: 0 10px 30px rgb(24 30 45 / 19%), 0 2px 6px rgb(24 30 45 / 10%);
+  --se-radius: 14px;
+  --se-control-radius: 9px;
+  --se-gap: 6px;
+  --se-font: "Adwaita Sans", "Inter", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --se-canvas: #1c1d20;
+    --se-surface: #252629;
+    --se-raised: #303135;
+    --se-text: #f2f3f5;
+    --se-muted: #adb0b8;
+    --se-accent: #8db3ff;
+    --se-accent-text: #15213a;
+    --se-hover: #36383e;
+    --se-selected: #354561;
+    --se-line: rgb(242 243 245 / 12%);
+    --se-shadow: 0 2px 7px rgb(0 0 0 / 24%), 0 1px 2px rgb(0 0 0 / 15%);
+    --se-popup-shadow: 0 10px 30px rgb(0 0 0 / 40%), 0 2px 6px rgb(0 0 0 / 22%);
+  }
+}

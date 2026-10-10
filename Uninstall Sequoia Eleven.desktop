@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Uninstall Sequoia Eleven
+Comment=Remove selected Sequoia Eleven components and restore original files
+Icon=preferences-desktop-theme
+Exec=/usr/bin/python3 -c "import pathlib,runpy,sys; from urllib.parse import unquote,urlparse; p=sys.argv[1]; p=unquote(urlparse(p).path) if p.startswith('file:') else p; sys.argv=[str(pathlib.Path(p).resolve().parent/'uninstall-gui.py')]; runpy.run_path(sys.argv[0],run_name='__main__')" %k
+Terminal=false
+Categories=Settings;DesktopSettings;

@@ -1,0 +1,11 @@
+{
+  "KPackageStructure": "Plasma/LookAndFeel",
+  "KPlugin": {
+    "Id": "org.sequoia.eleven.light.solid",
+    "Name": "Sequoia Eleven Light Solid",
+    "Description": "Solid application backgrounds with matching window decoration.",
+    "Version": "2.0.0",
+    "License": "MIT"
+  },
+  "X-Plasma-APIVersion": "2"
+}

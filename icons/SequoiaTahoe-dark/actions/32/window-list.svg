@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+    <style type="text/css" id="current-color-scheme">
+        .ColorScheme-Text {
+            color:#dedede;
+        }
+        .ColorScheme-ButtonFocus{
+            color:#3daee9;
+        }
+    </style>
+    <g id="window-list" transform="translate(-286 -545.36218) translate(0,-16)">
+        <path id="rect3004" d="m286 561.36218h32v32h-32z" fill="#333" opacity="0" />
+        <path id="rect3008" d="m290 565.3622v10h10v-10zm1 1h8v8h-8z" class="ColorScheme-Text" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+        <path id="rect3010" d="m304 565.3622v10h10v-10zm1 1h8v8h-8z" class="ColorScheme-Text" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+        <path id="rect3012" d="m290 579.3622v10h10v-10zm1 1h8v8h-8z" class="ColorScheme-Text" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+        <path id="rect3014" d="m304 579.3622v10h10v-10zm1 1h8v8h-8z" class="ColorScheme-Text" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+    </g>
+</svg>

@@ -1,0 +1,379 @@
+ ApplicationItem_QMLTYPE_14_QML_170  0,0 808x692 visible=1 opacity=1 color=#f2f3f5
+  QQuickItem  0,0 808x692 visible=1 opacity=1
+   PageRow_QMLTYPE_8_QML_168  0,0 808x692 visible=1 opacity=1 separatorVisible=false
+   ToolButton_QMLTYPE_41  0,0 34x34 visible=0 opacity=1 text=
+    StackView_QMLTYPE_153_QML_157  0,46 808x646 visible=1 opacity=1
+    QQuickLoader_QML_158  0,0 808x46 visible=1 opacity=1
+    QQuickItem  0,0 0x0 visible=1 opacity=1
+    QQuickItem_QML_169  0,0 808x692 visible=1 opacity=0
+    KQuickStyleItem_QML_42  0,0 34x34 visible=0 opacity=1 text=
+     QQuickItem_QML_160  0,-46 808x692 visible=1 opacity=1
+     PageRowGlobalToolBarUI_QMLTYPE_174  0,0 808x46 visible=1 opacity=1 separatorVisible=false
+     QQuickRectangle sequoiaSettingsSidebarCanvas 0,0 808x692 visible=0 opacity=1 color=#000000
+     Canvas_QMLTYPE_106 sequoiaCanvas 0,0 808x692 visible=1 opacity=1 color=#f2f3f5
+     Island_QMLTYPE_78 sequoiaSettingsSidebar 0,0 808x692 visible=0 opacity=1 color=#000000
+      QQuickItem  0,0 0x692 visible=0 opacity=1
+      ColumnView_QML_161  0,0 808x692 visible=1 opacity=1 separatorVisible=false
+      Separator_QMLTYPE_48_QML_177  0,0 808x1 visible=1 opacity=0 color=#f2f3f5
+      QQuickItem_QML_178  0,0 808x46 visible=1 opacity=1
+      QQuickRectangle  4,7 800x682 visible=0 opacity=1 color=#0c000000
+      QQuickRectangle  5,6 798x682 visible=0 opacity=1 color=#14000000
+      QQuickRectangle  5,5 798x682 visible=0 opacity=1 color=#000000
+       ContentItem  0,0 808x692 visible=1 opacity=1
+       QQuickRectangle  0,0 808x1 visible=1 opacity=1 color=#f2f3f5
+       QQuickItem_QML_180  6,6 796x34 visible=1 opacity=1
+       Island_QMLTYPE_78 sequoiaIsland 0,0 808x46 visible=0 opacity=0 color=#f2f3f5
+        QQuickItem  0,0 0x0 visible=1 opacity=1
+        QQuickItem  0,0 0x0 visible=1 opacity=1
+        SimpleKCM_QMLTYPE_104  0,46 808x646 visible=1 opacity=1 extraFooterTopPadding=false
+        QQuickItem  0,0 34x34 visible=0 opacity=1
+        QQuickItem  0,0 34x34 visible=0 opacity=1
+        QQuickLoader_QML_181  0,0 796x34 visible=1 opacity=1
+        QQuickRectangle  4,7 800x36 visible=0 opacity=1 color=#0c000000
+        QQuickRectangle  5,6 798x36 visible=0 opacity=1 color=#14000000
+        QQuickRectangle  5,5 798x36 visible=0 opacity=1 color=#f2f3f5
+         QQuickLoader_QML_109  0,0 808x46 visible=1 opacity=1
+         QQuickLoader_QML_108  0,692 808x0 visible=0 opacity=1
+         QQuickItem  0,0 808x646 visible=1 opacity=1
+         QQuickLoader  0,0 0x0 visible=1 opacity=1
+         ScrollView_QMLTYPE_77  0,0 808x646 visible=1 opacity=1
+         QQuickColumn  0,0 808x0 visible=1 opacity=1
+         KQuickStyleItem  0,0 0x0 visible=0 opacity=1 text=
+         Canvas_QMLTYPE_106 sequoiaCanvas 0,0 808x646 visible=1 opacity=0 color=#f2f3f5
+          ToolBarPageHeader_QMLTYPE_199  0,0 808x46 visible=1 opacity=1 separatorVisible=false
+          Island_QMLTYPE_78_QML_80 sequoiaIsland 0,0 808x646 visible=0 opacity=1 color=#f2f3f5
+          QQuickFlickable  0,0 808x646 visible=1 opacity=1
+          ScrollBar_QMLTYPE_57  0,625 808x21 visible=0 opacity=1
+          ScrollBar_QMLTYPE_57  787,0 21x646 visible=0 opacity=1
+          Padding  0,0 808x0 visible=1 opacity=1
+          Separator_QMLTYPE_48  0,0 808x1 visible=0 opacity=0 color=#f2f3f5
+           Separator_QMLTYPE_48_QML_177  0,0 808x1 visible=1 opacity=0 color=#f2f3f5
+           QQuickItem_QML_178  0,0 808x46 visible=1 opacity=1
+           QQuickRectangle  4,7 800x636 visible=0 opacity=1 color=#0c000000
+           QQuickRectangle  5,6 798x636 visible=0 opacity=1 color=#14000000
+           QQuickRectangle  5,5 798x636 visible=0 opacity=1 color=#f2f3f5
+           QQuickItem  0,0 808x457 visible=1 opacity=1
+           WheelFilterItem  0,0 808x646 visible=1 opacity=1
+           QQuickMouseArea  0,0 808x21 visible=0 opacity=1
+           QQuickItem  6,0 796x21 visible=0 opacity=1
+           QQuickMouseArea  0,0 21x646 visible=0 opacity=1
+           QQuickItem  0,6 21x634 visible=0 opacity=1
+           QQuickRectangle  0,0 808x1 visible=0 opacity=1 color=#f2f3f5
+            QQuickRectangle  0,0 808x1 visible=1 opacity=1 color=#f2f3f5
+            QQuickItem_QML_180  6,6 796x34 visible=1 opacity=1
+            Island_QMLTYPE_78 sequoiaIsland 0,0 808x46 visible=1 opacity=0 color=#f2f3f5
+            QQuickMouseArea  0,0 808x646 visible=1 opacity=1
+            KQuickStyleItem_QML_59  0,0 808x21 visible=0 opacity=0 text=
+            KQuickStyleItem  0,0 808x21 visible=0 opacity=1 text=
+            QQuickRectangle_QML_60  0,19 796x2 visible=0 opacity=0.3 color=#24262b
+            KQuickStyleItem_QML_59  0,0 21x646 visible=0 opacity=0 text=
+            KQuickStyleItem  0,0 21x646 visible=0 opacity=1 text=
+            QQuickRectangle_QML_60  19,0 2x634 visible=0 opacity=0.3 color=#24262b
+             QQuickMouseArea  0,0 796x34 visible=1 opacity=1
+             QQuickRowLayout  0,0 796x34 visible=1 opacity=1
+             QQuickRectangle  4,7 800x36 visible=1 opacity=1 color=#0c000000
+             QQuickRectangle  5,6 798x36 visible=1 opacity=1 color=#14000000
+             QQuickRectangle  5,5 798x36 visible=1 opacity=1 color=#f2f3f5
+             QQuickItem_QML_114  6,6 796x634 visible=1 opacity=1
+              Separator_QMLTYPE_48  0,0 1x1 visible=0 opacity=0 color=#000000
+              HandleButton_QMLTYPE_184  0,0 29x29 visible=0 opacity=1 text=
+              NavigationButtons_QMLTYPE_193  0,0 0x0 visible=0 opacity=1
+              QQuickLoader  12,5 122x25 visible=1 opacity=1
+              ActionToolBar_QMLTYPE_21  138,0 658x34 visible=1 opacity=1
+              HandleButton_QMLTYPE_184  0,0 29x29 visible=0 opacity=1 text=
+              Form_QMLTYPE_120  0,0 796x451 visible=1 opacity=1
+               QQuickRectangle  0,0 1x1 visible=0 opacity=1 color=#000000
+               KQuickStyleItem_QML_42  0,0 29x29 visible=0 opacity=1 text=
+               DefaultPageTitleDelegate_QMLTYPE_107  0,0 122x25 visible=1 opacity=1 text=Quick Settings
+               ToolBarLayout  0,0 658x34 visible=1 opacity=1
+               KQuickStyleItem_QML_42  0,0 29x29 visible=0 opacity=1 text=
+               QQuickColumnLayout_QML_122  60,8 675x443 visible=1 opacity=1
+                Heading_QMLTYPE_7  0,0 122x25 visible=1 opacity=1 text=Quick Settings color=#24262b
+                FormGroup_QMLTYPE_125  0,0 675x166 visible=1 opacity=1
+                FormGroup_QMLTYPE_125  0,178 675x228 visible=1 opacity=1
+                FormGroup_QMLTYPE_125  0,418 675x25 visible=1 opacity=1
+                 QQuickColumnLayout  0,0 675x166 visible=1 opacity=1
+                 QQuickColumnLayout  0,0 675x228 visible=1 opacity=1
+                 QQuickColumnLayout  0,0 675x25 visible=1 opacity=1
+                  Separator_QMLTYPE_48  0,0 1x1 visible=0 opacity=0 color=#f2f3f5
+                  Heading_QMLTYPE_7  0,0 0x21 visible=0 opacity=1 text= color=#24262b
+                  QQuickColumnLayout_QML_127  0,0 675x166 visible=1 opacity=1
+                  Separator_QMLTYPE_48  8,12 659x1 visible=1 opacity=0 color=#f2f3f5
+                  Heading_QMLTYPE_7  0,0 0x21 visible=0 opacity=1 text= color=#24262b
+                  QQuickColumnLayout_QML_127  0,25 675x203 visible=1 opacity=1
+                  Separator_QMLTYPE_48  8,12 659x1 visible=1 opacity=0 color=#f2f3f5
+                  Heading_QMLTYPE_7  0,0 0x21 visible=0 opacity=1 text= color=#24262b
+                  QQuickColumnLayout_QML_127  0,25 675x0 visible=1 opacity=1
+                   QQuickRectangle  0,0 1x1 visible=0 opacity=1 color=#f2f3f5
+                   FormEntry_QMLTYPE_116  0,0 675x112 visible=1 opacity=1
+                   FormSeparator_QMLTYPE_132  0,116 675x8 visible=1 opacity=0
+                   FormEntry_QMLTYPE_116  0,128 675x38 visible=1 opacity=1
+                   QQuickRectangle  0,0 659x1 visible=1 opacity=1 color=#f2f3f5
+                   FormEntry_QMLTYPE_116  0,0 675x45 visible=1 opacity=1
+                   FormSeparator_QMLTYPE_132  0,49 675x8 visible=1 opacity=0
+                   FormEntry_QMLTYPE_116  0,61 675x42 visible=1 opacity=1
+                   FormEntry_QMLTYPE_116  0,107 675x42 visible=1 opacity=1
+                   FormSeparator_QMLTYPE_132  0,153 675x8 visible=1 opacity=0
+                   FormAction_QMLTYPE_123  0,165 675x38 visible=1 opacity=1
+                   QQuickRectangle  0,0 659x1 visible=1 opacity=1 color=#f2f3f5
+                   FormEntry_QMLTYPE_116  0,0 675x0 visible=1 opacity=1
+                    Label_QMLTYPE_52  125.484,47 45.5156x18 visible=1 opacity=1 text=Theme: color=#24262b
+                    QQuickRowLayout_QML_118  179,0 496x112 visible=1 opacity=1
+                    Label_QMLTYPE_52  8.39063,10 162.609x18 visible=1 opacity=1 text=More appearance settings: color=#24262b
+                    QQuickRowLayout_QML_118  179,0 496x38 visible=1 opacity=1
+                    Label_QMLTYPE_52  64.2969,2 106.703x18 visible=1 opacity=1 text=Animation speed: color=#24262b
+                    QQuickRowLayout_QML_118  179,0 496x45 visible=1 opacity=1
+                    Label_QMLTYPE_52  29.5,2.5 141.5x18 visible=1 opacity=1 text=Clicking files or folders: color=#24262b
+                    QQuickRowLayout_QML_118  179,0 496x42 visible=1 opacity=1
+                    Label_QMLTYPE_52  171,2.5 0x18 visible=0 opacity=1 text= color=#24262b
+                    QQuickRowLayout_QML_118  179,0 496x42 visible=1 opacity=1
+                    Label_QMLTYPE_52  26.4375,10 144.563x18 visible=1 opacity=1 text=More behavior settings: color=#24262b
+                    QQuickRowLayout_QML_118  179,0 496x38 visible=1 opacity=1
+                    Label_QMLTYPE_52  63.875,-9 107.125x18 visible=1 opacity=1 text=Most used pages: color=#24262b
+                    QQuickRowLayout_QML_118  179,0 496x0 visible=1 opacity=1
+                     QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                     QQuickColumnLayout  0,0 496x112 visible=1 opacity=1
+                     QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                     QQuickColumnLayout  0,0 496x38 visible=1 opacity=1
+                     QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                     QQuickColumnLayout  0,0 496x45 visible=1 opacity=1
+                     QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                     QQuickColumnLayout  0,0 496x42 visible=1 opacity=1
+                     QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                     QQuickColumnLayout  0,0 496x42 visible=1 opacity=1
+                     QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                     QQuickColumnLayout  0,0 496x38 visible=1 opacity=1
+                     QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                     QQuickColumnLayout  0,0 496x0 visible=1 opacity=1
+                      Label_QMLTYPE_52  0,0 496x18 visible=0 opacity=1 text=Theme: color=#24262b
+                      QQuickRowLayout  0,0 496x112 visible=1 opacity=1
+                      Label_QMLTYPE_52  0,0 8x15 visible=0 opacity=1 text= color=#24262b
+                      Label_QMLTYPE_52  0,0 361x26 visible=0 opacity=1 text=More appearance settings: color=#24262b
+                      QQuickRowLayout  0,0 496x38 visible=1 opacity=1
+                      Label_QMLTYPE_52  0,0 4x15 visible=0 opacity=1 text= color=#24262b
+                      Label_QMLTYPE_52  0,0 361x18 visible=0 opacity=1 text=Animation speed: color=#24262b
+                      QQuickRowLayout  0,0 496x45 visible=1 opacity=1
+                      Label_QMLTYPE_52  0,0 0x15 visible=0 opacity=1 text= color=#24262b
+                      Label_QMLTYPE_52  0,0 361x26 visible=0 opacity=1 text=Clicking files or folders: color=#24262b
+                      QQuickRowLayout  0,0 102x23 visible=1 opacity=1
+                      Label_QMLTYPE_52  0,27 496x15 visible=1 opacity=1 text=Open by double-clicking instead color=#24262b
+                      Label_QMLTYPE_52  0,0 0x26 visible=0 opacity=1 text= color=#24262b
+                      QQuickRowLayout  0,0 100x23 visible=1 opacity=1
+                      Label_QMLTYPE_52  0,27 496x15 visible=1 opacity=1 text=Select by clicking on item's selection marker color=#24262b
+                      Label_QMLTYPE_52  0,0 361x26 visible=0 opacity=1 text=More behavior settings: color=#24262b
+                      QQuickRowLayout  0,0 181x38 visible=1 opacity=1
+                      Label_QMLTYPE_52  0,0 0x15 visible=0 opacity=1 text= color=#24262b
+                      Label_QMLTYPE_52  0,0 361x18 visible=0 opacity=1 text=Most used pages: color=#24262b
+                      QQuickRowLayout  0,0 496x0 visible=1 opacity=1
+                      Label_QMLTYPE_52  0,0 0x15 visible=0 opacity=1 text= color=#24262b
+                       Control_QMLTYPE_89  0,0 496x112 visible=1 opacity=1
+                       QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                       Control_QMLTYPE_89  0,0 496x38 visible=1 opacity=1
+                       QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                       Control_QMLTYPE_89  0,0 496x45 visible=1 opacity=1
+                       QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                       Control_QMLTYPE_89  0,0 102x23 visible=1 opacity=1
+                       QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                       Control_QMLTYPE_89  0,0 100x23 visible=1 opacity=1
+                       QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                       Control_QMLTYPE_89  0,0 145x38 visible=1 opacity=1
+                       QQuickRowLayout  149,0 32x38 visible=1 opacity=1
+                       Control_QMLTYPE_89  0,0 496x0 visible=1 opacity=1
+                       QQuickRowLayout  0,0 0x0 visible=0 opacity=1
+                        QQuickRowLayout  0,0 496x112 visible=1 opacity=1
+                        QQuickRowLayout  0,0 496x38 visible=1 opacity=1
+                        QQuickColumnLayout  0,0 496x45 visible=1 opacity=1
+                        RadioButton_QMLTYPE_136  0,0 102x23 visible=1 opacity=1 text=Selects them
+                        RadioButton_QMLTYPE_136  0,0 100x23 visible=1 opacity=1 text=Opens them
+                        Button_QMLTYPE_73  0,0 145x38 visible=1 opacity=1 text=General Behavior
+                        Icon  0,11 32x16 visible=1 opacity=1 color=#00000000
+                        QQuickGridLayout  0,0 496x0 visible=0 opacity=1
+                         LookAndFeelBox_QMLTYPE_99  0,0 168x112 visible=1 opacity=1 text=Breeze
+                         LookAndFeelBox_QMLTYPE_99  176,0 168x112 visible=1 opacity=1 text=Breeze Dark
+                         LookAndFeelBox_QMLTYPE_99  352,0 144x112 visible=1 opacity=1 text=Automatic
+                         MostUsedIcon_QMLTYPE_134  0,0 246x38 visible=1 opacity=1 text=
+                         MostUsedIcon_QMLTYPE_134  250,0 246x38 visible=1 opacity=1 text=
+                         Slider_QMLTYPE_128_QML_139  0,0 496x22 visible=1 opacity=1
+                         QQuickRowLayout  0,27 496x18 visible=1 opacity=1
+                         Label_QMLTYPE_52_QML_138  0,0 102x23 visible=1 opacity=1 text=Selects them color=#24262b
+                         SettingStateBinding_QMLTYPE_115  0,0 0x0 visible=1 opacity=1
+                         CheckIndicator_QMLTYPE_51  0,1 26x22 visible=1 opacity=1 text=
+                         Label_QMLTYPE_52_QML_138  0,0 100x23 visible=1 opacity=1 text=Opens them color=#24262b
+                         SettingStateBinding_QMLTYPE_115  0,0 0x0 visible=1 opacity=1
+                         CheckIndicator_QMLTYPE_51  0,1 26x22 visible=1 opacity=1 text=
+                         KQuickStyleItem  0,0 145x38 visible=1 opacity=1 text=&General Behavior
+                         QQuickRepeater  0,0 0x0 visible=0 opacity=1
+                          AbstractButton_QMLTYPE_85  0,0 168x90 visible=1 opacity=1 text=Breeze
+                          Label_QMLTYPE_52  0,94 168x18 visible=1 opacity=1 text=Breeze color=#24262b
+                          SettingHighlighter_QMLTYPE_135  0,0 0x0 visible=1 opacity=1
+                          AbstractButton_QMLTYPE_85  0,0 168x90 visible=1 opacity=1 text=Breeze Dark
+                          Label_QMLTYPE_52  0,94 168x18 visible=1 opacity=1 text=Breeze Dark color=#24262b
+                          SettingHighlighter_QMLTYPE_135  0,0 0x0 visible=1 opacity=1
+                          AbstractButton_QMLTYPE_85  0,0 144x90 visible=1 opacity=1 text=Automatic
+                          Label_QMLTYPE_52  0,94 144x18 visible=1 opacity=1 text=Automatic color=#24262b
+                          SettingHighlighter_QMLTYPE_135  0,0 0x0 visible=1 opacity=1
+                          QQuickRowLayout  8,8 230x22 visible=1 opacity=1
+                          KQuickStyleItem  0,0 246x38 visible=1 opacity=1 text=
+                          QQuickRowLayout  8,8 230x22 visible=1 opacity=1
+                          KQuickStyleItem  0,0 246x38 visible=1 opacity=1 text=
+                          SettingStateBinding_QMLTYPE_115  0,0 0x0 visible=1 opacity=1
+                          KQuickStyleItem  0,0 496x22 visible=1 opacity=1 text=
+                          DefaultSliderHandle_QMLTYPE_129  238,1 20x20 visible=1 opacity=1
+                          Label_QMLTYPE_52  0,0 30x18 visible=1 opacity=1 text=Slow color=#24262b
+                          QQuickItem  35,9 412x0 visible=1 opacity=1
+                          Label_QMLTYPE_52  452,0 44x18 visible=1 opacity=1 text=Instant color=#24262b
+                          FocusRect_QMLTYPE_137  22,1.15625 81.8281x20.6875 visible=0 opacity=1 text=
+                          FocusRect_QMLTYPE_137  22,1.15625 79.2656x20.6875 visible=0 opacity=1 text=
+                           AbstractButton_QMLTYPE_85_QML_102  144,0 24x90 visible=1 opacity=1 text=Change global theme
+                           QQuickImage  4,4 136x82 visible=1 opacity=1
+                           QQuickShaderEffectSource  4,4 136x82 visible=1 opacity=1
+                           ShadowedRectangle  0,0 168x90 visible=1 opacity=1 color=#4d000000
+                           QQuickRectangle  63,17 41.5x1 visible=1 opacity=0 color=#2463d4
+                           AbstractButton_QMLTYPE_85_QML_102  144,0 24x90 visible=1 opacity=1 text=Change global theme
+                           QQuickImage  4,4 136x82 visible=1 opacity=1
+                           QQuickShaderEffectSource  4,4 136x82 visible=1 opacity=1
+                           ShadowedRectangle  0,0 168x90 visible=1 opacity=1 color=#4d000000
+                           QQuickRectangle  47,17 73.9375x1 visible=1 opacity=0 color=#2463d4
+                           AbstractButton_QMLTYPE_85_QML_102  144,0 0x90 visible=0 opacity=1 text=Change global theme
+                           SplitItem  4,4 136x82 visible=1 opacity=1
+                           ShadowedRectangle  0,0 144x90 visible=1 opacity=1 color=#4d000000
+                           QQuickRectangle  41,17 62.5625x1 visible=1 opacity=0 color=#2463d4
+                           Icon  0,3 16x16 visible=1 opacity=1 color=#00000000
+                           Label_QMLTYPE_52  20,2 210x18 visible=1 opacity=1 text=Wallpaper color=#24262b
+                           Icon  0,3 16x16 visible=1 opacity=1 color=#00000000
+                           Label_QMLTYPE_52  20,2 210x18 visible=1 opacity=1 text=Global Theme color=#24262b
+                           QQuickMouseArea_QML_131  0,0 496x22 visible=1 opacity=1
+                            QQuickRectangle  0,0 24x90 visible=1 opacity=1 color=#f2f3f5
+                            Icon  4,4 16x82 visible=1 opacity=1 color=#00000000
+                            QQuickRectangle  0,0 144x90 visible=1 opacity=1 color=#f2f3f5
+                            QQuickRectangle  0,0 24x90 visible=1 opacity=1 color=#f2f3f5
+                            Icon  4,4 16x82 visible=1 opacity=1 color=#00000000
+                            QQuickRectangle  0,0 144x90 visible=1 opacity=1 color=#f2f3f5
+                            QQuickRectangle  0,0 0x90 visible=0 opacity=1 color=#f2f3f5
+                            Icon  4,4 0x82 visible=0 opacity=1 color=#00000000
+                            Icon  110,4 22x22 visible=1 opacity=1 color=#ffffff
+                            QQuickRectangle  0,0 144x90 visible=1 opacity=1 color=#f2f3f5
+ Main_QMLTYPE_82 settingsNavigationSidebar 0,0 236x790 visible=1 opacity=1 color=#f2f3f5
+  QQuickColumnLayout  12,12 212x766 visible=1 opacity=1
+   QQuickRowLayout  0,0 212x36 visible=1 opacity=1
+   SearchField_QMLTYPE_26 settingsSearch 0,44 212x34 visible=1 opacity=1 text= color=#24262b
+   Button_QMLTYPE_73 settingsBack 0,86 212x38 visible=1 opacity=1 text=Back to overview
+   ItemDelegate_QMLTYPE_74 settingsHome 0,132 212x36 visible=1 opacity=1 text=Home
+   ItemDelegate_QMLTYPE_74 settingsQuick 0,176 212x36 visible=1 opacity=1 text=Quick Settings
+   QQuickItem  0,220 212x1 visible=1 opacity=1
+   ScrollView_QMLTYPE_77  0,229 212x484 visible=1 opacity=1
+   QQuickItem  0,721 212x1 visible=1 opacity=1
+   ItemDelegate_QMLTYPE_74 settingsAll 0,730 212x36 visible=1 opacity=1 text=All Settings
+    Icon  0,6 24x24 visible=1 opacity=1 color=#00000000
+    Label_QMLTYPE_52  29,7 144x22 visible=1 opacity=1 text=Settings color=#24262b
+    HamburgerMenuButton_QMLTYPE_81  178,1 34x34 visible=1 opacity=1 text=
+    MobileCursor_QMLTYPE_65_QML_66  28,6 1x18 visible=0 opacity=1
+    QQuickText  28,6 180x22 visible=1 opacity=1 text=Search settings… color=#666b75
+    QQuickRowLayout  1,1 0x32 visible=0 opacity=1
+    QQuickRowLayout  211,1 0x32 visible=1 opacity=1
+    Icon  8,9 16x16 visible=1 opacity=1 color=#666b75
+    KQuickStyleItem  0,0 212x34 visible=1 opacity=1 text=
+    KQuickStyleItem  0,0 212x38 visible=1 opacity=1 text=&Back to overview
+    QQuickGridLayout_QML_76  10,10 192x22 visible=1 opacity=1
+    DefaultListItemBackground_QMLTYPE_75  6,6 200x30 visible=1 opacity=1
+    QQuickGridLayout_QML_76  10,10 192x22 visible=1 opacity=1
+    DefaultListItemBackground_QMLTYPE_75  6,6 200x30 visible=1 opacity=1
+    QQuickFlickable  0,0 212x484 visible=1 opacity=1
+    ScrollBar_QMLTYPE_57  191,0 21x484 visible=0 opacity=1
+    ScrollBar_QMLTYPE_57  0,463 212x21 visible=0 opacity=1
+    Island_QMLTYPE_78_QML_80 sequoiaIsland 0,0 212x484 visible=0 opacity=1 color=#f2f3f5
+    QQuickGridLayout_QML_76  10,10 192x22 visible=1 opacity=1
+    DefaultListItemBackground_QMLTYPE_75  6,6 200x30 visible=1 opacity=1
+     KQuickStyleItem_QML_42  0,0 34x34 visible=1 opacity=1 text=
+     QQuickRectangle  -1,0 3x18 visible=0 opacity=1 color=#7ca1e5
+     QQuickRepeater  0,0 0x0 visible=0 opacity=1
+     InlineActionIcon  0,0 28x28 visible=0 opacity=1 text=Clear search
+     QQuickRepeater  0,0 0x0 visible=1 opacity=1
+     Icon  0,0 22x22 visible=1 opacity=1 color=#00000000
+     Label_QMLTYPE_52  28,0 164x22 visible=1 opacity=1 text=Home color=#24262b
+     KQuickStyleItem  -6,0 212x30 visible=1 opacity=1 text=
+     KQuickStyleItem  -4,0 208x30 visible=1 opacity=1 text=
+     Icon  0,0 22x22 visible=1 opacity=1 color=#00000000
+     Label_QMLTYPE_52  28,0 164x22 visible=1 opacity=1 text=Quick Settings color=#ffffff
+     KQuickStyleItem  -6,0 212x30 visible=1 opacity=1 text=
+     KQuickStyleItem  -4,0 208x30 visible=1 opacity=1 text=
+     QQuickItem  0,0 212x357 visible=1 opacity=1
+     WheelFilterItem  0,0 212x484 visible=1 opacity=1
+     QQuickMouseArea  0,0 21x484 visible=0 opacity=1
+     QQuickItem  0,6 21x472 visible=0 opacity=1
+     QQuickMouseArea  0,0 212x21 visible=0 opacity=1
+     QQuickItem  6,0 200x21 visible=0 opacity=1
+     QQuickRectangle  4,7 204x474 visible=0 opacity=1 color=#0c000000
+     QQuickRectangle  5,6 202x474 visible=0 opacity=1 color=#14000000
+     QQuickRectangle  5,5 202x474 visible=0 opacity=1 color=#f2f3f5
+     Icon  0,0 22x22 visible=1 opacity=1 color=#00000000
+     Label_QMLTYPE_52  28,0 164x22 visible=1 opacity=1 text=All Settings color=#24262b
+     KQuickStyleItem  -6,0 212x30 visible=1 opacity=1 text=
+     KQuickStyleItem  -4,0 208x30 visible=1 opacity=1 text=
+      QQuickRectangle  -4,12 12x12 visible=0 opacity=1 color=#7ca1e5
+      QQuickMouseArea  -18,-18 39x54 visible=0 opacity=1
+      KQuickStyleItem_QML_42  0,0 28x28 visible=0 opacity=1 text=Clear search
+      QQuickColumnLayout  0,0 212x357 visible=1 opacity=1
+      KQuickStyleItem_QML_59  0,0 21x484 visible=0 opacity=0 text=
+      KQuickStyleItem  0,0 21x484 visible=0 opacity=1 text=
+      QQuickRectangle_QML_60  19,0 2x472 visible=0 opacity=0.3 color=#24262b
+      KQuickStyleItem_QML_59  0,0 212x21 visible=0 opacity=0 text=
+      KQuickStyleItem  0,0 212x21 visible=0 opacity=1 text=
+      QQuickRectangle_QML_60  0,19 200x2 visible=0 opacity=0.3 color=#24262b
+       ItemDelegate_QMLTYPE_74_QML_84  0,0 212x42 visible=1 opacity=1 text=Appearance
+       ItemDelegate_QMLTYPE_74_QML_84  0,45 212x42 visible=1 opacity=1 text=Displays & Sound
+       ItemDelegate_QMLTYPE_74_QML_84  0,90 212x42 visible=1 opacity=1 text=Connected Devices
+       ItemDelegate_QMLTYPE_74_QML_84  0,135 212x42 visible=1 opacity=1 text=Internet & Network
+       ItemDelegate_QMLTYPE_74_QML_84  0,180 212x42 visible=1 opacity=1 text=Desktop & Apps
+       ItemDelegate_QMLTYPE_74_QML_84  0,225 212x42 visible=1 opacity=1 text=Power & Battery
+       ItemDelegate_QMLTYPE_74_QML_84  0,270 212x42 visible=1 opacity=1 text=Accessibility
+       ItemDelegate_QMLTYPE_74_QML_84  0,315 212x42 visible=1 opacity=1 text=System & Accounts
+       QQuickRepeater  0,0 0x0 visible=1 opacity=1
+        QQuickGridLayout_QML_76  10,10 192x28 visible=1 opacity=1
+        DefaultListItemBackground_QMLTYPE_75  6,6 200x36 visible=1 opacity=1
+        QQuickGridLayout_QML_76  10,10 192x28 visible=1 opacity=1
+        DefaultListItemBackground_QMLTYPE_75  6,6 200x36 visible=1 opacity=1
+        QQuickGridLayout_QML_76  10,10 192x28 visible=1 opacity=1
+        DefaultListItemBackground_QMLTYPE_75  6,6 200x36 visible=1 opacity=1
+        QQuickGridLayout_QML_76  10,10 192x28 visible=1 opacity=1
+        DefaultListItemBackground_QMLTYPE_75  6,6 200x36 visible=1 opacity=1
+        QQuickGridLayout_QML_76  10,10 192x28 visible=1 opacity=1
+        DefaultListItemBackground_QMLTYPE_75  6,6 200x36 visible=1 opacity=1
+        QQuickGridLayout_QML_76  10,10 192x28 visible=1 opacity=1
+        DefaultListItemBackground_QMLTYPE_75  6,6 200x36 visible=1 opacity=1
+        QQuickGridLayout_QML_76  10,10 192x28 visible=1 opacity=1
+        DefaultListItemBackground_QMLTYPE_75  6,6 200x36 visible=1 opacity=1
+        QQuickGridLayout_QML_76  10,10 192x28 visible=1 opacity=1
+        DefaultListItemBackground_QMLTYPE_75  6,6 200x36 visible=1 opacity=1
+         Icon  0,3 22x22 visible=1 opacity=1 color=#00000000
+         Label_QMLTYPE_52  28,0 164x28 visible=1 opacity=1 text=Appearance color=#24262b
+         KQuickStyleItem  -6,0 212x36 visible=1 opacity=1 text=
+         KQuickStyleItem  -4,0 208x36 visible=1 opacity=1 text=
+         Icon  0,3 22x22 visible=1 opacity=1 color=#00000000
+         Label_QMLTYPE_52  28,0 164x28 visible=1 opacity=1 text=Displays & Sound color=#24262b
+         KQuickStyleItem  -6,0 212x36 visible=1 opacity=1 text=
+         KQuickStyleItem  -4,0 208x36 visible=1 opacity=1 text=
+         Icon  0,3 22x22 visible=1 opacity=1 color=#00000000
+         Label_QMLTYPE_52  28,0 164x28 visible=1 opacity=1 text=Connected Devices color=#24262b
+         KQuickStyleItem  -6,0 212x36 visible=1 opacity=1 text=
+         KQuickStyleItem  -4,0 208x36 visible=1 opacity=1 text=
+         Icon  0,3 22x22 visible=1 opacity=1 color=#00000000
+         Label_QMLTYPE_52  28,0 164x28 visible=1 opacity=1 text=Internet & Network color=#24262b
+         KQuickStyleItem  -6,0 212x36 visible=1 opacity=1 text=
+         KQuickStyleItem  -4,0 208x36 visible=1 opacity=1 text=
+         Icon  0,3 22x22 visible=1 opacity=1 color=#00000000
+         Label_QMLTYPE_52  28,0 164x28 visible=1 opacity=1 text=Desktop & Apps color=#24262b
+         KQuickStyleItem  -6,0 212x36 visible=1 opacity=1 text=
+         KQuickStyleItem  -4,0 208x36 visible=1 opacity=1 text=
+         Icon  0,3 22x22 visible=1 opacity=1 color=#00000000
+         Label_QMLTYPE_52  28,0 164x28 visible=1 opacity=1 text=Power & Battery color=#24262b
+         KQuickStyleItem  -6,0 212x36 visible=1 opacity=1 text=
+         KQuickStyleItem  -4,0 208x36 visible=1 opacity=1 text=
+         Icon  0,3 22x22 visible=1 opacity=1 color=#00000000
+         Label_QMLTYPE_52  28,0 164x28 visible=1 opacity=1 text=Accessibility color=#24262b
+         KQuickStyleItem  -6,0 212x36 visible=1 opacity=1 text=
+         KQuickStyleItem  -4,0 208x36 visible=1 opacity=1 text=
+         Icon  0,3 22x22 visible=1 opacity=1 color=#00000000
+         Label_QMLTYPE_52  28,0 164x28 visible=1 opacity=1 text=System & Accounts color=#24262b
+         KQuickStyleItem  -6,0 212x36 visible=1 opacity=1 text=
+         KQuickStyleItem  -4,0 208x36 visible=1 opacity=1 text=

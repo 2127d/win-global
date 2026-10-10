@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <style type="text/css" id="current-color-scheme">
+        .ColorScheme-Text {
+            color:#f2f2f2;
+        }
+        .ColorScheme-NegativeText {
+            color:#da4453;
+        }
+    </style>
+  <g transform="translate(1,1)">
+    <g id="notification-progress-inactive" transform="translate(39 39) translate(-40,-40)">
+      <path id="path10" d="m1 1h22v22h-22z" fill="none" />
+      <circle id="circle-transparent" cx="12" cy="12" r="8" class="ColorScheme-Text" fill="currentColor" opacity=".4" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+    </g>
+  </g>
+</svg>

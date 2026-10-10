@@ -1,0 +1,76 @@
+/* XUL context/bookmark menus and HTML-backed app/download/permission panels. */
+:root {
+  --arrowpanel-background: var(--se-surface) !important;
+  --arrowpanel-color: var(--se-text) !important;
+  --arrowpanel-border-color: transparent !important;
+  --arrowpanel-border-radius: var(--se-radius) !important;
+  --arrowpanel-menuitem-border-radius: var(--se-control-radius) !important;
+  --arrowpanel-dimmed: var(--se-hover) !important;
+  --arrowpanel-dimmed-further: var(--se-selected) !important;
+  --panel-background: var(--se-surface) !important;
+  --panel-color: var(--se-text) !important;
+  --panel-border-color: transparent !important;
+  --panel-border-radius: var(--se-radius) !important;
+  --panel-shadow: var(--se-popup-shadow) !important;
+}
+panel, menupopup {
+  --panel-background: var(--se-surface) !important;
+  --panel-color: var(--se-text) !important;
+  --panel-background-color: var(--se-surface) !important;
+  --panel-text-color: var(--se-text) !important;
+  --panel-border-color: transparent !important;
+  --panel-border-radius: var(--se-radius) !important;
+  --panel-shadow: var(--se-popup-shadow) !important;
+  --panel-box-shadow: var(--se-popup-shadow) !important;
+  appearance: none !important;
+  color: var(--se-text) !important;
+  font-family: var(--se-font) !important;
+}
+menupopup { --panel-padding: 6px !important; }
+menupopup::part(content), panel::part(content) {
+  border-radius: var(--se-radius) !important;
+  border-color: transparent !important;
+  background: var(--se-surface) !important;
+  color: var(--se-text) !important;
+  box-shadow: var(--se-popup-shadow) !important;
+}
+menupopup > :is(menu, menuitem) {
+  appearance: none !important;
+  border-radius: 8px !important;
+  margin: 1px 3px !important;
+  padding-block: 6px !important;
+  color: var(--se-text) !important;
+}
+menupopup > :is(menu, menuitem):is([_moz-menuactive="true"], :hover):not([disabled="true"]) {
+  background: var(--se-selected) !important;
+  color: var(--se-text) !important;
+}
+menupopup > :is(menu, menuitem)[disabled="true"] { color: var(--se-muted) !important; }
+menuseparator, toolbarseparator {
+  appearance: none !important;
+  border: 0 !important;
+  border-top: 1px solid var(--se-line) !important;
+  margin: 5px 9px !important;
+  padding: 0 !important;
+}
+panelview, .panel-subview-body, .panel-header, .panel-footer {
+  background-color: var(--se-surface) !important;
+  color: var(--se-text) !important;
+}
+.subviewbutton, .panel-subview-body toolbarbutton, .unified-extensions-item {
+  border-radius: var(--se-control-radius) !important;
+}
+.subviewbutton:not([disabled]):hover,
+.unified-extensions-item:hover,
+.download-state:hover { background-color: var(--se-hover) !important; }
+.download-state { border-radius: var(--se-control-radius) !important; }
+.panel-footer { border-radius: 0 0 var(--se-radius) var(--se-radius) !important; }
+tooltip {
+  appearance: none !important;
+  padding: 7px 10px !important;
+  border: 1px solid var(--se-line) !important;
+  border-radius: 8px !important;
+  background: var(--se-raised) !important;
+  color: var(--se-text) !important;
+  font-family: var(--se-font) !important;
+}

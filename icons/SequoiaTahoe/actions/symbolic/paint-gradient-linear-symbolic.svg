@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16">
+ <rect width="2" height="16" fill="#363636" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect x="2" width="2" height="16" fill="#363636" opacity=".9" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect x="4" width="2" height="16" fill="#363636" opacity=".7" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect x="6" width="2" height="16" fill="#363636" opacity=".6" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect x="8" width="2" height="16" fill="#363636" opacity=".5" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect x="10" width="2" height="16" fill="#363636" opacity=".4" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect x="12" width="2" height="16" fill="#363636" opacity=".3" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ <rect x="14" width="2" height="16" fill="#363636" opacity=".2" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+</svg>

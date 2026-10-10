@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" xmlns:ns4="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" width="22" height="22" viewBox="0 0 22 22" version="1.1" id="svg7" ns1:docname="nemo-desktop-scale-symbolic.svg" ns2:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata id="metadata11">
+    <rdf:RDF>
+      <ns4:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        
+      </ns4:Work>
+    </rdf:RDF>
+  </metadata>
+  <ns1:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" ns2:pageopacity="0" ns2:pageshadow="2" ns2:window-width="1920" ns2:window-height="998" id="namedview9" showgrid="false" ns2:zoom="10.727273" ns2:cx="11" ns2:cy="11" ns2:window-x="3840" ns2:window-y="1107" ns2:window-maximized="1" ns2:current-layer="svg7" />
+  <defs id="defs3">
+    <style id="current-color-scheme" type="text/css">
+   .ColorScheme-Text { color:#6e6e6e; } .ColorScheme-Highlight { color:#5294e2; }
+  </style>
+  </defs>
+  <path style="fill:#dedede;fill-opacity:1;stroke:#dedede;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m 11,1.9997602 -2,4 h 4 c 0,0.03603 -2,-4 -2,-4 z" id="path4671" ns2:connector-curvature="0" />
+  <path style="fill:#dedede;fill-opacity:1;stroke:#dedede;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m 9,16 2,4 2,-4 z" id="path4669" ns2:connector-curvature="0" />
+  <path style="fill:#dedede;fill-opacity:1;stroke:#dedede;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m 20.00024,11 -4,-2 v 4 c -0.03603,0 4,-2 4,-2 z" id="path4671-7" ns2:connector-curvature="0" />
+  <path style="fill:#dedede;fill-opacity:1;stroke:#dedede;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m 6,9 -4,2 4,2 z" id="path4669-0" ns2:connector-curvature="0" />
+</svg>

@@ -1,0 +1,97 @@
+{
+  "firefox": "156.0.1",
+  "checks": [
+    {
+      "check": "dark floating toolbar",
+      "result": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "check": "dark sidebar corners",
+      "result": "14px"
+    },
+    {
+      "check": "dark sidebar document",
+      "result": "rgb(37, 38, 41)"
+    },
+    {
+      "check": "dark address bar",
+      "result": "999px"
+    },
+    {
+      "check": "dark app menu background",
+      "result": "rgb(37, 38, 41)"
+    },
+    {
+      "check": "dark app menu corners",
+      "result": "14px"
+    },
+    {
+      "check": "dark context menu background",
+      "result": "rgb(37, 38, 41)"
+    },
+    {
+      "check": "light floating toolbar",
+      "result": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "check": "light sidebar corners",
+      "result": "14px"
+    },
+    {
+      "check": "light sidebar document",
+      "result": "rgb(242, 243, 245)"
+    },
+    {
+      "check": "light address bar",
+      "result": "999px"
+    },
+    {
+      "check": "light app menu background",
+      "result": "rgb(242, 243, 245)"
+    },
+    {
+      "check": "light app menu corners",
+      "result": "14px"
+    },
+    {
+      "check": "light context menu background",
+      "result": "rgb(242, 243, 245)"
+    },
+    {
+      "check": "vertical tabs visible",
+      "result": true
+    },
+    {
+      "check": "fullscreen content has no inset",
+      "result": "0px"
+    },
+    {
+      "check": "about:preferences canvas",
+      "result": "rgb(231, 235, 242)"
+    },
+    {
+      "check": "about:addons canvas",
+      "result": "rgb(231, 235, 242)"
+    },
+    {
+      "check": "about:newtab canvas",
+      "result": "rgb(231, 235, 242)"
+    },
+    {
+      "check": "about:logins canvas",
+      "result": "rgb(231, 235, 242)"
+    },
+    {
+      "check": "about:downloads canvas",
+      "result": "rgb(231, 235, 242)"
+    },
+    {
+      "check": "ordinary websites retain colors",
+      "result": "rgb(12, 34, 56)"
+    },
+    {
+      "check": "Firefox CSS diagnostics",
+      "result": []
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
+<g id="topleft" transform="translate(0 0)"><rect width="9" height="9" fill="#000" fill-opacity="0"/><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z" fill="#252629" fill-opacity="1"/><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z M 9 1 A 8 8 0 0 0 1 9 L 9 9 Z" fill-rule="evenodd" fill="#494b51" fill-opacity="1"/></g>
+<g id="top" transform="translate(9 0)"><rect width="32" height="9" fill="#000" fill-opacity="0"/><rect width="32" height="9" fill="#252629" fill-opacity="1"/><rect x="0" y="0" width="32" height="1" fill="#494b51" fill-opacity="1"/></g>
+<g id="topright" transform="translate(41 0)"><rect width="9" height="9" fill="#000" fill-opacity="0"/><g transform="translate(9 0) rotate(90)"><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z" fill="#252629" fill-opacity="1"/><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z M 9 1 A 8 8 0 0 0 1 9 L 9 9 Z" fill-rule="evenodd" fill="#494b51" fill-opacity="1"/></g></g>
+<g id="left" transform="translate(0 9)"><rect width="9" height="32" fill="#000" fill-opacity="0"/><rect width="9" height="32" fill="#252629" fill-opacity="1"/><rect x="0" y="0" width="1" height="32" fill="#494b51" fill-opacity="1"/></g>
+<g id="center" transform="translate(9 9)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#252629" fill-opacity="1"/></g>
+<g id="right" transform="translate(41 9)"><rect width="9" height="32" fill="#000" fill-opacity="0"/><rect width="9" height="32" fill="#252629" fill-opacity="1"/><rect x="8" y="0" width="1" height="32" fill="#494b51" fill-opacity="1"/></g>
+<g id="bottomleft" transform="translate(0 41)"><rect width="9" height="9" fill="#000" fill-opacity="0"/><g transform="translate(0 9) rotate(-90)"><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z" fill="#252629" fill-opacity="1"/><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z M 9 1 A 8 8 0 0 0 1 9 L 9 9 Z" fill-rule="evenodd" fill="#494b51" fill-opacity="1"/></g></g>
+<g id="bottom" transform="translate(9 41)"><rect width="32" height="9" fill="#000" fill-opacity="0"/><rect width="32" height="9" fill="#252629" fill-opacity="1"/><rect x="0" y="8" width="32" height="1" fill="#494b51" fill-opacity="1"/></g>
+<g id="bottomright" transform="translate(41 41)"><rect width="9" height="9" fill="#000" fill-opacity="0"/><g transform="translate(9 9) rotate(180)"><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z" fill="#252629" fill-opacity="1"/><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z M 9 1 A 8 8 0 0 0 1 9 L 9 9 Z" fill-rule="evenodd" fill="#494b51" fill-opacity="1"/></g></g>
+<rect id="hint-top-margin" x="800" y="27" width="8" height="8" fill="#ff00ff"/>
+<rect id="hint-bottom-margin" x="800" y="30" width="8" height="8" fill="#ff00ff"/>
+<rect id="hint-left-margin" x="800" y="33" width="8" height="8" fill="#ff00ff"/>
+<rect id="hint-right-margin" x="800" y="36" width="8" height="8" fill="#ff00ff"/>
+<g id="mask-topleft" transform="translate(0 100)"><rect width="9" height="9" fill="#000" fill-opacity="0"/><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z" fill="#000000" fill-opacity="1"/></g>
+<g id="mask-top" transform="translate(9 100)"><rect width="32" height="9" fill="#000" fill-opacity="0"/><rect width="32" height="9" fill="#000000" fill-opacity="1"/></g>
+<g id="mask-topright" transform="translate(41 100)"><rect width="9" height="9" fill="#000" fill-opacity="0"/><g transform="translate(9 0) rotate(90)"><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z" fill="#000000" fill-opacity="1"/></g></g>
+<g id="mask-left" transform="translate(0 109)"><rect width="9" height="32" fill="#000" fill-opacity="0"/><rect width="9" height="32" fill="#000000" fill-opacity="1"/></g>
+<g id="mask-center" transform="translate(9 109)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#000000" fill-opacity="1"/></g>
+<g id="mask-right" transform="translate(41 109)"><rect width="9" height="32" fill="#000" fill-opacity="0"/><rect width="9" height="32" fill="#000000" fill-opacity="1"/></g>
+<g id="mask-bottomleft" transform="translate(0 141)"><rect width="9" height="9" fill="#000" fill-opacity="0"/><g transform="translate(0 9) rotate(-90)"><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z" fill="#000000" fill-opacity="1"/></g></g>
+<g id="mask-bottom" transform="translate(9 141)"><rect width="32" height="9" fill="#000" fill-opacity="0"/><rect width="32" height="9" fill="#000000" fill-opacity="1"/></g>
+<g id="mask-bottomright" transform="translate(41 141)"><rect width="9" height="9" fill="#000" fill-opacity="0"/><g transform="translate(9 9) rotate(180)"><path d="M 9 0 A 9 9 0 0 0 0 9 L 9 9 Z" fill="#000000" fill-opacity="1"/></g></g>
+<defs>
+          <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+            <stop offset="0.00000000" stop-color="#091326" stop-opacity="0"/><stop offset="0.14285714" stop-color="#091326" stop-opacity="0.015"/><stop offset="0.28571429" stop-color="#091326" stop-opacity="0.045"/><stop offset="0.42857143" stop-color="#091326" stop-opacity="0.09"/><stop offset="0.57142857" stop-color="#091326" stop-opacity="0.14"/><stop offset="0.57142857" stop-color="#091326" stop-opacity="0"/><stop offset="1.00000000" stop-color="#091326" stop-opacity="0"/>
+          </linearGradient>
+          <radialGradient id="cornerShade" cx="1" cy="1" r="1">
+            <stop offset="0.00000000" stop-color="#091326" stop-opacity="0"/><stop offset="0.42857143" stop-color="#091326" stop-opacity="0"/><stop offset="0.42857143" stop-color="#091326" stop-opacity="0.14"/><stop offset="0.57142857" stop-color="#091326" stop-opacity="0.09"/><stop offset="0.71428571" stop-color="#091326" stop-opacity="0.045"/><stop offset="0.85714286" stop-color="#091326" stop-opacity="0.015"/><stop offset="1.00000000" stop-color="#091326" stop-opacity="0"/>
+          </radialGradient></defs>
+<g id="shadow-topleft" transform="translate(0 200)"><g transform=""><rect width="21" height="21" fill="url(#cornerShade)"/></g></g>
+<g id="shadow-topright" transform="translate(53 200)"><g transform="translate(21 0) rotate(90)"><rect width="21" height="21" fill="url(#cornerShade)"/></g></g>
+<g id="shadow-bottomleft" transform="translate(0 253)"><g transform="translate(0 21) rotate(-90)"><rect width="21" height="21" fill="url(#cornerShade)"/></g></g>
+<g id="shadow-bottomright" transform="translate(53 253)"><g transform="translate(21 21) rotate(180)"><rect width="21" height="21" fill="url(#cornerShade)"/></g></g>
+<g id="shadow-top" transform="translate(21 200)"><g transform=""><rect width="32" height="21" fill="url(#shade)"/></g></g>
+<g id="shadow-bottom" transform="translate(21 253)"><g transform="translate(32 21) rotate(180)"><rect width="32" height="21" fill="url(#shade)"/></g></g>
+<g id="shadow-left" transform="translate(0 221)"><g transform="translate(0 32) rotate(-90)"><rect width="32" height="21" fill="url(#shade)"/></g></g>
+<g id="shadow-right" transform="translate(53 221)"><g transform="translate(21 0) rotate(90)"><rect width="32" height="21" fill="url(#shade)"/></g></g>
+<rect id="shadow-center" x="21" y="221" width="32" height="32" fill="#091326" fill-opacity="0"/>
+<rect id="shadow-hint-top-margin" x="800" y="96" width="12" height="12" fill="#ff00ff"/>
+<rect id="shadow-hint-top-inset" x="800" y="99" width="12" height="12" fill="#ff00ff"/>
+<rect id="shadow-hint-bottom-margin" x="800" y="102" width="12" height="12" fill="#ff00ff"/>
+<rect id="shadow-hint-bottom-inset" x="800" y="105" width="12" height="12" fill="#ff00ff"/>
+<rect id="shadow-hint-left-margin" x="800" y="108" width="12" height="12" fill="#ff00ff"/>
+<rect id="shadow-hint-left-inset" x="800" y="111" width="12" height="12" fill="#ff00ff"/>
+<rect id="shadow-hint-right-margin" x="800" y="114" width="12" height="12" fill="#ff00ff"/>
+<rect id="shadow-hint-right-inset" x="800" y="117" width="12" height="12" fill="#ff00ff"/>
+<rect id="hint-stretch-borders" x="800" y="120" width="1" height="1" fill="#ff00ff"/>
+</svg>

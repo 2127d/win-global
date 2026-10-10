@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <entry name="icon" type="String"><default>start-here-kde</default></entry>
+    <entry name="menuWidth" type="Int"><default>740</default><min>480</min><max>960</max></entry>
+    <entry name="menuHeight" type="Int"><default>800</default><min>480</min><max>1000</max></entry>
+    <entry name="pinnedRows" type="Int"><default>2</default><min>1</min><max>4</max></entry>
+    <entry name="gridColumns" type="Int"><default>6</default><min>4</min><max>8</max></entry>
+    <entry name="appView" type="Int"><default>0</default></entry>
+    <entry name="showRecommended" type="Bool"><default>true</default></entry>
+    <entry name="recommendationCount" type="Int"><default>4</default><min>2</min><max>12</max></entry>
+    <entry name="recommendationSource" type="Int"><default>0</default></entry>
+    <entry name="recommendationOrder" type="Int"><default>0</default></entry>
+    <entry name="showAllApps" type="Bool"><default>true</default></entry>
+    <entry name="showAccountName" type="Bool"><default>true</default></entry>
+    <entry name="animationsEnabled" type="Bool"><default>true</default></entry>
+    <entry name="animationDuration" type="Int"><default>240</default><min>100</min><max>600</max></entry>
+    <entry name="shrinkOnLaunch" type="Bool"><default>true</default></entry>
+    <entry name="closeOnLaunch" type="Bool"><default>true</default></entry>
+    <entry name="favorites" type="StringList"><default>preferred://browser,org.kde.dolphin.desktop,org.kde.konsole.desktop,systemsettings.desktop,org.kde.kate.desktop,org.kde.discover.desktop</default></entry>
+  </group>
+</kcfg>

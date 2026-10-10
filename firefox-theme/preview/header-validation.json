@@ -1,0 +1,82 @@
+[
+  {
+    "check": "native client-side titlebar",
+    "result": true
+  },
+  {
+    "check": "light tabs below navigation",
+    "result": true
+  },
+  {
+    "check": "light one set of controls",
+    "result": 1
+  },
+  {
+    "check": "light traffic-light order",
+    "result": true
+  },
+  {
+    "check": "light 14px control faces",
+    "result": true
+  },
+  {
+    "check": "light system traffic colors",
+    "result": [
+      "#ff625a",
+      "#ffbd44",
+      "#30c84b"
+    ]
+  },
+  {
+    "check": "dark tabs below navigation",
+    "result": true
+  },
+  {
+    "check": "dark one set of controls",
+    "result": 1
+  },
+  {
+    "check": "dark traffic-light order",
+    "result": true
+  },
+  {
+    "check": "dark 14px control faces",
+    "result": true
+  },
+  {
+    "check": "dark system traffic colors",
+    "result": [
+      "#ff625a",
+      "#ffbd44",
+      "#30c84b"
+    ]
+  },
+  {
+    "check": "maximize command works",
+    "result": true
+  },
+  {
+    "check": "restore replaces maximize",
+    "result": true
+  },
+  {
+    "check": "restore command works",
+    "result": true
+  },
+  {
+    "check": "minimize dispatches native command",
+    "result": true
+  },
+  {
+    "check": "narrow test uses a narrow viewport",
+    "result": true
+  },
+  {
+    "check": "narrow window keeps usable address field",
+    "result": true
+  },
+  {
+    "check": "multiple tabs retain individual hit targets",
+    "result": true
+  }
+]

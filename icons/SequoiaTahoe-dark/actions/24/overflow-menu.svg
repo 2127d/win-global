@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" xmlns:ns2="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns4="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" viewBox="0 0 24 24" id="svg2" version="1.1" ns1:version="0.91 r13725" ns2:docname="overflow-menu.svg">
+  <metadata id="metadata10">
+    <rdf:RDF>
+      <ns4:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </ns4:Work>
+    </rdf:RDF>
+  </metadata>
+  <ns2:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" ns1:pageopacity="0" ns1:pageshadow="2" ns1:window-width="1018" ns1:window-height="776" id="namedview8" showgrid="false" showguides="true" ns1:guide-bbox="true" ns1:zoom="9.8333333" ns1:cx="20.899413" ns1:cy="15.747931" ns1:window-x="0" ns1:window-y="0" ns1:window-maximized="0" ns1:current-layer="svg2">
+    <ns1:grid type="xygrid" id="grid3338" />
+  </ns2:namedview>
+  <defs id="defs3051">
+    <style type="text/css" id="current-color-scheme">
+      .ColorScheme-Text {
+        color:#dedede;
+      }
+      </style>
+  </defs>
+  <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m 11,6 0,2 2,0 0,-2 z m 0,5 0,2 2,0 0,-2 z m 0,5 0,2 2,0 0,-2 z" class="ColorScheme-Text" id="path6" ns1:connector-curvature="0" ns2:nodetypes="ccccccccccccccc" />
+</svg>

@@ -1,0 +1,11 @@
+GRID: viewport=184 first=0,0 91x91 second=91,0 third=0,91
+dbus-daemon[7504]: [session uid=1000 pid=7504 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=7505 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[7504]: [session uid=1000 pid=7504 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+MAIN TOOLBAR: y=16 right=834 anchor=834 viewer before=0,0 851x744 after=0,0 851x744 controls=475x31
+PASS: floating main toolbar actions, animation, docked toolbar suppression, Browse/Start restoration
+PASS: both toggles hide, reveal nearby, fade/reverse, pass through input, stay visible expanded, and support keyboard focus
+BLUR: panel stripe contrast=0
+BLUR: toggle stripe contrast=0
+TOOLBAR: window=819 viewer=596 panel=496 controls=571 scroll=75
+PASS: rounded horizontal thumbnail area, selection, resizing, visibility, fullscreen restoration
+PASS: preview grid, tabs, rounded viewer, blurred glass, opaque controls, native zoom dropdown, live light/dark text and icons, repeated slides/reversal, zoom, narrow layout, fullscreen

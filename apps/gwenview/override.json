@@ -1,0 +1,9 @@
+{
+  "application": "Gwenview",
+  "version": "26.08.1",
+  "source_directory": "gwenview-26.08.1",
+  "source_url": "https://download.kde.org/stable/release-service/26.08.1/src/gwenview-26.08.1.tar.xz",
+  "source_sha256": "638a43a74e3a4d3881b846c167e8f42423558df314d124d1c82cef98d29d7ba1",
+  "installed_package": "gwenview-26.08.1-1.fc44.x86_64",
+  "status": "custom welcome, rounded recent-preview sidebar and viewer, animated floating main toolbar and status controls"
+}

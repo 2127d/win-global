@@ -1,0 +1,15 @@
+{
+  "KPlugin": {
+    "Id": "sequoia-eleven-light",
+    "Name": "Sequoia Eleven Light",
+    "Description": "Frosted, softly rounded surfaces with crisp blue focus and selection.",
+    "Version": "2.0.0",
+    "License": "MIT",
+    "Authors": [
+      {
+        "Name": "Sequoia Eleven contributors"
+      }
+    ]
+  },
+  "X-Plasma-API": "5.0"
+}

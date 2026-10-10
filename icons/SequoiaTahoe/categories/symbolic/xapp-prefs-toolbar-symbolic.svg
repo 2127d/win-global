@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns2="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" width="16" height="16" version="1.1">
+ <metadata>
+  <rdf:RDF>
+   <ns2:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+    <dc:title>Gnome Symbolic Icon Theme</dc:title>
+   </ns2:Work>
+  </rdf:RDF>
+ </metadata>
+ <title>Gnome Symbolic Icon Theme</title>
+ <g fill="#363636">
+  <path d="m1 6c-0.554 0-1 0.446-1 1v2c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-2c0-0.554-0.446-1-1-1h-2zm0 1h2v2h-2v-2z" color="#000000" enable-background="new" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+  <rect y="3" width="16" height="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+  <rect y="12" width="16" height="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path d="m7 6c-0.554 0-1 0.446-1 1v2c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-2c0-0.554-0.446-1-1-1zm0 1h2v2h-2z" color="#000000" enable-background="new" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+  <path d="m13 6c-0.554 0-1 0.446-1 1v2c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-2c0-0.554-0.446-1-1-1zm0 1h2v2h-2z" color="#000000" enable-background="new" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+ </g>
+</svg>

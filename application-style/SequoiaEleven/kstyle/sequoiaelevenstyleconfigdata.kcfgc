@@ -1,0 +1,6 @@
+File=sequoiaeleven.kcfg
+ClassName=StyleConfigData
+NameSpace=SequoiaEleven
+Singleton=true
+Mutators=true
+GlobalEnums=true

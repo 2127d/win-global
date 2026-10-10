@@ -1,0 +1,17 @@
+{
+  "firefox": "156.0.1",
+  "mouse_close_removes_tab": true,
+  "keyboard_close_removes_tab": true,
+  "no_stuck_closing_tabs": true,
+  "remaining_tab_widths": [
+    332,
+    442.66668701171875,
+    664
+  ],
+  "session_contains_only_retained_tabs": true,
+  "retained_urls": [
+    "file:///tmp/sequoia-tab-fixtures-vgfybav4/keep-a.html",
+    "file:///tmp/sequoia-tab-fixtures-vgfybav4/keep-b.html"
+  ],
+  "restart_restores_only_retained_tabs": true
+}

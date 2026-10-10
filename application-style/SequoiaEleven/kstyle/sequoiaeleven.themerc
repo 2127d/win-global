@@ -1,0 +1,6 @@
+[Misc]
+Name=Sequoia Eleven
+ConfigPage=kstyle_config/sequoiaelevenstyleconfig
+Comment=Widget style for Qt Applications
+[KDE]
+WidgetStyle=SequoiaEleven

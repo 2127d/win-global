@@ -1,0 +1,2 @@
+/* Scoped to Firefox pages; ordinary websites retain their own design. */
+@import url("sequoia/internal.css");

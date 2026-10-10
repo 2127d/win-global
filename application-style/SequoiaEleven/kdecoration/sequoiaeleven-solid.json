@@ -1,0 +1,13 @@
+{
+  "KPlugin": {
+    "Description": "Rounded Sequoia Eleven window frames with traffic-light controls",
+    "EnabledByDefault": true,
+    "Name": "Sequoia Eleven Solid",
+    "Id": "org.kde.sequoiaeleven.solid"
+  },
+  "X-KDE-ConfigModule": "kcm_sequoiaelevendecoration",
+  "org.kde.kdecoration3": {
+    "blur": true,
+    "recommendedBorderSize": "None"
+  }
+}
