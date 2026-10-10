@@ -29,7 +29,7 @@ def removal_commands(args):
             command.append('--keep-system')
         steps.append(('Selected theme components', command))
     for app in args.apps:
-        script = {'settings': 'install-settings-navigation.py', 'gwenview': 'install-gwenview.py'}[app]
+        script = {'settings': 'install-settings-navigation.py', 'gwenview': 'install-gwenview.py', 'kcalc': 'install-kcalc.py'}[app]
         steps.append((APPS[app][0], [sys.executable, '-u', str(ROOT / 'tools' / script), '--remove',
                                    '--prefix', str(args.prefix), '--bin-prefix', str(args.bin_prefix)]))
     if args.force:

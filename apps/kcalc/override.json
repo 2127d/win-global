@@ -1,0 +1,9 @@
+{
+  "application": "KCalc",
+  "version": "26.08.1",
+  "source_directory": "kcalc-26.08.1",
+  "source_url": "https://download.kde.org/stable/release-service/26.08.1/src/kcalc-26.08.1.tar.xz",
+  "source_sha256": "24d7b07dcac6e248354e8a4032cc91340f4ca2333f83964808adfa44b4bae096",
+  "installed_package": "kcalc-26.08.1-1.fc44.x86_64",
+  "status": "rounded calculator with history above input, inline live answers, stable menus and mode-aware window sizing"
+}

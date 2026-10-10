@@ -139,7 +139,7 @@ class PlatformTests(unittest.TestCase):
                     self.assertEqual(platform.build_jobs(), 1)
 
     def test_app_builders_use_detected_jobs(self):
-        for name, target in [('gwenview', 'gwenview'), ('settings-navigation', 'systemsettings')]:
+        for name, target in [('gwenview', 'gwenview'), ('settings-navigation', 'systemsettings'), ('kcalc', 'kcalc')]:
             spec = importlib.util.spec_from_file_location('builder', gui.ROOT / f'tools/build-{name}.py')
             builder = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(builder)

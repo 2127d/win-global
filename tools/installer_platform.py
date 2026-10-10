@@ -27,7 +27,8 @@ COMPONENTS = {
     'login': ('Login screen', 'Requires the existing Plasma Login Manager; takes effect after reboot.'),
 }
 APPS = {'settings': ('Settings makeover', 'Requires System Settings 6.7.5.'),
-        'gwenview': ('Gwenview makeover', 'Requires Gwenview 26.08.1.')}
+        'gwenview': ('Gwenview makeover', 'Requires Gwenview 26.08.1.'),
+        'kcalc': ('KCalc makeover', 'Modern keys and mode-aware resizing. Requires KCalc 26.08.1.')}
 NATIVE = {'application-style', 'decorations'}
 
 # A preset must never point at theme assets or layout widgets we did not install.
@@ -190,6 +191,11 @@ def packages_for(distro, components, apps=()):
                        'libexiv2-dev', 'liblcms2-dev', 'libkimageannotator-qt6-dev', 'libkcolorpicker-qt6-dev', 'libkf6baloo-dev',
                        'libkf6purpose-dev', 'libkdcrawqt6-dev', 'libcfitsio-dev', 'libtiff-dev', 'libx11-dev', 'binutils'],
         }[distro]
+    if 'kcalc' in apps:
+        packages += {'fedora': ['gmp-devel', 'mpfr-devel', 'libmpc-devel'],
+                     'arch': ['gmp', 'mpfr', 'libmpc'],
+                     'ubuntu': ['libgmp-dev', 'libmpfr-dev', 'libmpc-dev'],
+                     'debian': ['libgmp-dev', 'libmpfr-dev', 'libmpc-dev']}[distro]
     return sorted(set(packages))
 
 def package_command(distro, packages):
@@ -242,7 +248,7 @@ def application_version(executable):
         return None
 
 def app_problem(app):
-    executable, required = {'settings': ('systemsettings', '6.7.5'), 'gwenview': ('gwenview', '26.08.1')}[app]
+    executable, required = {'settings': ('systemsettings', '6.7.5'), 'gwenview': ('gwenview', '26.08.1'), 'kcalc': ('kcalc', '26.08.1')}[app]
     version = application_version(executable)
     if version != required:
         return f'{APPS[app][0]} requires {executable} {required}; found {version or "not installed"}.'

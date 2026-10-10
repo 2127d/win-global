@@ -46,7 +46,7 @@ def main():
         print('COMPLETED: Selected theme components', flush=True)
     for app in args.apps:
         print('STEP: Installing ' + APPS[app][0], flush=True)
-        script = {'settings': 'install-settings-navigation.py', 'gwenview': 'install-gwenview.py'}[app]
+        script = {'settings': 'install-settings-navigation.py', 'gwenview': 'install-gwenview.py', 'kcalc': 'install-kcalc.py'}[app]
         run([sys.executable, '-u', str(ROOT / 'tools' / script)])
         print('COMPLETED: ' + APPS[app][0], flush=True)
 

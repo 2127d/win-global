@@ -1,0 +1,6 @@
+mode_science: 446x753; simple: 284x618
+mode_statistics: 506x753; simple: 284x618
+mode_numeral: 506x756; simple: 284x618
+PASS: all modes, repeated/rapid switches, manual resizing, fullscreen, maximized, selector, live results, running totals, history, inline preview, empty input, Enter/equals, clear buttons, errors and stable menus
+CLOSING: 1791671434803
+EXIT: 10 ms
