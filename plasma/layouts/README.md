@@ -9,13 +9,13 @@ the current layout. Installing the files does not activate or replace anything.
 The preset creates these panels on the primary screen:
 
 - A 34px, full-width, non-floating top bar: Kpple Menu, margin separator,
-  Window Title Fork, global menu, expanding spacer, Color Picker, System Tray,
+  Window Title Fork, Sequoia Desktop Menu, global menu, expanding spacer, Color Picker, System Tray,
   two margin separators and the bold 11pt clock with its custom date format.
 - A 64px, centered, content-fitting floating dock that dodges windows: Sequoia
   Start Menu, margin separator, Icons-only Task Manager with the saved launcher
   order, Dock Separator, Downloads Stack and Trash.
 
-The Global Theme component supplies the five required nonstandard pure QML
+The Global Theme component supplies the six required nonstandard pure QML
 widgets. Copies already installed by the user are kept and remain outside the
 theme's uninstall receipt. Bundled copies installed by the theme are tracked and
 removed with it. Stock KDE applets come from the destination's Plasma installation.

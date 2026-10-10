@@ -1,0 +1,22 @@
+{
+  "upstream": "KDE Plasma 6.7.5 (Fedora plasma-workspace-6.7.5-1.fc44.x86_64)",
+  "applet": "org.kde.plasma.digitalclock",
+  "source": "https://invent.kde.org/plasma/plasma-workspace",
+  "files": {
+    "digitalclock/CalendarView.qml": "983600d433678a7cac57bf48a304516aeb9913aafa8290930ee3a84167bab260",
+    "digitalclock/DigitalClock.qml": "b3dfe4b4b472588f01f698872d5eee87df0015cf43bab07321f1d250b8c988e7",
+    "digitalclock/NoTimezoneWarning.qml": "8a0e07b300f07cb524bd5786a4d8cf0daa44cc3fc1777ec722990ff863d7291b",
+    "digitalclock/Tooltip.qml": "ec1c1efaa56de6540e0f51b05720810613ea82a8dca244a41b1848bee0ff0fc4",
+    "digitalclock/config.qml": "43e1e8d77ae71ff235ea30e5288e295d248d2560340cf74fa4cd88febdef5156",
+    "digitalclock/configAppearance.qml": "14be521b060a599851e4681d1a560e229c42ee02c3c7732aaf90d1df2d83e5ec",
+    "digitalclock/configCalendar.qml": "e34b835fff9456bd70e78728b2b28a1400714e3422f255ba63416f6831ad7a17",
+    "digitalclock/configTimeZones.qml": "f65d1c8b3315461ccc92406ce5859072c5a8995f293537fb658cc78dcc1d828e",
+    "digitalclock/main.qml": "99b0fa6fcad563043f9a3ef8156387cb30c2455765358903419022ac611ff963",
+    "digitalclock/main.xml": "06b085a2451b7197253c4c425c61f150ce89ef2f127c7186eb90039e5ddd7c21",
+    "calendar/DayDelegate.qml": "7f5cbcffe5d8836c945fcbaf0cf3af61b67a2a9e88dbd001e68befee2017d5c6",
+    "calendar/DaysCalendar.qml": "5415f01b7c4d9b1ad369f0316ffc6c9b3a15497f919336914defde9478f911a2",
+    "calendar/InfiniteList.qml": "6736a1b0c5c149e12ccfd22c6646dca2c1531842164617c96cca2fe1b27fc039",
+    "calendar/MonthView.qml": "996fc31842246bda476437cfbbcebd8997705e54082176d1b761c49506fb9c9e",
+    "calendar/MonthViewHeader.qml": "d4bada8d858e89835b1a4a37a698fc1edf2deadf71a82df27f1459dd64f2f6db"
+  }
+}

@@ -1,0 +1,13 @@
+{
+    "KPlugin": {
+        "Id": "org.sequoia.desktopmenu",
+        "Name": "Sequoia Desktop Menu",
+        "Description": "Plasma, Desktop, Go and Help menus when the desktop is active",
+        "Icon": "plasma",
+        "Version": "1.0.0",
+        "License": "MIT",
+        "Category": "Utilities"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

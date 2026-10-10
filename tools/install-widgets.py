@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGES = ('org.sequoia.downloads', 'org.sequoia.dockseparator', 'org.sequoia.startmenu')
+PACKAGES = ('org.sequoia.downloads', 'org.sequoia.dockseparator', 'org.sequoia.startmenu', 'org.sequoia.desktopmenu')
 
 
 def install_package(source, package_root):
@@ -133,7 +133,7 @@ def main():
             except Exception:
                 restore(backup, targets)
                 raise
-            print(f'Installed all five widgets. Backup: {backup}')
+            print(f'Installed the widget collection. Backup: {backup}')
     subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True)
     if args.restart:
         subprocess.run(['systemctl', '--user', 'restart', 'plasma-plasmashell.service'], check=True)

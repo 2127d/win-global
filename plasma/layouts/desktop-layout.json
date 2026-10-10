@@ -135,10 +135,14 @@
               "lengthMarginsLock": true,
               "showIcon": false,
               "style": 0,
-              "textDefault": "Finder",
+              "textDefault": "",
               "useActivityIcon": false
             }
           }
+        },
+        {
+          "plugin": "org.sequoia.desktopmenu",
+          "config": {}
         },
         {
           "plugin": "org.kde.plasma.appmenu",

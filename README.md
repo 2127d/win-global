@@ -144,7 +144,7 @@ dependencies remain; the log identifies completed steps. Choose the installed
 theme in System Settings and reopen apps after installation. The Settings makeover
 also adds **System Settings (Sequoia Eleven)** to the application menu, so it
 works without editing your PATH. The Desktop widgets component includes the custom
-System Tray, Trash, animated task manager and five layout widgets, and is also
+System Tray, Trash, animated task manager and six layout widgets, and is also
 included by Global Theme. Native widgets are built on the destination computer.
 Open `./uninstall-gui.py` to remove selected theme components or app makeovers.
 The app-specific command-line helpers remain available:
@@ -744,3 +744,22 @@ up the panel configuration before migration. Use the supplied installer, not
 Plasma's local-file widget dialog: the tray also needs its bundled native adapters
 and child packages. Native archives are specific to their Qt/KDE build; the main
 source installer builds them on the destination machine instead.
+
+### Desktop menu
+
+The Sequoia Desktop Menu supplies **Plasma**, **Desktop**, **Go**, and **Help**
+menus while the desktop is active. Application focus hides it, including for
+apps without a global menu. The Global Theme layout includes it automatically.
+To add it to existing global-menu panels without replacing the layout:
+
+```sh
+python3 tools/install-desktop-menu.py
+```
+
+The installer backs up the panel configuration and clears Window Title Fork’s
+desktop placeholder so it does not duplicate the **Plasma** menu. Existing
+application titles and menus stay in their original widgets. Restart Plasma
+Shell asks for confirmation and restarts only the user’s Plasma service.
+
+Validation: `python3 tools/verify-desktop-menu.py --native` runs the widget in
+a private Wayland compositor and Plasma session.
