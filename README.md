@@ -654,6 +654,7 @@ python3 tools/preview-applications.py --dark
 python3 tools/preview-applications.py
 python3 tools/verify-application-islands.py
 python3 tools/verify-quick-islands.py
+python3 tools/verify-quick-backgrounds.py
 python3 tools/preview-quick-islands.py
 python3 tools/preview-quick-islands.py --dark
 python3 tools/preview-decoration.py --dark

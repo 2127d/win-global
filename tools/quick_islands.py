@@ -19,6 +19,40 @@ def replace(text, old, new):
     return text.replace(old, new, 1)
 
 
+def background(text, new, *, inherited_root=None):
+    """Replace a root background, or override a known inherited background."""
+    # Ignore examples in comments and braces in strings. Only root bindings
+    # count: a child's background must never be replaced by the page canvas.
+    tokens = re.compile(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\n]*|/\*.*?\*/|\bbackground\s*:|[{}]', re.S)
+    depth = 0
+    binding = None
+    for token in tokens.finditer(text):
+        value = token.group()
+        if value == '{':
+            depth += 1
+        elif value == '}':
+            depth -= 1
+            if binding is not None and depth == 1:
+                return text[:binding] + new + text[token.end():]
+        elif depth == 1 and value.startswith('background'):
+            if not re.match(r'\s*[\w.]+\s*\{', text[token.end():]):
+                raise RuntimeError('Installed KDE component changed; expected an object background')
+            start = text.rfind('\n', 0, token.start()) + 1
+            binding = start if not text[start:token.start()].strip() else token.start()
+    if binding is not None:
+        raise RuntimeError('Unbalanced background in installed KDE component')
+    if inherited_root is not None:
+        # Some Kirigami Pages inherit their background from Qt Quick Controls.
+        # Add the override only for the known root type and id used by our QML.
+        anchor = re.compile(r'^' + re.escape(inherited_root)
+                            + r'[ \t]*\{\s*id:[ \t]*root[ \t]*;?[ \t]*(?=\n)', re.M)
+        matches = list(anchor.finditer(text))
+        if len(matches) == 1:
+            end = matches[0].end()
+            return text[:end] + '\n\n' + new + text[end:]
+    raise RuntimeError('Installed KDE component changed; no supported root background found')
+
+
 def _build(destination):
     destination = Path(destination)
     if destination.exists():
@@ -64,24 +98,11 @@ def _build(destination):
 
     def patch(relative, transform):
         path = destination / relative
-        text = transform(path.read_text())
+        try:
+            text = transform(path.read_text())
+        except (RuntimeError, ValueError) as error:
+            raise RuntimeError(f'Cannot style installed KDE component {QML / relative}: {error}') from error
         path.write_text(text)
-
-    def background(text, new):
-        # Replace only the background object, preserving following behavior and
-        # transitions even if KDE adds more members in a compatible update.
-        start = text.index('    background: ')
-        opening = text.index('{', start)
-        depth = 0
-        tokens = re.compile(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\n]*|/\*.*?\*/|[{}]', re.S)
-        for token in tokens.finditer(text, opening):
-            if token.group() == '{':
-                depth += 1
-            elif token.group() == '}':
-                depth -= 1
-                if depth == 0:
-                    return text[:start] + new + text[token.end():]
-        raise RuntimeError('Unbalanced background in installed KDE component')
 
     import_island = 'import org.sequoia.eleven as Sequoia\n'
     base = 'org/kde/kirigami/'
@@ -103,7 +124,7 @@ def _build(destination):
         // and navigation pages, including category transitions.
         visible: !/^(CategoriesPage|SubCategoryPage)_/.test(root.toString())
         solidColor: root.Platform.Theme.backgroundColor
-    }'''))
+    }''', inherited_root='QQC2.Page'))
     patch(base + 'controls/ApplicationItem.qml', lambda t:
           replace(t.replace('import QtQuick\n', 'import QtQuick\n' + import_island),
                   'background: Rectangle {\n            color: root.color\n        }',
