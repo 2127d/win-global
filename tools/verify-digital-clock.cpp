@@ -69,12 +69,33 @@ static void start() {
                 }
             }
             require(today, "today cell exists");
+            auto surface = named(view, "sequoiaCalendarSurface");
+            require(surface, "calendar surface exists");
+            const auto originalBackground = eval(calendar, "Kirigami.Theme.backgroundColor.toString()").toString();
+            const auto originalText = eval(calendar, "Kirigami.Theme.textColor.toString()").toString();
+            require(surface->property("color") == calendar->property("cardColor"), "calendar uses theme card color at startup");
+            require(eval(today, "Kirigami.Theme.textColor.toString()").toString() == originalText,
+                    "calendar dates use theme text color at startup");
+            for (const auto background : {"#24262b", "#ffffff"}) {
+                const auto text = QString::fromLatin1(background) == "#ffffff" ? "#24262b" : "#ffffff";
+                eval(calendar, QStringLiteral("Kirigami.Theme.backgroundColor = '%1'; Kirigami.Theme.textColor = '%2'")
+                     .arg(background, text));
+                QTest::qWait(300);
+                require(surface->property("color") == calendar->property("cardColor"),
+                        "calendar surface follows live light/dark palette changes");
+                require(eval(today, "Kirigami.Theme.textColor.toString()").toString() == QString::fromLatin1(text),
+                        "calendar dates follow live light/dark text changes");
+            }
+            eval(calendar, QStringLiteral("Kirigami.Theme.backgroundColor = '%1'; Kirigami.Theme.textColor = '%2'")
+                 .arg(originalBackground, originalText));
+            QTest::qWait(300);
+            fprintf(stderr, "PASS: calendar surface and date text follow light/dark palettes at startup and while open\n");
             const auto originalAccent = eval(calendar, "Kirigami.Theme.highlightColor.toString()").toString();
             for (const auto accent : {"#4b97b8", "#e9643a"}) {
                 eval(calendar, QStringLiteral("Kirigami.Theme.highlightColor = '%1'").arg(accent));
                 QTest::qWait(300);
                 require(eval(today, "background.color.toString()").toString() == QString::fromLatin1(accent),
-                        "date highlight follows live accent changes across the white surface");
+                        "date highlight follows live accent changes across the calendar surface");
             }
             eval(calendar, QStringLiteral("Kirigami.Theme.highlightColor = '%1'").arg(originalAccent));
             QTest::qWait(300);

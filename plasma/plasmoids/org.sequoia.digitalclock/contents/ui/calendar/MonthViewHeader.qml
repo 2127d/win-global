@@ -108,6 +108,14 @@ Item {
                 implicitHeight: Math.max(38, implicitContentHeight + topPadding + bottomPadding)
                 background: Rectangle { radius: height / 2; color: Qt.alpha(Kirigami.Theme.textColor, 0.055) }
 
+                // Each tab draws its own rounded selection background.
+                // Hide Plasma's additional rectangular ListView highlight.
+                Binding {
+                    target: tabBar.contentItem
+                    property: "highlight"
+                    value: null
+                }
+
                 currentIndex: root.swipeView.currentIndex
                 Layout.fillWidth: true
                 Layout.bottomMargin: root.isDigitalClock ? 0 : Kirigami.Units.smallSpacing

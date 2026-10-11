@@ -756,7 +756,9 @@ source installer builds them on the destination machine instead.
 
 The Sequoia Desktop Menu supplies **Plasma**, **Desktop**, **Go**, and **Help**
 menus while the desktop is active. Application focus hides it, including for
-apps without a global menu. The Global Theme layout includes it automatically.
+apps without a global menu. Minimizing the last active window restores the desktop
+menu immediately. Dropdowns use native Qt menus and inherit the application
+style's floating frame. The Global Theme layout includes it automatically.
 To add it to existing global-menu panels without replacing the layout:
 
 ```sh
@@ -768,5 +770,14 @@ desktop placeholder so it does not duplicate the **Plasma** menu. Existing
 application titles and menus stay in their original widgets. Restart Plasma
 Shell asks for confirmation and restarts only the user’s Plasma service.
 
-Validation: `python3 tools/verify-desktop-menu.py --native` runs the widget in
+To update an existing installation, including Window Title Fork's minimized-window
+handling, and reload Plasma:
+
+```sh
+python3 tools/install-desktop-menu.py --update-title --restart
+```
+
+The three updated Window Title Fork QML files are backed up before replacement.
+Validation: `python3 tools/verify-desktop-menu.py` checks native menu rendering
+and interaction offscreen; add `--native` to check focus and minimization in
 a private Wayland compositor and Plasma session.

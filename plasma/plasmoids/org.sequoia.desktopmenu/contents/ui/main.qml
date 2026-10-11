@@ -7,6 +7,7 @@ import QtCore
 import org.kde.plasma.plasmoid
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PC3
+import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasma5support as Plasma5Support
 import org.kde.taskmanager as TaskManager
 import org.kde.kirigami as Kirigami
@@ -45,14 +46,14 @@ PlasmoidItem {
         model: tasks
         delegate: QtObject {
             required property var model
-            readonly property bool activeWindow: model.IsActive
+            readonly property bool activeWindow: model.IsActive && !model.IsMinimized
             onActiveWindowChanged: Qt.callLater(root.updateFocus)
         }
         onObjectAdded: Qt.callLater(root.updateFocus)
         onObjectRemoved: Qt.callLater(root.updateFocus)
     }
     readonly property bool desktopActive: KWindowSystem.KWindowSystem.showingDesktop || !applicationActive
-    onDesktopActiveChanged: if (!desktopActive) popup.visible = false
+    onDesktopActiveChanged: if (!desktopActive) popup.close()
     Layout.minimumWidth: desktopActive || Plasmoid.userConfiguring ? implicitWidth : 0
     Layout.preferredWidth: Layout.minimumWidth
     Layout.maximumWidth: Layout.minimumWidth
@@ -111,8 +112,10 @@ PlasmoidItem {
         ]}
     ]
     property int menuIndex: 0
+    readonly property bool popupOpen: popup.status === PlasmaExtras.Menu.Open
+        || popup.status === PlasmaExtras.Menu.Opening
     function activate(entry) {
-        popup.visible = false;
+        popup.close();
         if (entry.command) run(entry.command);
         else if (entry.url) Qt.openUrlExternally(entry.url);
         else if (entry.folder !== undefined) openFolder(entry.folder);
@@ -131,12 +134,10 @@ PlasmoidItem {
         visible: root.desktopActive || Plasmoid.userConfiguring
         readonly property int count: root.menus.length
         function openMenu(index) {
+            popup.close();
             root.menuIndex = index;
             popup.visualParent = buttons.itemAt(index);
-            popup.visible = true;
-            popup.requestActivate();
-            menuContents.currentIndex = 0;
-            menuContents.forceActiveFocus();
+            popup.openRelative();
         }
         Repeater {
             id: buttons
@@ -152,9 +153,9 @@ PlasmoidItem {
                 height: bar.height
                 hoverEnabled: true
                 activeFocusOnTab: true
-                readonly property bool selected: popup.visible && root.menuIndex === index
-                onPressed: selected ? popup.visible = false : bar.openMenu(index)
-                onHoveredChanged: if (hovered && popup.visible && root.menuIndex !== index) bar.openMenu(index)
+                readonly property bool selected: root.popupOpen && root.menuIndex === index
+                onPressed: selected ? popup.close() : bar.openMenu(index)
+                onHoveredChanged: if (hovered && root.popupOpen && root.menuIndex !== index) bar.openMenu(index)
                 Keys.onLeftPressed: buttons.itemAt((index + bar.count - 1) % bar.count).forceActiveFocus()
                 Keys.onRightPressed: buttons.itemAt((index + 1) % bar.count).forceActiveFocus()
                 Keys.onDownPressed: bar.openMenu(index)
@@ -175,54 +176,29 @@ PlasmoidItem {
             }
         }
     }
-    PlasmaCore.Dialog {
+    // QMenu-backed popups use the same application style, shadows and rounded
+    // floating frame as Plasma's global application menu.
+    PlasmaExtras.Menu {
         id: popup
         objectName: "desktopMenuPopup"
-        visible: false
-        location: Plasmoid.location
-        type: PlasmaCore.Dialog.PopupMenu
-        hideOnWindowDeactivate: true
-        mainItem: Column {
-            id: menuContents
-            width: Math.max(220, ...root.menus[root.menuIndex].items.map(entry => metrics.advanceWidth(entry.text || "") + 36))
-            height: implicitHeight
-            spacing: 0
-            property int currentIndex: 0
-            FontMetrics { id: metrics; font: Kirigami.Theme.defaultFont }
-            function move(direction) {
-                const entries = root.menus[root.menuIndex].items;
-                do { currentIndex = (currentIndex + direction + entries.length) % entries.length; }
-                while (entries[currentIndex].separator);
-            }
-            Keys.onUpPressed: move(-1)
-            Keys.onDownPressed: move(1)
-            Keys.onEscapePressed: popup.visible = false
-            Keys.onReturnPressed: root.activate(root.menus[root.menuIndex].items[currentIndex])
-            Keys.onSpacePressed: root.activate(root.menus[root.menuIndex].items[currentIndex])
-            Keys.onLeftPressed: root.fullRepresentationItem.openMenu((root.menuIndex + root.menus.length - 1) % root.menus.length)
-            Keys.onRightPressed: root.fullRepresentationItem.openMenu((root.menuIndex + 1) % root.menus.length)
-            Repeater {
-                model: root.menus[root.menuIndex].items
-                delegate: Loader {
-                    id: entryLoader
-                    required property var modelData
-                    required property int index
-                    width: menuContents.width
-                    sourceComponent: modelData.separator ? separator : menuEntry
-                    Component { id: separator; PC3.MenuSeparator {} }
-                    Component {
-                        id: menuEntry
-                        PC3.ItemDelegate {
-                            text: entryLoader.modelData.text
-                            highlighted: menuContents.currentIndex === entryLoader.index
-                            Accessible.role: Accessible.MenuItem
-                            onHoveredChanged: if (hovered) menuContents.currentIndex = entryLoader.index
-                            onClicked: root.activate(entryLoader.modelData)
-                        }
-                    }
-                }
-            }
+        visualParent: root.fullRepresentationItem
+        transientParent: root.Window.window
+        placement: Plasmoid.location === PlasmaCore.Types.BottomEdge
+            ? PlasmaExtras.Menu.TopPosedLeftAlignedPopup
+            : PlasmaExtras.Menu.BottomPosedLeftAlignedPopup
+        preferSeamlessEdges: false
+        minimumWidth: 220
+    }
+    Instantiator {
+        model: root.menus[root.menuIndex].items
+        delegate: PlasmaExtras.MenuItem {
+            required property var modelData
+            text: modelData.text || ""
+            separator: modelData.separator === true
+            onClicked: root.activate(modelData)
         }
+        onObjectAdded: (index, object) => popup.addMenuItem(object)
+        onObjectRemoved: (index, object) => popup.removeMenuItem(object)
     }
     property bool confirmRestart: false
     property string message: ""

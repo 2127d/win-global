@@ -7,6 +7,7 @@ import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PlasmaComponents
 import org.kde.taskmanager as TaskManager
 import org.kde.kirigami as Kirigami
+import org.kde.kwindowsystem as KWindowSystem
 
 import org.kde.activities as Activities
 
@@ -14,6 +15,7 @@ import "../tools/Tools.js" as Tools
 
 PlasmoidItem {
     id: root
+    objectName: "sequoiaWindowTitle"
     clip: true
 
     Layout.fillWidth: (inFillLengthMode && plasmoid.formFactor === PlasmaCore.Types.Horizontal)
@@ -89,11 +91,12 @@ PlasmoidItem {
 
     readonly property int implicitTitleLength: plasmoid.formFactor === PlasmaCore.Types.Horizontal ? metricsContents.width : metricsContents.height
 
-    readonly property bool existsWindowActive: windowInfoLoader.item && windowInfoLoader.item.existsWindowActive
-    readonly property bool isActiveWindowPinned: existsWindowActive && activeTaskItem.isOnAllDesktops
-    readonly property bool isActiveWindowMaximized: existsWindowActive && activeTaskItem.isMaximized
+    readonly property bool existsWindowActive: !KWindowSystem.KWindowSystem.showingDesktop
+        && windowInfoLoader.item !== null && windowInfoLoader.item.existsWindowActive
+    readonly property bool isActiveWindowPinned: existsWindowActive && activeTaskItem !== null && activeTaskItem.isOnAllDesktops
+    readonly property bool isActiveWindowMaximized: existsWindowActive && activeTaskItem !== null && activeTaskItem.isMaximized
 
-    readonly property Item activeTaskItem: windowInfoLoader.item.activeTaskItem
+    readonly property Item activeTaskItem: windowInfoLoader.item ? windowInfoLoader.item.activeTaskItem : null
 
     property string fallBackText: {
         if (!plasmoid.configuration.filterActivityInfo) {
@@ -227,7 +230,7 @@ PlasmoidItem {
         location: plasmoid.location
 
         readonly property string text: {
-            if (!existsWindowActive
+            if (!existsWindowActive || !activeTaskItem
                     || !plasmoid.configuration.showTooltip) {
                 return "";
             }
@@ -263,7 +266,7 @@ PlasmoidItem {
                 Layout.minimumHeight: 32 //Kirigami.Units.iconSizes.mediumSpacing ( above line same )
                 Layout.maximumWidth: Layout.minimumWidth
                 Layout.maximumHeight: Layout.minimumHeight
-                source:  existsWindowActive ? activeTaskItem.icon : plasmoid.configuration.placeHolderIcon
+                source: existsWindowActive && activeTaskItem ? activeTaskItem.icon : plasmoid.configuration.placeHolderIcon
                 visible: !plasmoid.configuration.showIcon && (existsWindowActive || Plasmoid.configuration.placeHolderIcon !== "")
             }
 

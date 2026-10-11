@@ -36,6 +36,8 @@ def native_child(library):
             subprocess.run(['qdbus-qt6', 'org.kde.plasmashell', '/PlasmaShell',
                 'org.kde.PlasmaShell.evaluateScript',
                 'panels().forEach(p=>p.remove()); var p=new Panel; p.location="top"; p.height=34;'
+                'var t=p.addWidget("org.kde.windowtitle.Fork"); t.currentConfigGroup=["General"];'
+                't.writeConfig("customText",true);t.writeConfig("textDefault","");t.writeConfig("showIcon",false);t.reloadConfig();'
                 'p.addWidget("org.sequoia.desktopmenu"); p.addWidget("org.kde.plasma.appmenu");'
                 'p.addWidget("org.kde.plasma.panelspacer");'], check=True)
             return shell.wait(timeout=35)
@@ -60,6 +62,7 @@ def main():
         stage = Path(directory)
         env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software',
                    QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion', QT_NO_XDG_DESKTOP_PORTAL='1',
+                   QT_QUICK_CONTROLS_STYLE='org.kde.desktop',
                    QT_FORCE_STDERR_LOGGING='1',
                    SEQUOIA_DESKTOP_MENU_CAPTURE=str(ROOT / 'preview/desktop-menu'))
         for key in ('DISPLAY', 'WAYLAND_DISPLAY', 'LD_PRELOAD', 'QML_IMPORT_PATH', 'QT_PLUGIN_PATH'):
@@ -69,6 +72,8 @@ def main():
             path.mkdir(mode=0o700)
             env[f'XDG_{kind}_' + ('DIR' if kind == 'RUNTIME' else 'HOME')] = str(path)
         shutil.copytree(ROOT / 'plasma/plasmoids' / PLUGIN, stage / 'data/plasma/plasmoids' / PLUGIN)
+        shutil.copytree(ROOT / 'plasma/plasmoids/org.kde.windowtitle.Fork',
+                        stage / 'data/plasma/plasmoids/org.kde.windowtitle.Fork')
         shutil.copytree(ROOT / 'plasma/desktoptheme/sequoia-eleven-light',
                         stage / 'data/plasma/desktoptheme/sequoia-eleven-light')
         (stage / 'config/plasmarc').write_text('[Theme]\nname=sequoia-eleven-light\n')
@@ -83,7 +88,7 @@ def main():
         # Stock desktop settings can emit teardown warnings when the private
         # shell exits. Fail on errors in this package or our QML expressions.
         errors = [line for line in output.splitlines()
-                  if (PLUGIN in line or '<Unknown File>' in line) and any(word in line for word in
+                  if (PLUGIN in line or 'org.kde.windowtitle.Fork' in line or '<Unknown File>' in line) and any(word in line for word in
                       ('ReferenceError:', 'TypeError:', 'Cannot assign', 'Unable to assign',
                        'is not a type', 'unavailable', 'error when loading'))]
         if result.returncode or errors or 'PASS:' not in output:

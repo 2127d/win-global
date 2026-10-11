@@ -148,7 +148,7 @@ PlasmaExtras.Representation {
         objectName: "sequoiaCalendarSurface"
         anchors.fill: monthViewWrapper
         radius: 18
-        color: "#ffffff"
+        color: calendar.cardColor
         shadow.size: 14
         shadow.yOffset: 3
         shadow.color: Qt.rgba(0, 0, 0, 0.18)
@@ -662,16 +662,8 @@ PlasmaExtras.Representation {
     FocusScope {
         id: monthViewWrapper
 
-        // The white calendar is its own light surface. Keep the accent bound
-        // to the live desktop palette, including wallpaper-derived colors.
-        Kirigami.Theme.inherit: false
-        Kirigami.Theme.backgroundColor: "#ffffff"
-        Kirigami.Theme.textColor: "#24262b"
-        Kirigami.Theme.disabledTextColor: "#686e78"
-        Kirigami.Theme.highlightColor: calendar.Kirigami.Theme.highlightColor
-        Kirigami.Theme.highlightedTextColor: calendar.Kirigami.Theme.highlightedTextColor
-        Kirigami.Theme.hoverColor: calendar.Kirigami.Theme.hoverColor
-        Kirigami.Theme.focusColor: calendar.Kirigami.Theme.focusColor
+        // Inherit the live desktop palette so dates and controls follow
+        // light/dark mode and accent changes along with the card surface.
 
         anchors {
             top: clockHeader.bottom

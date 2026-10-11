@@ -4,7 +4,7 @@
         "Name": "Sequoia Desktop Menu",
         "Description": "Plasma, Desktop, Go and Help menus when the desktop is active",
         "Icon": "plasma",
-        "Version": "1.0.0",
+        "Version": "1.0.1",
         "License": "MIT",
         "Category": "Utilities"
     },

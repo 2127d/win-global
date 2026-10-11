@@ -41,6 +41,9 @@ def evaluate(script):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--stage', type=Path, help='Copy the widget to a staging data tree only')
+    parser.add_argument('--update-title', action='store_true',
+                        help='Apply the minimized-window fix to the installed Window Title Fork, with backup')
+    parser.add_argument('--restart', action='store_true', help='Reload Plasma after updating existing widget code')
     args = parser.parse_args()
     source = ROOT / 'plasma/plasmoids' / PLUGIN
     if args.stage:
@@ -62,6 +65,19 @@ def main():
     (backup / 'layout.js').write_text(snapshot)
     if target.exists():
         shutil.copytree(target, backup / PLUGIN)
+    if args.update_title:
+        title_id = 'org.kde.windowtitle.Fork'
+        title_target = data / 'plasma/plasmoids' / title_id
+        if not (title_target / 'metadata.json').is_file():
+            raise RuntimeError('No per-user Window Title Fork found; no widget files were changed.')
+        for name in ('main.qml', 'PlasmaTasksModel.qml', 'TitleLayout.qml'):
+            relative = Path('contents/ui') / name
+            saved = backup / title_id / relative
+            saved.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(title_target / relative, saved)
+        for name in ('main.qml', 'PlasmaTasksModel.qml', 'TitleLayout.qml'):
+            relative = Path('contents/ui') / name
+            shutil.copy2(ROOT / 'plasma/plasmoids' / title_id / relative, title_target / relative)
     subprocess.run(['kpackagetool6', '--type', 'Plasma/Applet',
                     '--upgrade' if target.exists() else '--install', str(source)], check=True)
     output = evaluate(SETUP)
@@ -69,6 +85,8 @@ def main():
         raise RuntimeError(output + '\nBackup: ' + str(backup))
     print(output)
     print('Backup:', backup)
+    if args.restart:
+        subprocess.run(['systemctl', '--user', 'restart', 'plasma-plasmashell.service'], check=True)
 
 
 if __name__ == '__main__':

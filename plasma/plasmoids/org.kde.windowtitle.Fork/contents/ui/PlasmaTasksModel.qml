@@ -6,8 +6,21 @@ import org.kde.taskmanager as TaskManager
 
 Item {
     id: plasmaTasksItem
-    readonly property bool existsWindowActive: root.activeTaskItem && tasksRepeater.count > 0 && activeTaskItem.isActive
+    readonly property bool existsWindowActive: activeTaskItem !== null && activeTaskItem.isActive && !activeTaskItem.isMinimized
     property Item activeTaskItem: null
+
+    function refreshActiveTask() {
+        let next = null;
+        for (let i = 0; i < tasksRepeater.count; ++i) {
+            const task = tasksRepeater.itemAt(i);
+            if (task && task.isActive && !task.isMinimized
+                    && (!plasmoid.configuration.showOnlyOnMaximize || task.isMaximized)) {
+                next = task;
+                break;
+            }
+        }
+        activeTaskItem = next;
+    }
 
     TaskManager.TasksModel {
         id: tasksModel
@@ -91,29 +104,22 @@ Item {
                     }
                 }
 
-                onIsActiveChanged: {
-                    if (isActive) {
-                        if(plasmoid.configuration.showOnlyOnMaximize && !task.isMaximized)
-                            plasmaTasksItem.activeTaskItem = null;
-                        else
-                            plasmaTasksItem.activeTaskItem = task;
-
-                    }
-                }
-
-                onIsMaximizedChanged: {
-                    if(plasmoid.configuration.showOnlyOnMaximize && isActive)
-                        plasmaTasksItem.activeTaskItem = task.isMaximized ? task : null;
-                }
+                onIsActiveChanged: Qt.callLater(plasmaTasksItem.refreshActiveTask)
+                onIsMinimizedChanged: Qt.callLater(plasmaTasksItem.refreshActiveTask)
+                onIsMaximizedChanged: Qt.callLater(plasmaTasksItem.refreshActiveTask)
 
                 onModelAppNameChanged: task.cleanupTitle()
                 onModelDisplayChanged: task.cleanupTitle()
-                Component.onCompleted: task.cleanupTitle()
+                Component.onCompleted: {
+                    task.cleanupTitle();
+                    Qt.callLater(plasmaTasksItem.refreshActiveTask);
+                }
 
                 Component.onDestruction: {
-                    if (plasmaTasksItem.lastActiveTaskItem === task) {
-                        plasmaTasksItem.lastActiveTaskItem = null;
+                    if (plasmaTasksItem.activeTaskItem === task) {
+                        plasmaTasksItem.activeTaskItem = null;
                     }
+                    Qt.callLater(plasmaTasksItem.refreshActiveTask);
                 }
 
                 function modelIndex(){

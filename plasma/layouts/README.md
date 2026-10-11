@@ -46,8 +46,10 @@ The packaging follows [KDE's Global Theme layout convention](https://develop.kde
 Third-party widget sources were copied from the installed versions: Kpple Menu
 1.6.5 ([upstream](https://store.kde.org/p/2138251/), GPL-2.0) and Window Title Fork
 0.7.1-1 (authors and upstream recorded in its metadata, GPLv2). Their original
-source, authorship and license notices are retained; only the explicit
-`KPackageStructure` metadata field was added for package validation. Start Menu
+source, authorship and license notices are retained. The explicit
+`KPackageStructure` metadata field was added for package validation. Window Title
+Fork also clears inactive/minimized tasks and suppresses its title while showing
+the desktop. Start Menu
 1.0.2 was restored from this project's existing `dist/widgets/start-menu.tar.gz`.
 
 The Global Theme installer builds the Sequoia System Tray, Trash and animated task manager with their native adapters. The preset selects those custom IDs and their styled tray children. Apply the desktop layout only when you want to replace the current panel layout.

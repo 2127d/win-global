@@ -74,7 +74,7 @@ GridLayout{
             anchors.leftMargin: plasmoid.formFactor === PlasmaCore.Types.Vertical ? thickMargin : 0
             anchors.rightMargin: plasmoid.formFactor === PlasmaCore.Types.Vertical ? thickMargin : 0
             source: {
-                if( existsWindowActive ) return activeTaskItem.icon;
+                if (existsWindowActive && activeTaskItem) return activeTaskItem.icon;
                 else if( Plasmoid.configuration.useActivityIcon ) return fullActivityInfo.icon;
                 else return Plasmoid.configuration.placeHolderIcon;
             }
@@ -197,7 +197,7 @@ GridLayout{
                 visible: !exceedsApplicationText && text !== ""
 
                 text: {
-                    if (!existsWindowActive) {
+                    if (!existsWindowActive || !activeTaskItem) {
                         return "";
                     }
 

@@ -2,10 +2,10 @@
 
 First review version of a separate KDE Digital Clock fork, with a live time/date
 header, rounded calendar and agenda surfaces, segmented day/month/year navigation,
-accented dates, and clearer world-clock cards. The inner calendar is an opaque
-white surface with 18px corners and a soft drop shadow. It uses dark text in both
-themes while date highlights and focus accents track the active desktop palette,
-including wallpaper-derived accents. The surrounding popup follows the theme.
+accented dates, and clearer world-clock cards. The inner calendar uses the theme's
+card surface with 18px corners and a soft drop shadow. Its background and text
+follow live light/dark theme changes, while date highlights and focus accents
+track the active desktop palette, including wallpaper-derived accents.
 
 The package ID is `org.sequoia.digitalclock`. It coexists with KDE's clock and has
 independent settings. It does not migrate, replace, or edit existing panel clocks.
@@ -65,5 +65,5 @@ Widgets and Test development packages, a C++ compiler, and Plasma runtime tools.
 Live personal calendar accounts and external application launches are not exercised.
 The native option uses a private Wayland compositor and Qt's graphics renderer to
 capture the shadow; it additionally requires `kwin_wayland` and Mesa OpenGL.
-The verifier also changes the accent in its private session to check that date
-highlights update across the calendar's light surface.
+The verifier also changes the background, text, and accent colors in its private
+session to check that the calendar surface, dates, and highlights update while open.
