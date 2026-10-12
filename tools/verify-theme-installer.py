@@ -63,13 +63,16 @@ class ThemeTests(unittest.TestCase):
             system = self.base / 'native-root'
             payload = self.base / 'native-payload'
             self.put(payload, native, 'previous plugin')
-            system_receipt = Receipt(system, installer.SYSTEM_STATE, installer.SYSTEM_ALLOWED_FILES.__contains__)
+            widget = f'usr/{installer.PLUGINDIR}/plasma/applets/org.sequoia.weather.so'
+            self.put(payload, widget, 'existing weather widget')
+            system_receipt = Receipt(system, installer.SYSTEM_STATE, installer.system_allowed)
             system_receipt.install(payload)
             subprocess.run(['python3', str(ROOT / 'tools/install-switches.py'), '--native', '--prefix', str(system)],
                            check=True, stdout=subprocess.DEVNULL)
-            system_receipt = Receipt(system, installer.SYSTEM_STATE, installer.SYSTEM_ALLOWED_FILES.__contains__)
+            system_receipt = Receipt(system, installer.SYSTEM_STATE, installer.system_allowed)
             system_receipt.validate()
             self.assertEqual((system / native).read_bytes(), (ROOT / '.staging/desktop' / native).read_bytes())
+            self.assertEqual((system / widget).read_text(), 'existing weather widget')
             system_receipt.uninstall()
             self.assertFalse((system / native).exists())
 

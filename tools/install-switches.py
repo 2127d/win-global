@@ -30,7 +30,7 @@ def main():
         targets = {name: ROOT / '.staging/desktop' / name}
         if not (prefix / installer.SYSTEM_STATE / 'manifest.json').is_file():
             raise RuntimeError('Run ./install.sh first; no tracked native installation exists.')
-        receipt = Receipt(prefix, installer.SYSTEM_STATE, installer.SYSTEM_ALLOWED_FILES.__contains__)
+        receipt = Receipt(prefix, installer.SYSTEM_STATE, installer.system_allowed)
     else:
         prefix = (args.prefix or Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share')).absolute()
         targets = {}

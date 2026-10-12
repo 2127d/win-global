@@ -13,7 +13,7 @@ if '--probe' not in sys.argv:
         library = Path(temporary) / 'blur-probe.so'
         flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Gui'], text=True))
         subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/blur-request-probe.cpp'), '-o', str(library), *flags], check=True)
-        for application in ('dialog-test', 'konsole', 'dolphin', 'plasmashell', 'plasmawindowed'):
+        for application in ('dialog-test', 'konsole', 'dolphin', 'spectacle', 'plasmashell', 'plasmawindowed'):
             subprocess.run([sys.executable, __file__, '--probe', application], check=True,
                            env=dict(os.environ, LD_PRELOAD=str(library)))
     sys.exit(0)
@@ -42,6 +42,34 @@ app.setPalette(palette)
 def settle():
     for _ in range(5):
         app.processEvents()
+
+if app.applicationName() in ('dialog-test', 'spectacle'):
+    # Match Spectacle's native meta-object hierarchy, including subclasses.
+    class CaptureWindow(QQuickWindow):
+        pass
+
+    class DerivedCaptureWindow(CaptureWindow):
+        pass
+
+    for window_type in (CaptureWindow, DerivedCaptureWindow):
+        capture = window_type()
+        assert capture.inherits('CaptureWindow')
+        capture.setFlags(Qt.Window | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
+        capture.resize(800, 600)
+        expected_blur = app.applicationName() != 'spectacle'
+        for recreate in (False, True):
+            if recreate:
+                capture.hide()
+                capture.destroy()
+            capture.setColor(QColor('transparent'))
+            capture.showFullScreen()
+            settle()
+            assert capture.property('testBlurRequests') > 0
+            assert capture.property('testBlurEnabled') is expected_blur, 'Capture overlay blur incorrect'
+            capture.setColor(QColor(0, 0, 0, 32))
+            settle()
+            assert capture.property('testBlurEnabled') is expected_blur, 'Capture color change restored blur'
+        capture.close()
 
 if app.applicationName() in ('plasmashell', 'plasmawindowed'):
     # Model Plasma's own rounded blur request, observed through the same probe

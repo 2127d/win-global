@@ -201,6 +201,14 @@ void BlurHelper::updateQuickWindow(QWindow *window) const
         || appName == QLatin1String("plasma") || appName.startsWith(QLatin1String("plasma-")))
         return;
 
+    // Spectacle's capture UI is a transparent, screen-sized view of the live
+    // desktop. Blurring behind it obscures the screen when selecting a recording
+    // region. Keep ordinary Spectacle windows on the normal material path.
+    if (appName == QLatin1String("spectacle") && quick->inherits("CaptureWindow")) {
+        KWindowEffects::enableBlurBehind(quick, false);
+        return;
+    }
+
     KWindowEffects::enableBlurBehind(quick, quick->color().alpha() < 255);
 }
 #endif
