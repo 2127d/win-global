@@ -83,6 +83,13 @@
 namespace SequoiaElevenPrivate
 {
 
+// Only session tabs: Konsole's settings and dock widgets also contain tab bars.
+static bool isKonsoleSessionTabBar(const QWidget *widget)
+{
+    return widget && qobject_cast<const QTabBar *>(widget) && widget->parentWidget()
+        && widget->parentWidget()->inherits("Konsole::TabbedViewContainer");
+}
+
 // needed to keep track of tabbars when being dragged
 class TabBarData : public QObject
 {
@@ -4402,16 +4409,20 @@ bool Style::drawFrameTabWidgetPrimitive(const QStyleOption *option, QPainter *pa
 //___________________________________________________________________________________
 bool Style::drawFrameTabBarBasePrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-        const auto *tabOption = qstyleoption_cast<const QStyleOptionTabBarBase *>(option);
-        if (!tabOption)
-            return true;
+    const auto *tabOption = qstyleoption_cast<const QStyleOptionTabBarBase *>(option);
+    if (!tabOption || !widget)
+        return true;
 
-        if (_isDolphin || _isKonsole){
+    // Let Konsole's own window surface show through the session tab strip.
+    if (SequoiaElevenPrivate::isKonsoleSessionTabBar(widget))
+        return true;
+
+    if (_isDolphin || _isKonsole) {
         QColor backgroundColor = _helper->transparentBarBgColor(widget->palette().color(QPalette::Window), painter, widget->rect(), BarType::TabBar);
         painter->fillRect(widget->rect(), backgroundColor);
-        }
+    }
 
-        return true;
+    return true;
 }
 
 //___________________________________________________________________________________
@@ -4658,6 +4669,16 @@ bool Style::drawTabBarPanelButtonToolPrimitive(const QStyleOption *option, QPain
 
     // static_cast is safe here since check was already performed in calling function
     const QTabBar *tabBar(static_cast<QTabBar *>(widget->parentWidget()));
+
+    if (SequoiaElevenPrivate::isKonsoleSessionTabBar(tabBar)) {
+        // Overflow buttons still need a backing to cover tabs scrolling underneath.
+        // Match the window surface and round this necessary fallback.
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(tabBar->palette().color(QPalette::Window));
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        painter->drawRoundedRect(rect, StyleConfigData::cornerRadius(), StyleConfigData::cornerRadius());
+        return true;
+    }
 
     // overlap.
     // subtract 1, because of the empty pixel left the tabwidget frame
@@ -6984,6 +7005,8 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
     if (!tabOption)
         return true;
 
+    const bool konsoleSessionTab = SequoiaElevenPrivate::isKonsoleSessionTabBar(widget);
+
     // palette and state
     const auto &palette(option->palette);
     const State &state(option->state);
@@ -7054,6 +7077,9 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
     else
     backgroundColor = _helper->isDarkTheme(palette) ? _helper->alphaColor(configTabBgColor, 0.4) : _helper->alphaColor(configTabBgColor, 0.2);
 
+    if (konsoleSessionTab)
+        backgroundColor = Qt::transparent;
+
     // opacity only target dolphin and konsole
     // if ((_isDolphin || _isKonsole) && (StyleConfigData::tabBarOpacity() < 100) && (widget->parentWidget()->inherits("DolphinTabWidget") ||
     // widget->parentWidget()->inherits("Konsole::TabbedViewContainer"))) {
@@ -7076,6 +7102,9 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
     if (selected)
         if (StyleConfigData::tabUseHighlightColor()) {
             color = palette.color(QPalette::Highlight);
+        } else if (konsoleSessionTab) {
+            // Keep the active tab distinct after removing the shaded track.
+            color = palette.color(QPalette::Button);
         } else {
             color = (documentMode && !isQtQuickControl && !hasAlteredBackground(widget)) ? palette.color(QPalette::Window) : _helper->frameBackgroundColor(palette);
         }
@@ -7283,7 +7312,14 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
         }
     }
 
-    const bool unifiedTabAndHeader = _isKonsole && StyleConfigData::unifiedTabBarKonsole();
+    if (konsoleSessionTab) {
+        // Give vertical and horizontal session tabs the same inset and hover area.
+        backgroundRect = option->rect;
+        rect = backgroundRect.adjusted(4, 4, -4, -4);
+        corners = AllCorners;
+    }
+
+    const bool unifiedTabAndHeader = _isKonsole && !konsoleSessionTab && StyleConfigData::unifiedTabBarKonsole();
     if (documentMode && unifiedTabAndHeader && _helper->titleBarColor(true).alphaF() < 1.0) {
         _helper->renderTransparentArea(painter, backgroundRect);
         painter->fillRect(backgroundRect, QBrush(_helper->titleBarColor(windowActive)));
@@ -7344,7 +7380,8 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
             } else {
                 // render dark background and shadow
                 _helper->renderTabBarTab(painter, _isLibreoffice ? backgroundRect.adjusted(0, 0, 0, -2) : backgroundRect, backgroundColor, backgroundCorners);
-                _helper->renderBoxShadow(painter, _isLibreoffice ? shadowRect.adjusted(0, 0, 0, -2) : shadowRect, 0, 1, shadowSize, QColor(0, 0, 0, 220), StyleConfigData::cornerRadius(), true);
+                if (!konsoleSessionTab)
+                    _helper->renderBoxShadow(painter, _isLibreoffice ? shadowRect.adjusted(0, 0, 0, -2) : shadowRect, 0, 1, shadowSize, QColor(0, 0, 0, 220), StyleConfigData::cornerRadius(), true);
 
                 _helper->renderTabBarTab(painter, _isLibreoffice ? rect.adjusted(0, 0, 0, -2) : rect, _isLibreoffice ? palette.color(QPalette::Highlight) : color, corners);
             }

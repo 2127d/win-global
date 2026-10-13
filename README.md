@@ -55,6 +55,8 @@ Plasma panels and desktop widgets retain their existing finishes.
   menus, and restrained animation complete the style.
   Native KDE settings sidebars reserve enough width for their labels and inset
   selection highlights, including Konsole's profile settings.
+  Konsole's session tabs omit the contrasting background strip, retain a rounded
+  active tab, and use rounded, matching backgrounds for overflow arrows.
 - **Qt Quick/Kirigami extension:** matching floating drawers, page headers,
   framed scroll views, and rounded cards for System Monitor, System Settings,
   and Discover, activated through reversible user-local application launchers.
