@@ -1,8 +1,9 @@
-"""Compose the independent launcher and lock-screen overrides in one shell package."""
+"""Compose Plasma-style (launcher/picker) and lock-screen shell overrides."""
 from pathlib import Path
 import shutil
 import subprocess
 import sys
+import widget_picker
 
 ROOT = Path(__file__).resolve().parents[1]
 SHELL = 'plasma/shells/org.kde.plasma.desktop'
@@ -86,9 +87,13 @@ def stage(stage_root, prefix, selected, managed, *, removing=()):
         target = destination / COMPACT
         if 'plasma-style' in selected:
             target.write_text(patch_launcher((SYSTEM_SHELL / COMPACT).read_text()))
+            widget_picker.stage(destination, SYSTEM_SHELL)
         else:
             shutil.copy2(source / COMPACT, target)
-        (destination / MARKERS['plasma-style']).write_text('Launcher-only highlight geometry; refresh through the Sequoia installer after Plasma updates.\n')
+            for name in widget_picker.FILES:
+                if (source / name).exists():
+                    shutil.copy2(source / name, destination / name)
+        (destination / MARKERS['plasma-style']).write_text('Launcher geometry and centered widget picker; refresh through the Sequoia installer after Plasma updates.\n')
 
 
 def scope(components):

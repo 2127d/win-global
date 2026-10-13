@@ -202,18 +202,28 @@ PlasmoidItem {
     }
     property bool confirmRestart: false
     property string message: ""
-    PlasmaCore.Dialog {
+    PlasmaCore.PopupPlasmaWindow {
         id: messageDialog
         objectName: "desktopMenuMessage"
         visible: false
         visualParent: root.fullRepresentationItem
-        location: Plasmoid.location
-        type: PlasmaCore.Dialog.DialogWindow
-        flags: Qt.Dialog
+        popupDirection: {
+            switch (Plasmoid.location) {
+            case PlasmaCore.Types.TopEdge: return Qt.BottomEdge;
+            case PlasmaCore.Types.LeftEdge: return Qt.RightEdge;
+            case PlasmaCore.Types.RightEdge: return Qt.LeftEdge;
+            default: return Qt.TopEdge;
+            }
+        }
+        // Keep an actual gap from the panel, not just the screen edges.
+        margin: Kirigami.Units.largeSpacing * 3
+        removeBorderStrategy: PlasmaCore.PopupPlasmaWindow.Never
+        flags: Qt.Dialog | Qt.FramelessWindowHint
+        width: 370 + leftPadding + rightPadding
+        height: mainItem.implicitHeight + topPadding + bottomPadding
         hideOnWindowDeactivate: false
         onActiveChanged: if (active) cancelButton.forceActiveFocus()
         mainItem: ColumnLayout {
-            width: 370
             PC3.Label {
                 Layout.fillWidth: true
                 text: root.confirmRestart ? i18n("Restart Plasma Shell?") : i18n("Desktop Menu")

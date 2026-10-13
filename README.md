@@ -46,6 +46,15 @@ Plasma panels and desktop widgets retain their existing finishes.
   retain those rounded masks when shown or recreated.
   Frosted light widgets use a white tint and fine bright rim; dark widgets use
   charcoal glass with a softer rim, preserving diffuse wallpaper color beneath.
+  Add Widgets opens a centered, rounded gallery with adaptive card columns.
+  It fits the current monitor's available area in logical pixels (including display
+  scaling), uses up to 86% of its width and 82% of its height, and is capped at
+  1080×760 logical pixels including the Plasma frame. Small screens get compact
+  controls and a scrolling grid. The native installed-widget catalog, search,
+  categories, keyboard controls, and click/drag adding remain available.
+  Existing managed installations can update only the picker with
+  `python3 tools/install-widget-picker.py`, then reload Plasma Shell. This keeps
+  local edits to other shell components intact and backs up the previous picker.
 - **Color schemes:** coordinated window, view, toolbar, selection, disabled,
   inactive, and complementary colors for both appearances.
 - **Application style:** a separate, compiled Qt 6 fork of Darkly, with all source

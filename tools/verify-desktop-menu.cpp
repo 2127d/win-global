@@ -100,6 +100,23 @@ static void start() {
         }
         if (qEnvironmentVariableIsSet("SEQUOIA_DESKTOP_MENU_NATIVE")) {
             require(titleRoot, "window title widget loaded");
+            eval(root, "activate({action: 'restart'})");
+            QTest::qWait(500);
+            auto confirmation = qobject_cast<QQuickWindow *>(eval(root, "messageDialog").value<QObject *>());
+            require(confirmation && confirmation->isVisible(), "restart confirmation appears on Wayland");
+            const int panelBottom = root->window()->y() + root->window()->mask().boundingRect().bottom() + 1;
+            const int gap = confirmation->y() - panelBottom;
+            fprintf(stderr, "Confirmation y=%d panel bottom=%d gap=%d margin=%d\n", confirmation->y(), panelBottom, gap,
+                    confirmation->property("margin").toInt());
+            require(gap >= 24, "restart confirmation is separated from the panel by at least 24 pixels");
+            require(eval(root, "messageDialog.borders === (Qt.TopEdge | Qt.BottomEdge | Qt.LeftEdge | Qt.RightEdge)").toBool(),
+                    "confirmation retains all four borders");
+            require(confirmation->grabWindow().save(qEnvironmentVariable("SEQUOIA_DESKTOP_MENU_CAPTURE") + "-confirmation.png"),
+                    "confirmation preview saved");
+            QTest::keyClick(confirmation, Qt::Key_Escape);
+            QTest::qWait(200);
+            require(!confirmation->isVisible(), "Escape dismisses restart confirmation");
+            fprintf(stderr, "PASS: restart confirmation floats %d pixels below the panel and Escape cancels safely\n", gap);
             QProcess client;
             auto env = QProcessEnvironment::systemEnvironment();
             env.remove("LD_PRELOAD");

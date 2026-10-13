@@ -1368,3 +1368,32 @@ private WebEngine profile, worker crash fallback and recovery. The final light
 run also verifies native settings display active uBlock-specific rules correctly.
 Screenshots and logs are in `preview/falkon/light` and `preview/falkon/dark-private`.
 `git diff --check` and Python syntax checks passed. No system files were installed.
+
+### Centered widget picker — 2026-10-13
+
+The Plasma-style shell layer now places Add Widgets in a floating, rounded
+window centered on the owning monitor's strict available rectangle. Frame size
+is included in the 86% width / 82% height limits and the 1080×760 logical-pixel
+cap. Adaptive columns, smaller controls at narrow widths, and a scrolling grid
+preserve usable content on scaled laptop displays. The native widget backend,
+drag handlers, installation actions and activity sidebar are retained. Opening
+from the global desktop-menu action now supplies the desktop as the add target.
+
+`tools/verify-widget-picker.py` runs the actual shell in private Wayland/D-Bus
+sessions with temporary desktop configuration and the installed catalog read-only.
+Passed at 800×600 (light), 1280×720 (dark), 1280×720 at 200% scale (640×360
+logical), 3840×2160, and on the second of two 1920×1080 outputs. The second
+monitor's picker was positioned at x=2340, correctly incorporating its x=1920
+origin. All 89 available catalog entries loaded. Runtime checks cover centering,
+size bounds, grid geometry, search, running-widget filtering, click and Return
+adding, Escape, focus dismissal, and switching to/from the activity sidebar.
+Drag lifecycle checks exercise opacity, input pass-through, focus restoration,
+and hide prevention; an actual pointer-driven drag/drop was not automated.
+Software-rendered light/dark captures are in `preview/widget-picker-*.png`;
+compositor blur and shadows are not represented in those captures.
+
+Six `tools/verify-shell-overrides.py` tests passed, including selective removal,
+lock-screen retention, and a picker-only update preserving unrelated local
+edits and their original receipt hashes. `tools/install-widget-picker.py --check`
+validated the live installation. The picker-only update was installed with a
+backup of the previous files and receipt, and Plasma Shell was reloaded.
