@@ -701,6 +701,40 @@ those edits. Run `python3 tools/motion-lab.py --check` to verify all four palett
 across all seven families, reverse transitions, finite pulses, and reduced
 motion, and produce `preview/motion-lab.png`. Requires PySide6.
 
+### Applying the approved motion palette
+
+The approved palette is applied per user, with a complete file/configuration
+backup. Prepare and verify the installation before activating it:
+
+```sh
+python3 tools/install-motion-palette.py --stage .staging/motion-approved
+python3 tools/verify-dock-motion.py
+python3 tools/verify-motion-palette.py
+python3 tools/install-motion-palette.py --apply-stage .staging/motion-approved
+```
+
+Use a new staging directory when preparing another installation. The native
+verification command uses `.staging/motion-approved`. The installer prints a
+`--restore BACKUP` command; restoration refuses to overwrite files changed since
+installation. Restore this layer before uninstalling the underlying theme.
+
+This installs separately named KWin effects and a per-user dock package, refreshes
+the existing application and lock-screen QML overlays, and adds a shell-only
+Plasma controls overlay. Controls use 200 ms; dock feedback uses 370 ms and one
+450 ms attention cue; popup entry/exit uses 160/112 ms; window entry/exit uses
+240/168 ms; page navigation and session fades use 200 ms. The existing Magic Lamp
+minimize effect is retained at 240 ms. Dock speed controls continue to scale the
+370 ms baseline. The theme's native control style reloads through D-Bus; reopen
+Qt Quick applications to refresh cached components.
+
+KWin's workspace speed baseline makes Overview use 200 ms. Desktop slide uses
+spring physics and retains its gesture handling, so it has no exact millisecond
+duration. GTK/browser/third-party internal motion, busy indicators, notification
+dwell, and operation progress remain under their owners' control. Reapply this
+layer after refreshing the main theme or upgrading Plasma; staging checks the
+installed effect source before transforming it. The application and Plasma
+controls retain the system's animation-disabled setting.
+
 ### Other previews
 
 Reusable preview scenes and sample artwork live in `tools/preview/`.

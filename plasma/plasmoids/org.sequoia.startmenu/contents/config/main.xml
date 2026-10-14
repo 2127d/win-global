@@ -15,7 +15,7 @@
     <entry name="showAllApps" type="Bool"><default>true</default></entry>
     <entry name="showAccountName" type="Bool"><default>true</default></entry>
     <entry name="animationsEnabled" type="Bool"><default>true</default></entry>
-    <entry name="animationDuration" type="Int"><default>240</default><min>100</min><max>600</max></entry>
+    <entry name="animationDuration" type="Int"><default>200</default><min>100</min><max>600</max></entry>
     <entry name="shrinkOnLaunch" type="Bool"><default>true</default></entry>
     <entry name="closeOnLaunch" type="Bool"><default>true</default></entry>
     <entry name="favorites" type="StringList"><default>preferred://browser,org.kde.dolphin.desktop,org.kde.konsole.desktop,systemsettings.desktop,org.kde.kate.desktop,org.kde.discover.desktop</default></entry>

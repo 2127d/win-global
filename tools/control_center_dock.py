@@ -17,7 +17,7 @@ def style_dock(destination, source, plugin_dir, extract, replace):
     // Confine dock styling to horizontal icons-only tasks, never popup lists.
     readonly property bool sequoiaDock: tasksRoot.iconsOnly && !tasksRoot.vertical && !inPopup
     readonly property bool sequoiaMotion: sequoiaDock && Plasmoid.configuration.dockAnimations && Kirigami.Units.longDuration > 0
-    readonly property int sequoiaDuration: sequoiaMotion ? Math.round(Kirigami.Units.longDuration * 100 / Math.max(50, Plasmoid.configuration.dockSpeed)) : 0
+    readonly property int sequoiaDuration: sequoiaMotion ? Math.round(370 * 100 / Math.max(50, Plasmoid.configuration.dockSpeed)) : 0
     objectName: sequoiaDock ? "sequoiaDockTask" : ""
 ''')
     text = replace(text, '        id: frame\n', '''        id: frame
@@ -39,10 +39,10 @@ def style_dock(destination, source, plugin_dir, extract, replace):
         opacity: (task.model.IsActive ? 0.95 : 0.55) * pulse
         SequentialAnimation on pulse {
             running: task.sequoiaMotion && Plasmoid.configuration.dockAttentionAnimation && task.model.IsDemandingAttention
-            loops: Animation.Infinite
+            loops: 1
             onStopped: runningDot.pulse = 1
-            NumberAnimation { to: 0.35; duration: task.sequoiaDuration * 2; easing.type: Easing.InOutSine }
-            NumberAnimation { to: 1; duration: task.sequoiaDuration * 2; easing.type: Easing.InOutSine }
+            NumberAnimation { to: 0.35; duration: task.sequoiaMotion ? 225 : 0; easing.type: Easing.InOutSine }
+            NumberAnimation { to: 1; duration: task.sequoiaMotion ? 225 : 0; easing.type: Easing.InOutSine }
         }
     }
 

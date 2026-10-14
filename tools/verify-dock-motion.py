@@ -42,6 +42,12 @@ motion.setProperty('launchEnabled', False)
 motion.setProperty('launching', True); settle()
 assert motion.property('bounce') == 0
 baseline = motion.property('duration')
+assert baseline == 370
+motion.setProperty('launching', False)
+motion.setProperty('launchEnabled', True)
+motion.setProperty('launching', True)
+QTest.qWait(baseline + 100)
+assert motion.property('bounce') == 0, 'launch cue must finish even while the application is starting'
 motion.setProperty('speed', 200)
 assert motion.property('duration') <= baseline / 2 + 1
 print('PASS: hover modes, inward direction, press opt-out, launch motion, cancellation, disabled motion and speed')

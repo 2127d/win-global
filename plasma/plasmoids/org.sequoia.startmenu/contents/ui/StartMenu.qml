@@ -20,7 +20,7 @@ FocusScope {
     property var pendingModel: null
     property int pendingIndex: -1
     property string launchError: ""
-    readonly property int motionDuration: configuration.animationsEnabled ? configuration.animationDuration : 0
+    readonly property int motionDuration: configuration.animationsEnabled && Kirigami.Units.longDuration > 0 ? configuration.animationDuration : 0
     readonly property color textColor: Kirigami.Theme.textColor
     readonly property color secondaryColor: Kirigami.Theme.disabledTextColor
     readonly property color borderColor: Qt.alpha(Kirigami.Theme.textColor, 0.08)
@@ -148,10 +148,10 @@ FocusScope {
                     visible: !search.text.trim().length
                     initialItem: pageComponent
                     replaceEnter: Transition {
-                        NumberAnimation { property: "x"; from: pages.width; to: 0; duration: startMenu.motionDuration; easing.type: Easing.OutCubic }
+                        NumberAnimation { property: "x"; from: pages.width; to: 0; duration: startMenu.motionDuration; easing.type: Easing.InOutCubic }
                     }
                     replaceExit: Transition {
-                        NumberAnimation { property: "x"; from: 0; to: -pages.width; duration: startMenu.motionDuration; easing.type: Easing.OutCubic }
+                        NumberAnimation { property: "x"; from: 0; to: -pages.width; duration: startMenu.motionDuration; easing.type: Easing.InOutCubic }
                     }
                 }
                 QQC2.ScrollView {

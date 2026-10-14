@@ -1434,3 +1434,26 @@ lock-screen retention, and a picker-only update preserving unrelated local
 edits and their original receipt hashes. `tools/install-widget-picker.py --check`
 validated the live installation. The picker-only update was installed with a
 backup of the previous files and receipt, and Plasma Shell was reloaded.
+
+## Approved motion palette (2026-10-13)
+
+- Applied the reviewed 200 / 370 / 160 / 200 / 240 / 200 / 450 ms families
+  using `tools/install-motion-palette.py`, with per-user backups and targeted
+  configuration restoration. Menus exit in 112 ms; windows exit in 168 ms.
+- `tools/verify-motion-palette.py` passed in a private Wayland compositor:
+  all six separately named effects loaded, Overview reported 200 ms, real window
+  open/close/maximize/fullscreen/minimize and menu transitions ran, and the dock
+  and 200 ms Plasma switch loaded without QML runtime errors.
+- `tools/verify-dock-motion.py` passed, including 370 ms baseline, finite launch,
+  cancellation, reduced-motion behavior, direction, hover modes and speed scaling.
+- `tools/verify-start-menu.py` passed navigation, Back transitions, settings,
+  launching, keyboard interaction, reduced motion, and placement checks.
+- Live verification confirmed the six Sequoia motion effects replaced their stock
+  counterparts, Plasma remained active, and Overview reported 200 ms after a
+  KConfig change notification. All 24 targeted settings matched the installation
+  plan. Existing application windows were retained.
+- KWin desktop slide is spring-driven and remains gesture-controlled; its speed
+  uses the workspace baseline rather than an exact duration. Magic Lamp retains
+  its native shape at 240 ms. Third-party internal motion and operation progress
+  are outside the theme's control. Qt Quick applications need to be reopened to
+  discard cached QML; Qt Widgets receive the native style reload signal.
