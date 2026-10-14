@@ -56,8 +56,13 @@ def main():
     library = ROOT / '.staging/verify-desktop-menu.so'
     flags = shlex.split(subprocess.check_output(
         ['pkg-config', '--cflags', '--libs', 'Qt6Quick', 'Qt6Widgets', 'Qt6Test'], text=True))
+    qt_libexec = Path(subprocess.check_output(
+        ['pkg-config', '--variable=libexecdir', 'Qt6Core'], text=True).strip())
+    subprocess.run([str(qt_libexec / 'moc'), str(ROOT / 'tools/verify-desktop-menu.cpp'),
+        '-o', str(library.parent / 'verify-desktop-menu.moc')], check=True)
     subprocess.run(['c++', '-std=c++17', '-fPIC', '-shared',
-        str(ROOT / 'tools/verify-desktop-menu.cpp'), '-o', str(library), *flags], check=True)
+        str(ROOT / 'tools/verify-desktop-menu.cpp'), '-I', str(library.parent),
+        '-o', str(library), *flags], check=True)
     with tempfile.TemporaryDirectory(prefix='sequoia-desktop-menu-', ignore_cleanup_errors=True) as directory:
         stage = Path(directory)
         env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software',
@@ -78,6 +83,11 @@ def main():
                         stage / 'data/plasma/desktoptheme/sequoia-eleven-light')
         (stage / 'config/plasmarc').write_text('[Theme]\nname=sequoia-eleven-light\n')
         shutil.copy2(ROOT / 'color-schemes/SequoiaElevenLight.colors', stage / 'config/kdeglobals')
+        # Exercise configured folder names whose characters need URL encoding.
+        (stage / 'config/user-dirs.dirs').write_text(
+            'XDG_DESKTOP_DIR="$HOME/Desktop"\n'
+            'XDG_DOCUMENTS_DIR="$HOME/Documents with spaces # and %"\n'
+            'XDG_DOWNLOAD_DIR="$HOME/Downloads café"\n')
         logfile = ROOT / '.staging/desktop-menu-test.log'
         with logfile.open('w') as log:
             command = ([sys.executable, str(Path(__file__).resolve()), '--native-child', str(library)]

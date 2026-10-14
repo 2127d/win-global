@@ -63,8 +63,8 @@ PlasmoidItem {
     function run(command) { executable.connectSource(command); }
     function shellQuote(value) { return "'" + value.replace(/'/g, "'\\''") + "'"; }
     function openFolder(location) {
-        const path = StandardPaths.writableLocation(location);
-        if (path) Qt.openUrlExternally("file://" + path.split("/").map(encodeURIComponent).join("/"));
+        const url = StandardPaths.writableLocation(location);
+        if (url.toString()) Qt.openUrlExternally(url);
     }
     function configureDesktop() {
         const script = "var d = desktopForScreen(" + Plasmoid.containment.screen + "); if (d) d.showConfigurationInterface();";

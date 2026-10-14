@@ -20,6 +20,7 @@
 
 #include "sequoiaelevenstyleplugin.h"
 #include "sequoiaelevenstyle.h"
+#include "sequoiaelevenquickstyle.h"
 
 #include <QApplication>
 
@@ -30,6 +31,7 @@ namespace SequoiaEleven
 QStyle *StylePlugin::create(const QString &key)
 {
     if (key.toLower() == QStringLiteral("sequoiaeleven")) {
+        initializeQuickStyle();
         return new Style;
     }
     return nullptr;

@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "name": "Precise",
+  "durations": [
+    90,
+    80,
+    160,
+    200,
+    240,
+    300,
+    220
+  ],
+  "distance": 8,
+  "curve": "OutCubic",
+  "reducedMotion": false,
+  "exitRatio": 0.7,
+  "symmetricCategories": [
+    "navigation",
+    "workspace"
+  ],
+  "reducedMotionPolicy": "No travel, scale or pulse; fades capped at 80ms; direct input stays immediate",
+  "categories": [
+    {
+      "examples": "Buttons · switches · hover · keyboard focus",
+      "id": "controls",
+      "name": "Controls",
+      "owners": "Qt Widgets style engines; Qt Quick switches, buttons and focus states",
+      "rule": "Small, frequent feedback. Change color or position quickly; press feedback takes half the entry time.",
+      "shape": "Color + short travel"
+    },
+    {
+      "examples": "Icon hover · press · application launch",
+      "id": "dock",
+      "name": "Dock & launch",
+      "owners": "DockMotion.qml; task-manager launch feedback",
+      "rule": "One restrained lift for hover and one pulse for launch. No perpetual bounce; a running app keeps a static indicator.",
+      "shape": "Scale + lift"
+    },
+    {
+      "examples": "Go menu · tray · calendar · confirmation · notification entry",
+      "id": "surfaces",
+      "name": "Menus & popups",
+      "owners": "Plasma popups; application QMenus; tray and Start menu surfaces",
+      "rule": "Reveal from the source with a small translation and fade. Exit is shorter than entry. Notification dwell time is separate.",
+      "shape": "Fade + short travel"
+    },
+    {
+      "examples": "Settings pages · tabs · Start menu categories",
+      "id": "navigation",
+      "name": "In-app navigation",
+      "owners": "Start menu StackView; settings navigation; application page transitions",
+      "rule": "Keep direction meaningful and retain context. Use a smooth start and stop. Pointer-driven scrolling stays direct.",
+      "shape": "Directional transition"
+    },
+    {
+      "examples": "Open / close · minimize / restore · maximize",
+      "id": "windows",
+      "name": "Windows",
+      "owners": "KWin window effects; separate from application content animations",
+      "rule": "Larger surfaces need time to settle. Scale gently for open/close; reserve travel to a destination for minimize/restore.",
+      "shape": "Scale + fade"
+    },
+    {
+      "examples": "Virtual desktops · Overview · lock-screen transitions",
+      "id": "workspace",
+      "name": "Workspace & session",
+      "owners": "KWin desktop and Overview effects; lock-screen and splash QML",
+      "rule": "Large context changes are the slowest family. Desktop changes are directional; session changes crossfade. Authentication never waits for animation.",
+      "shape": "Broad transition"
+    },
+    {
+      "examples": "Success cue · app needs attention · validation feedback",
+      "id": "attention",
+      "name": "Status & attention",
+      "owners": "Dock attention; inline status; notification and validation cues",
+      "rule": "One finite pulse, then a persistent icon or label. Busy indicators and real progress follow the operation, not these transition timings.",
+      "shape": "Single pulse"
+    }
+  ],
+  "scope": "preview candidate; no system settings applied"
+}

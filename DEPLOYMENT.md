@@ -1,5 +1,36 @@
 # Installed desktop
 
+## Qt Quick styling for menu commands (installed 2026-10-13)
+
+Installed the rebuilt native application-style plugin with receipt-preserving
+`sudo python3 tools/install-switches.py --native`. Supported applications now
+activate the verified shared Quick overlay during native style initialization,
+covering direct executable launches and KDE's KCMLauncher API. The Qt control
+style is selected before QML loading; the Plasma shell and greeters are excluded.
+Close and reopen affected applications; menu widgets and Plasma need no restart.
+
+Direct System Monitor, Discover and stock System Settings previews passed, as
+did an actual KCMLauncher invocation with user wrappers excluded. Settings was
+tested in a disposable Wayland compositor. Merkuro's shared surfaces also pass;
+its separate embedded calendar layout continues to use the existing wrapper.
+The startup regression checks and six window-material cases pass. Previous
+native plugin: `.staging/quick-launch-before-20261013/sequoiaeleven6.so`.
+
+## Qt Quick styling refresh (installed 2026-10-13)
+
+KDE updates changed 50 source files recorded by the installed Quick overlay,
+causing its launcher to fall back to standard components. Rebuilt and installed
+the Quick component with `python3 tools/install-theme.py install --components
+quick-style --skip-deps`. All 255 current source fingerprints match, the installed
+wrapper selects the overlay, and the Quick ownership receipt validates.
+Fully close and reopen affected applications from the application menu.
+
+Component refresh validation now preserves edits in unselected components; an
+unrelated lock-screen edit had blocked this refresh. Incoming files and files
+retired by the selected component still receive edit protection. Other component
+receipt entries were verified unchanged. Previous overlay and receipt:
+`.staging/quick-repair-before-20261013/`.
+
 ## Native View and Power menus (installed 2026-10-06)
 
 Start menu 1.0.5 replaces both generic submenus with native Plasma dialogs.

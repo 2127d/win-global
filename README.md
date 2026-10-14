@@ -390,7 +390,16 @@ light/dark settings. Previews: [light](preview/switches-light.png),
 ## Floating Qt Quick applications
 
 Qt Quick apps use a separate component layer from the compiled Qt Widgets style.
-`./install.sh` includes this extension. For development, refresh it separately with:
+`./install.sh` includes this extension. After KDE updates, refresh just this
+component while preserving the theme installer's ownership records with:
+
+```sh
+python3 tools/install-theme.py install --components quick-style --skip-deps
+```
+
+The launcher falls back to standard styling when installed KDE components no
+longer match the overlay. Fully quit and reopen affected apps after refreshing.
+For a standalone development installation without the theme installer, use:
 
 ```sh
 python3 tools/install-quick-islands.py
@@ -403,8 +412,16 @@ Monitor, System Settings, Info Center, and Discover. Fully quit and reopen those
 application menu. No C++ style rebuild or logout is needed for this extension.
 Use `--apps systemmonitor` to select only that app on a first installation.
 
-The extension lives under `~/.local/share/sequoia-eleven/quick-islands/`. It leaves
-system QML files and the Plasma shell unchanged. Other compatible native Qt Quick
+The extension lives under `~/.local/share/sequoia-eleven/quick-islands/`. With the
+Sequoia Eleven application style selected, System Settings, Info Center, System
+Monitor, Discover, `kcmshell6`, and Merkuro automatically load the verified shared
+Quick surfaces at startup. This also covers executable launches from Control
+Center, Sequoia Desktop Menu, Kpple Menu, and terminal commands. The native style
+checks the overlay's source hashes before enabling it; Plasma and greeters are
+excluded. Installing this behavior requires rebuilding the native application
+style as well as installing the Quick component.
+
+System QML files and the Plasma shell stay unchanged. Other compatible native Qt Quick
 apps can be launched explicitly through its wrapper:
 
 ```sh
@@ -413,6 +430,8 @@ apps can be launched explicitly through its wrapper:
 
 Application-defined backgrounds and layout overrides may still need individual
 adjustments; GTK, Electron, and isolated Flatpak apps are outside this extension.
+Merkuro's additional calendar-specific layout overrides still use its desktop
+launcher or the explicit wrapper; direct commands get the shared Quick surfaces.
 Transparent schemes provide real canvas alpha and request compositor blur,
 while drawers, headers, framed views, and cards remain opaque. Solid schemes
 keep the same geometry with opaque canvases too. Restart applications
@@ -639,6 +658,45 @@ without changing its icon or clickable area. It saves the original QML alongside
 it as `main.qml.before-compact-highlight`. Reload the widget to see changes.
 
 ## Development and previews
+
+### Motion palette lab
+
+Open **Sequoia Motion Lab.desktop** or run `python3 tools/motion-lab.py` to
+compare Precise, Balanced, and Relaxed animation palettes. This standalone Qt
+preview changes no Plasma, KWin, application-style, or desktop animation settings.
+Choose a family on the left, compare two palettes, and click a scene to play it
+forward or backward. **Replay both** synchronizes the comparison; slow playback
+and reduced motion help inspect it. Each side's duration control edits just that
+family. Switching a side's preset resets that side's edits.
+
+| Family | Shared behavior | Precise / Balanced / Relaxed (ms) |
+| --- | --- | --- |
+| Controls | Hover, focus, toggles; short color and position transitions | 90 / 120 / 150 |
+| Dock & launch | Icon lift and a single launch pulse | 140 / 180 / 230 |
+| Menus & popups | Menus, tray, calendar, confirmation and notification entry | 160 / 220 / 280 |
+| In-app navigation | Settings pages, tabs and Start menu categories | 200 / 260 / 340 |
+| Windows | Open, close, minimize, restore and maximize | 240 / 320 / 420 |
+| Workspace & session | Virtual desktops, Overview and session transitions | 300 / 400 / 540 |
+| Status & attention | One finite cue, followed by a persistent state | 220 / 300 / 400 |
+
+These are proposed family timings, not measurements of installed effects.
+Entrances use OutCubic (Precise/Balanced) or OutQuint (Relaxed); exits use InCubic
+at 70% of entry time. Navigation and workspace transitions use InOutCubic at the
+same duration in either direction. Reduced motion removes translation, scaling
+and pulsing, with fades capped at 80 ms. Direct dragging, scrolling, actual
+progress, notification dwell, and authentication timing remain independent.
+Window and workspace scenes represent the proposed feel; they do not execute
+real KWin effects. Integration into each component happens after palette review.
+
+**Save A/B as candidate** exports all seven timings, category mappings, easing,
+and reduced-motion policy to a new JSON file in `preview/motion-palettes/`.
+Slow playback is only an inspection aid and is not exported. Candidates can mix
+family timings through the per-family controls; choosing a preset again resets
+those edits. Run `python3 tools/motion-lab.py --check` to verify all three palettes
+across all seven families, reverse transitions, finite pulses, and reduced
+motion, and produce `preview/motion-lab.png`. Requires PySide6.
+
+### Other previews
 
 Reusable preview scenes and sample artwork live in `tools/preview/`.
 The top-level `preview/` folder holds documentation images and selected visual

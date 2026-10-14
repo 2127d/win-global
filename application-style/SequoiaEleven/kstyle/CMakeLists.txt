@@ -48,6 +48,7 @@ set(sequoiaeleven_PART_SRCS
     sequoiaelevensplitterproxy.cpp
     sequoiaelevenstyle.cpp
     sequoiaelevenstyleplugin.cpp
+    sequoiaelevenquickstyle.cpp
     sequoiaeleventileset.cpp
     sequoiaelevenwindowmanager.cpp
     sequoiaeleventoolsareamanager.cpp
@@ -60,7 +61,8 @@ add_library(sequoiaeleven${QT_MAJOR_VERSION} MODULE ${sequoiaeleven_PART_SRCS})
 
 ################# find Qt modules #################
 if(QT_MAJOR_VERSION EQUAL 6)
-    find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Quick QuickWidgets)
+    find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Quick QuickWidgets QuickControls2)
+    target_link_libraries(sequoiaeleven${QT_MAJOR_VERSION} PRIVATE Qt6::QuickControls2)
 else()
     find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Quick QuickWidgets)
 endif()

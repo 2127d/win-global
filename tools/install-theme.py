@@ -367,8 +367,9 @@ def main():
         print('Removed tracked theme files and restored replaced files. '
               'Shared distribution packages and separately installed widgets were retained. Reboot to reload the login screen.')
         return
-    receipt.validate(force=args.force)
     components = set(args.components)
+    scope = lambda name: user_scope(name, components)
+    receipt.validate(force=args.force, scope=scope)
     if 'login' in components and not login_available():
         raise RuntimeError('The login theme requires Plasma Login Manager. Deselect the login screen on systems using SDDM.')
     if not args.skip_deps:
@@ -394,7 +395,8 @@ def main():
         validate_system_payload(native, components)
         user = stage / 'user'
         stage_user(user, args.prefix, components)
-        receipt.validate(payload_files(user), args.force)
+        incoming = payload_files(user)
+        receipt.validate(incoming, args.force, scope=lambda name: name in incoming or scope(name))
         obsolete = legacy_files(args.prefix, components) if not receipt.manifest.exists() else ()
         for name in obsolete:
             receipt.target(name)

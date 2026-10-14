@@ -2,6 +2,43 @@
 
 Environment: Fedora 44, Plasma 6.7.5, Qt 6.11.2, KDE Frameworks 6.30.
 
+## Qt Quick activation from menu commands (2026-10-13)
+
+- The native Sequoia style now enables the verified Quick overlay before
+  supported applications construct QML engines. It sets Qt's cached control
+  style as well as the import environment, so direct commands receive the same
+  shared surfaces as patched desktop entries.
+- `verify-quick-style-startup.py` loads real Kirigami pages through the compiled
+  plugin under all six supported executable names. It checks import preservation
+  and deduplication, native control-style selection, missing/malformed/empty/stale
+  manifests, and exclusion of Plasma, greeters and unrelated applications.
+- Real direct-launch previews pass for Discover and System Monitor. Stock System
+  Settings passes in a private Wayland compositor; offscreen rendering hits an
+  upstream touchpad module crash before its UI loads.
+- `preview-quick-islands.py --app systemsettings --dark --direct
+  --launch-via-kcm --platform wayland` also passes in that compositor, exercising
+  the API used by Plasma settings buttons with user executable wrappers excluded.
+  Direct Merkuro passes the shared-surface check; its embedded calendar layout
+  remains covered by the existing wrapper.
+- `verify-window-materials.py` passes all six application cases, including
+  Plasma's own blur-region handling and window surface recreation.
+
+## Qt Quick styling refresh (2026-10-13)
+
+- `verify-quick-islands.py` passes installation/refresh, argument forwarding,
+  stale-component fallback, edit protection and restoration.
+- `verify-quick-backgrounds.py` passes all four cases, including loading the
+  generated page in Qt and preserving the overlay after a failed build.
+- `verify-theme-installer.py` passes (19 tests, two skipped), including new
+  coverage for refreshing with unrelated edits and protecting incoming files
+  outside the retirement scope.
+- The isolated System Monitor dark/transparent preview loads the real floating
+  components and passes card opacity, navigation and clipping checks. Its private
+  D-Bus session requires execution outside the restricted sandbox.
+- After deployment, all 255 KDE/Merkuro source fingerprints match; the installed
+  wrapper selects the overlay and desktop controls style. The Quick receipt
+  validates and unrelated component receipt entries remain unchanged.
+
 ## Tray popup repair (2026-10-07)
 
 - The native tray fork copied CompactApplet.qml to contents/ui, but Plasma's

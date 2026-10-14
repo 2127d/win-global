@@ -77,6 +77,8 @@ def verify_discover_sidebar(tree):
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--app', choices=APPS, default='systemmonitor')
 parser.add_argument('--dark', action='store_true')
+parser.add_argument('--direct', action='store_true', help='Verify native-style activation without launcher QML environment overrides.')
+parser.add_argument('--launch-via-kcm', action='store_true', help='Launch System Settings through the KCMLauncher API used by Plasma buttons (requires --direct).')
 parser.add_argument('--material', choices=['solid', 'transparent'])
 parser.add_argument('--scale', default='1')
 parser.add_argument('--rtl', action='store_true')
@@ -88,6 +90,11 @@ parser.add_argument('--height', type=int, default=850, help='Preview window heig
 parser.add_argument('--calendar-view', choices=['month', 'week', 'schedule', 'tasks'], default='month')
 parser.add_argument('--collapse-sidebar', action='store_true', help='Capture Merkuro after collapsing its sidebar')
 args = parser.parse_args()
+if args.launch_via_kcm and (not args.direct or args.app != 'systemsettings'):
+    parser.error('--launch-via-kcm requires --app systemsettings --direct')
+application = shutil.which(APPS[args.app], path=os.defpath if args.direct else None)
+if application is None:
+    parser.error(f'{APPS[args.app]} is not installed')
 if args.collapse_sidebar and args.app != 'merkuro':
     parser.error('--collapse-sidebar requires --app merkuro')
 overlay = build(ROOT / '.staging/quick-islands')
@@ -98,6 +105,10 @@ if not helper.exists() or helper.stat().st_mtime < source.stat().st_mtime:
     subprocess.run(['c++', '-shared', '-fPIC', str(source), '-o', str(helper), *flags], check=True)
 mode = 'dark' if args.dark else 'light'
 suffix = '-' + args.material if args.material else ''
+if args.direct:
+    suffix += '-direct'
+if args.launch_via_kcm:
+    suffix += '-kcm-launch'
 preview_name = args.kcm if args.app == 'settingspage' else args.app
 if args.app == 'systemsettings' and args.kcm != 'kcm_landingpage':
     preview_name += '-' + args.kcm
@@ -124,14 +135,24 @@ with tempfile.TemporaryDirectory(prefix='sequoia-quick-preview-') as temporary:
                QT_STYLE_OVERRIDE='SequoiaEleven', QML_IMPORT_PATH=str(overlay), QT_SCALE_FACTOR=args.scale,
                QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'))
     env.pop('LD_PRELOAD', None)
+    if args.direct:
+        quick = config / 'data/sequoia-eleven/quick-islands'
+        quick.mkdir(parents=True)
+        (quick / 'qml').symlink_to(overlay, target_is_directory=True)
+        for key in ('QML_IMPORT_PATH', 'QML2_IMPORT_PATH', 'QT_QUICK_CONTROLS_STYLE', 'SEQUOIA_MERKURO_QML'):
+            env.pop(key, None)
+        # KCMLauncher resolves commands via PATH. Exclude user wrappers so this
+        # test proves the native style works on its own.
+        env['PATH'] = os.defpath
     if args.app == 'merkuro':
         env['AKONADI_INSTANCE'] = 'sequoia-preview-' + uuid.uuid4().hex[:10]
-        env['SEQUOIA_MERKURO_QML'] = str(overlay / 'org/kde/merkuro/calendar')
-    preload = str(helper) + (':' + str(overlay / 'merkuro-qml.so') if args.app == 'merkuro' else '')
+        if not args.direct:
+            env['SEQUOIA_MERKURO_QML'] = str(overlay / 'org/kde/merkuro/calendar')
+    preload = str(helper) + (':' + str(overlay / 'merkuro-qml.so') if args.app == 'merkuro' and not args.direct else '')
     command = ['dbus-run-session', '--', 'python3', str(ROOT / 'tools/quick-preview-session.py'),
                'env', f'LD_PRELOAD={preload}', f'SEQUOIA_CAPTURE_PATH={output}']
     command.append('SEQUOIA_VERIFY_SCROLL_CLIPPING=1')
-    command.append('SEQUOIA_CAPTURE_APP=' + Path(shutil.which(APPS[args.app])).resolve().name)
+    command.append('SEQUOIA_CAPTURE_APP=' + Path(application).resolve().name)
     command.append(f'SEQUOIA_CAPTURE_HEIGHT={args.height}')
     if args.scroll_sidebar:
         command.append('SEQUOIA_SCROLL_SIDEBAR=1')
@@ -145,7 +166,15 @@ with tempfile.TemporaryDirectory(prefix='sequoia-quick-preview-') as temporary:
         command.append('SEQUOIA_VERIFY_NAVIGATION=1')
     if args.app in ('systemsettings', 'kinfocenter'):
         command.append('SEQUOIA_VERIFY_SETTINGS_SIDEBAR=1')
-    command.append(APPS[args.app])
+    if args.launch_via_kcm:
+        from PySide6.QtCore import QLibraryInfo
+        launcher = config / 'launch-settings.qml'
+        launcher.write_text('import QtQuick\nimport org.kde.kcmutils\nItem {\n'
+                           '    Component.onCompleted: KCMLauncher.openSystemSettings("kcm_landingpage")\n'
+                           '    Timer { interval: 12000; running: true; onTriggered: Qt.quit() }\n}\n')
+        command.extend([str(Path(QLibraryInfo.path(QLibraryInfo.BinariesPath)) / 'qml'), str(launcher)])
+    else:
+        command.append(application)
     if args.app == 'settingspage':
         command.append(args.kcm)
     elif args.app == 'systemsettings' and args.kcm != 'kcm_landingpage':
@@ -176,7 +205,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-quick-preview-') as temporary:
     if errors:
         raise RuntimeError('\n'.join(errors))
     tree = Path(str(output) + '.tree').read_text()
-    if args.app == 'merkuro':
+    if args.app == 'merkuro' and not args.direct:
         assert 'sequoiaMerkuroCalendar' in tree, 'Merkuro still uses its embedded unstyled page'
         expected_view = {'month': 'MonthView_', 'week': 'HourlyView_', 'schedule': 'ScheduleView_', 'tasks': 'TodoView_'}[args.calendar_view]
         assert expected_view in tree, ('Calendar navigation did not select', args.calendar_view)

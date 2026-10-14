@@ -252,6 +252,44 @@ class ThemeTests(unittest.TestCase):
                         '--system-root', str(system)], check=True, capture_output=True)
         self.assertFalse((self.live / 'color-schemes/SequoiaElevenLight.colors').exists())
 
+    def test_refresh_preserves_unselected_edits_but_protects_incoming(self):
+        self.put(self.stage, 'theme/icons/one', 'icons')
+        self.put(self.stage, 'theme/colors/one', 'colors')
+        self.receipt().install(self.stage)
+        self.put(self.live, 'theme/icons/one', 'custom icons')
+        original_entry = self.receipt().data['files']['theme/icons/one'].copy()
+        (self.stage / 'theme/icons/one').unlink()
+        self.put(self.stage, 'theme/colors/one', 'updated colors')
+        scope = lambda name: name.startswith('theme/colors/')
+        self.receipt().install(self.stage, scope=scope)
+        self.assertEqual((self.live / 'theme/icons/one').read_text(), 'custom icons')
+        self.assertEqual(self.receipt().data['files']['theme/icons/one'], original_entry)
+        self.assertEqual((self.live / 'theme/colors/one').read_text(), 'updated colors')
+        # Incoming files are protected even outside the retirement scope.
+        self.put(self.stage, 'theme/icons/one', 'replacement')
+        with self.assertRaisesRegex(RuntimeError, 'edited'):
+            self.receipt().install(self.stage, scope=scope)
+        (self.stage / 'theme/icons/one').unlink()
+        self.put(self.live, 'theme/colors/one', 'custom colors')
+        with self.assertRaisesRegex(RuntimeError, 'edited'):
+            self.receipt().install(self.stage, scope=scope)
+
+    def test_cli_refresh_preserves_unselected_edits(self):
+        unrelated = 'plasma/shells/org.kde.plasma.desktop/contents/lockscreen/SequoiaWallpaperFader.qml'
+        self.put(self.stage, unrelated, 'installed lock screen')
+        receipt = Receipt(self.live, installer.USER_STATE, installer.user_allowed)
+        receipt.install(self.stage)
+        self.put(self.live, unrelated, 'custom lock screen')
+        original_entry = receipt.data['files'][unrelated].copy()
+        result = subprocess.run([sys.executable, str(ROOT / 'tools/install-theme.py'),
+            'install', '--skip-deps', '--prefix', str(self.live), '--components', 'colors'],
+            capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((self.live / unrelated).read_text(), 'custom lock screen')
+        current = Receipt(self.live, installer.USER_STATE, installer.user_allowed)
+        self.assertEqual(current.data['files'][unrelated], original_entry)
+        self.assertTrue((self.live / 'color-schemes/SequoiaElevenLight.colors').exists())
+
     def test_widgets_are_independent_and_preserve_separate_installations(self):
         separate = self.put(self.live, 'plasma/plasmoids/org.kpple.kppleMenu/metadata.json', 'my widget')
         installer.stage_user(self.stage, self.live, {'widgets'})

@@ -11,7 +11,18 @@
 #include <QMenu>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QDesktopServices>
+#include <QStandardPaths>
+#include <QUrl>
 #include <cstdlib>
+
+class FolderUrlReceiver : public QObject {
+    Q_OBJECT
+public:
+    QList<QUrl> urls;
+public slots:
+    void open(const QUrl &url) { urls.append(url); }
+};
 
 static void require(bool ok, const char *message) {
     if (!ok) { fprintf(stderr, "FAIL: %s\n", message); std::_Exit(2); }
@@ -96,6 +107,32 @@ static void start() {
                 require(!eval(root, "popupOpen").toBool(), "Escape dismisses native popup");
             }
             require(eval(root, "shellQuote(\"a'b\")").toString() == QString::fromLatin1("'a'\\''b'"), "command quoting");
+            FolderUrlReceiver receiver;
+            QDesktopServices::setUrlHandler("file", &receiver, "open");
+            QDesktopServices::setUrlHandler("trash", &receiver, "open");
+            const QList<QStandardPaths::StandardLocation> locations = {
+                QStandardPaths::HomeLocation, QStandardPaths::DesktopLocation,
+                QStandardPaths::DocumentsLocation, QStandardPaths::DownloadLocation
+            };
+            // Click every Go destination and capture the URL handed to the desktop,
+            // without launching file-manager windows in the user's session.
+            for (int i = 0; i < 5; ++i) {
+                eval(root, "fullRepresentationItem.openMenu(2)");
+                QTest::qWait(150);
+                menu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
+                require(menu && menu->actions().size() == 6, "Go menu opens with all destinations");
+                QTest::mouseClick(menu, Qt::LeftButton, Qt::NoModifier,
+                    menu->actionGeometry(menu->actions().at(i < 4 ? i : 5)).center());
+                QTest::qWait(150);
+                require(receiver.urls.size() == i + 1, "Go entry hands its URL to the desktop");
+                const auto expected = i < 4
+                    ? QUrl::fromLocalFile(QStandardPaths::writableLocation(locations.at(i)))
+                    : QUrl(QStringLiteral("trash:/"));
+                require(receiver.urls.last() == expected, "Go entry opens the configured destination without corrupting its URL");
+            }
+            QDesktopServices::unsetUrlHandler("file");
+            QDesktopServices::unsetUrlHandler("trash");
+            fprintf(stderr, "PASS: Home, Desktop, Documents, Downloads and Trash dispatch the correct URLs\n");
             fprintf(stderr, "PASS: four menus load and open; restart confirmation cancels safely\n");
         }
         if (qEnvironmentVariableIsSet("SEQUOIA_DESKTOP_MENU_NATIVE")) {
@@ -167,3 +204,4 @@ static void start() {
     });
 }
 Q_COREAPP_STARTUP_FUNCTION(start)
+#include "verify-desktop-menu.moc"

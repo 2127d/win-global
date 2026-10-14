@@ -137,7 +137,11 @@ class Receipt:
         original_overrides = original_overrides or {}
         if not incoming:
             raise RuntimeError('Refusing to install an empty theme payload.')
-        self.validate(incoming, force)
+        # Check everything this transaction can replace or retire, while leaving
+        # edits in unselected components alone. Incoming files always count,
+        # even when the caller's retirement scope does not include them.
+        self.validate(incoming, force, scope=None if scope is None else
+                      lambda name: name in incoming or scope(name))
         old = json.loads(json.dumps(self.data))
         for name in obsolete:
             target = self.target(name)

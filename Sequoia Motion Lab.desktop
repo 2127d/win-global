@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Sequoia Motion Lab
+Comment=Compare animation palettes without changing desktop settings
+Icon=preferences-desktop-effects
+Exec=/usr/bin/python3 -c "import pathlib,runpy,sys; from urllib.parse import unquote,urlparse; p=sys.argv[1]; p=unquote(urlparse(p).path) if p.startswith('file:') else p; s=pathlib.Path(p).resolve().parent/'tools/motion-lab.py'; sys.argv=[str(s)]; runpy.run_path(str(s),run_name='__main__')" %k
+Terminal=false
+Categories=Settings;DesktopSettings;
