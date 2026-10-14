@@ -662,26 +662,30 @@ it as `main.qml.before-compact-highlight`. Reload the widget to see changes.
 ### Motion palette lab
 
 Open **Sequoia Motion Lab.desktop** or run `python3 tools/motion-lab.py` to
-compare Precise, Balanced, and Relaxed animation palettes. This standalone Qt
+compare Your palette, Precise, Balanced, and Relaxed animation palettes. The lab
+opens with Your palette beside Balanced. This standalone Qt
 preview changes no Plasma, KWin, application-style, or desktop animation settings.
 Choose a family on the left, compare two palettes, and click a scene to play it
 forward or backward. **Replay both** synchronizes the comparison; slow playback
 and reduced motion help inspect it. Each side's duration control edits just that
 family. Switching a side's preset resets that side's edits.
 
-| Family | Shared behavior | Precise / Balanced / Relaxed (ms) |
-| --- | --- | --- |
-| Controls | Hover, focus, toggles; short color and position transitions | 90 / 120 / 150 |
-| Dock & launch | Icon lift and a single launch pulse | 140 / 180 / 230 |
-| Menus & popups | Menus, tray, calendar, confirmation and notification entry | 160 / 220 / 280 |
-| In-app navigation | Settings pages, tabs and Start menu categories | 200 / 260 / 340 |
-| Windows | Open, close, minimize, restore and maximize | 240 / 320 / 420 |
-| Workspace & session | Virtual desktops, Overview and session transitions | 300 / 400 / 540 |
-| Status & attention | One finite cue, followed by a persistent state | 220 / 300 / 400 |
+| Family | Shared behavior | Your palette (ms) | Precise / Balanced / Relaxed (ms) |
+| --- | --- | --- | --- |
+| Controls | Hover, focus, toggles; short color and position transitions | 200 | 90 / 120 / 150 |
+| Dock & launch | Icon lift and a single launch pulse | 370 | 140 / 180 / 230 |
+| Menus & popups | Menus, tray, calendar, confirmation and notification entry | 160 (Precise) | 160 / 220 / 280 |
+| In-app navigation | Settings pages, tabs and Start menu categories | 200 | 200 / 260 / 340 |
+| Windows | Open, close, minimize, restore and maximize | 240 (Precise) | 240 / 320 / 420 |
+| Workspace & session | Virtual desktops, Overview and session transitions | 200 | 300 / 400 / 540 |
+| Status & attention | One finite cue, followed by a persistent state | 450 | 220 / 300 / 400 |
 
 These are proposed family timings, not measurements of installed effects.
-Entrances use OutCubic (Precise/Balanced) or OutQuint (Relaxed); exits use InCubic
-at 70% of entry time. Navigation and workspace transitions use InOutCubic at the
+Entrances use OutCubic (Your palette/Precise/Balanced) or OutQuint (Relaxed).
+Your palette uses InCubic exits at 85% of entry time, except menus and windows,
+which use the full Precise behavior: 8 px travel and exits at 70% (112 ms for
+menus, 168 ms for windows). The original presets use 70%.
+Navigation and workspace transitions use InOutCubic at the
 same duration in either direction. Reduced motion removes translation, scaling
 and pulsing, with fades capped at 80 ms. Direct dragging, scrolling, actual
 progress, notification dwell, and authentication timing remain independent.
@@ -689,10 +693,11 @@ Window and workspace scenes represent the proposed feel; they do not execute
 real KWin effects. Integration into each component happens after palette review.
 
 **Save A/B as candidate** exports all seven timings, category mappings, easing,
-and reduced-motion policy to a new JSON file in `preview/motion-palettes/`.
+category-specific travel and exit overrides, and reduced-motion policy to a new
+JSON file in `preview/motion-palettes/`.
 Slow playback is only an inspection aid and is not exported. Candidates can mix
 family timings through the per-family controls; choosing a preset again resets
-those edits. Run `python3 tools/motion-lab.py --check` to verify all three palettes
+those edits. Run `python3 tools/motion-lab.py --check` to verify all four palettes
 across all seven families, reverse transitions, finite pulses, and reduced
 motion, and produce `preview/motion-lab.png`. Requires PySide6.
 

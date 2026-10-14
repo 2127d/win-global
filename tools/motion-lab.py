@@ -57,7 +57,8 @@ app = QGuiApplication(sys.argv[:1])
 app.setApplicationName('Sequoia Motion Lab')
 engine = QQmlApplicationEngine()
 store = CandidateStore()
-engine.rootContext().setContextProperty('motionData', json.loads((ASSETS / 'palettes.json').read_text()))
+motion_data = json.loads((ASSETS / 'palettes.json').read_text())
+engine.rootContext().setContextProperty('motionData', motion_data)
 engine.rootContext().setContextProperty('candidateStore', store)
 qml_errors = []
 engine.warnings.connect(lambda warnings: qml_errors.extend(str(w) for w in warnings))
@@ -74,7 +75,7 @@ if args.check:
         assert QMetaObject.invokeMethod(obj, method, Qt.DirectConnection), method
     for category in range(7):
         window.setProperty('categoryIndex', category)
-        for preset in range(3):
+        for preset in range(len(motion_data['presets'])):
             panel = window.findChild(QObject, 'paletteA')
             panel.setProperty('presetIndex', preset)
             sample = window.findChild(QObject, 'sampleA')
@@ -101,13 +102,26 @@ if args.check:
         assert sample.property('progress') > .99, 'reduced motion failed to settle'
     window.setProperty('reducedMotion', False)
     window.setProperty('categoryIndex', 2)
-    window.findChild(QObject, 'paletteA').setProperty('presetIndex', 0)
+    window.findChild(QObject, 'paletteA').setProperty('presetIndex', 3)
     window.findChild(QObject, 'paletteB').setProperty('presetIndex', 1)
     exported = QMetaObject.invokeMethod(window.findChild(QObject, 'paletteA'),
         'exportCandidate', Qt.DirectConnection, Q_RETURN_ARG('QVariant'))
     candidate = json.loads(exported)
     assert len(candidate['durations']) == len(candidate['categories']) == 7
-    assert candidate['name'] == 'Precise' and not candidate['reducedMotion']
+    assert candidate['name'] == 'Your palette' and not candidate['reducedMotion']
+    assert candidate['durations'] == [200, 370, 160, 200, 240, 200, 450]
+    assert candidate['exitRatio'] == .85
+    assert window.findChild(QObject, 'sampleA').property('exitMs') == 112
+    for index, key in ((2, 'surfaces'), (4, 'windows')):
+        window.setProperty('categoryIndex', index)
+        sample = window.findChild(QObject, 'sampleA')
+        precise = motion_data['presets'][0]
+        assert sample.property('entryDuration') == precise['durations'][index]
+        assert sample.property('distance') == precise['distance']
+        assert sample.property('curve') == precise['curve']
+        assert sample.property('exitRatio') == .7
+        assert candidate['categoryOverrides'][key] == {'distance': 8, 'curve': 'OutCubic', 'exitRatio': .7}
+    window.setProperty('categoryIndex', 2)
     assert 'playbackScale' not in candidate
     import tempfile
     with tempfile.TemporaryDirectory(prefix='sequoia-motion-export-') as temporary:
@@ -122,7 +136,7 @@ if args.check:
     path = ROOT / 'preview/motion-lab.png'
     assert window.grabWindow().save(str(path))
     assert not qml_errors, '\n'.join(qml_errors)
-    print('PASS: seven families × three palettes; forward/reverse motion, finite attention, reduced motion; no QML warnings')
+    print(f"PASS: seven families × {len(motion_data['presets'])} palettes; forward/reverse motion, finite attention, reduced motion; no QML warnings")
     print('Preview:', path)
 else:
     sys.exit(app.exec())

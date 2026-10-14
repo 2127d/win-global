@@ -8,10 +8,15 @@ Rectangle {
     required property int category
     required property bool reduced
     required property real playbackScale
-    property int presetIndex: side === "A" ? 0 : 1
+    property int presetIndex: side === "A" ? 3 : 1
     property var durations: motionData.presets[presetIndex].durations.slice()
     readonly property var preset: motionData.presets[presetIndex]
+    readonly property var categoryStyle: (preset.categoryOverrides || {})[motionData.categories[category].id] || {}
     readonly property int currentDuration: durations[category]
+    readonly property real exitRatio: categoryStyle.exitRatio === undefined
+        ? (preset.exitRatio === undefined ? .7 : preset.exitRatio) : categoryStyle.exitRatio
+    readonly property int distance: categoryStyle.distance === undefined ? preset.distance : categoryStyle.distance
+    readonly property string curve: categoryStyle.curve || preset.curve
     signal saved(string message)
     color: "white"; radius: 18; border.color: "#dce2eb"
     implicitHeight: content.implicitHeight + 40
@@ -21,7 +26,8 @@ Rectangle {
     function exportCandidate() {
         return JSON.stringify({schemaVersion: 1, name: preset.name, durations: durations,
             distance: preset.distance, curve: preset.curve, reducedMotion: reduced,
-            exitRatio: .7, symmetricCategories: ["navigation", "workspace"],
+            exitRatio: preset.exitRatio === undefined ? .7 : preset.exitRatio,
+            categoryOverrides: preset.categoryOverrides || {}, symmetricCategories: ["navigation", "workspace"],
             reducedMotionPolicy: "No travel, scale or pulse; fades capped at 80ms; direct input stays immediate",
             categories: motionData.categories, scope: "preview candidate; no system settings applied"});
     }
@@ -44,8 +50,9 @@ Rectangle {
         MotionSample {
             id: sample; objectName: "sample" + panel.side
             Layout.fillWidth: true; Layout.preferredHeight: 256
-            category: panel.category; entryDuration: panel.currentDuration; distance: panel.preset.distance
-            curve: panel.preset.curve; reduced: panel.reduced; playbackScale: panel.playbackScale
+            category: panel.category; entryDuration: panel.currentDuration; distance: panel.distance
+            curve: panel.curve; reduced: panel.reduced; playbackScale: panel.playbackScale
+            exitRatio: panel.exitRatio
         }
         Text { text: "Click the scene or press Space to toggle."; color: "#6e7d92"; font.pixelSize: 12 }
         RowLayout {
@@ -60,8 +67,8 @@ Rectangle {
         Text {
             Layout.fillWidth: true; wrapMode: Text.WordWrap; color: "#6e7d92"; font.pixelSize: 12
             text: (panel.category === 3 || panel.category === 5 ? "Both directions: " : "Exit: ")
-                + Math.round(panel.currentDuration * (panel.category === 3 || panel.category === 5 ? 1 : .7)) + " ms · "
-                + (panel.category === 3 || panel.category === 5 ? "InOutCubic" : panel.preset.curve + " in / InCubic out")
+                + Math.round(panel.currentDuration * (panel.category === 3 || panel.category === 5 ? 1 : panel.exitRatio)) + " ms · "
+                + (panel.category === 3 || panel.category === 5 ? "InOutCubic" : panel.curve + " in / InCubic out")
                 + (panel.reduced ? "\nReduced motion: no movement; fade ≤ 80 ms." : "")
         }
         RowLayout {

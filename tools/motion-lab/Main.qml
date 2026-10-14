@@ -64,7 +64,7 @@ ApplicationWindow {
                     }
                     Rectangle { Layout.fillWidth: true; height: 1; color: "#dce2eb"; Layout.topMargin: 14; Layout.bottomMargin: 10 }
                     Text { text: "THE SHARED RULE"; color: "#7a879a"; font.pixelSize: 10; font.letterSpacing: 1.1 }
-                    Text { Layout.fillWidth: true; text: "Small actions respond quickly. Bigger changes get more time. Exits are shorter; direct input stays immediate."; color: "#66758b"; font.pixelSize: 13; wrapMode: Text.WordWrap; lineHeight: 1.3 }
+                    Text { Layout.fillWidth: true; text: "Give controls and feedback time to settle. Keep menus, navigation and workspace changes fluid and responsive. Direct input stays immediate."; color: "#66758b"; font.pixelSize: 13; wrapMode: Text.WordWrap; lineHeight: 1.3 }
                 }
                 ColumnLayout {
                     Layout.fillWidth: true; Layout.alignment: Qt.AlignTop; spacing: 12

@@ -8,12 +8,13 @@ Rectangle {
     required property string curve
     required property bool reduced
     required property real playbackScale
+    required property real exitRatio
     property real progress: 0
     property bool opened: false
     readonly property real travel: reduced ? 0 : distance
     readonly property real pulse: reduced || !opened ? 0 : Math.sin(progress * Math.PI)
     readonly property int enterMs: Math.round((reduced ? Math.min(entryDuration, 80) : entryDuration) * playbackScale)
-    readonly property int exitMs: Math.round(enterMs * (category === 3 || category === 5 ? 1 : .7))
+    readonly property int exitMs: Math.round(enterMs * (category === 3 || category === 5 ? 1 : exitRatio))
     readonly property int enterCurve: category === 3 || category === 5 ? Easing.InOutCubic : curve === "OutQuint" ? Easing.OutQuint : Easing.OutCubic
     color: "#122039"
     radius: 16

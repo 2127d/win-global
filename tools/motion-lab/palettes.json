@@ -6,12 +6,18 @@
     {"id":"surfaces", "name":"Menus & popups", "examples":"Go menu · tray · calendar · confirmation · notification entry", "rule":"Reveal from the source with a small translation and fade. Exit is shorter than entry. Notification dwell time is separate.", "shape":"Fade + short travel", "owners":"Plasma popups; application QMenus; tray and Start menu surfaces"},
     {"id":"navigation", "name":"In-app navigation", "examples":"Settings pages · tabs · Start menu categories", "rule":"Keep direction meaningful and retain context. Use a smooth start and stop. Pointer-driven scrolling stays direct.", "shape":"Directional transition", "owners":"Start menu StackView; settings navigation; application page transitions"},
     {"id":"windows", "name":"Windows", "examples":"Open / close · minimize / restore · maximize", "rule":"Larger surfaces need time to settle. Scale gently for open/close; reserve travel to a destination for minimize/restore.", "shape":"Scale + fade", "owners":"KWin window effects; separate from application content animations"},
-    {"id":"workspace", "name":"Workspace & session", "examples":"Virtual desktops · Overview · lock-screen transitions", "rule":"Large context changes are the slowest family. Desktop changes are directional; session changes crossfade. Authentication never waits for animation.", "shape":"Broad transition", "owners":"KWin desktop and Overview effects; lock-screen and splash QML"},
+    {"id":"workspace", "name":"Workspace & session", "examples":"Virtual desktops · Overview · lock-screen transitions", "rule":"Keep context changes fluid and responsive. Desktop changes are directional; session changes crossfade. Authentication never waits for animation.", "shape":"Broad transition", "owners":"KWin desktop and Overview effects; lock-screen and splash QML"},
     {"id":"attention", "name":"Status & attention", "examples":"Success cue · app needs attention · validation feedback", "rule":"One finite pulse, then a persistent icon or label. Busy indicators and real progress follow the operation, not these transition timings.", "shape":"Single pulse", "owners":"Dock attention; inline status; notification and validation cues"}
   ],
   "presets": [
     {"name":"Precise", "description":"Quick response, minimal travel.", "durations":[90,140,160,200,240,300,220], "distance":8, "curve":"OutCubic"},
     {"name":"Balanced", "description":"Clear response with a soft landing.", "durations":[120,180,220,260,320,400,300], "distance":14, "curve":"OutCubic"},
-    {"name":"Relaxed", "description":"More room to follow larger changes.", "durations":[150,230,280,340,420,540,400], "distance":20, "curve":"OutQuint"}
+    {"name":"Relaxed", "description":"More room to follow larger changes.", "durations":[150,230,280,340,420,540,400], "distance":20, "curve":"OutQuint"},
+    {"name":"Your palette", "description":"Gentle feedback. Precise menus and windows.", "durations":[200,370,160,200,240,200,450], "distance":14, "curve":"OutCubic", "exitRatio":0.85,
+      "categoryOverrides": {
+        "surfaces": {"distance":8, "curve":"OutCubic", "exitRatio":0.7},
+        "windows": {"distance":8, "curve":"OutCubic", "exitRatio":0.7}
+      }
+    }
   ]
 }
