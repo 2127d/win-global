@@ -43,7 +43,7 @@ its bundled wallpaper, not a personal wallpaper from the original machine.
 
 This archive includes the theme, layout, installer and sources for the optional
 Settings/Gwenview makeovers. It excludes build caches, SDKs, screenshots, backups,
-Falkon/Firefox projects.
+and Firefox projects.
 
 The installer supports Arch, Fedora, Ubuntu and Debian when their releases
 provide the required Plasma 6 development packages. Tested with Fedora 44,

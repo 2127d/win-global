@@ -443,13 +443,6 @@ sizing when switching calculator modes.
 Manual resizing stays available; maximized and fullscreen windows retain their size.
 Select **KCalc makeover** in the installer, or build and install it with
 `python3 tools/build-kcalc.py` and `python3 tools/install-kcalc.py --skip-build`.
-The [Falkon browser makeover](apps/falkon/SEQUOIA.md) adds rounded tabs, a unified
-address bar, searchable open tabs, a Library menu, and a refreshed light/dark
-start page to the native Qt 6 browser, plus stock ad/tracker protection using
-uBlock Origin's network engine and Falkon's CSS filtering. The active Git
-checkout is `apps/falkon`; the earlier custom source remains in `apps/falkon1`.
-Build with `python3 tools/build-falkon.py` and run with
-`python3 apps/falkon/launch.py` using its dedicated browser profile.
 The [Gwenview override workspace](apps/gwenview/README.md) adds a clean Add files / drag-and-drop
 welcome page and a recent-image thumbnail sidebar. Its native viewing and
 editing controls remain available; reversible build/install instructions are linked there.
