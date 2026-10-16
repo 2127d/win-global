@@ -1,0 +1,11 @@
+{
+    "KPlugin": {
+        "Name": "Taskbar",
+        "Description": "Integrated taskbar icons, spacing, launchers, and running indicators",
+        "Icon": "preferences-system-windows",
+        "License": "MIT"
+    },
+    "X-KDE-System-Settings-Parent-Category": "appearance",
+    "X-KDE-Weight": 65,
+    "X-KDE-Keywords": "taskbar,panel,dock,icons,spacing,launchers,tasks"
+}

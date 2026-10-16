@@ -1362,3 +1362,25 @@ backup of the previous files and receipt, and Plasma Shell was reloaded.
   its native shape at 240 ms. Third-party internal motion and operation progress
   are outside the theme's control. Qt Quick applications need to be reopened to
   discard cached QML; Qt Widgets receive the native style reload signal.
+
+
+### Integrated Sequoia Taskbar — 2026-10-16
+
+- Built the independent panel factory, shared settings QML plugin, and native
+  Appearance → Taskbar KCM against Plasma 6.7.5, Qt 6.11.2, and Frameworks 6.31.
+- CTest passed persistence, discard/defaults, concurrent pin preservation, input
+  normalization, fixed/fill/panel sizing, and overflow calculation checks.
+- A private KWin Wayland/Plasma session loaded the native KCM and verified Apply
+  state, then created the taskbar with zero child applets. It rendered the default
+  launcher icons and application menu, launched a temporary test application,
+  minimized/restored its window, and rendered an added digital-clock widget.
+- Native checks passed fixed-size behavior across panel-height changes, fill-mode
+  button expansion without icon growth, custom-length overflow, live KConfig
+  updates, and vertical orientation. Test desktop configuration used isolated XDG
+  directories and a private session bus.
+- Installation tests in a temporary prefix passed install/update, original-file
+  restoration, protection of edited managed files, and modified-stage rejection.
+- The stage is `.staging/taskbar-complete`; it has not been installed into the
+  current desktop. Use `tools/install-taskbar.py` to install it. Sources, build
+  instructions, compatibility checks, and remaining interactive-test limitations
+  are documented in `plasma/taskbar/README.md`.

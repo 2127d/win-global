@@ -1,0 +1,15 @@
+{
+  "KPackageStructure": "Plasma/LayoutTemplate",
+  "KPlugin": {
+    "Id": "org.sequoia.taskbar.panel",
+    "Name": "Sequoia Taskbar",
+    "Description": "Taskbar with built-in applications and centralized appearance settings",
+    "Icon": "preferences-system-windows",
+    "License": "MIT",
+    "Version": "0.1.0"
+  },
+  "X-Plasma-ContainmentCategories": [
+    "panel"
+  ],
+  "X-Plasma-Shell": "plasmashell"
+}

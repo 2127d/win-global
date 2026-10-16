@@ -1,0 +1,12 @@
+{
+  "project": "KDE plasma-desktop",
+  "version": "6.7.5",
+  "resource_prefix": ":/qt/qml/plasma/applet/org/kde/panel/",
+  "files": {
+    "main.qml": "ef73a69dd5ddd6a3aa017ea99d22996e72d99d6c4279b9c3165b4c646e277f53",
+    "main.xml": "ee1ab5ec515571e2cd235a4ea05f8ed0d5270f75ece5113721511b8e1395fb7e",
+    "AppletContainer.qml": "ed7a6adc679ffe3d9b5470164ab3be9de94427c0f91db20e20a31da6067ce375",
+    "ConfigOverlay.qml": "7ba7cf98970bcc97849e643016ab11e16ab942385470a5a82d53e56620b36e88",
+    "LayoutManager.js": "195061ae20c718ea662734d486e5cd5056f2eb7af7c068581304af57ba868353"
+  }
+}
