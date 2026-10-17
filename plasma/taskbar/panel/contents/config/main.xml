@@ -6,6 +6,9 @@
   <kcfgfile name=""/>
 
   <group name="General">
+    <entry name="lastSurfaceMode" type="String">
+      <label>Last applied taskbar mode preset</label>
+    </entry>
     <entry name="AppletOrder" type="String">
       <label>encoded order of items</label>
     </entry>

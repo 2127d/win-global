@@ -1384,3 +1384,30 @@ backup of the previous files and receipt, and Plasma Shell was reloaded.
   current desktop. Use `tools/install-taskbar.py` to install it. Sources, build
   instructions, compatibility checks, and remaining interactive-test limitations
   are documented in `plasma/taskbar/README.md`.
+
+### Taskbar dock mode and Sequoia motion — 2026-10-16
+
+- Reused the existing icons-only task manager's `DockMotion.qml` in the shared
+  taskbar QML module. Added hover zoom/lift, press feedback, finite launch bounce
+  and attention pulse, and animated task displacement, with live KCM controls
+  and a preview. Transforms leave hit geometry fixed and stay within each button.
+- Corrected the original motion guard and widget generator to recognize KDE's
+  1 ms disabled-animation duration. Offscreen tests passed hover/press behavior,
+  all inward directions, extreme motion bounds, attention completion/cancellation,
+  and an actual `AnimationDurationFactor=0` configuration. Existing dock motion
+  tests also passed.
+- Native checks in a private Wayland/Plasma session exercised Panel ↔ Dock,
+  growth/shrink after pin changes, fill sizing without a length feedback loop,
+  vertical docks with an added clock, preservation of floating/alignment/hiding/
+  thickness, editor length overrides across unrelated edits and shell restart,
+  and new panels inheriting the Dock preset. Pointer hover and real mouse clicks
+  verify the icon motion and minimize/restore interaction. Tooltips use Plasma's
+  native window so they do not cover icons inside a narrow panel.
+- CTest passed the expanded settings/persistence and natural-length checks. The
+  native KCM loaded the mode and animation controls and rendered its preview.
+  The generic offscreen test supplies icon search paths normally supplied by KDE's
+  platform theme. Installer update/restore/tamper-protection tests passed.
+- Updated payload: `.staging/taskbar-motion-final`. This update is staged, not
+  installed into the current desktop. Native captures and logs are under
+  `.staging/taskbar-verification/`, including `dock.png`, `vertical-dock.png`,
+  `settings.png`, and `native.log`.

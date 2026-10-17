@@ -19,6 +19,13 @@ set_target_properties(taskbarplugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE
 configure_file(qmldir "${CMAKE_BINARY_DIR}/qml/org/sequoia/taskbar/qmldir" COPYONLY)
 install(TARGETS taskbarplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/sequoia/taskbar)
 install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/sequoia/taskbar)
+# The taskbar and the existing Sequoia widget use the same motion implementation.
+set(motion_files ../control-center/taskmanager/DockMotion.qml MotionIcon.qml)
+foreach(motion_file IN LISTS motion_files)
+    get_filename_component(motion_name ${motion_file} NAME)
+    configure_file(${motion_file} "${CMAKE_BINARY_DIR}/qml/org/sequoia/taskbar/${motion_name}" COPYONLY)
+endforeach()
+install(FILES ${motion_files} DESTINATION ${KDE_INSTALL_QMLDIR}/org/sequoia/taskbar)
 kcoreaddons_add_plugin(org.sequoia.taskbar SOURCES native-factory.cpp INSTALL_NAMESPACE plasma/applets)
 set_target_properties(org.sequoia.taskbar PROPERTIES PREFIX "")
 target_link_libraries(org.sequoia.taskbar PRIVATE KF6::CoreAddons)

@@ -6,7 +6,10 @@
 
 QVariantMap TaskbarSettings::defaultValues()
 {
-    return {{"sizeMode", "fixed"}, {"iconSize", 32}, {"spacing", 6}, {"padding", 6},
+    return {{"surfaceMode", "panel"}, {"sizeMode", "fixed"}, {"iconSize", 32}, {"spacing", 6}, {"padding", 6},
+            {"dockAnimations", true}, {"taskHoverEffect", true}, {"dockHoverStyle", 2},
+            {"dockStrength", 12}, {"dockSpeed", 100}, {"dockLaunchAnimation", true},
+            {"dockPressAnimation", true}, {"dockAttentionAnimation", true}, {"dockReorderAnimation", true},
             {"alignment", "left"}, {"showIndicators", true}, {"showLauncher", true},
             {"currentScreenOnly", false}, {"currentDesktopOnly", false},
             {"launchers", QStringList{"preferred://browser", "applications:org.kde.dolphin.desktop", "applications:org.kde.konsole.desktop"}}};
@@ -28,6 +31,11 @@ QVariant TaskbarSettings::normalized(const QString &key, const QVariant &value) 
     if (key == QLatin1String("iconSize")) return qBound(16, value.toInt(), 128);
     if (key == QLatin1String("spacing")) return qBound(0, value.toInt(), 64);
     if (key == QLatin1String("padding")) return qBound(0, value.toInt(), 32);
+    if (key == QLatin1String("dockHoverStyle")) return qBound(0, value.toInt(), 2);
+    if (key == QLatin1String("dockStrength")) return qBound(0, value.toInt(), 20);
+    if (key == QLatin1String("dockSpeed")) return qBound(50, value.toInt(), 200);
+    if (key == QLatin1String("surfaceMode"))
+        return QStringList{"panel", "dock"}.contains(value.toString()) ? value.toString() : QString("panel");
     if (key == QLatin1String("sizeMode"))
         return QStringList{"fixed", "fill", "panel"}.contains(value.toString()) ? value.toString() : QString("fixed");
     if (key == QLatin1String("alignment"))

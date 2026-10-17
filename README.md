@@ -37,7 +37,8 @@ Plasma panels and desktop widgets retain their existing finishes.
 The optional [Sequoia Taskbar](plasma/taskbar/README.md) provides a separate
 **Add Panel → Sequoia Taskbar** choice with an integrated application menu and
 task buttons, plus **Appearance → Taskbar** settings for icon sizing, spacing,
-alignment, indicators, and pinned applications. It supports additional widgets
+alignment, indicators, pinned applications, panel/dock mode, and Sequoia animations.
+Floating, hiding, position, and thickness remain in Plasma's panel editor. It supports additional widgets
 and uses its own build/install helper; existing panels are preserved.
 
 - **Sequoia Tahoe icons:** bundled MacTahoe application and folder artwork with

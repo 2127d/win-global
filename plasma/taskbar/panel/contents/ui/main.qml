@@ -7,6 +7,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Window
 import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 
@@ -15,6 +16,7 @@ import org.kde.ksvg as KSvg
 import org.kde.plasma.components as PC3
 import org.kde.draganddrop as DragDrop
 import org.kde.kirigami as Kirigami
+import org.kde.plasma.shell.panel as Panel
 
 import "LayoutManager.js" as LayoutManager
 
@@ -24,17 +26,31 @@ ContainmentItem {
     height: 48
 
 //BEGIN properties
-    Layout.preferredWidth: 640
-    Layout.preferredHeight: 52
-    Layout.fillWidth: true
-    Layout.fillHeight: true
+    Layout.preferredWidth: isHorizontal ? naturalLength : 52
+    Layout.preferredHeight: isHorizontal ? 52 : naturalLength
+    Layout.fillWidth: !fitContents
+    Layout.fillHeight: !fitContents
+
+    readonly property var panelWindow: Window.window
+    readonly property string surfaceMode: builtIn.settings.surfaceMode
+    readonly property bool fitContents: panelWindow !== null && panelWindow.lengthMode === Panel.Global.FitContent
+    readonly property real naturalLength: builtIn.naturalLength + naturalWidgetLength + 8
+    readonly property real naturalWidgetLength: Math.max(Plasmoid.userConfiguring ? (isHorizontal ? 200 : 80) : 0,
+        (isHorizontal ? currentLayout.implicitWidth : currentLayout.implicitHeight) + currentLayout.toolBoxSize + 12)
+    onPanelWindowChanged: Qt.callLater(applySurfaceMode)
+    onSurfaceModeChanged: Qt.callLater(applySurfaceMode)
+    function applySurfaceMode() {
+        if (!panelWindow || panelWindow.lengthMode === undefined || !surfaceMode) return;
+        // Apply only a changed preset. Remember it per containment so subsequent
+        // edits in Plasma's panel editor survive a shell restart.
+        if (Plasmoid.configuration.lastSurfaceMode === surfaceMode) return;
+        panelWindow.lengthMode = surfaceMode === "dock" ? Panel.Global.FitContent : Panel.Global.FillAvailable;
+        Plasmoid.configuration.lastSurfaceMode = surfaceMode;
+    }
 
     // Reserve the trailing region for ordinary Plasma widgets. The task strip
     // is a direct child of this containment and never enters appletsModel.
-    readonly property real widgetLength: Math.min((isHorizontal ? width : height) * 0.75,
-        Math.max(Plasmoid.userConfiguring ? (isHorizontal ? 200 : 80) : 0,
-            (isHorizontal ? currentLayout.implicitWidth : currentLayout.implicitHeight)
-            + currentLayout.toolBoxSize + 12))
+    readonly property real widgetLength: Math.min((isHorizontal ? width : height) * 0.75, naturalWidgetLength)
     readonly property real builtInLength: Math.max(0, (isHorizontal ? width : height) - widgetLength - 8)
     TaskStrip {
         id: builtIn

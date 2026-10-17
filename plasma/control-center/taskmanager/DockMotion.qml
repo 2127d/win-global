@@ -14,7 +14,8 @@ Item {
     required property int strength
     required property int speed
     property real direction: -1
-    readonly property bool moving: animationsEnabled && Kirigami.Units.longDuration > 0
+    // KDE clamps disabled animation durations to 1 ms for Qt compatibility.
+    readonly property bool moving: animationsEnabled && Kirigami.Units.longDuration > 1
     readonly property int duration: moving ? Math.round(370 * 100 / Math.max(25, speed)) : 0
     readonly property real amount: Math.max(0, Math.min(20, strength)) / 100
     property real bounce: 0

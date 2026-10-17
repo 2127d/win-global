@@ -10,6 +10,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDir>
+#include <QTest>
 #include <cstdio>
 
 static QQuickItem *find(QQuickItem *item)
@@ -24,9 +25,23 @@ static void collect(QQuickItem *item, QJsonArray &buttons, int &icons, const QJs
     if (item->objectName() == QLatin1String("taskIcon") && item->isVisible() && item->property("valid").toBool()) ++icons;
     if (item->objectName() == QLatin1String("integratedTaskButton")) {
         QJsonObject button;
-        for (const char *key : {"text", "isRunning", "isActiveTask", "isGroup", "isMinimized"})
+        for (const char *key : {"text", "isRunning", "isActiveTask", "isGroup", "isMinimized", "width", "height", "hovered"})
             button[QString::fromLatin1(key)] = QJsonValue::fromVariant(item->property(key));
+        if (auto icon = item->findChild<QObject *>(QStringLiteral("taskIcon"))) {
+            for (const char *key : {"scale", "motionOffset", "motionDuration"})
+                button[QString::fromLatin1(key)] = QJsonValue::fromVariant(icon->property(key));
+        }
         buttons.append(button);
+        if (executed == 0 && command.value("hoverTask").toString() == item->property("text").toString()) {
+            QTest::mouseMove(item->window(), item->mapToScene(QPointF(item->width() / 2, item->height() / 2)).toPoint());
+            ++executed;
+        }
+        if (executed == 0 && command.value("mouseClickTask").toString() == item->property("text").toString()
+            && item->property("isRunning").toBool()) {
+            QTest::mouseClick(item->window(), Qt::LeftButton, Qt::NoModifier,
+                item->mapToScene(QPointF(item->width() / 2, item->height() / 2)).toPoint());
+            ++executed;
+        }
         if (executed == 0 && command.value("clickTask").toString() == item->property("text").toString()
             && (!command.contains("running") || command.value("running").toBool() == item->property("isRunning").toBool()))
         {
@@ -65,8 +80,11 @@ static void start()
             auto quick = qobject_cast<QQuickWindow *>(window);
             auto strip = quick ? find(quick->contentItem()) : nullptr;
             if (!strip || !quick->isVisible() || !strip->isVisible()) continue;
-            for (const char *key : {"effectiveIconSize", "cellLength", "taskCount", "width", "height", "contentLength", "taskLength", "horizontal"})
+            for (const char *key : {"effectiveIconSize", "cellLength", "taskCount", "width", "height", "contentLength", "taskLength", "horizontal", "naturalLength"})
                 state[QString::fromLatin1(key)] = QJsonValue::fromVariant(strip->property(key));
+            state["windowWidth"] = quick->width();
+            state["windowHeight"] = quick->height();
+            state["lengthMode"] = quick->property("lengthMode").toInt();
             int icons = 0;
             QJsonArray buttons;
             collect(strip, buttons, icons, command, executed);

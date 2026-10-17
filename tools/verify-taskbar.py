@@ -73,6 +73,18 @@ def child(base, payload):
                 temporary = base / 'command.tmp'
                 temporary.write_text(json.dumps(value))
                 temporary.replace(base / 'command.json')
+            hovered_name = state()['buttons'][0]['text']
+            def hovered_task():
+                return next((b for b in state().get('buttons', []) if b['text'] == hovered_name), {})
+            initial_button = hovered_task()
+            command({'hoverTask': hovered_name})
+            wait_for(lambda: hovered_task().get('scale', 0) > 1.1 and hovered_task().get('motionOffset', 0) < 0,
+                'Native task hover motion did not run')
+            assert hovered_task()['width'] == initial_button['width'] and hovered_task()['height'] == initial_button['height'], 'Motion changed button hit geometry'
+            settings({'dockAnimations': False})
+            wait_for(lambda: hovered_task().get('scale') == 1 and hovered_task().get('motionOffset') == 0,
+                'Disabling animations did not reset the hovered task')
+            settings({'dockAnimations': True})
             command({'menu': True})
             wait_for(lambda: state().get('menuVisible') and state().get('applicationCount', 0) > 0, 'Built-in application menu is empty')
             command({'menu': True})
@@ -91,10 +103,34 @@ def child(base, payload):
             def active_fixture():
                 return next((b for b in state().get('buttons', []) if b['text'] == 'Sequoia Taskbar Test' and b['isRunning']), None)
             wait_for(lambda: active_fixture() and active_fixture()['isActiveTask'], 'Running application indicator did not appear')
-            command({'clickTask': 'Sequoia Taskbar Test', 'running': True})
+            command({'mouseClickTask': 'Sequoia Taskbar Test'})
             wait_for(lambda: active_fixture() and active_fixture()['isMinimized'], 'Click did not minimize the active window')
-            command({'clickTask': 'Sequoia Taskbar Test', 'running': True})
+            command({'mouseClickTask': 'Sequoia Taskbar Test'})
             wait_for(lambda: active_fixture() and active_fixture()['isActiveTask'], 'Click did not restore the window')
+            # Only the native length policy should change with the mode preset.
+            script('var p = panels()[0]; p.floating = false; p.alignment = "center"; p.hiding = "none";')
+            def editor_state():
+                return json.loads(script('var p = panels()[0]; print(JSON.stringify({floating:p.floating,alignment:p.alignment,hiding:p.hiding,height:p.height,location:p.location}));'))
+            original_editor = editor_state()
+            settings({'surfaceMode': 'dock'})
+            wait_for(lambda: state().get('lengthMode') == 1 and 100 < state().get('windowWidth', 0) < 500,
+                'Dock mode did not fit its contents')
+            assert editor_state() == original_editor, 'Dock mode overwrote panel editor settings'
+            dock_length = state()['windowWidth']
+            settings({'launchers': ['applications:org.kde.dolphin.desktop', 'applications:org.sequoia.taskbartest.desktop']})
+            wait_for(lambda: state().get('windowWidth', 1280) < dock_length - 50, 'Dock did not shrink after unpinning applications')
+            settings({'launchers': ['preferred://browser', 'applications:org.kde.dolphin.desktop', 'applications:org.kde.konsole.desktop', 'applications:org.sequoia.taskbartest.desktop']})
+            wait_for(lambda: abs(state().get('windowWidth', 0) - dock_length) < 2, 'Dock did not grow when applications were pinned')
+            settings({'sizeMode': 'fill'})
+            time.sleep(1)
+            assert abs(state()['windowWidth'] - dock_length) < 2, 'Fill icon sizing fed back into dock length'
+            (base / 'capture').touch()
+            wait_for(lambda: not (base / 'capture').exists(), 'Dock capture did not complete')
+            (base / 'dock.png').write_bytes((base / 'panel.png').read_bytes())
+            settings({'surfaceMode': 'panel'})
+            wait_for(lambda: state().get('lengthMode') == 0 and state().get('windowWidth', 0) > 1200,
+                'Panel mode did not return to full width')
+            assert editor_state() == original_editor, 'Panel mode overwrote panel editor settings'
             settings({'sizeMode': 'fill'})
             wait_for(lambda: state().get('cellLength', 0) > 100, 'Fill mode did not expand the buttons')
             assert state()['effectiveIconSize'] == 32, state()
@@ -114,7 +150,33 @@ def child(base, payload):
             wait_for(lambda: state().get('effectiveIconSize', 0) > 32, 'Live settings notification did not resize icons')
             script('panels()[0].location = "left";')
             wait_for(lambda: state().get('horizontal') is False, 'Vertical panel did not rotate')
-            print('PASS: native KCM, built-in menu and icons, running tasks, minimize/restore, widget addition, fixed sizing, live updates, and vertical orientation', flush=True)
+            settings({'sizeMode': 'fixed', 'surfaceMode': 'dock'})
+            wait_for(lambda: state().get('lengthMode') == 1 and 100 < state().get('windowHeight', 0) < 600,
+                'Vertical dock did not fit contents with an added widget')
+            assert state()['clockVisible'], 'Dock lost the added widget'
+            (base / 'capture').touch()
+            wait_for(lambda: not (base / 'capture').exists(), 'Vertical dock capture did not complete')
+            (base / 'vertical-dock.png').write_bytes((base / 'panel.png').read_bytes())
+            # User length overrides made in the regular editor must survive restart.
+            script('var p = panels()[0]; p.lengthMode = "custom"; p.minimumLength = 500; p.maximumLength = 500; p.length = 500;')
+            wait_for(lambda: state().get('lengthMode') == 2, 'Custom length override failed')
+            settings({'spacing': 8})
+            time.sleep(.5)
+            wait_for(lambda: state().get('lengthMode') == 2 and state().get('clockVisible'),
+                'Unrelated settings reapplied the dock preset')
+            stop(shell)
+            (base / 'state.json').unlink(missing_ok=True)
+            shell = subprocess.Popen(['plasmashell', '--no-respawn'], env=env, stdout=log, stderr=log)
+            wait_for(lambda: state().get('lengthMode') == 2 and state().get('horizontal') is False,
+                'Restart overwrote the editor length choice')
+            assert editor_state()['floating'] is False
+            # A newly added taskbar inherits the global Dock preset.
+            script('panels().forEach(p => p.remove());')
+            (base / 'state.json').unlink(missing_ok=True)
+            script(template.read_text())
+            wait_for(lambda: state().get('lengthMode') == 1 and state().get('horizontal') is True
+                and 100 < state().get('windowWidth', 0) < 600, 'New taskbar did not inherit Dock mode')
+            print('PASS: native KCM, task hover/disable, fixed hit geometry, menu and icons, window actions, widget addition, sizing, dock growth/shrink, both orientations, editor preservation/restart, and new dock creation', flush=True)
         finally:
             stop(fixture)
             stop(shell)
@@ -134,7 +196,7 @@ def main():
     for relative in ('config/sequoiataskbarrc', 'config/plasma-org.kde.plasma.desktop-appletsrc',
                      'config/plasmashellrc', 'state.json', 'panel.png', 'capture', 'command.json'):
         (base / relative).unlink(missing_ok=True)
-    flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Quick'], text=True))
+    flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Quick', 'Qt6Test'], text=True))
     subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/verify-taskbar.cpp'), '-o', str(base / 'probe.so'), *flags], check=True)
     env = dict(os.environ)
     for name in ('DISPLAY', 'WAYLAND_DISPLAY', 'LD_PRELOAD', 'QT_PLUGIN_PATH', 'QML_IMPORT_PATH', 'QML2_IMPORT_PATH'):

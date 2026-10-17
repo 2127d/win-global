@@ -27,6 +27,10 @@ Item {
     readonly property real contentLength: Math.max(0, tasks.count * cellLength + (tasks.count - 1) * settings.spacing)
     readonly property real taskOffset: Metrics.offset(settings.alignment, taskLength, contentLength)
     readonly property int taskCount: tasks.count
+    readonly property real naturalLength: Metrics.naturalLength(effectiveIconSize, settings.padding, settings.spacing, tasks.count, settings.showLauncher)
+    readonly property real inwardDirection: location === PlasmaCore.Types.TopEdge || location === PlasmaCore.Types.LeftEdge ? 1 : -1
+    readonly property bool moving: settings.dockAnimations && Kirigami.Units.longDuration > 1
+    readonly property int motionDuration: moving ? Math.round(370 * 100 / settings.dockSpeed) : 0
     readonly property bool reverse: horizontal && Application.layoutDirection === Qt.RightToLeft
     Taskbar.Settings { id: config }
     TaskManager.VirtualDesktopInfo { id: desktops }
@@ -62,14 +66,32 @@ Item {
         visible: strip.settings.showLauncher
         width: strip.horizontal ? strip.menuLength - strip.settings.spacing : strip.width
         height: strip.horizontal ? strip.height : strip.menuLength - strip.settings.spacing
-        icon.name: "start-here-kde"
-        icon.width: strip.effectiveIconSize
-        icon.height: strip.effectiveIconSize
+        contentItem: Item {
+            Taskbar.MotionIcon {
+                anchors.centerIn: parent
+                width: strip.effectiveIconSize
+                height: strip.effectiveIconSize
+                source: "start-here-kde"
+                settings: strip.settings
+                hovered: launcher.hovered || launcherTip.containsMouse
+                pressed: launcher.down
+                horizontal: strip.horizontal
+                inwardDirection: strip.inwardDirection
+                viewportWidth: launcher.width
+                viewportHeight: launcher.height
+            }
+        }
         text: i18n("Applications")
         display: PC3.AbstractButton.IconOnly
         onClicked: applicationMenu.visible = !applicationMenu.visible
-        PC3.ToolTip.text: text
-        PC3.ToolTip.visible: hovered
+        PlasmaCore.ToolTipArea {
+            id: launcherTip
+            anchors.fill: parent
+            mainText: launcher.text
+            location: strip.location
+            active: !applicationMenu.visible
+            interactive: false
+        }
     }
     ApplicationMenu {
         id: applicationMenu
@@ -91,6 +113,13 @@ Item {
         boundsBehavior: Flickable.StopAtBounds
         model: tasks
         layoutDirection: Application.layoutDirection
+        displaced: Transition {
+            NumberAnimation {
+                properties: "x,y"
+                duration: strip.settings.dockReorderAnimation ? strip.motionDuration : 0
+                easing.type: Easing.OutCubic
+            }
+        }
         WheelHandler {
             enabled: strip.horizontal && taskView.contentWidth > taskView.width
             onWheel: event => {
@@ -116,16 +145,30 @@ Item {
             Accessible.name: text
             Accessible.description: model.IsActive ? i18n("Active application") : model.IsWindow || model.IsGroupParent ? i18n("Running application") : i18n("Pinned application")
             contentItem: Item {
-                Kirigami.Icon {
+                Taskbar.MotionIcon {
+                    id: taskIcon
                     objectName: "taskIcon"
                     anchors.centerIn: parent
                     width: strip.effectiveIconSize
                     height: strip.effectiveIconSize
                     source: task.model.decoration || "application-x-executable"
+                    settings: strip.settings
+                    hovered: task.hovered || taskTip.containsMouse
+                    pressed: task.down
+                    launching: !!task.model.IsStartup || launchCue.running
+                    demandingAttention: !!task.model.IsDemandingAttention
+                    horizontal: strip.horizontal
+                    inwardDirection: strip.inwardDirection
+                    viewportWidth: task.width
+                    viewportHeight: task.height
                 }
             }
+            // Also give immediate feedback for launchers whose startup role is
+            // too brief to render. Combining the cues avoids a second bounce.
+            Timer { id: launchCue; interval: Math.max(1, strip.motionDuration); }
             highlighted: isActiveTask || !!model.IsDemandingAttention
             onClicked: {
+                if (!isRunning) launchCue.restart();
                 const idx = tasks.makeModelIndex(index);
                 if (model.IsGroupParent) {
                     groupTasks.rootIndex = idx;
@@ -134,20 +177,28 @@ Item {
                 } else if (isActiveTask) tasks.requestToggleMinimized(idx);
                 else tasks.requestActivate(idx);
             }
-            PC3.ToolTip.text: text
-            PC3.ToolTip.visible: hovered && !groupPopup.visible
+            PlasmaCore.ToolTipArea {
+                id: taskTip
+                anchors.fill: parent
+                mainText: task.text
+                location: strip.location
+                active: !groupPopup.visible && !contextMenu.visible
+                interactive: false
+            }
             Rectangle {
+                objectName: "runningIndicator"
                 visible: strip.settings.showIndicators && task.isRunning
                 width: strip.horizontal ? (task.isActiveTask ? 16 : 6) : 3
                 height: strip.horizontal ? 3 : (task.isActiveTask ? 16 : 6)
                 x: strip.horizontal ? (parent.width - width) / 2 : parent.width - width - 1
                 y: strip.horizontal ? parent.height - height - 1 : (parent.height - height) / 2
                 radius: 2
-                color: task.isActiveTask ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
+                color: task.isActiveTask || task.model.IsDemandingAttention ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
+                opacity: (task.isActiveTask ? 0.95 : 0.55) * taskIcon.attentionPulse
             }
             TapHandler {
                 acceptedButtons: Qt.MiddleButton
-                onTapped: tasks.requestNewInstance(tasks.makeModelIndex(task.index))
+                onTapped: { launchCue.restart(); tasks.requestNewInstance(tasks.makeModelIndex(task.index)); }
             }
             TapHandler {
                 acceptedButtons: Qt.RightButton

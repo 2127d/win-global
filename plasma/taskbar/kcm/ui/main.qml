@@ -4,6 +4,7 @@ import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.kcmutils as KCM
+import org.sequoia.taskbar 1.0 as Taskbar
 
 KCM.SimpleKCM {
     id: page
@@ -25,6 +26,19 @@ KCM.SimpleKCM {
         Kirigami.InlineMessage { id: error; Layout.fillWidth: true; type: Kirigami.MessageType.Error; visible: false }
         Kirigami.FormLayout {
             Layout.fillWidth: true
+            QQC2.ComboBox {
+                objectName: "surfaceModeControl"
+                implicitContentWidthPolicy: QQC2.ComboBox.WidestText
+                Kirigami.FormData.label: i18n("Taskbar mode:")
+                model: [i18n("Panel — fill available edge"), i18n("Dock — fit contents")]
+                currentIndex: page.values.surfaceMode === "dock" ? 1 : 0
+                onActivated: page.settings.setValue("surfaceMode", currentIndex === 1 ? "dock" : "panel")
+            }
+            QQC2.Label {
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 25
+                wrapMode: Text.WordWrap
+                text: i18n("Switching modes sets the panel length policy. Floating, position, alignment on the screen, hiding, and thickness stay in Plasma’s Edit Mode. You can also adjust length there afterward.")
+            }
             QQC2.ComboBox {
                 id: mode
                 implicitContentWidthPolicy: QQC2.ComboBox.WidestText
@@ -94,6 +108,96 @@ KCM.SimpleKCM {
                 text: i18n("Only show windows on the current desktop")
                 checked: page.values.currentDesktopOnly
                 onToggled: page.settings.setValue("currentDesktopOnly", checked)
+            }
+        }
+        Kirigami.Heading { text: i18n("Animations"); level: 2 }
+        Kirigami.FormLayout {
+            Layout.fillWidth: true
+            QQC2.CheckBox {
+                objectName: "animationsControl"
+                text: i18n("Enable Sequoia animations")
+                checked: page.values.dockAnimations
+                onToggled: page.settings.setValue("dockAnimations", checked)
+            }
+            QQC2.ToolButton {
+                id: preview
+                objectName: "motionPreview"
+                Kirigami.FormData.label: i18n("Preview:")
+                implicitWidth: 96
+                implicitHeight: 80
+                Accessible.name: i18n("Animation preview; hover or click to try")
+                onClicked: previewLaunch.restart()
+                contentItem: Item {
+                    Taskbar.MotionIcon {
+                        objectName: "motionPreviewIcon"
+                        anchors.centerIn: parent
+                        width: 40; height: 40
+                        source: "system-run"
+                        settings: page.values
+                        hovered: preview.hovered
+                        pressed: preview.down
+                        launching: previewLaunch.running
+                        viewportWidth: preview.width
+                        viewportHeight: preview.height
+                    }
+                }
+                Timer { id: previewLaunch; interval: Math.round(370 * 100 / page.values.dockSpeed) }
+            }
+            QQC2.CheckBox {
+                text: i18n("Animate hovered icons")
+                enabled: page.values.dockAnimations
+                checked: page.values.taskHoverEffect
+                onToggled: page.settings.setValue("taskHoverEffect", checked)
+            }
+            QQC2.ComboBox {
+                Kirigami.FormData.label: i18n("Hover effect:")
+                enabled: page.values.dockAnimations && page.values.taskHoverEffect
+                model: [i18n("Zoom"), i18n("Lift"), i18n("Zoom and lift")]
+                currentIndex: page.values.dockHoverStyle
+                onActivated: page.settings.setValue("dockHoverStyle", currentIndex)
+            }
+            QQC2.SpinBox {
+                Kirigami.FormData.label: i18n("Intensity (%):")
+                enabled: page.values.dockAnimations
+                from: 0; to: 20; editable: true
+                value: page.values.dockStrength
+                onValueModified: page.settings.setValue("dockStrength", value)
+            }
+            QQC2.SpinBox {
+                Kirigami.FormData.label: i18n("Speed (%):")
+                enabled: page.values.dockAnimations
+                from: 50; to: 200; stepSize: 10; editable: true
+                value: page.values.dockSpeed
+                onValueModified: page.settings.setValue("dockSpeed", value)
+            }
+            QQC2.CheckBox {
+                text: i18n("Bounce when launching applications")
+                enabled: page.values.dockAnimations
+                checked: page.values.dockLaunchAnimation
+                onToggled: page.settings.setValue("dockLaunchAnimation", checked)
+            }
+            QQC2.CheckBox {
+                text: i18n("Press feedback")
+                enabled: page.values.dockAnimations
+                checked: page.values.dockPressAnimation
+                onToggled: page.settings.setValue("dockPressAnimation", checked)
+            }
+            QQC2.CheckBox {
+                text: i18n("Pulse indicators when an application needs attention")
+                enabled: page.values.dockAnimations
+                checked: page.values.dockAttentionAnimation
+                onToggled: page.settings.setValue("dockAttentionAnimation", checked)
+            }
+            QQC2.CheckBox {
+                text: i18n("Animate tasks moving into place")
+                enabled: page.values.dockAnimations
+                checked: page.values.dockReorderAnimation
+                onToggled: page.settings.setValue("dockReorderAnimation", checked)
+            }
+            QQC2.Label {
+                Layout.maximumWidth: Kirigami.Units.gridUnit * 25
+                wrapMode: Text.WordWrap
+                text: i18n("Effects work in both modes and follow the desktop’s animation setting. Motion stays inside each button; increase padding or panel thickness for more room.")
             }
         }
         Kirigami.Heading { text: i18n("Pinned applications"); level: 2 }

@@ -53,6 +53,24 @@ private Q_SLOTS:
         QCOMPARE(settings.values().value("spacing").toInt(), 0);
         settings.setValue("sizeMode", "invalid");
         QCOMPARE(settings.values().value("sizeMode").toString(), QString("fixed"));
+        settings.setValue("surfaceMode", "dock");
+        settings.setValue("dockHoverStyle", 1);
+        settings.setValue("dockStrength", 18);
+        settings.setValue("dockSpeed", 150);
+        settings.setValue("dockAnimations", false);
+        QVERIFY(settings.save());
+        TaskbarSettings second;
+        QCOMPARE(second.values().value("surfaceMode").toString(), QString("dock"));
+        QCOMPARE(second.values().value("dockHoverStyle").toInt(), 1);
+        QCOMPARE(second.values().value("dockStrength").toInt(), 18);
+        QCOMPARE(second.values().value("dockSpeed").toInt(), 150);
+        QVERIFY(!second.values().value("dockAnimations").toBool());
+        settings.setValue("surfaceMode", "invalid");
+        QCOMPARE(settings.values().value("surfaceMode").toString(), QString("panel"));
+        settings.setValue("dockStrength", 900);
+        QCOMPARE(settings.values().value("dockStrength").toInt(), 20);
+        settings.setValue("dockSpeed", -1);
+        QCOMPARE(settings.values().value("dockSpeed").toInt(), 50);
         settings.setValue("launchers", QStringList{"https://example.com", "applications:org.kde.kate.desktop", "applications:org.kde.kate.desktop"});
         QCOMPARE(settings.values().value("launchers").toStringList(), QStringList{"applications:org.kde.kate.desktop"});
     }
@@ -71,6 +89,10 @@ private Q_SLOTS:
         QCOMPARE(engine.evaluate("buttonLength('fill', 32, 6, 6, 20, 400)").toInt(), 44);
         QCOMPARE(engine.evaluate("offset('center', 400, 200)").toInt(), 100);
         QCOMPARE(engine.evaluate("offset('right', 100, 400)").toInt(), 0);
+        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 3, true)").toInt(), 194);
+        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 0, false)").toInt(), 0);
+        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 0, true)").toInt(), 44);
+        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 4, false)").toInt(), 194);
     }
 };
 QTEST_GUILESS_MAIN(SettingsTest)

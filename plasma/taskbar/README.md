@@ -11,6 +11,7 @@ Sequoia Taskbar panels in the current account; other panel types are unaffected.
 
 | Setting | Behavior |
 | --- | --- |
+| Panel / Dock | Panel fills the available edge; Dock fits the built-in tasks and added widgets, growing and shrinking as contents change. |
 | Keep icons the same size | Uses the selected logical pixel size; excess tasks scroll. |
 | Fill available space | Expands button widths evenly; icons retain the selected size. |
 | Resize with panel | Icon size follows panel thickness, minus padding. |
@@ -19,10 +20,16 @@ Sequoia Taskbar panels in the current account; other panel types are unaffected.
 | Running indicators | Optional dots/bars distinguish running and active applications. |
 | Applications | Show/hide the built-in application menu; pin, remove, and reorder launchers. |
 | Window filtering | Optionally restrict tasks to the current screen or desktop. |
+| Sequoia animations | Hover zoom/lift, press feedback, a single launch bounce, a brief attention pulse, and task movement. Includes intensity/speed controls and a live preview. |
 
 Icons are clamped when the panel is thinner than the requested icon and padding.
 Widgets retain their own size preferences. Position, panel thickness, visibility,
-floating mode, and panel length use Plasma's regular panel editor.
+floating mode, and panel length use Plasma's regular panel editor. Switching the
+Panel/Dock preset changes only Plasma's length policy (Fill Available / Fit
+Content). It preserves those other controls. A length override made afterward in
+the panel editor survives unrelated settings changes and shell restarts. New
+taskbars inherit the selected preset. In Dock mode, Fill available space has no
+extra space to distribute unless the panel editor supplies a larger length.
 
 Click a running task to activate it, or minimize it when active. Grouped tasks
 open a window list. Middle-click requests another instance; right-click exposes
@@ -45,6 +52,8 @@ From the repository root:
 python3 tools/build-taskbar.py --stage .staging/taskbar-ready
 python3 tools/verify-taskbar-install.py --stage .staging/taskbar-ready
 python3 tools/verify-taskbar.py --payload .staging/taskbar-ready
+python3 tools/verify-taskbar-motion.py
+python3 tools/verify-taskbar-motion.py --reduced-motion
 sudo python3 tools/install-taskbar.py --stage .staging/taskbar-ready
 ```
 
@@ -80,11 +89,34 @@ and `ApplicationMenu.qml` uses Kicker's application models. The native KCM and
 panel share `TaskbarSettings`, backed by KConfig and change notifications. Apply
 writes only edited settings so a concurrently pinned app is not overwritten.
 
+The QML module installs the same `DockMotion.qml` source used by the Sequoia
+icons-only task manager under `plasma/control-center/taskmanager/`. Hover and
+press use OutCubic easing and a 370 ms baseline scaled by the speed control.
+Hover styles are zoom, lift, or both; press scales the icon to 94%; launch bounces
+once using OutCubic/InOutCubic. Attention pulses an indicator once over 450 ms.
+Task displacement uses the same 370 ms family. These effects work in both panel
+and dock modes, with lift directed inward from all four screen edges. Only
+visuals transform, keeping button hit areas and layout stable. Motion is clamped
+to available button space; increase padding/thickness for more headroom.
+
+The shared component treats Kirigami durations of 0 **or 1 ms** as disabled
+motion. KDE's desktop integration clamps a disabled animation duration to 1 ms;
+the original widget's `> 0` check did not cover this (see KDE's
+[desktop units implementation](https://github.com/KDE/qqc2-desktop-style/blob/master/kirigami-plasmadesktop-integration/plasmadesktopunits.cpp)). The widget generator uses
+the corrected guard too. The original widget's hover, launch, attention, and
+movement configuration keys and defaults are retained in the taskbar's separate
+settings file; widget settings are not imported or modified.
+
 CTest covers persistence, cancel/reset behavior, input normalization, concurrent
 edits, sizing policies, and overflow calculations. Native tests load the KCM,
 check Apply state, add the panel with zero applets, inspect rendered icons and
 the application menu, launch a test application, exercise its minimize/restore behavior, add an
-ordinary widget, change sizing modes live, and rotate the panel. The installer
+ordinary widget, change sizing modes live, and rotate the panel. Additional checks
+exercise real pointer hover without resizing button hit areas, disabled motion,
+dock growth/shrink and vertical widget layout, preserving editor choices across
+mode changes and restarts, and creating a new dock. Offscreen tests exercise the
+shared icon wrapper's motion bounds, both axes/directions, finite attention
+pulses, cancellation, and the actual desktop reduced-motion setting. The installer
 test covers updates, backup restoration, edited-file protection, and stage tampering.
 
 Physical multi-monitor, mixed-DPI, touchscreen, and long-running session behavior

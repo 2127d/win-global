@@ -3,6 +3,8 @@
 #include <QQuickWindow>
 #include <QQuickItem>
 #include <QTimer>
+#include <QIcon>
+#include <QStandardPaths>
 #include <KPluginFactory>
 #include <KQuickConfigModule>
 #include <cstdio>
@@ -10,6 +12,12 @@
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
+    // The generic offscreen platform theme does not supply icon search paths.
+    QStringList iconPaths;
+    for (const auto &path : QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation))
+        iconPaths.append(path + QStringLiteral("/icons"));
+    QIcon::setThemeSearchPaths(iconPaths);
+    QIcon::setThemeName(QStringLiteral("breeze"));
     const auto result = KQuickConfigModuleLoader::loadModule(KPluginMetaData(QStringLiteral(TASKBAR_KCM_FILE)));
     if (!result.plugin) {
         fprintf(stderr, "%s\n", qPrintable(result.errorString));
@@ -30,12 +38,28 @@ int main(int argc, char **argv)
     window.show();
     QTimer::singleShot(2000, [&] {
         if (!ui->findChild<QObject *>(QStringLiteral("sizeModeControl"))
+            || !ui->findChild<QObject *>(QStringLiteral("surfaceModeControl"))
+            || !ui->findChild<QObject *>(QStringLiteral("animationsControl"))
+            || !ui->findChild<QObject *>(QStringLiteral("motionPreview"))
             || !ui->findChild<QObject *>(QStringLiteral("pinnedApplicationsControl"))) {
             fprintf(stderr, "Settings controls were not created\n");
             app.exit(1);
             return;
         }
         auto settings = module->property("settings").value<QObject *>();
+        const auto previewIcon = ui->findChild<QObject *>(QStringLiteral("motionPreviewIcon"));
+        if (!previewIcon || !previewIcon->property("valid").toBool()) {
+            fprintf(stderr, "Animation preview icon did not render\n");
+            app.exit(1);
+            return;
+        }
+        auto previewItem = qobject_cast<QQuickItem *>(previewIcon);
+        if (!previewItem->isVisible() || previewItem->scale() <= 0
+            || QIcon::fromTheme(QStringLiteral("system-run")).pixmap(40, 40).isNull()) {
+            fprintf(stderr, "Animation preview is not visible or its icon theme is unavailable\n");
+            app.exit(1);
+            return;
+        }
         if (!settings || !QMetaObject::invokeMethod(settings, "setValue", Q_ARG(QString, "spacing"), Q_ARG(QVariant, 17)) || !module->needsSave()) {
             fprintf(stderr, "Changing a setting did not enable Apply\n");
             app.exit(1);

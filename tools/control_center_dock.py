@@ -16,7 +16,7 @@ def style_dock(destination, source, plugin_dir, extract, replace):
     text = replace(text, '    id: task\n', '''    id: task
     // Confine dock styling to horizontal icons-only tasks, never popup lists.
     readonly property bool sequoiaDock: tasksRoot.iconsOnly && !tasksRoot.vertical && !inPopup
-    readonly property bool sequoiaMotion: sequoiaDock && Plasmoid.configuration.dockAnimations && Kirigami.Units.longDuration > 0
+    readonly property bool sequoiaMotion: sequoiaDock && Plasmoid.configuration.dockAnimations && Kirigami.Units.longDuration > 1
     readonly property int sequoiaDuration: sequoiaMotion ? Math.round(370 * 100 / Math.max(50, Plasmoid.configuration.dockSpeed)) : 0
     objectName: sequoiaDock ? "sequoiaDockTask" : ""
 ''')
