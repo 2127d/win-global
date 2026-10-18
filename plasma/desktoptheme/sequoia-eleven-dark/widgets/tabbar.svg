@@ -1,56 +1,59 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
-<g id="north-active-tab-topleft" transform="translate(0 0)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="north-active-tab-top" transform="translate(7 0)"><rect width="32" height="7" fill="#000" fill-opacity="0"/><rect width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="north-active-tab-topright" transform="translate(39 0)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(7 0) rotate(90)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<g id="north-active-tab-left" transform="translate(0 7)"><rect width="7" height="32" fill="#000" fill-opacity="0"/><rect width="7" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="north-active-tab-center" transform="translate(7 7)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="north-active-tab-right" transform="translate(39 7)"><rect width="7" height="32" fill="#000" fill-opacity="0"/><rect width="7" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="north-active-tab-bottomleft" transform="translate(0 39)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(0 7) rotate(-90)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<g id="north-active-tab-bottom" transform="translate(7 39)"><rect width="32" height="7" fill="#000" fill-opacity="0"/><rect width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="north-active-tab-bottomright" transform="translate(39 39)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(7 7) rotate(180)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<rect id="north-active-tab-hint-top-margin" x="800" y="27" width="6" height="6" fill="#ff00ff"/>
-<rect id="north-active-tab-hint-bottom-margin" x="800" y="30" width="6" height="6" fill="#ff00ff"/>
-<rect id="north-active-tab-hint-left-margin" x="800" y="33" width="6" height="6" fill="#ff00ff"/>
-<rect id="north-active-tab-hint-right-margin" x="800" y="36" width="6" height="6" fill="#ff00ff"/>
-<g id="south-active-tab-topleft" transform="translate(0 100)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="south-active-tab-top" transform="translate(7 100)"><rect width="32" height="7" fill="#000" fill-opacity="0"/><rect width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="south-active-tab-topright" transform="translate(39 100)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(7 0) rotate(90)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<g id="south-active-tab-left" transform="translate(0 107)"><rect width="7" height="32" fill="#000" fill-opacity="0"/><rect width="7" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="south-active-tab-center" transform="translate(7 107)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="south-active-tab-right" transform="translate(39 107)"><rect width="7" height="32" fill="#000" fill-opacity="0"/><rect width="7" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="south-active-tab-bottomleft" transform="translate(0 139)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(0 7) rotate(-90)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<g id="south-active-tab-bottom" transform="translate(7 139)"><rect width="32" height="7" fill="#000" fill-opacity="0"/><rect width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="south-active-tab-bottomright" transform="translate(39 139)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(7 7) rotate(180)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<rect id="south-active-tab-hint-top-margin" x="800" y="66" width="6" height="6" fill="#ff00ff"/>
-<rect id="south-active-tab-hint-bottom-margin" x="800" y="69" width="6" height="6" fill="#ff00ff"/>
-<rect id="south-active-tab-hint-left-margin" x="800" y="72" width="6" height="6" fill="#ff00ff"/>
-<rect id="south-active-tab-hint-right-margin" x="800" y="75" width="6" height="6" fill="#ff00ff"/>
-<g id="east-active-tab-topleft" transform="translate(0 200)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="east-active-tab-top" transform="translate(7 200)"><rect width="32" height="7" fill="#000" fill-opacity="0"/><rect width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="east-active-tab-topright" transform="translate(39 200)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(7 0) rotate(90)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<g id="east-active-tab-left" transform="translate(0 207)"><rect width="7" height="32" fill="#000" fill-opacity="0"/><rect width="7" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="east-active-tab-center" transform="translate(7 207)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="east-active-tab-right" transform="translate(39 207)"><rect width="7" height="32" fill="#000" fill-opacity="0"/><rect width="7" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="east-active-tab-bottomleft" transform="translate(0 239)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(0 7) rotate(-90)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<g id="east-active-tab-bottom" transform="translate(7 239)"><rect width="32" height="7" fill="#000" fill-opacity="0"/><rect width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="east-active-tab-bottomright" transform="translate(39 239)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(7 7) rotate(180)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<rect id="east-active-tab-hint-top-margin" x="800" y="105" width="6" height="6" fill="#ff00ff"/>
-<rect id="east-active-tab-hint-bottom-margin" x="800" y="108" width="6" height="6" fill="#ff00ff"/>
-<rect id="east-active-tab-hint-left-margin" x="800" y="111" width="6" height="6" fill="#ff00ff"/>
-<rect id="east-active-tab-hint-right-margin" x="800" y="114" width="6" height="6" fill="#ff00ff"/>
-<g id="west-active-tab-topleft" transform="translate(0 300)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="west-active-tab-top" transform="translate(7 300)"><rect width="32" height="7" fill="#000" fill-opacity="0"/><rect width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="west-active-tab-topright" transform="translate(39 300)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(7 0) rotate(90)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<g id="west-active-tab-left" transform="translate(0 307)"><rect width="7" height="32" fill="#000" fill-opacity="0"/><rect width="7" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="west-active-tab-center" transform="translate(7 307)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="west-active-tab-right" transform="translate(39 307)"><rect width="7" height="32" fill="#000" fill-opacity="0"/><rect width="7" height="32" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="west-active-tab-bottomleft" transform="translate(0 339)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(0 7) rotate(-90)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<g id="west-active-tab-bottom" transform="translate(7 339)"><rect width="32" height="7" fill="#000" fill-opacity="0"/><rect width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
-<g id="west-active-tab-bottomright" transform="translate(39 339)"><rect width="7" height="7" fill="#000" fill-opacity="0"/><g transform="translate(7 7) rotate(180)"><path d="M 7 0 A 7 7 0 0 0 0 7 L 7 7 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<rect id="west-active-tab-hint-top-margin" x="800" y="144" width="6" height="6" fill="#ff00ff"/>
-<rect id="west-active-tab-hint-bottom-margin" x="800" y="147" width="6" height="6" fill="#ff00ff"/>
-<rect id="west-active-tab-hint-left-margin" x="800" y="150" width="6" height="6" fill="#ff00ff"/>
-<rect id="west-active-tab-hint-right-margin" x="800" y="153" width="6" height="6" fill="#ff00ff"/>
+<style id="current-color-scheme" type="text/css">
+.ColorScheme-Highlight { color: #8db3ff; }
+</style>
+<g id="north-active-tab-topleft" transform="translate(0 0)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g>
+<g id="north-active-tab-top" transform="translate(6 0)"><rect width="32" height="6" fill="#000" fill-opacity="0"/><rect width="32" height="6" fill="#000000" fill-opacity="0"/></g>
+<g id="north-active-tab-topright" transform="translate(38 0)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(6 0) rotate(90)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<g id="north-active-tab-left" transform="translate(0 6)"><rect width="6" height="32" fill="#000" fill-opacity="0"/><rect width="6" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="north-active-tab-center" transform="translate(6 6)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="north-active-tab-right" transform="translate(38 6)"><rect width="6" height="32" fill="#000" fill-opacity="0"/><rect width="6" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="north-active-tab-bottomleft" transform="translate(0 38)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(0 6) rotate(-90)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<g id="north-active-tab-bottom" transform="translate(6 38)"><rect width="32" height="6" fill="#000" fill-opacity="0"/><rect width="32" height="6" fill="#000000" fill-opacity="0"/><rect width="32" height="3" class="ColorScheme-Highlight" fill="currentColor"/></g>
+<g id="north-active-tab-bottomright" transform="translate(38 38)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(6 6) rotate(180)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<rect id="north-active-tab-hint-top-margin" x="800" y="30" width="6" height="6" fill="#ff00ff"/>
+<rect id="north-active-tab-hint-bottom-margin" x="800" y="33" width="6" height="6" fill="#ff00ff"/>
+<rect id="north-active-tab-hint-left-margin" x="800" y="36" width="6" height="6" fill="#ff00ff"/>
+<rect id="north-active-tab-hint-right-margin" x="800" y="39" width="6" height="6" fill="#ff00ff"/>
+<g id="south-active-tab-topleft" transform="translate(0 100)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g>
+<g id="south-active-tab-top" transform="translate(6 100)"><rect width="32" height="6" fill="#000" fill-opacity="0"/><rect width="32" height="6" fill="#000000" fill-opacity="0"/></g>
+<g id="south-active-tab-topright" transform="translate(38 100)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(6 0) rotate(90)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<g id="south-active-tab-left" transform="translate(0 106)"><rect width="6" height="32" fill="#000" fill-opacity="0"/><rect width="6" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="south-active-tab-center" transform="translate(6 106)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="south-active-tab-right" transform="translate(38 106)"><rect width="6" height="32" fill="#000" fill-opacity="0"/><rect width="6" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="south-active-tab-bottomleft" transform="translate(0 138)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(0 6) rotate(-90)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<g id="south-active-tab-bottom" transform="translate(6 138)"><rect width="32" height="6" fill="#000" fill-opacity="0"/><rect width="32" height="6" fill="#000000" fill-opacity="0"/><rect width="32" height="3" class="ColorScheme-Highlight" fill="currentColor"/></g>
+<g id="south-active-tab-bottomright" transform="translate(38 138)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(6 6) rotate(180)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<rect id="south-active-tab-hint-top-margin" x="800" y="69" width="6" height="6" fill="#ff00ff"/>
+<rect id="south-active-tab-hint-bottom-margin" x="800" y="72" width="6" height="6" fill="#ff00ff"/>
+<rect id="south-active-tab-hint-left-margin" x="800" y="75" width="6" height="6" fill="#ff00ff"/>
+<rect id="south-active-tab-hint-right-margin" x="800" y="78" width="6" height="6" fill="#ff00ff"/>
+<g id="east-active-tab-topleft" transform="translate(0 200)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g>
+<g id="east-active-tab-top" transform="translate(6 200)"><rect width="32" height="6" fill="#000" fill-opacity="0"/><rect width="32" height="6" fill="#000000" fill-opacity="0"/></g>
+<g id="east-active-tab-topright" transform="translate(38 200)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(6 0) rotate(90)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<g id="east-active-tab-left" transform="translate(0 206)"><rect width="6" height="32" fill="#000" fill-opacity="0"/><rect width="6" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="east-active-tab-center" transform="translate(6 206)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="east-active-tab-right" transform="translate(38 206)"><rect width="6" height="32" fill="#000" fill-opacity="0"/><rect width="6" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="east-active-tab-bottomleft" transform="translate(0 238)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(0 6) rotate(-90)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<g id="east-active-tab-bottom" transform="translate(6 238)"><rect width="32" height="6" fill="#000" fill-opacity="0"/><rect width="32" height="6" fill="#000000" fill-opacity="0"/><rect width="32" height="3" class="ColorScheme-Highlight" fill="currentColor"/></g>
+<g id="east-active-tab-bottomright" transform="translate(38 238)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(6 6) rotate(180)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<rect id="east-active-tab-hint-top-margin" x="800" y="108" width="6" height="6" fill="#ff00ff"/>
+<rect id="east-active-tab-hint-bottom-margin" x="800" y="111" width="6" height="6" fill="#ff00ff"/>
+<rect id="east-active-tab-hint-left-margin" x="800" y="114" width="6" height="6" fill="#ff00ff"/>
+<rect id="east-active-tab-hint-right-margin" x="800" y="117" width="6" height="6" fill="#ff00ff"/>
+<g id="west-active-tab-topleft" transform="translate(0 300)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g>
+<g id="west-active-tab-top" transform="translate(6 300)"><rect width="32" height="6" fill="#000" fill-opacity="0"/><rect width="32" height="6" fill="#000000" fill-opacity="0"/></g>
+<g id="west-active-tab-topright" transform="translate(38 300)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(6 0) rotate(90)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<g id="west-active-tab-left" transform="translate(0 306)"><rect width="6" height="32" fill="#000" fill-opacity="0"/><rect width="6" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="west-active-tab-center" transform="translate(6 306)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect width="32" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="west-active-tab-right" transform="translate(38 306)"><rect width="6" height="32" fill="#000" fill-opacity="0"/><rect width="6" height="32" fill="#000000" fill-opacity="0"/></g>
+<g id="west-active-tab-bottomleft" transform="translate(0 338)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(0 6) rotate(-90)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<g id="west-active-tab-bottom" transform="translate(6 338)"><rect width="32" height="6" fill="#000" fill-opacity="0"/><rect width="32" height="6" fill="#000000" fill-opacity="0"/><rect width="32" height="3" class="ColorScheme-Highlight" fill="currentColor"/></g>
+<g id="west-active-tab-bottomright" transform="translate(38 338)"><rect width="6" height="6" fill="#000" fill-opacity="0"/><g transform="translate(6 6) rotate(180)"><path d="M 6 0 A 6 6 0 0 0 0 6 L 6 6 Z" fill="#000000" fill-opacity="0"/></g></g>
+<rect id="west-active-tab-hint-top-margin" x="800" y="147" width="6" height="6" fill="#ff00ff"/>
+<rect id="west-active-tab-hint-bottom-margin" x="800" y="150" width="6" height="6" fill="#ff00ff"/>
+<rect id="west-active-tab-hint-left-margin" x="800" y="153" width="6" height="6" fill="#ff00ff"/>
+<rect id="west-active-tab-hint-right-margin" x="800" y="156" width="6" height="6" fill="#ff00ff"/>
 <g id="sequoia-launcher-topleft" transform="translate(0 400)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#b0b0b0" fill-opacity="0.18"/></g>
 <g id="sequoia-launcher-top" transform="translate(11 400)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="4" width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
 <g id="sequoia-launcher-topright" transform="translate(43 400)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 0) rotate(90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
@@ -60,9 +63,9 @@
 <g id="sequoia-launcher-bottomleft" transform="translate(0 443)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(0 11) rotate(-90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
 <g id="sequoia-launcher-bottom" transform="translate(11 443)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="7" fill="#b0b0b0" fill-opacity="0.18"/></g>
 <g id="sequoia-launcher-bottomright" transform="translate(43 443)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 11) rotate(180)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#b0b0b0" fill-opacity="0.18"/></g></g>
-<rect id="sequoia-launcher-hint-top-margin" x="800" y="183" width="6" height="6" fill="#ff00ff"/>
-<rect id="sequoia-launcher-hint-bottom-margin" x="800" y="186" width="6" height="6" fill="#ff00ff"/>
-<rect id="sequoia-launcher-hint-left-margin" x="800" y="189" width="6" height="6" fill="#ff00ff"/>
-<rect id="sequoia-launcher-hint-right-margin" x="800" y="192" width="6" height="6" fill="#ff00ff"/>
-<rect id="hint-stretch-borders" x="800" y="195" width="1" height="1" fill="#ff00ff"/>
+<rect id="sequoia-launcher-hint-top-margin" x="800" y="186" width="6" height="6" fill="#ff00ff"/>
+<rect id="sequoia-launcher-hint-bottom-margin" x="800" y="189" width="6" height="6" fill="#ff00ff"/>
+<rect id="sequoia-launcher-hint-left-margin" x="800" y="192" width="6" height="6" fill="#ff00ff"/>
+<rect id="sequoia-launcher-hint-right-margin" x="800" y="195" width="6" height="6" fill="#ff00ff"/>
+<rect id="hint-stretch-borders" x="800" y="198" width="1" height="1" fill="#ff00ff"/>
 </svg>

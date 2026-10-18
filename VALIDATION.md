@@ -1411,3 +1411,16 @@ backup of the previous files and receipt, and Plasma Shell was reloaded.
   installed into the current desktop. Native captures and logs are under
   `.staging/taskbar-verification/`, including `dock.png`, `vertical-dock.png`,
   `settings.png`, and `native.log`.
+
+### Taskbar start menu removal — 2026-10-16
+
+- Removed the built-in application menu, its settings checkbox, and its reserved
+  layout space. Pinned application launchers and running tasks remain built in;
+  users add a start menu through Plasma's regular widget picker.
+- Build/CTest and installer checks passed. An upgrade from the previous staged
+  version removed the old `ApplicationMenu.qml` from a temporary installation.
+- The private native Plasma check confirmed no built-in menu, rendered a regular
+  Kickoff launcher widget beside the clock, and retained both in a vertical dock.
+  Existing animation, window-action, sizing, and restart checks also passed.
+- Updated stage: `.staging/taskbar-widget-menu`. Not installed into the current
+  desktop.

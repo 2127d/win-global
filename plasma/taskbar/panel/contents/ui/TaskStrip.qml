@@ -14,20 +14,18 @@ Item {
     id: strip
     objectName: "sequoiaTaskStrip"
     required property bool horizontal
-    required property var appletInterface
     required property rect screenGeometry
     required property int location
     readonly property var settings: config.values
     readonly property real thickness: horizontal ? height : width
     readonly property real length: horizontal ? width : height
     readonly property int effectiveIconSize: Metrics.iconSize(settings.sizeMode, settings.iconSize, thickness, settings.padding)
-    readonly property int menuLength: settings.showLauncher ? effectiveIconSize + 2 * settings.padding + settings.spacing : 0
-    readonly property real taskLength: Math.max(0, length - menuLength)
+    readonly property real taskLength: Math.max(0, length)
     readonly property real cellLength: Metrics.buttonLength(settings.sizeMode, effectiveIconSize, settings.padding, settings.spacing, tasks.count, taskLength)
     readonly property real contentLength: Math.max(0, tasks.count * cellLength + (tasks.count - 1) * settings.spacing)
     readonly property real taskOffset: Metrics.offset(settings.alignment, taskLength, contentLength)
     readonly property int taskCount: tasks.count
-    readonly property real naturalLength: Metrics.naturalLength(effectiveIconSize, settings.padding, settings.spacing, tasks.count, settings.showLauncher)
+    readonly property real naturalLength: Metrics.naturalLength(effectiveIconSize, settings.padding, settings.spacing, tasks.count)
     readonly property real inwardDirection: location === PlasmaCore.Types.TopEdge || location === PlasmaCore.Types.LeftEdge ? 1 : -1
     readonly property bool moving: settings.dockAnimations && Kirigami.Units.longDuration > 1
     readonly property int motionDuration: moving ? Math.round(370 * 100 / settings.dockSpeed) : 0
@@ -59,52 +57,11 @@ Item {
         config.setValue("launchers", tasks.launcherList);
         config.save();
     }
-    PC3.ToolButton {
-        id: launcher
-        x: strip.reverse ? strip.width - width : 0
-        objectName: "integratedApplicationLauncher"
-        visible: strip.settings.showLauncher
-        width: strip.horizontal ? strip.menuLength - strip.settings.spacing : strip.width
-        height: strip.horizontal ? strip.height : strip.menuLength - strip.settings.spacing
-        contentItem: Item {
-            Taskbar.MotionIcon {
-                anchors.centerIn: parent
-                width: strip.effectiveIconSize
-                height: strip.effectiveIconSize
-                source: "start-here-kde"
-                settings: strip.settings
-                hovered: launcher.hovered || launcherTip.containsMouse
-                pressed: launcher.down
-                horizontal: strip.horizontal
-                inwardDirection: strip.inwardDirection
-                viewportWidth: launcher.width
-                viewportHeight: launcher.height
-            }
-        }
-        text: i18n("Applications")
-        display: PC3.AbstractButton.IconOnly
-        onClicked: applicationMenu.visible = !applicationMenu.visible
-        PlasmaCore.ToolTipArea {
-            id: launcherTip
-            anchors.fill: parent
-            mainText: launcher.text
-            location: strip.location
-            active: !applicationMenu.visible
-            interactive: false
-        }
-    }
-    ApplicationMenu {
-        id: applicationMenu
-        appletInterface: strip.appletInterface
-        visualParent: launcher
-        location: strip.location
-        onSettingsRequested: config.openSettings()
-    }
     ListView {
         id: taskView
         objectName: "integratedTasks"
-        x: strip.horizontal ? (strip.reverse ? 0 : strip.menuLength + strip.taskOffset) : 0
-        y: strip.horizontal ? 0 : strip.menuLength + strip.taskOffset
+        x: strip.horizontal ? (strip.reverse ? 0 : strip.taskOffset) : 0
+        y: strip.horizontal ? 0 : strip.taskOffset
         width: strip.horizontal ? Math.max(0, strip.taskLength - strip.taskOffset) : strip.width
         height: strip.horizontal ? strip.height : Math.max(0, strip.taskLength - strip.taskOffset)
         orientation: strip.horizontal ? ListView.Horizontal : ListView.Vertical

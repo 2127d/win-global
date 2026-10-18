@@ -10,7 +10,7 @@ QVariantMap TaskbarSettings::defaultValues()
             {"dockAnimations", true}, {"taskHoverEffect", true}, {"dockHoverStyle", 2},
             {"dockStrength", 12}, {"dockSpeed", 100}, {"dockLaunchAnimation", true},
             {"dockPressAnimation", true}, {"dockAttentionAnimation", true}, {"dockReorderAnimation", true},
-            {"alignment", "left"}, {"showIndicators", true}, {"showLauncher", true},
+            {"alignment", "left"}, {"showIndicators", true},
             {"currentScreenOnly", false}, {"currentDesktopOnly", false},
             {"launchers", QStringList{"preferred://browser", "applications:org.kde.dolphin.desktop", "applications:org.kde.konsole.desktop"}}};
 }

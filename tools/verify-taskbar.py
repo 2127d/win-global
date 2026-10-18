@@ -64,6 +64,7 @@ def child(base, payload):
                     stdout=log, stderr=log, timeout=15, check=True)
             initial = wait_for(lambda: (lambda s: s if s.get('taskCount', 0) > 0 else None)(state()), 'Integrated task strip did not load')
             assert initial['effectiveIconSize'] == 32, initial
+            assert initial['builtInMenu'] is False, 'Taskbar must not create a built-in start menu'
             wait_for(lambda: state().get('validIcons', 0) >= 3, 'Launcher icons are not rendered')
             assert script('print(panels()[0].widgets().length);') == '0', 'Tasks must not be widgets'
             assert script('print(panels()[0].type);') == 'org.sequoia.taskbar'
@@ -85,10 +86,6 @@ def child(base, payload):
             wait_for(lambda: hovered_task().get('scale') == 1 and hovered_task().get('motionOffset') == 0,
                 'Disabling animations did not reset the hovered task')
             settings({'dockAnimations': True})
-            command({'menu': True})
-            wait_for(lambda: state().get('menuVisible') and state().get('applicationCount', 0) > 0, 'Built-in application menu is empty')
-            command({'menu': True})
-            wait_for(lambda: not state().get('menuVisible'), 'Application menu did not close')
             fixture_qml = base / 'window.qml'
             fixture_qml.write_text('import QtQuick\nimport QtQuick.Window\nWindow { visible: true; width: 400; height: 260; title: "Sequoia Taskbar Test"; Timer { interval: 60000; running: true; onTriggered: Qt.quit() } }\n')
             applications = base / 'data/applications'
@@ -142,6 +139,8 @@ def child(base, payload):
             script('panels()[0].addWidget("org.kde.plasma.digitalclock");')
             assert script('print(panels()[0].widgets()[0].type);') == 'org.kde.plasma.digitalclock'
             wait_for(lambda: state().get('clockVisible'), 'Added widget did not render')
+            script('panels()[0].addWidget("org.kde.plasma.kickoff");')
+            wait_for(lambda: state().get('launcherWidgetVisible'), 'Regular application launcher widget did not render')
             script('panels()[0].height = 84;')
             wait_for(lambda: state().get('height', 0) >= 70, 'Panel resize did not arrive')
             assert state()['effectiveIconSize'] == 32, state()
@@ -154,6 +153,7 @@ def child(base, payload):
             wait_for(lambda: state().get('lengthMode') == 1 and 100 < state().get('windowHeight', 0) < 600,
                 'Vertical dock did not fit contents with an added widget')
             assert state()['clockVisible'], 'Dock lost the added widget'
+            assert state()['launcherWidgetVisible'], 'Vertical dock lost the regular start menu widget'
             (base / 'capture').touch()
             wait_for(lambda: not (base / 'capture').exists(), 'Vertical dock capture did not complete')
             (base / 'vertical-dock.png').write_bytes((base / 'panel.png').read_bytes())
@@ -176,7 +176,7 @@ def child(base, payload):
             script(template.read_text())
             wait_for(lambda: state().get('lengthMode') == 1 and state().get('horizontal') is True
                 and 100 < state().get('windowWidth', 0) < 600, 'New taskbar did not inherit Dock mode')
-            print('PASS: native KCM, task hover/disable, fixed hit geometry, menu and icons, window actions, widget addition, sizing, dock growth/shrink, both orientations, editor preservation/restart, and new dock creation', flush=True)
+            print('PASS: native KCM, no built-in start menu, regular launcher widget, task hover/disable, fixed hit geometry, icons, window actions, sizing, dock growth/shrink, both orientations, editor preservation/restart, and new dock creation', flush=True)
         finally:
             stop(fixture)
             stop(shell)

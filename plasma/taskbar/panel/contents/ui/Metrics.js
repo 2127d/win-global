@@ -19,7 +19,6 @@ function offset(alignment, available, content) {
 
 // Never use allocated button lengths here: fill mode would feed the current
 // panel length back into Fit Content, preventing a dock from shrinking.
-function naturalLength(icon, padding, spacing, count, showLauncher) {
-    const cells = count + (showLauncher ? 1 : 0);
-    return cells * (icon + 2 * padding) + Math.max(0, cells - 1) * spacing;
+function naturalLength(icon, padding, spacing, count) {
+    return count * (icon + 2 * padding) + Math.max(0, count - 1) * spacing;
 }

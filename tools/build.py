@@ -146,6 +146,27 @@ def colors(p, name, material=None):
     return '\n\n'.join(sections)+'\n'
 
 
+def build_tabbar(base, p, widget_alpha):
+    s = Svg()
+    s.parts.append(f'''<style id="current-color-scheme" type="text/css">
+.ColorScheme-Highlight {{ color: {p['accent']}; }}
+</style>''')
+    for direction in ('north', 'south', 'east', 'west'):
+        prefix = f'{direction}-active-tab'
+        # Keep the native frame geometry and hit areas, but paint only a 3px
+        # underline, inset 6px horizontally and 3px from the bottom edge.
+        start = len(s.parts)
+        s.frame(prefix, '#000000', radius=6, opacity=0, margin=6)
+        for index in range(start, len(s.parts)):
+            if f'id="{prefix}-bottom"' in s.parts[index]:
+                s.parts[index] = s.parts[index].replace('</g>',
+                    '<rect width="32" height="3" class="ColorScheme-Highlight" fill="currentColor"/></g>')
+    # The stock launcher has its own compact square feedback in the shell.
+    s.frame('sequoia-launcher', p['widget_active'], 7, opacity=widget_alpha,
+            margin=6, inset=4)
+    s.save(base / 'widgets/tabbar.svg')
+
+
 def build_theme(mode,p):
     slug = f'sequoia-eleven-{mode}'
     base = ROOT / 'plasma/desktoptheme' / slug
@@ -207,7 +228,6 @@ def build_theme(mode,p):
       'viewitem': [('normal','surface',None,0),('hover','hover',None,1),
                    ('selected','accent',None,1),('selected+hover','accent','accent',1)],
       'pager': [('normal','raised','border',0.45),('hover','hover','border',1),('active','selected','accent',1)],
-      'tabbar': [(f'{d}-active-tab','widget_active',None,widget_alpha) for d in ['north','south','east','west']],
     }
     for file,states in files.items():
         s=Svg()
@@ -219,12 +239,8 @@ def build_theme(mode,p):
             if file == 'lineedit' and state != 'base':
                 s.hint(f'{state}-hint-no-border-padding')
         if file=='lineedit': s.hint('hint-focus-over-base')
-        if file == 'tabbar':
-            # Calendar tabs and tray items need the full shared frame. Only
-            # the launcher shell override selects this inset square frame.
-            s.frame('sequoia-launcher', p['widget_active'], 7, opacity=widget_alpha,
-                    margin=6, inset=4)
         s.save(base/'widgets'/f'{file}.svg')
+    build_tabbar(base, p, widget_alpha)
     s=Svg()
     # Pinned launchers have no running window and use the unprefixed frame.
     s.frame('',p['surface'],7,opacity=0,margin=5,inset=4)

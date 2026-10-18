@@ -3,7 +3,7 @@
   "KPlugin": {
     "Id": "org.sequoia.taskbar",
     "Name": "Sequoia Taskbar",
-    "Description": "Panel with integrated application launcher and tasks",
+    "Description": "Panel with integrated pinned applications and running tasks",
     "Icon": "preferences-system-windows",
     "Version": "0.1.0",
     "License": "GPL-2.0-or-later"

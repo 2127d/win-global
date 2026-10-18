@@ -1,9 +1,10 @@
 # Sequoia Taskbar
 
-A separate Plasma panel with an integrated application menu, pinned application
-launchers, running tasks, and activity indicators. These are direct children of
+A separate Plasma panel with integrated pinned application launchers, running
+tasks, and activity indicators. These are direct children of
 the panel containment, not applets. Ordinary Plasma widgets remain addable in the
-trailing widget area through Edit Mode.
+trailing widget area through Edit Mode. Add your preferred start menu as a regular
+widget using **Edit Mode → Add Widgets**; the taskbar has no built-in start menu.
 
 The native **Taskbar** KCM appears under **Appearance** in System Settings,
 including the repository's Settings navigation fork. Its settings apply to all
@@ -18,7 +19,7 @@ Sequoia Taskbar panels in the current account; other panel types are unaffected.
 | Spacing and padding | Controls button separation and space around each icon. |
 | Alignment | Start, center, or end within the available task area. |
 | Running indicators | Optional dots/bars distinguish running and active applications. |
-| Applications | Show/hide the built-in application menu; pin, remove, and reorder launchers. |
+| Pinned applications | Pin, remove, and reorder application launchers. |
 | Window filtering | Optionally restrict tasks to the current screen or desktop. |
 | Sequoia animations | Hover zoom/lift, press feedback, a single launch bounce, a brief attention pulse, and task movement. Includes intensity/speed controls and a live preview. |
 
@@ -33,8 +34,8 @@ extra space to distribute unless the panel editor supplies a larger length.
 
 Click a running task to activate it, or minimize it when active. Grouped tasks
 open a window list. Middle-click requests another instance; right-click exposes
-pin/unpin, new window, close, and Taskbar Settings. The application menu includes
-search. Scroll the task area when its buttons exceed the available space.
+pin/unpin, new window, close, and Taskbar Settings. Scroll the task area when its
+buttons exceed the available space.
 
 ## Build and install
 
@@ -43,8 +44,8 @@ builder compares the upstream panel's embedded QML with `upstream.json` before
 building. Other Plasma releases need a compatibility review. Build on the target
 computer with Qt 6 development tools, ECM, KDE Frameworks 6 Config, CoreAddons,
 KCMUtils and I18n development packages, CMake, Ninja, a C++ compiler, and PySide6.
-Runtime dependencies include Plasma Desktop, its task-manager and Kicker QML
-modules, Kirigami, and Plasma Components.
+Runtime dependencies include Plasma Desktop, its task-manager QML module,
+Kirigami, and Plasma Components.
 
 From the repository root:
 
@@ -84,8 +85,8 @@ rebuild against the matching backend; compiled adapters are not portable binarie
 
 The containment reuses KDE's installed panel backend through the independently
 named native factory. The forked containment layout retains its widget model and
-editing support; `TaskStrip.qml` supplies the built-in tasks using KDE's TasksModel
-and `ApplicationMenu.qml` uses Kicker's application models. The native KCM and
+editing support; `TaskStrip.qml` supplies the built-in tasks using KDE's TasksModel.
+The native KCM and
 panel share `TaskbarSettings`, backed by KConfig and change notifications. Apply
 writes only edited settings so a concurrently pinned app is not overwritten.
 
@@ -109,9 +110,10 @@ settings file; widget settings are not imported or modified.
 
 CTest covers persistence, cancel/reset behavior, input normalization, concurrent
 edits, sizing policies, and overflow calculations. Native tests load the KCM,
-check Apply state, add the panel with zero applets, inspect rendered icons and
-the application menu, launch a test application, exercise its minimize/restore behavior, add an
-ordinary widget, change sizing modes live, and rotate the panel. Additional checks
+check Apply state, add the panel with zero applets and no built-in start menu,
+inspect rendered icons, launch a test application, exercise its minimize/restore
+behavior, add regular launcher and clock widgets, change sizing modes live, and
+rotate the panel. Additional checks
 exercise real pointer hover without resizing button hit areas, disabled motion,
 dock growth/shrink and vertical widget layout, preserving editor choices across
 mode changes and restarts, and creating a new dock. Offscreen tests exercise the
@@ -121,8 +123,9 @@ test covers updates, backup restoration, edited-file protection, and stage tampe
 
 Physical multi-monitor, mixed-DPI, touchscreen, and long-running session behavior
 still need interactive desktop testing. This first version does not implement
-task thumbnail previews, drag reordering of pinned apps, or a global Meta-key
-menu shortcut; launcher order is edited centrally in Taskbar settings.
+task thumbnail previews or drag reordering of pinned apps; launcher order is
+edited centrally in Taskbar settings. Menu behavior and shortcuts belong to the
+launcher widget you choose.
 
 KDE's panel files retain their original copyright and GPL/LGPL notices. New
 components are MIT licensed; license texts are in `LICENSES/`.

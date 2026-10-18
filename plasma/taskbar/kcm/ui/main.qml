@@ -90,11 +90,6 @@ KCM.SimpleKCM {
                 onActivated: page.settings.setValue("alignment", ["left", "center", "right"][currentIndex])
             }
             QQC2.CheckBox {
-                text: i18n("Show application menu")
-                checked: page.values.showLauncher
-                onToggled: page.settings.setValue("showLauncher", checked)
-            }
-            QQC2.CheckBox {
                 text: i18n("Show running application indicators")
                 checked: page.values.showIndicators
                 onToggled: page.settings.setValue("showIndicators", checked)

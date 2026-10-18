@@ -35,8 +35,8 @@ Plasma panels and desktop widgets retain their existing finishes.
 ## What is included
 
 The optional [Sequoia Taskbar](plasma/taskbar/README.md) provides a separate
-**Add Panel → Sequoia Taskbar** choice with an integrated application menu and
-task buttons, plus **Appearance → Taskbar** settings for icon sizing, spacing,
+**Add Panel → Sequoia Taskbar** choice with integrated task buttons and support
+for your preferred start menu widget, plus **Appearance → Taskbar** settings for icon sizing, spacing,
 alignment, indicators, pinned applications, panel/dock mode, and Sequoia animations.
 Floating, hiding, position, and thickness remain in Plasma's panel editor. It supports additional widgets
 and uses its own build/install helper; existing panels are preserved.
@@ -46,7 +46,7 @@ and uses its own build/install helper; existing panels are preserved.
   follow the selected global theme. Original Tahoe installations remain available.
 - **Plasma style:** charcoal or porcelain panels, translucent widget and OSD
   backgrounds, corrected rounded shadows, compact task highlights, and subtle
-  gray/white active panel-widget highlights. Desktop widgets with standard
+  accent-colored underlines for active panel widgets. Desktop widgets with standard
   backgrounds use Plasma's wallpaper blur, clipped to their rounded corners.
   Panel blur masks sit one pixel inside the rounded border to contain edge spill.
   The application style leaves Plasma's blur regions intact so floating panels
@@ -597,8 +597,9 @@ identified by `.sequoia-eleven-lockscreen`.
 
 The Plasma style also uses this local shell package for a launcher-only highlight
 adjustment, identified by `.sequoia-eleven-launcher`. Stock application launchers
-get a centered rounded square; calendar tabs and tray items keep their full-size
-shared backgrounds. Other Plasma themes retain their normal launcher geometry.
+get a centered rounded square; calendar tabs and tray items use a 3px accent-colored
+underline inset from the frame edges. Other Plasma themes retain their normal
+launcher geometry.
 The installer builds the override from the destination machine's shell and refuses
 to patch an unrecognized CompactApplet structure. Refresh the Plasma style through
 the installer after Plasma upgrades. Style and lock-screen choices remain independent;

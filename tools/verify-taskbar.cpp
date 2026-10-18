@@ -48,17 +48,15 @@ static void collect(QQuickItem *item, QJsonArray &buttons, int &icons, const QJs
             executed += QMetaObject::invokeMethod(item, "clicked");
         }
     }
-    if (executed == 0 && item->objectName() == QLatin1String("integratedApplicationLauncher") && command.value("menu").toBool())
-        executed += QMetaObject::invokeMethod(item, "clicked");
     for (auto child : item->childItems()) collect(child, buttons, icons, command, executed);
 }
 
-static bool visibleClock(QQuickItem *item)
+static bool visibleApplet(QQuickItem *item, const QString &pluginName)
 {
     if (auto applet = item->property("_plasma_applet").value<QObject *>())
-        if (applet->property("pluginName").toString() == QLatin1String("org.kde.plasma.digitalclock")
+        if (applet->property("pluginName").toString() == pluginName
             && item->isVisible() && item->width() > 10 && item->height() > 10) return true;
-    for (auto child : item->childItems()) if (visibleClock(child)) return true;
+    for (auto child : item->childItems()) if (visibleApplet(child, pluginName)) return true;
     return false;
 }
 
@@ -90,11 +88,10 @@ static void start()
             collect(strip, buttons, icons, command, executed);
             state["validIcons"] = icons;
             state["buttons"] = buttons;
-            state["clockVisible"] = visibleClock(quick->contentItem());
-            if (auto menu = strip->findChild<QObject *>(QStringLiteral("integratedApplicationMenu"))) {
-                state["menuVisible"] = menu->property("visible").toBool();
-                state["applicationCount"] = menu->property("applicationCount").toInt();
-            }
+            state["clockVisible"] = visibleApplet(quick->contentItem(), QStringLiteral("org.kde.plasma.digitalclock"));
+            state["launcherWidgetVisible"] = visibleApplet(quick->contentItem(), QStringLiteral("org.kde.plasma.kickoff"));
+            state["builtInMenu"] = strip->findChild<QObject *>(QStringLiteral("integratedApplicationMenu")) != nullptr
+                || strip->findChild<QObject *>(QStringLiteral("integratedApplicationLauncher")) != nullptr;
             if (QFile::exists(directory + "/capture")) {
                 quick->grabWindow().save(directory + "/panel.png");
                 QFile::remove(directory + "/capture");

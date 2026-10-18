@@ -8,18 +8,23 @@ import shell_overrides
 
 temporary = tempfile.TemporaryDirectory(prefix='sequoia-launcher-highlight-')
 os.environ.update(QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software',
-                  QT_QPA_PLATFORMTHEME='generic', XDG_CACHE_HOME=temporary.name,
+                  QT_QPA_PLATFORMTHEME='kde', XDG_CACHE_HOME=temporary.name,
                   XDG_CONFIG_HOME=temporary.name + '/config',
                   XDG_DATA_HOME=temporary.name + '/data',
                   XDG_STATE_HOME=temporary.name + '/state',
                   DBUS_SESSION_BUS_ADDRESS='unix:path=/nonexistent-sequoia-highlight')
+accent = '#b45fe0'
+config = Path(os.environ['XDG_CONFIG_HOME'])
+config.mkdir()
+(config / 'kdeglobals').write_text('[Colors:Selection]\nBackgroundNormal=180,95,224\n')
 
 from PySide6.QtCore import QObject, QUrl
-from PySide6.QtGui import QColor, QGuiApplication
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QApplication
 from PySide6.QtQuick import QQuickView
 
 ROOT = Path(__file__).resolve().parents[1]
-app = QGuiApplication([])
+app = QApplication([])
 view = QQuickView()
 view.setColor(QColor('transparent'))
 patched = shell_overrides.patch_launcher((shell_overrides.SYSTEM_SHELL / shell_overrides.COMPACT).read_text())
@@ -82,10 +87,13 @@ Item {{ width: 128; height: 128
     else:
         horizontal = direction in ('north','south')
         x,y = 24-(0 if horizontal else margin),24-(margin if horizontal else 0)
-        expected = (x,y,x+width+(0 if horizontal else 2*margin)-1,y+height+(2*margin if horizontal else 0)-1)
+        frame_width = width + (0 if horizontal else 2*margin)
+        frame_height = height + (2*margin if horizontal else 0)
+        expected = (x+6,y+frame_height-6,x+frame_width-7,y+frame_height-4)
     expected = (round(expected[0]*scale), round(expected[1]*scale), round((expected[2]+1)*scale)-1, round((expected[3]+1)*scale)-1)
     assert all(abs(a-b)<=1 for a,b in zip(bounds,expected)), (mode,direction,plugin,width,height,margin,bounds,expected)
-    assert raster.pixelColor(bounds[0],bounds[1]).alpha()==0, 'rounded corner lost'
+    if square:
+        assert raster.pixelColor(bounds[0],bounds[1]).alpha()==0, 'rounded corner lost'
 
 # These controls use tabbar directly, without CompactApplet's panel margins.
 for mode in ('light','dark'):
@@ -101,6 +109,12 @@ KSvg.FrameSvgItem {{ width: {width}; height: {height}; imagePath: "{path}"; pref
         for _ in range(10): app.processEvents()
         raster=view.grabWindow()
         x=raster.width()//2
-        assert raster.pixelColor(x,0).alpha()>0 and raster.pixelColor(x,raster.height()-1).alpha()>0, 'calendar/tray frame shrank'
+        painted = [(px, py) for py in range(raster.height()) for px in range(raster.width())
+                   if raster.pixelColor(px, py).alpha()]
+        assert painted, 'missing active underline'
+        assert all(6*scale <= px < (width-6)*scale and (height-6)*scale <= py < (height-3)*scale
+                   for px, py in painted), 'active feedback escaped the inset underline'
+        assert raster.pixelColor(x, round((height-5)*scale)).alpha() == 255, 'underline is translucent'
+        assert raster.pixelColor(x, round((height-5)*scale)).name() == accent, 'underline ignored the account accent'
 view.close()
-print(f'PASS: {len(cases)} actual launcher/widget feedback cases and 4 calendar/tray frames at {scale:g}×; square launchers, full shared backgrounds, stock fallback.')
+print(f'PASS: {len(cases)} actual launcher/widget feedback cases and 4 calendar/tray frames at {scale:g}×; square launchers, inset accent underlines, stock fallback geometry.')

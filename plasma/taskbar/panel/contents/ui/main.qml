@@ -59,7 +59,6 @@ ContainmentItem {
         width: root.isHorizontal ? root.builtInLength : root.width
         height: root.isHorizontal ? root.height : root.builtInLength
         horizontal: root.isHorizontal
-        appletInterface: root
         screenGeometry: root.Plasmoid.containment.screenGeometry
         location: root.Plasmoid.location
     }

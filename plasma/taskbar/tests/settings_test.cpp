@@ -89,10 +89,10 @@ private Q_SLOTS:
         QCOMPARE(engine.evaluate("buttonLength('fill', 32, 6, 6, 20, 400)").toInt(), 44);
         QCOMPARE(engine.evaluate("offset('center', 400, 200)").toInt(), 100);
         QCOMPARE(engine.evaluate("offset('right', 100, 400)").toInt(), 0);
-        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 3, true)").toInt(), 194);
-        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 0, false)").toInt(), 0);
-        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 0, true)").toInt(), 44);
-        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 4, false)").toInt(), 194);
+        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 4)").toInt(), 194);
+        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 0)").toInt(), 0);
+        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 1)").toInt(), 44);
+        QCOMPARE(engine.evaluate("naturalLength(32, 6, 6, 3)").toInt(), 144);
     }
 };
 QTEST_GUILESS_MAIN(SettingsTest)
