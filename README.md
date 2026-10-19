@@ -181,7 +181,8 @@ SDDM is not replaced. An explicit `--components login` request requires that man
 
 Installing a component later preserves other installed components and their
 uninstall receipts. If a later step fails, completed steps and installed
-dependencies remain; the log identifies completed steps. Choose the installed
+dependencies remain; the log identifies completed steps. Plasma shell restarts
+after all selected components and app makeovers finish installing. Choose the installed
 theme in System Settings and reopen apps after installation. The Settings makeover
 also adds **System Settings (Sequoia Eleven)** to the application menu, so it
 works without editing your PATH. The Desktop widgets component includes the custom
@@ -220,7 +221,9 @@ are preserved through installation, refresh and removal. It also builds the
 native tray, trash and animated task-manager forks, with their runtime dependencies.
 Global Theme includes this component automatically. The separate
 [widget archive installer](widgets/README.md) remains available.
-`install.sh` does not change panels, restart Plasma, activate a
+`install.sh` restarts Plasma shell after installation. Use `--skip-restart` to
+defer this final restart; alternate user-data prefixes and system roots skip it.
+It does not change panels, activate a
 theme, or change authentication settings. The login theme loads after reboot;
 Plasma Login Manager must already be installed. SDDM is not supported.
 

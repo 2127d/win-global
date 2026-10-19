@@ -103,7 +103,11 @@ class Receipt:
             if scope is not None and not scope(name):
                 continue
             current = fingerprint(self.target(name))
-            if not force and current not in (None, entry['installed']):
+            # A standalone component refresh may leave an older receipt. An
+            # exact match to the incoming payload loses no local changes.
+            matches_incoming = (incoming is not None and name in incoming
+                                and current == fingerprint(incoming[name]))
+            if not force and current not in (None, entry['installed']) and not matches_incoming:
                 raise RuntimeError(f'Installed file was edited: {self.root / name}. '
                                    'Save your changes, then use --force to replace/remove it.')
             if entry['original'] is not None and not exists(self.state / 'originals' / entry['original']):

@@ -304,6 +304,27 @@ class PlatformTests(unittest.TestCase):
                 deps.assert_not_called()
                 run.assert_not_called()
 
+    def test_restart_runs_after_all_installs_and_not_after_failure(self):
+        restart = ['systemctl', '--user', 'restart', 'plasma-plasmashell.service']
+        for components in ([], ['--components', 'colors']):
+            for failed in (False, True):
+                with self.subTest(components=components, failed=failed), \
+                        patch.object(sys, 'argv', ['runner', '--distro', 'fedora', *components, '--apps', 'kcalc']), \
+                        patch.object(runner, 'app_problem', return_value=None), \
+                        patch.object(runner, 'install_dependencies'), \
+                        patch.object(runner, 'run', side_effect=RuntimeError('failed') if failed else None) as run:
+                    if failed:
+                        with self.assertRaisesRegex(RuntimeError, 'failed'):
+                            runner.main()
+                        self.assertNotIn(restart, [call.args[0] for call in run.call_args_list])
+                    else:
+                        runner.main()
+                        commands = [call.args[0] for call in run.call_args_list]
+                        self.assertEqual(commands[-1], restart)
+                        self.assertTrue(commands[-2][-1].endswith('install-kcalc.py'))
+                        if components:
+                            self.assertIn('--skip-restart', commands[0])
+
 class AppInstallTests(unittest.TestCase):
     @unittest.skipUnless(os.environ.get('SEQUOIA_APP_INSTALL_TEST') == '1',
                          'Set SEQUOIA_APP_INSTALL_TEST=1 to test existing app binaries in temporary destinations')

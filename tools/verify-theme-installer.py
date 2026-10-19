@@ -118,6 +118,31 @@ class ThemeTests(unittest.TestCase):
         self.receipt().uninstall(force=True)
         self.assertFalse((self.live / 'theme').exists())
 
+    def test_refresh_accepts_exact_incoming_match_and_preserves_original(self):
+        self.put(self.live, 'theme/a', 'original')
+        self.put(self.stage, 'theme/a', 'version 1')
+        self.receipt().install(self.stage)
+        self.put(self.live, 'theme/a', 'version 2')
+        self.put(self.stage, 'theme/a', 'version 2')
+        # Removal still protects edits until installation updates the receipt.
+        with self.assertRaisesRegex(RuntimeError, 'edited'):
+            self.receipt().uninstall()
+        self.receipt().install(self.stage)
+        self.receipt().validate()
+        self.receipt().uninstall()
+        self.assertEqual((self.live / 'theme/a').read_text(), 'original')
+
+    def test_refresh_rejects_edited_files_missing_from_payload(self):
+        self.put(self.stage, 'theme/a', 'version 1')
+        self.receipt().install(self.stage)
+        self.put(self.live, 'theme/a', 'local edit')
+        (self.stage / 'theme/a').unlink()
+        self.put(self.stage, 'theme/b', 'new file')
+        with self.assertRaisesRegex(RuntimeError, 'edited'):
+            self.receipt().install(self.stage)
+        self.assertEqual((self.live / 'theme/a').read_text(), 'local edit')
+        self.assertFalse((self.live / 'theme/b').exists())
+
     def test_login_wallpaper_upgrade(self):
         old_files = installer.SYSTEM_ALLOWED_FILES - installer.SYSTEM_FILES
         for name in old_files:
@@ -340,9 +365,25 @@ class ThemeTests(unittest.TestCase):
             events.append('apply')
         with patch.object(sys, 'argv', ['installer', 'install', '--skip-deps', '--components', 'animation-kit']), \
                 patch.object(installer.motion_install, 'theme_installation', side_effect=lifecycle), \
-                patch.object(installer, 'perform', side_effect=lambda args: events.append('theme')):
+                patch.object(installer, 'perform', side_effect=lambda args: events.append('theme')), \
+                patch.object(installer, 'run', side_effect=lambda *args: events.append(args)):
             installer.main()
-        self.assertEqual(events, ['prepare', 'theme', 'apply'])
+        self.assertEqual(events, ['prepare', 'theme', 'apply',
+                                 ('systemctl', '--user', 'restart', 'plasma-plasmashell.service')])
+
+    def test_cli_skips_restart_for_preview_staging_deferral_and_failure(self):
+        for options in (['--plan'], ['--prefix', str(self.live)],
+                        ['--system-root', str(self.base)], ['--skip-restart'], []):
+            with self.subTest(options=options), \
+                    patch.object(sys, 'argv', ['installer', 'install', '--skip-deps', '--components', 'colors', *options]), \
+                    patch.object(installer, 'perform', side_effect=RuntimeError('failed') if not options else None), \
+                    patch.object(installer, 'run') as run:
+                if options:
+                    installer.main()
+                else:
+                    with self.assertRaisesRegex(RuntimeError, 'failed'):
+                        installer.main()
+                run.assert_not_called()
 
     def test_kit_removal_preflights_and_restores_before_theme_removal(self):
         # Use a real receipt to ensure removing only the kit keeps base theme files.

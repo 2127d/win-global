@@ -25,6 +25,7 @@ def main():
         print('Components:', ', '.join(args.components) or 'None')
         print('App makeovers:', ', '.join(args.apps) or 'None')
         print('Dependencies:', ' '.join(packages_for(args.distro, args.components, args.apps)) or 'None')
+        print('Final step: Restart Plasma shell')
         return
     # Reject incompatible forks before any packages or theme files are changed.
     if 'login' in args.components and not login_available():
@@ -42,13 +43,16 @@ def main():
     if args.components:
         print('STEP: Building and installing theme components', flush=True)
         run([sys.executable, '-u', str(ROOT / 'tools/install-theme.py'), 'install',
-             '--skip-deps', '--distro', args.distro, '--components', *args.components])
+             '--skip-deps', '--skip-restart', '--distro', args.distro, '--components', *args.components])
         print('COMPLETED: Selected theme components', flush=True)
     for app in args.apps:
         print('STEP: Installing ' + APPS[app][0], flush=True)
         script = {'settings': 'install-settings-navigation.py', 'gwenview': 'install-gwenview.py', 'kcalc': 'install-kcalc.py'}[app]
         run([sys.executable, '-u', str(ROOT / 'tools' / script)])
         print('COMPLETED: ' + APPS[app][0], flush=True)
+    print('STEP: Restarting Plasma shell', flush=True)
+    run(['systemctl', '--user', 'restart', 'plasma-plasmashell.service'])
+    print('COMPLETED: Plasma shell restarted', flush=True)
 
 if __name__ == '__main__':
     try:

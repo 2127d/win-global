@@ -107,6 +107,26 @@ class ShellTests(unittest.TestCase):
         self.assertTrue((self.live / shell.SHELL / shell.MARKERS['lockscreen']).exists())
         self.assertTrue(path.read_text().endswith('// local edit\n'))
 
+    def test_cli_refresh_accepts_shell_matching_current_payload(self):
+        self.install('lockscreen', 'plasma-style')
+        receipt = self.receipt()
+        name = shell.SHELL + '/contents/lockscreen/SequoiaMediaCard.qml'
+        # Model a standalone refresh that left the unified receipt behind.
+        receipt.data['files'][name]['installed'] = 'sha256:old-version'
+        receipt.save()
+        command = [sys.executable, str(installer.ROOT / 'tools/install-theme.py'), 'install',
+                   '--prefix', str(self.live), '--system-root', str(self.base / 'system'),
+                   '--skip-deps', '--components', 'lockscreen', 'plasma-style']
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.receipt().validate()
+        target = self.live / name
+        target.write_text(target.read_text() + '\n// local edit\n')
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Installed file was edited', result.stderr)
+        self.assertTrue(target.read_text().endswith('// local edit\n'))
+
     def test_picker_refresh_preserves_unrelated_local_edits_and_receipts(self):
         self.install('plasma-style', 'lockscreen')
         name = shell.SHELL + '/contents/lockscreen/LockScreenUi.qml'

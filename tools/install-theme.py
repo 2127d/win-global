@@ -300,6 +300,7 @@ def main():
     parser.add_argument('--components', nargs='+', choices=COMPONENTS,
                         help='Select components; installation includes required assets, removal includes dependent presets.')
     parser.add_argument('--skip-deps', action='store_true', help='Use already-installed build dependencies.')
+    parser.add_argument('--skip-restart', action='store_true', help='Defer the final Plasma shell restart.')
     parser.add_argument('--keep-system', action='store_true',
                         help='Uninstall only this account; retain shared native plugins and login theme.')
     parser.add_argument('--force', action='store_true', help='Replace/remove locally edited managed files.')
@@ -351,6 +352,11 @@ def main():
             dependencies(args.distro, args.components)
         with motion_install.theme_installation(args.prefix, args.components):
             perform(args)
+        live_prefix = Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share').absolute()
+        if not args.skip_restart and args.system_root == Path('/') and args.prefix == live_prefix:
+            print('STEP: Restarting Plasma shell', flush=True)
+            run('systemctl', '--user', 'restart', 'plasma-plasmashell.service')
+            print('COMPLETED: Plasma shell restarted', flush=True)
     else:
         perform(args)
 
@@ -394,9 +400,14 @@ def perform(args):
         return
     components = set(args.components)
     scope = lambda name: user_scope(name, components)
-    receipt.validate(force=args.force, scope=scope)
     with tempfile.TemporaryDirectory(prefix='sequoia-theme-install-') as temporary:
         stage = Path(temporary)
+        # Compare against the actual replacement before rejecting a stale
+        # receipt, and reject conflicting edits before native builds begin.
+        user = stage / 'user'
+        stage_user(user, args.prefix, components)
+        incoming = payload_files(user)
+        receipt.validate(incoming, args.force, scope=lambda name: name in incoming or scope(name))
         native = stage / 'native'
         native.mkdir()
         if components & NATIVE:
@@ -414,9 +425,6 @@ def perform(args):
         if 'widgets' in components:
             widget_payload.stage(native, PLUGINDIR)
         validate_system_payload(native, components)
-        user = stage / 'user'
-        stage_user(user, args.prefix, components)
-        incoming = payload_files(user)
         receipt.validate(incoming, args.force, scope=lambda name: name in incoming or scope(name))
         obsolete = legacy_files(args.prefix, components) if not receipt.manifest.exists() else ()
         for name in obsolete:

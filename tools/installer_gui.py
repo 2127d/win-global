@@ -238,6 +238,7 @@ class InstallerWindow(QMainWindow):
             summary += ['', 'Dependencies (only missing packages will be installed):',
                         ', '.join(packages_for(self.distro(), components, apps)) or 'None', '',
                         'Theme files install for your account. Native plugins and login assets install system-wide.',
+                        'Plasma shell restarts after all selected components and app makeovers finish installing.',
                         ('Animation kit: saves a restorable snapshot, applies Your palette and restarts Plasma. Panel layout is preserved.'
                          if 'animation-kit' in components else 'Existing components are preserved. Desktop settings and panel layout stay as they are.'),
                         'Remove themes or app makeovers with ./uninstall-gui.py.']
