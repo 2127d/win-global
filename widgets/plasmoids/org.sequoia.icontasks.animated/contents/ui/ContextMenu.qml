@@ -6,6 +6,7 @@
 */
 
 import QtQuick
+import "LayoutMetrics.js" as LayoutMetrics
 
 import org.kde.plasma.plasmoid
 
@@ -129,7 +130,7 @@ PlasmaExtras.Menu {
         // it would just cut off text rather than eliding. So we do this manually.
         const textMetrics = Qt.createQmlObject("import QtQuick; TextMetrics {}", menu);
         textMetrics.elide = Qt.ElideRight;
-        textMetrics.elideWidth = TaskManagerApplet.LayoutMetrics.maximumContextMenuTextWidth();
+        textMetrics.elideWidth = LayoutMetrics.maximumContextMenuTextWidth();
 
         sections.forEach(section => {
             if (section["actions"].length > 0 || section["group"] === "actions") {

@@ -6,7 +6,6 @@
     "/usr/lib64/qt6/plugins/plasma/applets/org.kde.plasma.taskmanager.so": "898136f3041ff68633d41829ca3a29a26be88aceac78a7fa33c9a78f6b6f2f77"
   },
   "files": {
-    "metadata.json": "735e127e89ef44d6737a833aef5c23e3ffa5b9384b71b38ce08233b88574b890",
     "LICENSES/BSD-3-Clause.txt": "e11af671c491efac2f94c1d752bea92f4308ca2450c7d11e582e4b48c40e4de1",
     "LICENSES/CC0-1.0.txt": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
     "LICENSES/GFDL-1.2-or-later.txt": "1118a91a3290bc8981f922dfcffc1a619592c007aa31b7a98cee694d933c86ce",
@@ -33,9 +32,9 @@
     "contents/ui/ConfigAnimations.qml": "bfa449ab7b639203cb1b1f80e929e44a24027d27ebf169210aaf9ee4863ff8b4",
     "contents/ui/ConfigAppearance.qml": "b1ee26cf7dc2160a78a50f58a142d62e1ea9220a088666e1f6c55f932a253467",
     "contents/ui/ConfigBehavior.qml": "ae3a4e7e8a7e4b11f9303dec8bf22d6612f0c3a05aedb94b53bad72672fd21f3",
-    "contents/ui/ContextMenu.qml": "ceefbecbc0daf6d4e9968a075b3e8c55a59815b79c89f7add6d7b88dc4cc4f81",
+    "contents/ui/ContextMenu.qml": "e908b5e6cae7b1428982485904dac088b08cd56eab136ba6fd7a18c361f3050a",
     "contents/ui/DockMotion.qml": "877cf9fa8717df2ea553ae6987a95973f7f9c048aaf23d76111b61062bd72379",
-    "contents/ui/GroupDialog.qml": "917de8507f031fd83034b585129196e8639d98a20dd6e82f0bfdd30af47400ee",
+    "contents/ui/GroupDialog.qml": "09edb9d59199f59134fe0899624654c04b7208d38ec292b1cfbc02e43cec6f77",
     "contents/ui/GroupExpanderOverlay.qml": "3952b93347507327fdcde6b31b29f963bb0be3ea6e8ddd59ef4a919b29ac075f",
     "contents/ui/LayoutMetrics.js": "03a2ee0bbeea192017f4c00bdfe500367d3626a3ca6e9c26f3a330b6ba30e939",
     "contents/ui/MouseHandler.qml": "1c0842132f06b59d437df16749f127548dea01ad3145f1f70c652b446b1b3572",
@@ -44,14 +43,15 @@
     "contents/ui/PulseAudio.qml": "c0ea1c1375ecc829a0578f9721722ffd0816cead8a86c4167ee6d297c0282e39",
     "contents/ui/ScrollableTextWrapper.qml": "4584629b45e2ff5d0b78d0531a782dc9dae8c4a86f60b16062567bbf2bccb3ee",
     "contents/ui/SettingsCard.qml": "6ae61d0b7ed0a0900ee3d940eecd0f5a6cc994bae9fb01bc5d7a0e6ed40f7ac6",
-    "contents/ui/Task.qml": "534ecc16b6dd81e9c30260f962c0bb719a6def0e6a07d4dcf2112b97fa657d86",
+    "contents/ui/Task.qml": "0c74aba0ee76bf65a7cf4af04e89a17dd2881f56a7349ee682ff1361d3548df8",
     "contents/ui/TaskBadgeOverlay.qml": "572e23ec6025be2ad061c2786da0448bf263d3aaf9c04d6198300b0d9e4c6041",
-    "contents/ui/TaskList.qml": "eae58b3f9baf311accf07842e8780e7de8a6d962ef40bab7f0fea87ffad7ae39",
+    "contents/ui/TaskList.qml": "1de3ac821c72c3db82b221ddc198b3d75a2fc3dc9cbb213665b94625e530c3cb",
     "contents/ui/TaskProgressOverlay.qml": "e70981e86cc1b33766526997f503e4891f713d4774e8be843beb10837165c2c0",
     "contents/ui/TaskTools.js": "74e0b23971ef8f4c53d5693bf4a03f985500ae21ce4e84975244f718bfc57a77",
     "contents/ui/ToolTipDelegate.qml": "b1c0c8fee21ac6e3232f7c6c982d0286f989e88d9375e58f35f9b6f85a55f4ee",
     "contents/ui/ToolTipInstance.qml": "ac6aa4634eed80dbde289a3c8f82f893f23e3339ec85663c6081bc80ec815633",
     "contents/ui/ToolTipWindowMouseArea.qml": "d11004379772e6c8ac94a12875afee18f8263767347266715fe9cd9172f832dc",
-    "contents/ui/main.qml": "9d1b5521d7b493b4f39fd6d6e3d69b1176a453b192a3836674d7261012fbce95"
+    "contents/ui/main.qml": "6352cfb8c00e844e81c09eec887eedd664686554bb5942baabf73d9e337eb75e",
+    "metadata.json": "735e127e89ef44d6737a833aef5c23e3ffa5b9384b71b38ce08233b88574b890"
   }
 }

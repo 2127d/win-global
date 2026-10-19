@@ -72,6 +72,13 @@ def build(destination):
                     for old, new in replacements.items():
                         for quote in ('"', "'"):
                             text = text.replace(quote + old + quote, quote + new + quote)
+                    if short == 'taskmanager' and 'TaskManagerApplet.LayoutMetrics' in text:
+                        # The upstream module's script only recognizes KDE's
+                        # icons-only ID. Use our rewritten script so spacing
+                        # follows this fork's configuration, including live edits.
+                        text = builder.replace(text, 'import QtQuick\n',
+                                               'import QtQuick\nimport "LayoutMetrics.js" as LayoutMetrics\n')
+                        text = text.replace('TaskManagerApplet.LayoutMetrics', 'LayoutMetrics')
                     path.write_text(text)
             meta = metadata[short]
             meta['KPlugin'] = {k: v for k, v in meta['KPlugin'].items() if not k.startswith(('Name[', 'Description['))}

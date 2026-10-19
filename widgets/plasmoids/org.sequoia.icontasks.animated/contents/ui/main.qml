@@ -6,6 +6,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import "LayoutMetrics.js" as LayoutMetrics
 import QtQuick.Layouts
 
 import org.kde.plasma.plasmoid
@@ -58,13 +59,13 @@ PlasmoidItem {
         if (shouldShrinkToZero) {
             return Kirigami.Units.gridUnit; // For edit mode
         }
-        return vertical ? 0 : TaskManagerApplet.LayoutMetrics.preferredMinWidth();
+        return vertical ? 0 : LayoutMetrics.preferredMinWidth();
     }
     Layout.minimumHeight: {
         if (shouldShrinkToZero) {
             return Kirigami.Units.gridUnit; // For edit mode
         }
-        return !vertical ? 0 : TaskManagerApplet.LayoutMetrics.preferredMinHeight();
+        return !vertical ? 0 : LayoutMetrics.preferredMinHeight();
     }
 
 //BEGIN TODO: this is not precise enough: launchers are smaller than full tasks
@@ -177,7 +178,7 @@ PlasmoidItem {
         groupMode: groupModeEnumValue(Plasmoid.configuration.groupingStrategy)
         groupInline: !Plasmoid.configuration.groupPopups && !tasks.iconsOnly
         groupingWindowTasksThreshold: (Plasmoid.configuration.onlyGroupWhenFull && !tasks.iconsOnly
-            ? TaskManagerApplet.LayoutMetrics.optimumCapacity(tasks.width, tasks.height) + 1 : -1)
+            ? LayoutMetrics.optimumCapacity(tasks.width, tasks.height) + 1 : -1)
 
         onLauncherListChanged: {
             Plasmoid.configuration.launchers = launcherList;

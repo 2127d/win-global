@@ -86,7 +86,33 @@ static void start() {
      if (!entry) continue;
      QTest::mouseClick(settings, Qt::LeftButton, Qt::NoModifier, entry->mapToScene(QPointF(entry->width()/2,entry->height()/2)).toPoint());
      QTest::qWait(700);
-     for (auto item : items(settings->contentItem())) if (item->objectName() == "sequoiaConfig" + page) loaded = true;
+     for (auto item : items(settings->contentItem())) if (item->objectName() == "sequoiaConfig" + page) {
+      loaded = true;
+      if (page != "Appearance") continue;
+      const int originalSpacing = item->property("cfg_iconSpacing").toInt();
+      QList<qreal> widths;
+      // Apply through the real settings page and measure live task cells.
+      // Return to Small as well, to catch bindings lost after the first edit.
+      for (const int spacing : {0, 1, 3, 0}) {
+       item->setProperty("cfg_iconSpacing", spacing);
+       for (auto control : items(settings->contentItem())) if (control->property("text").toString().remove('&') == "Apply") {
+        QMetaObject::invokeMethod(control, "clicked"); break;
+       }
+       QTest::qWait(300);
+       if (eval("Plasmoid.configuration.iconSpacing").toInt() != spacing) {
+        qWarning("FAIL: spacing Apply"); std::_Exit(15);
+       }
+       widths << task->width();
+      }
+      if (!(widths[0] < widths[1] && widths[1] < widths[2] && qAbs(widths[3] - widths[0]) < 1)) {
+       qWarning() << "FAIL: Small/Normal/Large/Small task widths" << widths; std::_Exit(16);
+      }
+      qWarning() << "PASS: live Small/Normal/Large/Small spacing" << widths;
+      item->setProperty("cfg_iconSpacing", originalSpacing);
+      for (auto control : items(settings->contentItem())) if (control->property("text").toString().remove('&') == "Apply") {
+       QMetaObject::invokeMethod(control, "clicked"); break;
+      }
+     }
      settings->grabWindow().save(qEnvironmentVariable("SEQUOIA_DOCK_TEST") + "." + page + ".png");
     }
     if (!loaded) {qWarning() << "FAIL: settings page" << page; std::_Exit(14);}
