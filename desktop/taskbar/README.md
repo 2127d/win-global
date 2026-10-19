@@ -3,8 +3,19 @@
 A separate Plasma panel with integrated pinned application launchers, running
 tasks, and activity indicators. These are direct children of
 the panel containment, not applets. Ordinary Plasma widgets remain addable in the
-trailing widget area through Edit Mode. Add your preferred start menu as a regular
-widget using **Edit Mode → Add Widgets**; the taskbar has no built-in start menu.
+trailing widget area through Edit Mode. Right-click the panel and choose
+**Add Launcher…** to open the application launcher alternatives picker. Choosing
+a launcher places it in a reserved slot before the task buttons; other widgets
+cannot occupy or be reordered into that slot. Canceling leaves the panel unchanged.
+Once a launcher exists, the action opens its native **Show Alternatives** picker
+instead of adding a duplicate. The launcher retains its normal configuration,
+removal, and keyboard shortcuts, and its position survives panel rotation and
+shell restarts. Launchers added through **Add Widgets** also use the leading slot;
+if another launcher already occupies it, the older one moves to the widget area.
+The Sequoia Start Menu grid uses the same effective icon size as the task buttons,
+including live icon-size changes, panel-relative sizing, and padding limits. Its
+reserved button also follows the taskbar's icon size and padding. This requires
+the matching Sequoia Start Menu widget from `widgets/plasmoids/org.sequoia.startmenu`.
 
 The native **Taskbar** KCM appears under **Appearance** in System Settings,
 including the repository's Settings navigation fork. Its settings apply to all
@@ -112,7 +123,8 @@ CTest covers persistence, cancel/reset behavior, input normalization, concurrent
 edits, sizing policies, and overflow calculations. Native tests load the KCM,
 check Apply state, add the panel with zero applets and no built-in start menu,
 inspect rendered icons, launch a test application, exercise its minimize/restore
-behavior, add regular launcher and clock widgets, change sizing modes live, and
+behavior, select/cancel/replace/remove launchers, verify the reserved slot and
+ordinary widget ordering across restarts, add a clock, change sizing modes live, and
 rotate the panel. Additional checks
 exercise real pointer hover without resizing button hit areas, disabled motion,
 dock growth/shrink and vertical widget layout, preserving editor choices across
@@ -127,5 +139,5 @@ task thumbnail previews or drag reordering of pinned apps; launcher order is
 edited centrally in Taskbar settings. Menu behavior and shortcuts belong to the
 launcher widget you choose.
 
-KDE's panel files retain their original copyright and GPL/LGPL notices. New
+KDE's panel files and adapted alternatives picker retain their original copyright and GPL/LGPL notices. New
 components are MIT licensed; license texts are in `LICENSES/`.

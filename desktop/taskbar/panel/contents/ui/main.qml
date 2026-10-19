@@ -34,7 +34,7 @@ ContainmentItem {
     readonly property var panelWindow: Window.window
     readonly property string surfaceMode: builtIn.settings.surfaceMode
     readonly property bool fitContents: panelWindow !== null && panelWindow.lengthMode === Panel.Global.FitContent
-    readonly property real naturalLength: builtIn.naturalLength + naturalWidgetLength + 8
+    readonly property real naturalLength: launcherLength + builtIn.naturalLength + naturalWidgetLength + 8
     readonly property real naturalWidgetLength: Math.max(Plasmoid.userConfiguring ? (isHorizontal ? 200 : 80) : 0,
         (isHorizontal ? currentLayout.implicitWidth : currentLayout.implicitHeight) + currentLayout.toolBoxSize + 12)
     onPanelWindowChanged: Qt.callLater(applySurfaceMode)
@@ -48,14 +48,71 @@ ContainmentItem {
         Plasmoid.configuration.lastSurfaceMode = surfaceMode;
     }
 
+    // The leading slot is exclusively for an application launcher. It is outside
+    // the reorderable widget model, so ordinary widgets cannot be moved into it.
+    property Item launcherApplet: null
+    property var launcherPicker: null
+    readonly property real launcherLength: launcherApplet ? (isHorizontal ? launcherSlot.width : launcherSlot.height) + 4 : 0
+
+    function isApplicationLauncher(applet) {
+        const provides = applet.metaData.rawData["X-Plasma-Provides"] || [];
+        return provides.indexOf("org.kde.plasma.launchermenu") !== -1;
+    }
+
+    function placeLauncher(appletItem) {
+        launcherApplet = appletItem;
+        appletItem.parent = launcherSlot;
+        appletItem.anchors.fill = launcherSlot;
+        Plasmoid.configuration.launcherAppletId = appletItem.Plasmoid.id;
+    }
+
+    function showLauncherPicker() {
+        if (Plasmoid.immutable) return;
+        if (launcherApplet) {
+            launcherApplet.Plasmoid.contextualActionsAboutToShow();
+            launcherApplet.Plasmoid.internalAction("alternatives")?.trigger();
+        } else if (launcherPicker) {
+            launcherPicker.show();
+            launcherPicker.requestActivate();
+        } else {
+            const component = Qt.createComponent("LauncherAlternatives.qml");
+            launcherPicker = component.createObject(root, { "panel": root });
+            component.destroy();
+        }
+    }
+
+    Plasmoid.contextualActions: [
+        PlasmaCore.Action {
+            objectName: "addLauncherAction"
+            text: i18nc("@action:inmenu", "Add Launcher…")
+            icon.name: "list-add-symbolic"
+            visible: !Plasmoid.immutable
+            onTriggered: root.showLauncherPicker()
+        }
+    ]
+
+    Item {
+        id: launcherSlot
+        objectName: "launcherSlot"
+        // Launcher widgets can use this hint without importing the taskbar's
+        // settings module. It already includes panel thickness/padding limits.
+        readonly property int taskbarIconSize: builtIn.effectiveIconSize
+        readonly property real buttonLength: taskbarIconSize + 2 * builtIn.settings.padding
+        visible: root.launcherApplet !== null
+        x: root.isHorizontal && root.reverse ? root.width - width - 4 : 4
+        y: root.isHorizontal ? 0 : 4
+        width: root.isHorizontal ? Math.min(root.width, buttonLength) : root.width
+        height: root.isHorizontal ? root.height : Math.min(root.height, buttonLength)
+    }
+
     // Reserve the trailing region for ordinary Plasma widgets. The task strip
     // is a direct child of this containment and never enters appletsModel.
     readonly property real widgetLength: Math.min((isHorizontal ? width : height) * 0.75, naturalWidgetLength)
-    readonly property real builtInLength: Math.max(0, (isHorizontal ? width : height) - widgetLength - 8)
+    readonly property real builtInLength: Math.max(0, (isHorizontal ? width : height) - launcherLength - widgetLength - 8)
     TaskStrip {
         id: builtIn
-        x: root.isHorizontal && root.reverse ? root.widgetLength : 4
-        y: root.isHorizontal ? 0 : 4
+        x: root.isHorizontal && root.reverse ? root.widgetLength : (root.isHorizontal ? root.launcherLength : 0) + 4
+        y: root.isHorizontal ? 0 : root.launcherLength + 4
         width: root.isHorizontal ? root.builtInLength : root.width
         height: root.isHorizontal ? root.height : root.builtInLength
         horizontal: root.isHorizontal
@@ -135,9 +192,17 @@ ContainmentItem {
     Containment.onAppletRemoved: (applet) => {
         let plasmoidItem = root.itemFor(applet);
 
-        if (plasmoidItem) {
-            appletsModel.remove(plasmoidItem.parent.index);
-            applet["positionBeforeDeletion"] = Qt.point(plasmoidItem.parent.x, plasmoidItem.parent.y)
+        if (plasmoidItem && plasmoidItem === root.launcherApplet) {
+            root.launcherApplet = null;
+            Plasmoid.configuration.launcherAppletId = 0;
+        } else if (plasmoidItem) {
+            for (let i = 0; i < appletsModel.count; ++i) {
+                if (appletsModel.get(i).applet !== plasmoidItem) continue;
+                const pos = plasmoidItem.mapToItem(root, 0, 0);
+                applet["positionBeforeDeletion"] = pos;
+                appletsModel.remove(i);
+                break;
+            }
         }
         checkLastSpacer();
         LayoutManager.save();
@@ -415,9 +480,9 @@ ContainmentItem {
 //BEGIN UI elements
 
         anchors {
-            leftMargin: (root.isHorizontal && !root.reverse ? root.builtInLength + 8 : 0) + (root.isHorizontal ? Math.min(dropArea.spacingAtMinSize, panelSvg.fixedMargins.left + currentLayout.rowSpacing) : 0)
-            rightMargin: (root.isHorizontal && root.reverse ? root.builtInLength + 8 : 0) + (root.isHorizontal ? Math.min(dropArea.spacingAtMinSize, panelSvg.fixedMargins.right + currentLayout.rowSpacing) : 0)
-            topMargin: (!root.isHorizontal ? root.builtInLength + 8 : 0) + (root.isHorizontal ? 0 : Math.min(dropArea.spacingAtMinSize, panelSvg.fixedMargins.top + currentLayout.rowSpacing))
+            leftMargin: (root.isHorizontal && !root.reverse ? root.launcherLength + root.builtInLength + 8 : 0) + (root.isHorizontal ? Math.min(dropArea.spacingAtMinSize, panelSvg.fixedMargins.left + currentLayout.rowSpacing) : 0)
+            rightMargin: (root.isHorizontal && root.reverse ? root.launcherLength + root.builtInLength + 8 : 0) + (root.isHorizontal ? Math.min(dropArea.spacingAtMinSize, panelSvg.fixedMargins.right + currentLayout.rowSpacing) : 0)
+            topMargin: (!root.isHorizontal ? root.launcherLength + root.builtInLength + 8 : 0) + (root.isHorizontal ? 0 : Math.min(dropArea.spacingAtMinSize, panelSvg.fixedMargins.top + currentLayout.rowSpacing))
             bottomMargin: root.isHorizontal ? 0 : Math.min(dropArea.spacingAtMinSize, panelSvg.fixedMargins.bottom + currentLayout.rowSpacing)
         }
 

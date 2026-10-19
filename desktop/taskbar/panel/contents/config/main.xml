@@ -6,6 +6,10 @@
   <kcfgfile name=""/>
 
   <group name="General">
+    <entry name="launcherAppletId" type="Int">
+      <label>Application launcher in the reserved leading slot</label>
+      <default>0</default>
+    </entry>
     <entry name="lastSurfaceMode" type="String">
       <label>Last applied taskbar mode preset</label>
     </entry>

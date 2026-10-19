@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -74,6 +75,8 @@ def child(base, payload):
                 temporary = base / 'command.tmp'
                 temporary.write_text(json.dumps(value))
                 temporary.replace(base / 'command.json')
+                wait_for(lambda: not (base / 'command.json').exists(),
+                    f'Probe did not dispatch {value}')
             hovered_name = state()['buttons'][0]['text']
             def hovered_task():
                 return next((b for b in state().get('buttons', []) if b['text'] == hovered_name), {})
@@ -119,8 +122,8 @@ def child(base, payload):
             settings({'launchers': ['preferred://browser', 'applications:org.kde.dolphin.desktop', 'applications:org.kde.konsole.desktop', 'applications:org.sequoia.taskbartest.desktop']})
             wait_for(lambda: abs(state().get('windowWidth', 0) - dock_length) < 2, 'Dock did not grow when applications were pinned')
             settings({'sizeMode': 'fill'})
-            time.sleep(1)
-            assert abs(state()['windowWidth'] - dock_length) < 2, 'Fill icon sizing fed back into dock length'
+            wait_for(lambda: abs(state().get('windowWidth', 0) - dock_length) < 2,
+                'Fill icon sizing fed back into dock length')
             (base / 'capture').touch()
             wait_for(lambda: not (base / 'capture').exists(), 'Dock capture did not complete')
             (base / 'dock.png').write_bytes((base / 'panel.png').read_bytes())
@@ -139,21 +142,65 @@ def child(base, payload):
             script('panels()[0].addWidget("org.kde.plasma.digitalclock");')
             assert script('print(panels()[0].widgets()[0].type);') == 'org.kde.plasma.digitalclock'
             wait_for(lambda: state().get('clockVisible'), 'Added widget did not render')
-            script('panels()[0].addWidget("org.kde.plasma.kickoff");')
-            wait_for(lambda: state().get('launcherWidgetVisible'), 'Regular application launcher widget did not render')
+            command({'addLauncher': True})
+            wait_for(lambda: state().get('alternativesVisible'), 'Add Launcher did not open alternatives')
+            choices = state()['alternatives']
+            assert 'org.kde.plasma.kickoff' in choices and 'org.kde.plasma.kicker' in choices, choices
+            assert 'org.kde.plasma.digitalclock' not in choices, 'Launcher picker offers ordinary widgets'
+            command({'cancelAlternatives': True})
+            wait_for(lambda: not state().get('alternativesVisible'), 'Escape did not dismiss launcher picker')
+            assert script('print(panels()[0].widgets().length);') == '1', 'Cancel created an unwanted launcher'
+            command({'addLauncher': True})
+            wait_for(lambda: state().get('alternativesVisible'), 'Launcher picker did not reopen')
+            command({'selectAlternative': 'org.kde.plasma.kickoff'})
+            wait_for(lambda: state().get('launcherWidgetVisible'), 'Selected application launcher did not render')
+            def slot():
+                return next((a for a in state().get('applets', []) if a['inLauncherSlot']), None)
+            wait_for(lambda: slot() and slot()['plugin'] == 'org.kde.plasma.kickoff', 'Launcher is not in its reserved slot')
+            assert slot()['x'] + slot()['width'] <= state()['taskX'], 'Launcher does not precede tasks'
+            command({'addLauncher': True})
+            wait_for(lambda: state().get('alternativesVisible'), 'Existing launcher did not open native alternatives')
+            command({'selectAlternative': 'org.kde.plasma.kicker'})
+            wait_for(lambda: slot() and slot()['plugin'] == 'org.kde.plasma.kicker', 'Alternative did not replace the leading launcher')
+            wait_for(lambda: script('print(panels()[0].widgets().length);') == '2', 'Alternatives left a duplicate launcher')
+            command({'addLauncher': True})
+            wait_for(lambda: state().get('alternativesVisible'), 'Cannot select Sequoia Start Menu')
+            command({'selectAlternative': 'org.sequoia.startmenu'})
+            wait_for(lambda: slot() and slot()['plugin'] == 'org.sequoia.startmenu', 'Sequoia Start Menu did not load')
+            def matching_launcher_size():
+                s = state()
+                launcher = next((a for a in s.get('applets', []) if a['inLauncherSlot']), {})
+                return launcher.get('iconWidth') == s.get('effectiveIconSize') == launcher.get('iconHeight')
+            wait_for(matching_launcher_size, 'Start menu icon does not match the task icons')
+            settings({'iconSize': 24})
+            wait_for(lambda: state().get('effectiveIconSize') == 24 and matching_launcher_size(), 'Start menu did not shrink with icon size')
+            settings({'iconSize': 40})
+            wait_for(lambda: state().get('effectiveIconSize') == 40 and matching_launcher_size(), 'Start menu did not grow with icon size')
+            settings({'iconSize': 32})
+            wait_for(lambda: state().get('effectiveIconSize') == 32 and matching_launcher_size(), 'Start menu size did not reset')
+            # Reordering normal widgets cannot move them before the task strip.
+            script('var p = panels()[0]; var w = p.widgets().find(w => w.type === "org.kde.plasma.digitalclock"); w.index = 0;')
+            clock = next(a for a in state()['applets'] if a['plugin'] == 'org.kde.plasma.digitalclock')
+            assert not clock['inLauncherSlot'] and clock['x'] >= state()['taskX'] + state()['width'], clock
             script('panels()[0].height = 84;')
             wait_for(lambda: state().get('height', 0) >= 70, 'Panel resize did not arrive')
             assert state()['effectiveIconSize'] == 32, state()
+            wait_for(matching_launcher_size, 'Panel resize enlarged a fixed-size launcher')
             # Write through the same Settings QML plugin as the KCM, in another process.
             settings({'sizeMode': 'panel'})
             wait_for(lambda: state().get('effectiveIconSize', 0) > 32, 'Live settings notification did not resize icons')
+            wait_for(matching_launcher_size, 'Start menu did not follow panel-relative sizing')
+            settings({'sizeMode': 'fill', 'iconSize': 40})
+            wait_for(lambda: state().get('effectiveIconSize') == 40 and matching_launcher_size(), 'Fill mode enlarged the launcher beyond the task icons')
             script('panels()[0].location = "left";')
             wait_for(lambda: state().get('horizontal') is False, 'Vertical panel did not rotate')
             settings({'sizeMode': 'fixed', 'surfaceMode': 'dock'})
             wait_for(lambda: state().get('lengthMode') == 1 and 100 < state().get('windowHeight', 0) < 600,
                 'Vertical dock did not fit contents with an added widget')
             assert state()['clockVisible'], 'Dock lost the added widget'
-            assert state()['launcherWidgetVisible'], 'Vertical dock lost the regular start menu widget'
+            assert slot() and slot()['plugin'] == 'org.sequoia.startmenu', 'Vertical dock lost the leading launcher'
+            wait_for(matching_launcher_size, 'Vertical launcher does not match the task icons')
+            assert slot()['y'] + slot()['height'] <= state()['taskY'], 'Vertical launcher does not precede tasks'
             (base / 'capture').touch()
             wait_for(lambda: not (base / 'capture').exists(), 'Vertical dock capture did not complete')
             (base / 'vertical-dock.png').write_bytes((base / 'panel.png').read_bytes())
@@ -170,13 +217,22 @@ def child(base, payload):
             wait_for(lambda: state().get('lengthMode') == 2 and state().get('horizontal') is False,
                 'Restart overwrote the editor length choice')
             assert editor_state()['floating'] is False
+            wait_for(lambda: slot() and slot()['plugin'] == 'org.sequoia.startmenu' and state().get('clockVisible'),
+                'Restart did not restore the reserved launcher and ordinary widgets')
+            wait_for(matching_launcher_size, 'Restart lost launcher icon sizing')
+            script('panels()[0].widgets().find(w => w.type === "org.sequoia.startmenu").remove();')
+            wait_for(lambda: slot() is None and state().get('clockVisible'), 'Removing the launcher damaged ordinary widgets')
+            command({'addLauncher': True})
+            wait_for(lambda: state().get('alternativesVisible'), 'Cannot add a launcher again after removal')
+            command({'selectAlternative': 'org.kde.plasma.kickoff'})
+            wait_for(lambda: slot() and slot()['plugin'] == 'org.kde.plasma.kickoff', 'Cannot refill the launcher slot')
             # A newly added taskbar inherits the global Dock preset.
             script('panels().forEach(p => p.remove());')
             (base / 'state.json').unlink(missing_ok=True)
             script(template.read_text())
             wait_for(lambda: state().get('lengthMode') == 1 and state().get('horizontal') is True
                 and 100 < state().get('windowWidth', 0) < 600, 'New taskbar did not inherit Dock mode')
-            print('PASS: native KCM, no built-in start menu, regular launcher widget, task hover/disable, fixed hit geometry, icons, window actions, sizing, dock growth/shrink, both orientations, editor preservation/restart, and new dock creation', flush=True)
+            print('PASS: native KCM, launcher picker/cancel/replacement/removal, reserved launcher position/restart, task hover/disable, fixed hit geometry, icons, window actions, sizing, dock growth/shrink, both orientations, editor preservation/restart, and new dock creation', flush=True)
         finally:
             stop(fixture)
             stop(shell)
@@ -193,6 +249,8 @@ def main():
         child(base, payload)
         return
     base.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(ROOT / 'widgets/plasmoids/org.sequoia.startmenu',
+        base / 'data/plasma/plasmoids/org.sequoia.startmenu', dirs_exist_ok=True)
     for relative in ('config/sequoiataskbarrc', 'config/plasma-org.kde.plasma.desktop-appletsrc',
                      'config/plasmashellrc', 'state.json', 'panel.png', 'capture', 'command.json'):
         (base / relative).unlink(missing_ok=True)

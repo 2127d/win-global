@@ -11,8 +11,17 @@ var plasmoid;
 var marginHighlights;
 var appletsModel;
 
-function addApplet(applet, x, y) {
+function addApplet(applet, x, y, restoring = false) {
     let appletItem = root.itemFor(applet);
+    if (!appletItem) return;
+    if (root.isApplicationLauncher(applet) && (!root.launcherApplet || !restoring)) {
+        // Plasma creates an alternative before removing the previous applet.
+        // Keep the old item alive until that removal (or as a trailing widget
+        // when a second launcher was explicitly added through Add Widgets).
+        if (root.launcherApplet) appletsModel.append({applet: root.launcherApplet});
+        root.placeLauncher(appletItem);
+        return;
+    }
     // don't show applet if it chooses to be hidden but still make it
     // accessible in the panelcontroller
     // Due to the nature of how "visible" propagates in QML, we need to
@@ -50,6 +59,10 @@ function addApplet(applet, x, y) {
 }
 
 function restore() {
+    // Restore the dedicated slot first, independently of ordinary widget order.
+    const launcherId = root.plasmoid.configuration.launcherAppletId;
+    const launcher = root.plasmoid.applets.find(applet => applet.id === launcherId && root.isApplicationLauncher(applet));
+    if (launcher) root.placeLauncher(root.itemFor(launcher));
     var configString = String(root.plasmoid.configuration.AppletOrder)
 
     //array, a cell for encoded item order
@@ -67,6 +80,7 @@ function restore() {
     }
 
     for (var i = 0; i < root.plasmoid.applets.length; ++i) {
+        if (root.plasmoid.applets[i] === launcher) continue;
         if (idsOrder[root.plasmoid.applets[i].id] !== undefined) {
             appletsOrder[idsOrder[root.plasmoid.applets[i].id]] = root.plasmoid.applets[i];
         //ones that weren't saved in AppletOrder go to the end
@@ -77,7 +91,7 @@ function restore() {
 
     //finally, restore the applets in the correct order
     for (var i in appletsOrder) {
-        addApplet(appletsOrder[i], -1, -1)
+        addApplet(appletsOrder[i], -1, -1, true)
     }
     //rewrite, so if in the orders there were now invalid ids or if some were missing creates a correct list instead
     save();

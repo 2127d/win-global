@@ -19,6 +19,9 @@ PlasmoidItem {
     toolTipSubText: i18n("Apps, files, and settings")
     readonly property alias menuOpen: popup.opened
     readonly property bool verticalPanel: Plasmoid.formFactor === PlasmaCore.Types.Vertical
+    // The custom taskbar supplies the same effective size used by its tasks.
+    // Ordinary Plasma panels retain the launcher's panel-based sizing.
+    readonly property real taskbarIconSize: parent?.taskbarIconSize ?? 0
     Layout.minimumWidth: verticalPanel ? 32 : 48
     Layout.preferredWidth: verticalPanel ? 48 : height
     Layout.maximumWidth: verticalPanel ? Infinity : Math.max(48, height)
@@ -53,7 +56,9 @@ PlasmoidItem {
             Kirigami.Icon {
                 objectName: "startMenuLauncherIcon"
                 anchors.centerIn: parent
-                width: Math.max(0, Math.min(parent.width, parent.height) - 4)
+                width: root.taskbarIconSize > 0
+                    ? Math.min(root.taskbarIconSize, parent.width, parent.height)
+                    : Math.max(0, Math.min(parent.width, parent.height) - 4)
                 height: width
                 source: Plasmoid.configuration.icon
                 active: root.menuOpen

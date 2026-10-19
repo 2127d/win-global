@@ -11,12 +11,15 @@
 #include <QJsonArray>
 #include <QDir>
 #include <QTest>
+#include <QAbstractItemModel>
+#include <QQmlListReference>
 #include <cstdio>
 
-static QQuickItem *find(QQuickItem *item)
+static QQuickItem *find(QQuickItem *item, const QString &name = QStringLiteral("sequoiaTaskStrip"))
 {
-    if (item->objectName() == QLatin1String("sequoiaTaskStrip")) return item;
-    for (auto child : item->childItems()) if (auto result = find(child)) return result;
+    if (!item) return nullptr;
+    if (item->objectName() == name) return item;
+    for (auto child : item->childItems()) if (auto result = find(child, name)) return result;
     return nullptr;
 }
 
@@ -60,6 +63,29 @@ static bool visibleApplet(QQuickItem *item, const QString &pluginName)
     return false;
 }
 
+static QQuickItem *withProperty(QQuickItem *item, const char *name)
+{
+    if (item->property(name).isValid()) return item;
+    for (auto child : item->childItems()) if (auto result = withProperty(child, name)) return result;
+    return nullptr;
+}
+
+static void appletGeometry(QQuickItem *item, QJsonArray &applets)
+{
+    if (auto applet = item->property("_plasma_applet").value<QObject *>()) {
+        const auto pos = item->mapToScene(QPointF());
+        QJsonObject geometry{{"plugin", applet->property("pluginName").toString()},
+            {"x", pos.x()}, {"y", pos.y()}, {"width", item->width()}, {"height", item->height()},
+            {"inLauncherSlot", item->parentItem() && item->parentItem()->objectName() == "launcherSlot"}};
+        if (auto icon = find(item, QStringLiteral("startMenuLauncherIcon"))) {
+            geometry["iconWidth"] = icon->width();
+            geometry["iconHeight"] = icon->height();
+        }
+        applets.append(geometry);
+    }
+    for (auto child : item->childItems()) appletGeometry(child, applets);
+}
+
 static void start()
 {
     if (qEnvironmentVariableIsEmpty("SEQUOIA_TASKBAR_PROBE")) return;
@@ -76,8 +102,52 @@ static void start()
         int executed = 0;
         for (auto window : QGuiApplication::allWindows()) {
             auto quick = qobject_cast<QQuickWindow *>(window);
+            if (quick && quick->isVisible()) {
+                if (auto picker = withProperty(quick->contentItem(), "currentPlugin")) {
+                    state["alternativesVisible"] = true;
+                    if (auto list = withProperty(picker, "model")) {
+                        auto model = qobject_cast<QAbstractItemModel *>(list->property("model").value<QObject *>());
+                        if (model) {
+                            const auto roles = model->roleNames();
+                            const int pluginRole = roles.key("pluginName", -1);
+                            QJsonArray plugins;
+                            for (int i = 0; i < model->rowCount(); ++i)
+                                plugins.append(model->data(model->index(i, 0), pluginRole).toString());
+                            state["alternatives"] = plugins;
+                            const QString selected = command.value("selectAlternative").toString();
+                            if (!selected.isEmpty() && plugins.contains(selected) && !executed) {
+                                picker->setProperty("currentPlugin", selected);
+                                executed += QMetaObject::invokeMethod(picker, "savePluginAndClose");
+                            }
+                        }
+                    }
+                    if (command.contains("cancelAlternatives") && !executed) {
+                        QTest::keyClick(quick, Qt::Key_Escape);
+                        ++executed;
+                    }
+                    // Closing a picker can destroy its window during event
+                    // dispatch. Never inspect that window again afterward.
+                    continue;
+                }
+            }
             auto strip = quick ? find(quick->contentItem()) : nullptr;
             if (!strip || !quick->isVisible() || !strip->isVisible()) continue;
+            auto panel = strip->parentItem();
+            if (command.contains("addLauncher") && !executed) {
+                auto applet = panel->property("_plasma_applet").value<QObject *>();
+                QQmlListReference actions(applet, "contextualActions");
+                for (qsizetype i = 0; i < actions.count(); ++i) {
+                    auto action = actions.at(i);
+                    if (action->objectName() == "addLauncherAction")
+                        executed += QMetaObject::invokeMethod(action, "trigger");
+                }
+            }
+            QJsonArray applets;
+            appletGeometry(quick->contentItem(), applets);
+            state["applets"] = applets;
+            const auto stripPos = strip->mapToScene(QPointF());
+            state["taskX"] = stripPos.x();
+            state["taskY"] = stripPos.y();
             for (const char *key : {"effectiveIconSize", "cellLength", "taskCount", "width", "height", "contentLength", "taskLength", "horizontal", "naturalLength"})
                 state[QString::fromLatin1(key)] = QJsonValue::fromVariant(strip->property(key));
             state["windowWidth"] = quick->width();

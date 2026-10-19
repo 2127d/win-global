@@ -56,7 +56,8 @@ Build helpers preserve and recreate CMake caches when a source directory moves.
 
 The optional [Sequoia Taskbar](desktop/taskbar/README.md) provides a separate
 **Add Panel → Sequoia Taskbar** choice with integrated task buttons and support
-for your preferred start menu widget, plus **Appearance → Taskbar** settings for icon sizing, spacing,
+for your preferred start menu widget through **Add Launcher…** in the panel context
+menu, with a reserved position before the tasks, plus **Appearance → Taskbar** settings for icon sizing, spacing,
 alignment, indicators, pinned applications, panel/dock mode, and Sequoia animations.
 Floating, hiding, position, and thickness remain in Plasma's panel editor. It supports additional widgets
 and uses its own build/install helper; existing panels are preserved.
