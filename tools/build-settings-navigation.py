@@ -22,7 +22,8 @@ def build(build_dir, sdk=None):
     print(f'Building System Settings with {jobs} parallel jobs.', flush=True)
     if installed_version() != VERSION:
         raise RuntimeError(f'This source matches KDE System Settings {VERSION}; update the fork before building for another version.')
-    command = ['cmake', '-S', str(ROOT / f'apps/settings/systemsettings-v{VERSION}'), '-B', str(build_dir),
+    # Rediscover dependencies: an earlier --sdk may point into expired /tmp data.
+    command = ['cmake', '--fresh', '-S', str(ROOT / f'apps/settings/systemsettings-v{VERSION}'), '-B', str(build_dir),
                '-G', 'Ninja', '-DBUILD_TESTING=OFF', '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_INSTALL_PREFIX=/usr']
     if sdk:
         command.append('-DCMAKE_PREFIX_PATH=' + str(sdk))

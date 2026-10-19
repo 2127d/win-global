@@ -123,9 +123,12 @@ class ShellTests(unittest.TestCase):
         target = self.live / name
         target.write_text(target.read_text() + '\n// local edit\n')
         result = subprocess.run(command, capture_output=True, text=True)
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn('Installed file was edited', result.stderr)
-        self.assertTrue(target.read_text().endswith('// local edit\n'))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        backup, = (self.live / (installer.USER_STATE + '-modified-backups')).iterdir()
+        self.assertTrue((backup / 'files' / name).read_text().endswith('// local edit\n'))
+        self.assertFalse(target.read_text().endswith('// local edit\n'))
+        self.assertIn(str(backup), result.stdout)
+        self.receipt().validate()
 
     def test_picker_refresh_preserves_unrelated_local_edits_and_receipts(self):
         self.install('plasma-style', 'lockscreen')

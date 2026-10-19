@@ -269,6 +269,9 @@ def main():
         parser.add_argument('--components', nargs='+', choices=COMPONENTS, default=list(COMPONENTS))
         parser.add_argument('--force', action='store_true')
         args = parser.parse_args()
+        # Reinstallation preserves modified files in a separate backup before
+        # replacing them. Removal/checks still require an explicit --force.
+        args.force = args.force or args.action == 'install'
         if os.geteuid() != 0:
             raise RuntimeError('Native plugin installation requires administrator privileges.')
         receipt = Receipt(Path('/'), SYSTEM_STATE, system_allowed)
@@ -303,11 +306,13 @@ def main():
     parser.add_argument('--skip-restart', action='store_true', help='Defer the final Plasma shell restart.')
     parser.add_argument('--keep-system', action='store_true',
                         help='Uninstall only this account; retain shared native plugins and login theme.')
-    parser.add_argument('--force', action='store_true', help='Replace/remove locally edited managed files.')
+    parser.add_argument('--force', action='store_true',
+                        help='Remove locally edited managed files; installation already backs up and replaces edits.')
     parser.add_argument('--plan', action='store_true', help='Print scope and destinations without changing anything.')
     parser.add_argument('--check', action='store_true', help='Check removal receipts without removing files (uninstall only).')
     args = parser.parse_args(sys.argv[2:])
     args.action = action
+    args.force = args.force or action == 'install'
     requested = args.components
     if action == 'install':
         args.components = resolve_components(requested if requested is not None else default_components())
@@ -329,6 +334,8 @@ def main():
         parser.error('Use --skip-deps with --system-root; staging must not install host packages')
     print(f'{args.action.title()} theme: ' + ', '.join(COMPONENTS[c][0] for c in args.components))
     print(f'User data: {args.prefix}\nNative plugin root: {args.system_root}')
+    if action == 'install':
+        print('Modified installed theme files will be backed up before replacement; backup paths appear in the log.')
     print('Desktop widgets include the custom tray, trash, animated task manager and layout widgets. '
           'Desktop settings change when you apply a theme/layout or opt into the Animation kit. The login theme takes effect after reboot.')
     if 'animation-kit' in args.components:
@@ -402,8 +409,7 @@ def perform(args):
     scope = lambda name: user_scope(name, components)
     with tempfile.TemporaryDirectory(prefix='sequoia-theme-install-') as temporary:
         stage = Path(temporary)
-        # Compare against the actual replacement before rejecting a stale
-        # receipt, and reject conflicting edits before native builds begin.
+        # Validate user assets and receipt backups before native builds begin.
         user = stage / 'user'
         stage_user(user, args.prefix, components)
         incoming = payload_files(user)

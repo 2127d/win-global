@@ -51,6 +51,9 @@ python3 tools/verify-settings-navigation.py
 python3 tools/install-settings-navigation.py --binary .staging/settings-build/bin/systemsettings
 ```
 
+Each build refreshes CMake's dependency cache so paths from a previous temporary
+SDK cannot leak into a normal system build. Pass `--sdk` again when using an SDK.
+
 The installer places the executable under
 `$XDG_DATA_HOME/sequoia-eleven/settings-navigation/` (normally
 `~/.local/share/sequoia-eleven/settings-navigation/`) and a launcher at

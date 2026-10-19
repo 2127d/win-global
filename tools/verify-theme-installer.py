@@ -118,6 +118,63 @@ class ThemeTests(unittest.TestCase):
         self.receipt().uninstall(force=True)
         self.assertFalse((self.live / 'theme').exists())
 
+    def test_forced_refresh_saves_edits_separately_from_uninstall_originals(self):
+        self.put(self.live, 'theme/a', 'original')
+        self.put(self.stage, 'theme/a', 'version 1')
+        self.put(self.stage, 'theme/retired', 'old')
+        self.put(self.stage, 'theme/unselected', 'keep')
+        self.receipt().install(self.stage)
+        self.put(self.live, 'theme/a', 'local edit')
+        self.put(self.live, 'theme/retired', 'retired local edit')
+        self.put(self.live, 'theme/unselected', 'unselected edit')
+        self.put(self.stage, 'theme/a', 'version 2')
+        (self.stage / 'theme/retired').unlink()
+        (self.stage / 'theme/unselected').unlink()
+        scope = lambda name: name != 'theme/unselected'
+        self.receipt().install(self.stage, force=True, scope=scope)
+        backup, = (self.live / 'state/theme-modified-backups').iterdir()
+        self.assertEqual((backup / 'files/theme/a').read_text(), 'local edit')
+        self.assertEqual((backup / 'files/theme/retired').read_text(), 'retired local edit')
+        self.assertFalse((backup / 'files/theme/unselected').exists())
+        self.assertEqual((self.live / 'theme/unselected').read_text(), 'unselected edit')
+        self.assertEqual((self.live / 'theme/a').read_text(), 'version 2')
+        self.receipt().uninstall(force=True)
+        self.assertEqual((self.live / 'theme/a').read_text(), 'original')
+        self.assertTrue((backup / 'manifest.json').is_file())
+        self.assertEqual((backup / 'files/theme/a').read_text(), 'local edit')
+
+    def test_backup_failure_prevents_forced_replacement(self):
+        self.put(self.stage, 'theme/a', 'version 1')
+        self.receipt().install(self.stage)
+        self.put(self.live, 'theme/a', 'local edit')
+        before = self.receipt().manifest.read_bytes()
+        self.put(self.stage, 'theme/a', 'version 2')
+        with patch.object(theme_files, 'copy_file', side_effect=OSError('backup failed')):
+            with self.assertRaisesRegex(OSError, 'backup failed'):
+                self.receipt().install(self.stage, force=True)
+        self.assertEqual((self.live / 'theme/a').read_text(), 'local edit')
+        self.assertEqual(self.receipt().manifest.read_bytes(), before)
+
+    def test_system_install_backs_up_modified_widget_without_force_option(self):
+        system = self.base / 'system'
+        name = f'usr/{installer.PLUGINDIR}/plasma/applets/org.sequoia.weather.so'
+        self.put(self.stage, name, 'old plugin')
+        receipt = Receipt(system, installer.SYSTEM_STATE, installer.system_allowed)
+        receipt.install(self.stage)
+        self.put(system, name, 'separately rebuilt plugin')
+        self.put(self.stage, name, 'new plugin')
+        command = ['installer', '_system', 'install', '--components', 'widgets', '--payload', str(self.stage)]
+        with patch.object(sys, 'argv', command), \
+                patch.object(installer.os, 'geteuid', return_value=0), \
+                patch.object(installer, 'Receipt', return_value=receipt), \
+                patch.object(installer, 'validate_system_payload'), \
+                patch.object(installer.shutil, 'which', return_value=None):
+            installer.main()
+        self.assertEqual((system / name).read_text(), 'new plugin')
+        backup, = (system / (installer.SYSTEM_STATE + '-modified-backups')).iterdir()
+        self.assertEqual((backup / 'files' / name).read_text(), 'separately rebuilt plugin')
+        receipt.validate()
+
     def test_refresh_accepts_exact_incoming_match_and_preserves_original(self):
         self.put(self.live, 'theme/a', 'original')
         self.put(self.stage, 'theme/a', 'version 1')

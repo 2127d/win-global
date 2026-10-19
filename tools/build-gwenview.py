@@ -18,7 +18,8 @@ def build(folder, sdk=None):
     print(f'Building Gwenview with {jobs} parallel jobs.', flush=True)
     if installed_version() != VERSION:
         raise RuntimeError('Update the Gwenview source fork to match the installed version first.')
-    command = ['cmake', '-S', str(ROOT / f'apps/gwenview/gwenview-{VERSION}'), '-B', str(folder),
+    # Rediscover dependencies instead of retaining a previous SDK's paths.
+    command = ['cmake', '--fresh', '-S', str(ROOT / f'apps/gwenview/gwenview-{VERSION}'), '-B', str(folder),
                '-G', 'Ninja', '-DBUILD_TESTING=OFF', '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_INSTALL_PREFIX=/usr',
                '-DKDE_SKIP_RPATH_SETTINGS=ON', '-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON', '-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=OFF', '-DCMAKE_INSTALL_RPATH=$ORIGIN']
     if sdk:

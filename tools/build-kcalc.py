@@ -18,7 +18,8 @@ def build(folder, sdk=None):
         raise RuntimeError('Update the KCalc source fork to match the installed version first.')
     jobs = build_jobs()
     print(f'Building KCalc with {jobs} parallel jobs.', flush=True)
-    command = ['cmake', '-S', str(ROOT / f'apps/kcalc/kcalc-{VERSION}'), '-B', str(folder),
+    # Rediscover dependencies instead of retaining a previous SDK's paths.
+    command = ['cmake', '--fresh', '-S', str(ROOT / f'apps/kcalc/kcalc-{VERSION}'), '-B', str(folder),
                '-G', 'Ninja', '-DBUILD_TESTING=OFF', '-DCMAKE_BUILD_TYPE=Release',
                '-DCMAKE_INSTALL_PREFIX=/usr', '-DCMAKE_SKIP_RPATH=ON']
     if sdk:

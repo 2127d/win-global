@@ -180,7 +180,16 @@ theme selection and default CLI installation when Plasma Login Manager is unavai
 SDDM is not replaced. An explicit `--components login` request requires that manager.
 
 Installing a component later preserves other installed components and their
-uninstall receipts. If a later step fails, completed steps and installed
+uninstall receipts. Reinstalling backs up changed managed theme files before
+replacing them, including native widget plugins. The log prints each backup
+location: user files are saved under
+`~/.local/share/sequoia-eleven/theme-installation-modified-backups/`
+(or the chosen data prefix), and system files under
+`/var/lib/sequoia-eleven/theme-installation-modified-backups/`.
+Each snapshot contains a manifest and a `files/` tree with the previous files;
+these backups survive uninstall. A failed backup stops replacement. Removal
+still protects changed files unless `--force` is requested.
+If a later step fails, completed steps and installed
 dependencies remain; the log identifies completed steps. Plasma shell restarts
 after all selected components and app makeovers finish installing. Choose the installed
 theme in System Settings and reopen apps after installation. The Settings makeover

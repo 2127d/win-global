@@ -126,6 +126,34 @@ class Receipt:
                 self.data['directories'].append(name)
             directory.mkdir(exist_ok=True)
 
+    def backup_modified(self, incoming, scope=None):
+        """Keep replaced local edits independently of uninstall/rollback backups."""
+        changed = {}
+        for name, entry in self.data['files'].items():
+            if scope is not None and name not in incoming and not scope(name):
+                continue
+            current = fingerprint(self.target(name))
+            if current in (None, entry['installed']):
+                continue
+            if name in incoming and current == fingerprint(incoming[name]):
+                continue
+            changed[name] = current
+        if not changed:
+            return
+        backups = self.state.with_name(self.state.name + '-modified-backups')
+        self.check_parents(backups / 'snapshot')
+        backups.mkdir(parents=True, exist_ok=True, mode=0o700)
+        backup = Path(tempfile.mkdtemp(prefix='snapshot-', dir=backups))
+        for name in changed:
+            target = backup / 'files' / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            copy_file(self.target(name), target)
+        (backup / 'manifest.json').write_text(json.dumps({
+            'root': str(self.root), 'files': changed,
+        }, indent=2) + '\n')
+        print(f'Saved modified installed files: {backup}', flush=True)
+        return backup
+
     def prune(self):
         for name in sorted(self.data['directories'], key=lambda s: len(PurePosixPath(s).parts), reverse=True):
             path = self.root / name
@@ -146,6 +174,8 @@ class Receipt:
         # even when the caller's retirement scope does not include them.
         self.validate(incoming, force, scope=None if scope is None else
                       lambda name: name in incoming or scope(name))
+        if force:
+            self.backup_modified(incoming, scope)
         old = json.loads(json.dumps(self.data))
         for name in obsolete:
             target = self.target(name)
