@@ -20,7 +20,8 @@ configure_file(qmldir "${CMAKE_BINARY_DIR}/qml/org/sequoia/taskbar/qmldir" COPYO
 install(TARGETS taskbarplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/sequoia/taskbar)
 install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/sequoia/taskbar)
 # The taskbar and the existing Sequoia widget use the same motion implementation.
-set(motion_files ../control-center/taskmanager/DockMotion.qml MotionIcon.qml)
+set(motion_files ../control-center/taskmanager/DockMotion.qml MotionIcon.qml
+    ../../widgets/plasmoids/org.sequoia.startmenu/contents/ui/GlowIcon.qml)
 foreach(motion_file IN LISTS motion_files)
     get_filename_component(motion_name ${motion_file} NAME)
     configure_file(${motion_file} "${CMAKE_BINARY_DIR}/qml/org/sequoia/taskbar/${motion_name}" COPYONLY)

@@ -18,6 +18,7 @@ from installer_platform import (COMPONENTS, DISTROS, NATIVE, detected_distro,
                                 install_dependencies, native_layout, packages_for, sudo_command)
 import widget_payload
 import shell_overrides
+import motion_install
 from login_payload import FILES as LOGIN_FILES, stage as stage_login
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -328,7 +329,10 @@ def main():
     print(f'{args.action.title()} theme: ' + ', '.join(COMPONENTS[c][0] for c in args.components))
     print(f'User data: {args.prefix}\nNative plugin root: {args.system_root}')
     print('Desktop widgets include the custom tray, trash, animated task manager and layout widgets. '
-          'Desktop settings change only when you apply a theme/layout. The login theme takes effect after reboot.')
+          'Desktop settings change when you apply a theme/layout or opt into the Animation kit. The login theme takes effect after reboot.')
+    if 'animation-kit' in args.components:
+        print('Animation kit: ' + ('capture a restorable snapshot, apply Motion Lab’s Your palette and restart Plasma.'
+                                   if action == 'install' else 'restore the pre-installation animation settings and files.'))
     if args.plan:
         if args.action == 'install' and not args.skip_deps:
             if args.distro not in DISTROS:
@@ -338,8 +342,25 @@ def main():
     if os.geteuid() == 0:
         raise RuntimeError('Run this script as the desktop user, without sudo. '
                            'It requests sudo only for dependencies and shared theme/login files.')
+    if action == 'install':
+        if 'animation-kit' in args.components and args.system_root != Path('/'):
+            raise RuntimeError('The Animation kit requires the current desktop session; use --stage for offline preparation.')
+        if 'login' in args.components and not login_available():
+            raise RuntimeError('The login theme requires Plasma Login Manager. Deselect the login screen on systems using SDDM.')
+        if not args.skip_deps:
+            dependencies(args.distro, args.components)
+        with motion_install.theme_installation(args.prefix, args.components):
+            perform(args)
+    else:
+        perform(args)
+
+
+def perform(args):
     receipt = Receipt(args.prefix, USER_STATE, user_allowed)
     if args.action == 'uninstall':
+        motion_backup = motion_install.active_backup(args.prefix) if 'animation-kit' in args.components else None
+        if motion_backup:
+            motion_install.check_restore(motion_backup)
         current_shell = shell_overrides.installed(receipt.data['files'])
         change_shell = bool(current_shell & set(args.components))
         scope = lambda name: change_shell if shell_overrides.is_shell(name) else component_for(name) in args.components
@@ -353,6 +374,9 @@ def main():
         if args.check:
             print('Removal checks passed.')
             return
+        if motion_backup:
+            motion_install.restore(motion_backup)
+            receipt = Receipt(args.prefix, USER_STATE, user_allowed)
         if change_shell and retained_shell:
             # Both independent options share a complete shell package. Retain
             # the other layer when removing just the style or the lock screen.
@@ -371,10 +395,6 @@ def main():
     components = set(args.components)
     scope = lambda name: user_scope(name, components)
     receipt.validate(force=args.force, scope=scope)
-    if 'login' in components and not login_available():
-        raise RuntimeError('The login theme requires Plasma Login Manager. Deselect the login screen on systems using SDDM.')
-    if not args.skip_deps:
-        dependencies(args.distro, components)
     with tempfile.TemporaryDirectory(prefix='sequoia-theme-install-') as temporary:
         stage = Path(temporary)
         native = stage / 'native'

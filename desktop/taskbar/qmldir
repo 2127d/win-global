@@ -2,3 +2,4 @@ module org.sequoia.taskbar
 plugin taskbarplugin
 DockMotion 1.0 DockMotion.qml
 MotionIcon 1.0 MotionIcon.qml
+GlowIcon 1.0 GlowIcon.qml

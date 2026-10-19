@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFileDialo
     QPlainTextEdit, QProgressBar, QPushButton, QRadioButton, QScrollArea,
     QStackedWidget, QVBoxLayout, QWidget)
 
-from installer_platform import (APPS, COMPONENTS, DISTROS, detected_distro,
+from installer_platform import (APPS, COMPONENTS, DISTROS, OPTIONAL_COMPONENTS, detected_distro,
                                 login_available, packages_for, resolve_components)
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,7 +108,7 @@ class InstallerWindow(QMainWindow):
         self.global_box.setChecked(True)
         self.global_box.toggled.connect(self.global_toggled)
         choices.addWidget(self.global_box)
-        choices.addWidget(label('Includes all theme components below. App makeovers are optional.'))
+        choices.addWidget(label('Includes the theme components below. The Animation kit and app makeovers are optional.'))
         theme = QGroupBox('Theme components')
         grid = QGridLayout(theme)
         for i, (key, (title, description)) in enumerate(COMPONENTS.items()):
@@ -119,10 +119,11 @@ class InstallerWindow(QMainWindow):
             self.component_boxes[key] = box
             self.individual_choices[key] = False
             box.blockSignals(True)
-            box.setChecked(key != 'login' or self.login_available)
+            box.setChecked(key not in OPTIONAL_COMPONENTS and (key != 'login' or self.login_available))
             box.blockSignals(False)
             grid.addWidget(box, i // 2, i % 2)
         choices.addWidget(theme)
+        choices.addWidget(label(COMPONENTS['animation-kit'][1]))
         if not self.login_available:
             choices.addWidget(label('Login screen unavailable: this computer does not have Plasma Login Manager. '
                                     'It will be omitted from the Global Theme installation.'))
@@ -180,7 +181,7 @@ class InstallerWindow(QMainWindow):
 
     def requested_components(self):
         return [key for key in COMPONENTS
-                      if (self.global_box.isChecked() or self.individual_choices[key])
+                      if ((self.global_box.isChecked() and key not in OPTIONAL_COMPONENTS) or self.individual_choices[key])
                       and (key != 'login' or self.login_available)]
 
     def selection(self):
@@ -196,7 +197,8 @@ class InstallerWindow(QMainWindow):
             box.blockSignals(True)
             box.setChecked(key in components)
             box.blockSignals(False)
-            box.setEnabled(not self.global_box.isChecked() and key not in required and (key != 'login' or self.login_available))
+            box.setEnabled((not self.global_box.isChecked() or key in OPTIONAL_COMPONENTS)
+                           and key not in required and (key != 'login' or self.login_available))
         distro = self.distro()
         matches = distro == self.detected
         self.distro_note.setText('' if matches else 'Choose the distribution detected on this computer. '
@@ -204,7 +206,7 @@ class InstallerWindow(QMainWindow):
         self.selection_note.setText(f'{len(components)} theme components · {len(apps)} app makeovers'
                                     if components or apps else 'Select at least one component or app makeover to continue.')
         if required:
-            self.selection_note.setText(self.selection_note.text() + '\nRequired by Global Theme: '
+            self.selection_note.setText(self.selection_note.text() + '\nRequired by your selection: '
                                         + ', '.join(COMPONENTS[c][0] for c in components if c in required))
         self.back.setVisible(page in (1, 2))
         self.next.setText('Install' if page == 2 else 'Continue')
@@ -229,14 +231,15 @@ class InstallerWindow(QMainWindow):
             summary += ['  • ' + COMPONENTS[key][0] for key in components] or ['  None']
             required = set(components) - set(self.requested_components())
             if required:
-                summary += ['', 'Included for a working Global Theme: '
+                summary += ['', 'Included for your selected components: '
                             + ', '.join(COMPONENTS[c][0] for c in components if c in required)]
             summary += ['', 'App makeovers:']
             summary += ['  • ' + APPS[key][0] + ' — ' + APPS[key][1] for key in apps] or ['  None']
             summary += ['', 'Dependencies (only missing packages will be installed):',
                         ', '.join(packages_for(self.distro(), components, apps)) or 'None', '',
                         'Theme files install for your account. Native plugins and login assets install system-wide.',
-                        'Existing components are preserved. Desktop settings and panel layout stay as they are.',
+                        ('Animation kit: saves a restorable snapshot, applies Your palette and restarts Plasma. Panel layout is preserved.'
+                         if 'animation-kit' in components else 'Existing components are preserved. Desktop settings and panel layout stay as they are.'),
                         'Remove themes or app makeovers with ./uninstall-gui.py.']
             if not self.login_available and self.global_box.isChecked():
                 summary += ['', 'Login screen omitted: Plasma Login Manager is not installed.']

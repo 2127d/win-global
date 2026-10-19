@@ -2,11 +2,14 @@
 import QtQuick
 import org.kde.kirigami as Kirigami
 
-Kirigami.Icon {
+GlowIcon {
     id: icon
     required property var settings
     required property bool hovered
     required property bool pressed
+    property bool keyboardFocus: false
+    glowActive: hovered || pressed || keyboardFocus
+    glowAnimationsEnabled: settings.dockAnimations
     property bool launching: false
     property bool demandingAttention: false
     property bool horizontal: true

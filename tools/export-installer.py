@@ -31,6 +31,10 @@ INTRO = '''SEQUOIA ELEVEN — INSTALLER
    dependencies and builds native theme components for the destination system.
    Choose Desktop widgets for widgets alone, or individual styles and artwork.
    Global Theme automatically includes the components referenced by its presets.
+   Animation kit — Your palette is optional and unchecked by default, including
+   with the complete desktop. It saves a restorable snapshot before applying
+   custom system animations, keeps panel sliding enabled and restarts Plasma.
+   Remove the Animation kit in the uninstaller to restore the saved animations.
 5. In System Settings > Colors & Themes > Global Theme, select Sequoia Eleven.
    Enable Desktop layout to recreate the included top bar and bottom dock.
    Leave it unchecked to preserve existing panels and desktop widgets.

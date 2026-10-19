@@ -16,6 +16,11 @@ The Sequoia Start Menu grid uses the same effective icon size as the task button
 including live icon-size changes, panel-relative sizing, and padding limits. Its
 reserved button also follows the taskbar's icon size and padding. This requires
 the matching Sequoia Start Menu widget from `widgets/plasmoids/org.sequoia.startmenu`.
+Task buttons and the Sequoia launcher use an icon-contour glow for hover, press,
+and keyboard focus, without a rectangular button highlight. The launcher also
+glows while its menu is open. Running indicators remain separate. The shared
+`GlowIcon.qml` uses Qt Quick Effects on graphics renderers; the software scene
+graph retains plain icons. Glow fades respect the desktop reduced-motion setting.
 
 The native **Taskbar** KCM appears under **Appearance** in System Settings,
 including the repository's Settings navigation fork. Its settings apply to all

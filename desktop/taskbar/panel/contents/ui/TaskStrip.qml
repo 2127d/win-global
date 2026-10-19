@@ -98,6 +98,7 @@ Item {
             readonly property bool isGroup: !!model.IsGroupParent
             width: strip.horizontal ? strip.cellLength : strip.width
             height: strip.horizontal ? strip.height : strip.cellLength
+            background: null
             text: model.display || model.AppName || ""
             Accessible.name: text
             Accessible.description: model.IsActive ? i18n("Active application") : model.IsWindow || model.IsGroupParent ? i18n("Running application") : i18n("Pinned application")
@@ -112,6 +113,7 @@ Item {
                     settings: strip.settings
                     hovered: task.hovered || taskTip.containsMouse
                     pressed: task.down
+                    keyboardFocus: task.visualFocus
                     launching: !!task.model.IsStartup || launchCue.running
                     demandingAttention: !!task.model.IsDemandingAttention
                     horizontal: strip.horizontal
@@ -123,7 +125,6 @@ Item {
             // Also give immediate feedback for launchers whose startup role is
             // too brief to render. Combining the cues avoids a second bounce.
             Timer { id: launchCue; interval: Math.max(1, strip.motionDuration); }
-            highlighted: isActiveTask || !!model.IsDemandingAttention
             onClicked: {
                 if (!isRunning) launchCue.restart();
                 const idx = tasks.makeModelIndex(index);

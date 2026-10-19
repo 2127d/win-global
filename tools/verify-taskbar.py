@@ -84,6 +84,13 @@ def child(base, payload):
             command({'hoverTask': hovered_name})
             wait_for(lambda: hovered_task().get('scale', 0) > 1.1 and hovered_task().get('motionOffset', 0) < 0,
                 'Native task hover motion did not run')
+            assert not hovered_task()['hasBackground'], 'Task hover still has a button background'
+            wait_for(lambda: hovered_task().get('glowStrength', 0) > .9, 'Task hover glow did not appear')
+            if os.environ.get('SEQUOIA_TEST_GRAPHICS'):
+                assert hovered_task()['glowRendered'], 'Task glow shader was not enabled'
+            (base / 'capture').touch()
+            wait_for(lambda: not (base / 'capture').exists(), 'Task hover capture did not complete')
+            (base / 'task-hover.png').write_bytes((base / 'panel.png').read_bytes())
             assert hovered_task()['width'] == initial_button['width'] and hovered_task()['height'] == initial_button['height'], 'Motion changed button hit geometry'
             settings({'dockAnimations': False})
             wait_for(lambda: hovered_task().get('scale') == 1 and hovered_task().get('motionOffset') == 0,
@@ -172,6 +179,14 @@ def child(base, payload):
                 launcher = next((a for a in s.get('applets', []) if a['inLauncherSlot']), {})
                 return launcher.get('iconWidth') == s.get('effectiveIconSize') == launcher.get('iconHeight')
             wait_for(matching_launcher_size, 'Start menu icon does not match the task icons')
+            command({'hoverLauncher': True})
+            wait_for(lambda: slot().get('glowStrength', 0) > .9, 'Launcher hover glow did not appear')
+            assert not slot()['hasBackground'], 'Launcher hover still has a button background'
+            if os.environ.get('SEQUOIA_TEST_GRAPHICS'):
+                assert slot()['glowRendered'], 'Launcher glow shader was not enabled'
+            (base / 'capture').touch()
+            wait_for(lambda: not (base / 'capture').exists(), 'Launcher hover capture did not complete')
+            (base / 'launcher-hover.png').write_bytes((base / 'panel.png').read_bytes())
             settings({'iconSize': 24})
             wait_for(lambda: state().get('effectiveIconSize') == 24 and matching_launcher_size(), 'Start menu did not shrink with icon size')
             settings({'iconSize': 40})
@@ -243,6 +258,7 @@ def main():
     parser.add_argument('--payload', type=Path, default=ROOT / '.staging/taskbar-payload')
     parser.add_argument('--output', type=Path, default=ROOT / '.staging/taskbar-verification')
     parser.add_argument('--child', action='store_true')
+    parser.add_argument('--graphics', action='store_true', help='Exercise icon effects with the OpenGL renderer (Mesa software rendering)')
     args = parser.parse_args()
     base, payload = args.output.resolve(), args.payload.resolve()
     if args.child:
@@ -269,6 +285,9 @@ def main():
         XDG_DATA_DIRS=str(payload / 'usr/share') + ':/usr/local/share:/usr/share',
         QT_PLUGIN_PATH=str(payload / Path(subprocess.check_output(['qtpaths6', '--query', 'QT_INSTALL_PLUGINS'], text=True).strip()).relative_to('/')),
         QML_IMPORT_PATH=str(payload / Path(subprocess.check_output(['qtpaths6', '--query', 'QT_INSTALL_QML'], text=True).strip()).relative_to('/')))
+    if args.graphics:
+        env.pop('QT_QUICK_BACKEND', None)
+        env.update(QSG_RHI_BACKEND='opengl', SEQUOIA_TEST_GRAPHICS='1')
     with tempfile.TemporaryDirectory(prefix='sequoia-tb-') as runtime:
         env['XDG_RUNTIME_DIR'] = runtime
         result = subprocess.run(['dbus-run-session', '--', sys.executable, str(Path(__file__).resolve()),

@@ -130,7 +130,7 @@ The native Qt wizard guides you through:
 1. **Distribution:** Arch Linux, Fedora, Ubuntu, or Debian. The installed distro
    is detected and checked before invoking its package manager.
 2. **Components:** choose the complete desktop or individual components.
-   The complete-desktop option checks and grays out the component choices; turning it
+   The complete-desktop option checks and grays out the standard theme choices; turning it
    off restores your individual choices. **Settings**, **Gwenview** and **KCalc** makeovers
    are separate, optional choices, including when installing no theme components.
    **Desktop widgets** can be installed on their own. Selecting **Global Theme,
@@ -138,7 +138,9 @@ The native Qt wizard guides you through:
    decorations, Plasma style, colors, icons, wallpaper, fonts and widgets. Those
    requirements are shown in the selection and review; turn off Global Theme to
    choose those parts individually. Login, lock screen and Qt Quick styling remain
-   separate choices.
+   separate choices. **Animation kit — Your palette** is optional and unchecked
+   even with the complete desktop. It captures a restorable snapshot before
+   applying the custom Motion Lab animations and restarting Plasma.
 3. **Review and install:** inspect the selection and dependency list, then follow
    progress in the window. Administrator passwords are requested through a
    separate dialog; the installer itself runs as your desktop user. Logs can be saved.
@@ -725,8 +727,32 @@ motion, and produce `preview/motion-lab.png`. Requires PySide6.
 
 ### Applying the approved motion palette
 
-The approved palette is applied per user, with a complete file/configuration
-backup. Prepare and verify the installation before activating it:
+Select **Animation kit — Your palette** in the installer to apply the custom
+Motion Lab preset. This option is unchecked by default, including with
+**Install the complete desktop**. It includes the widgets and Qt Quick styling
+used by the palette. Applying it restarts Plasma.
+
+Immediately before applying the kit, the installer saves the animation settings,
+enabled effects and replaced files under
+`~/.local/share/sequoia-eleven/backups/motion-TIMESTAMP/` (or `XDG_DATA_HOME`).
+Reinstallation restores the original baseline before refreshing the kit, so its
+own custom settings never replace the baseline. Unrelated settings and theme
+installation records are retained during restoration.
+
+Remove **Animation kit** using `python3 uninstall-gui.py` to restore the snapshot,
+or run `python3 tools/install-motion-palette.py --remove`. Removing its required
+widgets or Qt Quick styling also restores the kit first. If a managed animation
+setting or file has since been edited, restoration stops for review.
+
+For command-line installation with dependencies:
+
+```sh
+python3 tools/install-theme.py install --components animation-kit
+```
+
+For an existing installation with the required widgets and Qt Quick styling,
+`python3 tools/install-motion-palette.py --install` applies or refreshes the kit.
+To prepare and verify it before activation:
 
 ```sh
 python3 tools/install-motion-palette.py --stage .staging/motion-approved
@@ -736,9 +762,11 @@ python3 tools/install-motion-palette.py --apply-stage .staging/motion-approved
 ```
 
 Use a new staging directory when preparing another installation. The native
-verification command uses `.staging/motion-approved`. The installer prints a
+verification command uses `.staging/motion-approved`, or accepts `--stage PATH`.
+The installer prints a
 `--restore BACKUP` command; restoration refuses to overwrite files changed since
-installation. Restore this layer before uninstalling the underlying theme.
+installation. Older installations made before the Animation kit option can
+still be restored with their printed `--restore BACKUP` command.
 
 This installs separately named KWin effects and a per-user dock package, refreshes
 the existing application and lock-screen QML overlays, and adds a shell-only
@@ -752,10 +780,17 @@ Qt Quick applications to refresh cached components.
 KWin's workspace speed baseline makes Overview use 200 ms. Desktop slide uses
 spring physics and retains its gesture handling, so it has no exact millisecond
 duration. GTK/browser/third-party internal motion, busy indicators, notification
-dwell, and operation progress remain under their owners' control. Reapply this
-layer after refreshing the main theme or upgrading Plasma; staging checks the
+dwell, and operation progress remain under their owners' control. Panel hide/show
+uses native **Sliding Popups**, enabled with 200 ms in both directions; its
+configured 300 ms is scaled by the kit's 2/3 global factor. Later changes to the
+system animation speed still scale the slide. Theme upgrades automatically
+refresh an active kit. Reapply after upgrading Plasma; staging checks the
 installed effect source before transforming it. The application and Plasma
 controls retain the system's animation-disabled setting.
+
+Run `python3 tools/verify-motion-installer.py` for isolated snapshot, refresh,
+failure recovery and restore checks. The native verifier also checks that
+Sliding Popups stays loaded with 200 ms timing alongside the custom effects.
 
 ### Other previews
 

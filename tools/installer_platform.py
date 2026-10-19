@@ -25,7 +25,9 @@ COMPONENTS = {
     'lockscreen': ('Lock screen', 'Clock, password field and media controls.'),
     'quick-style': ('Qt Quick application styling', 'Shared KDE application surfaces and switches.'),
     'login': ('Login screen', 'Requires the existing Plasma Login Manager; takes effect after reboot.'),
+    'animation-kit': ('Animation kit — Your palette', 'Optional system animations from Motion Lab. Saves a restorable snapshot before applying; restarts Plasma. Includes desktop widgets and Qt Quick styling.'),
 }
+OPTIONAL_COMPONENTS = {'animation-kit'}
 APPS = {'settings': ('Settings makeover', 'Requires System Settings 6.7.5.'),
         'gwenview': ('Gwenview makeover', 'Requires Gwenview 26.08.1.'),
         'kcalc': ('KCalc makeover', 'Modern keys and mode-aware resizing. Requires KCalc 26.08.1.')}
@@ -34,6 +36,7 @@ NATIVE = {'application-style', 'decorations'}
 # A preset must never point at theme assets or layout widgets we did not install.
 # Individual components remain independent choices in both entry points.
 COMPONENT_REQUIRES = {
+    'animation-kit': {'widgets', 'quick-style'},
     'global-theme': {'application-style', 'decorations', 'plasma-style', 'colors',
                      'icons', 'wallpaper', 'fonts', 'widgets'},
 }
@@ -65,7 +68,7 @@ def resolve_removals(components):
         selected = expanded
 
 def default_components():
-    return [c for c in COMPONENTS if c != 'login' or login_available()]
+    return [c for c in COMPONENTS if c not in OPTIONAL_COMPONENTS and (c != 'login' or login_available())]
 
 def detected_distro():
     try:
@@ -157,6 +160,10 @@ def packages_for(distro, components, apps=()):
         packages += ['gtk-update-icon-cache']
     if 'quick-style' in selected or 'lockscreen' in selected:
         packages += GUI_PACKAGES[distro] + ['plasma-workspace']
+    if 'animation-kit' in selected:
+        packages += {'fedora': ['qt6-qttools'], 'arch': ['qt6-tools'],
+                     'ubuntu': ['qdbus-qt6', 'python3-pyside6.qtdbus'],
+                     'debian': ['qdbus-qt6', 'python3-pyside6.qtdbus']}[distro]
     if 'quick-style' in selected:
         packages += {'fedora': ['kf6-qqc2-desktop-style', 'kf6-kirigami', 'kf6-kcmutils', 'plasma-systemmonitor', 'qt6-qtsvg'],
                      'arch': ['qqc2-desktop-style', 'kirigami', 'kcmutils', 'plasma-systemmonitor', 'qt6-svg'],

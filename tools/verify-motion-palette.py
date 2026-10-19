@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Load staged motion effects in private KWin and exercise real windows/popups."""
+import argparse
 import json
 import os
 from pathlib import Path
@@ -10,7 +11,11 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-STAGE = ROOT / '.staging/motion-approved'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--stage', type=Path, default=ROOT / '.staging/motion-approved')
+parser.add_argument('--child', type=Path)
+args = parser.parse_args()
+STAGE = args.stage.resolve()
 
 
 def child(base):
@@ -36,6 +41,9 @@ def child(base):
             assert dbus('isEffectLoaded', 'sequoia-motion-' + name) == 'true', name
         info = dbus('supportInformation', 'overview')
         assert 'animationDuration: 200' in info, info
+        assert dbus('isEffectLoaded', 'slidingpopups') == 'true', 'Panel slide effect was disabled'
+        slide = dbus('supportInformation', 'slidingpopups')
+        assert 'slideInDuration: 200' in slide and 'slideOutDuration: 200' in slide, slide
         window = QWidget()
         window.setWindowTitle('Motion verification')
         window.resize(500, 350)
@@ -81,7 +89,7 @@ def child(base):
         assert switch, component.errors()
         durations = [o.property('duration') for o in switch.findChildren(QObject) if o.property('duration') is not None]
         assert 200 in durations, durations
-        print('PASS: six real KWin effects load; Overview reports 200 ms; open/close/menu/maximize/fullscreen/minimize; Plasma dock loads without QML errors')
+        print('PASS: six real KWin effects load; panel sliding and Overview report 200 ms; open/close/menu/maximize/fullscreen/minimize; Plasma dock loads without QML errors')
     finally:
         compositor.terminate()
         compositor.wait(timeout=8)
@@ -90,8 +98,8 @@ def child(base):
             shutil.copy2(base / 'plasma.log', ROOT / '.staging/motion-plasma-test.log')
 
 
-if len(sys.argv) > 1 and sys.argv[1] == '--child':
-    child(Path(sys.argv[2]))
+if args.child:
+    child(args.child)
 else:
     with tempfile.TemporaryDirectory(prefix='sequoia-motion-native-') as directory:
         base = Path(directory)
@@ -108,5 +116,5 @@ else:
         plan = json.loads((STAGE / 'plan.json').read_text())
         for file, group, key, value in plan['settings']:
             subprocess.run(['kwriteconfig6', '--file', str(base / 'config' / file), '--group', group, '--key', key, value], check=True)
-        subprocess.run(['dbus-run-session', '--', sys.executable, str(Path(__file__).resolve()), '--child', str(base)],
+        subprocess.run(['dbus-run-session', '--', sys.executable, str(Path(__file__).resolve()), '--stage', str(STAGE), '--child', str(base)],
             env=env, check=True, timeout=45)

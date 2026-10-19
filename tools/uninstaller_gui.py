@@ -177,6 +177,9 @@ class UninstallerWindow(QMainWindow):
                       'Choose another theme and replace Sequoia panel widgets before continuing.',
                       'Administrator permission is requested only for shared system files.']
             self.review.setPlainText('\n'.join(lines))
+            if 'animation-kit' in components:
+                self.review.appendPlainText('\nAnimation kit: restores its saved animation settings and files, then restarts Plasma. '
+                                            'Later edits to managed animations stop restoration for review, even with force enabled.')
             self.pages.setCurrentIndex(1)
             self.sync()
 

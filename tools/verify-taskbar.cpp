@@ -28,10 +28,11 @@ static void collect(QQuickItem *item, QJsonArray &buttons, int &icons, const QJs
     if (item->objectName() == QLatin1String("taskIcon") && item->isVisible() && item->property("valid").toBool()) ++icons;
     if (item->objectName() == QLatin1String("integratedTaskButton")) {
         QJsonObject button;
+        button["hasBackground"] = item->property("background").value<QObject *>() != nullptr;
         for (const char *key : {"text", "isRunning", "isActiveTask", "isGroup", "isMinimized", "width", "height", "hovered"})
             button[QString::fromLatin1(key)] = QJsonValue::fromVariant(item->property(key));
         if (auto icon = item->findChild<QObject *>(QStringLiteral("taskIcon"))) {
-            for (const char *key : {"scale", "motionOffset", "motionDuration"})
+            for (const char *key : {"scale", "motionOffset", "motionDuration", "glowStrength", "glowRendered"})
                 button[QString::fromLatin1(key)] = QJsonValue::fromVariant(icon->property(key));
         }
         buttons.append(button);
@@ -80,6 +81,10 @@ static void appletGeometry(QQuickItem *item, QJsonArray &applets)
         if (auto icon = find(item, QStringLiteral("startMenuLauncherIcon"))) {
             geometry["iconWidth"] = icon->width();
             geometry["iconHeight"] = icon->height();
+            geometry["glowStrength"] = icon->property("glowStrength").toDouble();
+            geometry["glowRendered"] = icon->property("glowRendered").toBool();
+            if (auto button = find(item, QStringLiteral("startMenuButton")))
+                geometry["hasBackground"] = button->property("background").value<QObject *>() != nullptr;
         }
         applets.append(geometry);
     }
@@ -133,6 +138,12 @@ static void start()
             auto strip = quick ? find(quick->contentItem()) : nullptr;
             if (!strip || !quick->isVisible() || !strip->isVisible()) continue;
             auto panel = strip->parentItem();
+            if (command.contains("hoverLauncher") && !executed) {
+                if (auto button = find(panel, QStringLiteral("startMenuButton"))) {
+                    QTest::mouseMove(quick, button->mapToScene(QPointF(button->width() / 2, button->height() / 2)).toPoint());
+                    ++executed;
+                }
+            }
             if (command.contains("addLauncher") && !executed) {
                 auto applet = panel->property("_plasma_applet").value<QObject *>();
                 QQmlListReference actions(applet, "contextualActions");

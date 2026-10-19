@@ -43,7 +43,9 @@ PlasmoidItem {
     function toggleMenu() { popup.opened = !popup.opened; }
     Plasmoid.onActivated: toggleMenu()
     fullRepresentation: PC.ToolButton {
+        id: launcherButton
         objectName: "startMenuButton"
+        background: null
         implicitWidth: 48; implicitHeight: 48
         Layout.minimumWidth: 48
         Layout.preferredWidth: root.verticalPanel ? 48 : root.height
@@ -53,7 +55,7 @@ PlasmoidItem {
         leftPadding: 0
         rightPadding: 0
         contentItem: Item {
-            Kirigami.Icon {
+            GlowIcon {
                 objectName: "startMenuLauncherIcon"
                 anchors.centerIn: parent
                 width: root.taskbarIconSize > 0
@@ -62,6 +64,7 @@ PlasmoidItem {
                 height: width
                 source: Plasmoid.configuration.icon
                 active: root.menuOpen
+                glowActive: launcherButton.hovered || launcherButton.down || launcherButton.visualFocus || root.menuOpen
             }
         }
         checkable: true

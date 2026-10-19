@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Test ownership, rollback, scope, and installer orchestration without sudo."""
 import importlib.util
+from contextlib import contextmanager
 import json
 import os
 from pathlib import Path
@@ -328,6 +329,40 @@ class ThemeTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Plasma Login Manager'):
                 installer.main()
             deps.assert_not_called()
+
+    def test_cli_wraps_theme_installation_in_motion_lifecycle(self):
+        events = []
+        @contextmanager
+        def lifecycle(data, components):
+            self.assertEqual(set(components), {'animation-kit', 'widgets', 'quick-style'})
+            events.append('prepare')
+            yield
+            events.append('apply')
+        with patch.object(sys, 'argv', ['installer', 'install', '--skip-deps', '--components', 'animation-kit']), \
+                patch.object(installer.motion_install, 'theme_installation', side_effect=lifecycle), \
+                patch.object(installer, 'perform', side_effect=lambda args: events.append('theme')):
+            installer.main()
+        self.assertEqual(events, ['prepare', 'theme', 'apply'])
+
+    def test_kit_removal_preflights_and_restores_before_theme_removal(self):
+        # Use a real receipt to ensure removing only the kit keeps base theme files.
+        name = 'color-schemes/SequoiaElevenDark.colors'
+        self.put(self.stage, name, 'theme colors')
+        Receipt(self.live, installer.USER_STATE, installer.user_allowed).install(self.stage)
+        command = ['installer', 'uninstall', '--prefix', str(self.live), '--components', 'animation-kit']
+        backup = self.base / 'backup'
+        events = []
+        with patch.object(installer.motion_install, 'active_backup', return_value=backup), \
+                patch.object(installer.motion_install, 'check_restore', side_effect=lambda path: events.append('check')), \
+                patch.object(installer.motion_install, 'restore', side_effect=lambda path: events.append('restore')), \
+                patch.object(installer, 'refresh'), patch.object(sys, 'argv', command + ['--check']):
+            installer.main()
+            self.assertEqual(events, ['check'])
+            with patch.object(sys, 'argv', command):
+                installer.main()
+            self.assertEqual(events, ['check', 'check', 'restore'])
+        self.assertEqual((self.live / name).read_text(), 'theme colors')
+        Receipt(self.live, installer.USER_STATE, installer.user_allowed).validate()
 
 
 @unittest.skipUnless(os.environ.get('SEQUOIA_FULL_INSTALL_TEST') == '1',

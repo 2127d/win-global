@@ -8,6 +8,14 @@ import shutil
 ROOT = Path(__file__).resolve().parents[1]
 EFFECTS = ('scale', 'fadingpopups', 'maximize', 'fullscreen', 'login', 'logout')
 FACTOR = 2 / 3  # KWin Overview's native 300 ms becomes the approved 200 ms.
+PRESET_NAME = 'Your palette'
+
+
+def effect_sources():
+    for root in (Path('/usr/share/kwin-wayland/effects'), Path('/usr/share/kwin/effects')):
+        if all((root / name / 'contents/code/main.js').is_file() for name in EFFECTS):
+            return root
+    raise RuntimeError('This KWin installation does not provide the scripted effects required by the Animation kit.')
 
 
 def replace(text, old, new, count=1):
@@ -30,6 +38,10 @@ def kwin_effect(name, text):
         text = replace(text, 'curve: QEasingCurve.InCubic,\n            duration: this.duration,',
                        'curve: QEasingCurve.InCubic,\n            duration: ' + duration(168) + ',')
     elif name == 'fadingpopups':
+        # Panels keep KWin's native hide/show animation. Other sliding surfaces
+        # are arbitrated by the stock effect's WindowAdded/Closed grab roles.
+        text = replace(text, 'function isPopupWindow(window) {',
+                       'function isPopupWindow(window) {\n    if (window.dock) { return false; }')
         text = replace(text, 'animationTime(150) * 4', duration(112))
         text = replace(text, 'animationTime(150)', duration(160))
         text = replace(text, 'QEasingCurve.Linear', 'QEasingCurve.OutCubic')
@@ -101,9 +113,9 @@ def prepare(stage, data, config):
         shutil.copytree(source, target)
         return target
     # Dedicated IDs prevent ambiguity with distro packages and make rollback clear.
-    upstream = Path('/usr/share/kwin-wayland/effects')
+    upstream = effect_sources()
     for effect in EFFECTS:
-        target = package(upstream / effect, f'kwin-wayland/effects/sequoia-motion-{effect}')
+        target = package(upstream / effect, f'{upstream.parent.name}/effects/sequoia-motion-{effect}')
         meta = json.loads((target / 'metadata.json').read_text())
         plugin = meta['KPlugin']
         for key in list(plugin):
@@ -192,14 +204,19 @@ def prepare(stage, data, config):
     for effect in EFFECTS:
         settings += [['kwinrc', 'Plugins', effect + 'Enabled', 'false'],
                      ['kwinrc', 'Plugins', 'sequoia-motion-' + effect + 'Enabled', 'true']]
-    # Use the same short travel for tray popups and notification entry as menus;
-    # avoid stacking the native full-slide animation on top of this effect.
-    settings += [['kwinrc', 'Plugins', name + 'Enabled', 'false'] for name in ('slidingpopups', 'slidingnotifications')]
+    # Sliding Popups also owns panel hide/show. Keep it enabled and compensate
+    # for our workspace factor, giving panels the original smooth 200 ms slide.
+    settings += [['kwinrc', 'Plugins', 'slidingpopupsEnabled', 'true'],
+                 ['kwinrc', 'Effect-slidingpopups', 'SlideInTime', str(round(200 / FACTOR))],
+                 ['kwinrc', 'Effect-slidingpopups', 'SlideOutTime', str(round(200 / FACTOR))],
+                 ['kwinrc', 'Plugins', 'slidingnotificationsEnabled', 'false']]
+    changes.append('Panel hide/show retains native Sliding Popups at 200 ms in both directions')
     shell_conf = stage / 'config/systemd/user/plasma-plasmashell.service.d/70-sequoia-motion.conf'
     shell_conf.parent.mkdir(parents=True)
     overlay = str(data / 'sequoia-eleven/motion/qml').replace('%', '%%').replace('"', '\\"')
     shell_conf.write_text('[Service]\nEnvironment="QML_IMPORT_PATH=' + overlay + '"\n')
-    palette = json.loads((ROOT / 'tools/motion-lab/palettes.json').read_text())['presets'][3]
+    palette = next(p for p in json.loads((ROOT / 'tools/motion-lab/palettes.json').read_text())['presets']
+                   if p['name'] == PRESET_NAME)
     save('sequoia-eleven/motion/palette.json', json.dumps(palette, indent=2) + '\n')
     plan = {'version': 1, 'data': str(data), 'config': str(config), 'settings': settings,
         'effects': list(EFFECTS), 'changes': changes,

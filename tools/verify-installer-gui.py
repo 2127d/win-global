@@ -37,7 +37,10 @@ class WizardTests(unittest.TestCase):
         window.distro_buttons['fedora'].setChecked(True)
         window.advance()
         self.assertEqual(window.pages.currentIndex(), 1)
-        self.assertTrue(all(not box.isEnabled() for box in window.component_boxes.values()))
+        self.assertTrue(all(not box.isEnabled() for key, box in window.component_boxes.items()
+                            if key not in platform.OPTIONAL_COMPONENTS))
+        self.assertTrue(window.component_boxes['animation-kit'].isEnabled())
+        self.assertNotIn('animation-kit', window.selection()[0])
         self.assertTrue(all(box.isEnabled() for box in window.app_boxes.values()))
         window.global_box.setChecked(False)
         self.assertFalse(window.next.isEnabled())
@@ -61,6 +64,22 @@ class WizardTests(unittest.TestCase):
         self.assertTrue(self.window.next.isEnabled())
         self.assertEqual(self.window.selection(), ([], ['gwenview']))
 
+    def test_animation_kit_is_always_opt_in(self):
+        window = self.window
+        box = window.component_boxes['animation-kit']
+        self.assertFalse(box.isChecked())
+        box.setChecked(True)
+        self.assertIn('animation-kit', window.selection()[0])
+        window.global_box.setChecked(False)
+        self.assertEqual(set(window.selection()[0]), {'animation-kit', 'widgets', 'quick-style'})
+        self.assertFalse(window.component_boxes['widgets'].isEnabled())
+        window.advance()
+        window.advance()
+        self.assertIn('restorable snapshot', window.review.toPlainText())
+        window.go_back()
+        box.setChecked(False)
+        self.assertEqual(window.selection()[0], [])
+
     def test_widgets_only_and_preset_dependencies(self):
         window = self.window
         window.advance()
@@ -74,7 +93,7 @@ class WizardTests(unittest.TestCase):
         self.assertNotIn('login', window.selection()[0])
         self.assertNotIn('quick-style', window.selection()[0])
         window.advance()
-        self.assertIn('Included for a working Global Theme', window.review.toPlainText())
+        self.assertIn('Included for your selected components', window.review.toPlainText())
         window.go_back()
         window.component_boxes['global-theme'].setChecked(False)
         self.assertEqual(window.selection(), (['widgets'], []))
@@ -186,6 +205,7 @@ class PlatformTests(unittest.TestCase):
             install.assert_called_once_with(['sudo', '-A', 'dnf', 'install', '-y', packages['fedora']])
 
     def test_fresh_machine_defaults_and_dependency_closure(self):
+        self.assertNotIn('animation-kit', platform.default_components())
         with patch.object(platform, 'login_available', return_value=False):
             self.assertNotIn('login', platform.default_components())
             self.assertIn('widgets', platform.default_components())
@@ -194,7 +214,7 @@ class PlatformTests(unittest.TestCase):
         for component in platform.COMPONENTS:
             resolved = platform.resolve_components([component])
             self.assertEqual(platform.resolve_components(resolved), resolved)
-            if component != 'global-theme':
+            if component not in platform.COMPONENT_REQUIRES:
                 self.assertEqual(resolved, [component])
         self.assertEqual(platform.resolve_components([]), [])
 
