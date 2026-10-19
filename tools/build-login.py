@@ -20,18 +20,18 @@ def build(output, runtime=None):
     output.mkdir(parents=True, exist_ok=True)
     runtime = runtime or INSTALL_DIR
     for name in ('qml', 'assets'):
-        shutil.copytree(ROOT/'login-screen'/name, output/name, dirs_exist_ok=True)
-    shutil.copy2(ROOT/'wallpapers/sequoia-forest.jpg', output/'assets/sequoia-forest.jpg')
+        shutil.copytree(ROOT/'themes/login-screen'/name, output/name, dirs_exist_ok=True)
+    shutil.copy2(ROOT/'themes/wallpapers/sequoia-forest.jpg', output/'assets/sequoia-forest.jpg')
     digest = hashlib.sha256(GREETER.read_bytes()).hexdigest()
     flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Core', 'Qt6Quick', 'Qt6Qml'], text=True))
     with tempfile.TemporaryDirectory(prefix='sequoia-login-build-') as temporary:
         generated = Path(temporary)
         libexec = subprocess.check_output(['pkg-config', '--variable=libexecdir', 'Qt6Core'], text=True).strip()
-        subprocess.run([str(Path(libexec) / 'moc'), str(ROOT/'login-screen/native/wallpaper-glass.cpp'),
+        subprocess.run([str(Path(libexec) / 'moc'), str(ROOT/'themes/login-screen/native/wallpaper-glass.cpp'),
                         '-o', str(generated/'wallpaper-glass.moc'),
                         *(flag for flag in flags if flag.startswith(('-I', '-D')))], check=True)
         subprocess.run(['c++', '-std=c++17', '-O2', '-fPIC', '-shared',
-            str(ROOT/'login-screen/native/bridge.cpp'), str(ROOT/'login-screen/native/wallpaper-glass.cpp'),
+            str(ROOT/'themes/login-screen/native/bridge.cpp'), str(ROOT/'themes/login-screen/native/wallpaper-glass.cpp'),
             '-I' + str(generated), '-o', str(output/'bridge.so'),
             '-DSEQUOIA_LOGIN_MAIN=' + json.dumps(str(runtime/'qml/Main.qml')),
             '-DSEQUOIA_LOGIN_SHA256=' + json.dumps(digest), *flags, '-ldl'], check=True)

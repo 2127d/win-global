@@ -14,9 +14,11 @@ NAME = 'Sequoia-Eleven'
 PAYLOAD = (
     'install-gui.py', 'Install Sequoia Eleven.desktop', 'install.sh',
     'uninstall-gui.py', 'Uninstall Sequoia Eleven.desktop',
-    'README.md', 'LICENSE', 'application-style', 'color-schemes', 'desktop',
-    'fonts', 'icons', 'lockscreen', 'login-screen', 'plasma', 'tools', 'wallpapers',
-    'apps/settings', 'apps/gwenview',
+    'README.md', 'LICENSE', 'docs', 'desktop', 'widgets', 'tools',
+    'themes/application-style', 'themes/color-schemes', 'themes/fonts',
+    'themes/icons', 'themes/lockscreen', 'themes/login-screen',
+    'themes/plasma', 'themes/wallpapers',
+    'apps/settings', 'apps/gwenview', 'apps/kcalc',
 )
 EXCLUDED = {'.git', '.staging', '__pycache__', 'CMakeFiles', 'CMakeCache.txt'}
 INTRO = '''SEQUOIA ELEVEN — INSTALLER
@@ -42,7 +44,7 @@ installed separately. Downloads uses your own Downloads folder. The theme uses
 its bundled wallpaper, not a personal wallpaper from the original machine.
 
 This archive includes the theme, layout, installer and sources for the optional
-Settings/Gwenview makeovers. It excludes build caches, SDKs, screenshots, backups,
+Settings/Gwenview/KCalc makeovers. It excludes build caches, SDKs, screenshots, backups,
 and Firefox projects.
 
 The installer supports Arch, Fedora, Ubuntu and Debian when their releases
@@ -53,7 +55,7 @@ Plasma Login Manager; it does not support SDDM.
 Both the GUI and default command-line installation omit the login screen when
 Plasma Login Manager is unavailable. Other components can still be installed.
 
-See README.md and plasma/layouts/README.md for details.
+See README.md and desktop/layouts/README.md for details.
 '''
 
 

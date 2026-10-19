@@ -68,7 +68,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-media-') as temp:
         qInstallMessageHandler(lambda kind,context,message: print(message,flush=True))
         qml=Path(temp)/'Test.qml'
         qml.write_text(f'''import QtQuick
-import "{(root/'lockscreen').as_uri()}" as Lock
+import "{(root/'themes/lockscreen').as_uri()}" as Lock
 Item {{
     width: 392; height: 156
     Timer {{ id: fadeoutTimer; interval: 10000 }}

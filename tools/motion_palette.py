@@ -124,7 +124,7 @@ def prepare(stage, data, config):
     task = dock / 'contents/ui/Task.qml'
     if 'Math.round(370 * 100' not in task.read_text():
         task.write_text(dock_task(task.read_text()))
-    shutil.copy2(ROOT / 'plasma/control-center/taskmanager/DockMotion.qml', dock / 'contents/ui/DockMotion.qml')
+    shutil.copy2(ROOT / 'desktop/control-center/taskmanager/DockMotion.qml', dock / 'contents/ui/DockMotion.qml')
     manifest = dock / 'sequoia-package.json'
     if manifest.exists():
         payload = json.loads(manifest.read_text())
@@ -133,7 +133,7 @@ def prepare(stage, data, config):
         manifest.write_text(json.dumps(payload, indent=2) + '\n')
     changes.append('Dock hover/reorder/launch 370 ms; one launch pulse; one 450 ms attention cue')
     for name in ('contents/ui/StartMenu.qml', 'contents/config/main.xml', 'contents/ui/AppTile.qml'):
-        text = (ROOT / 'plasma/plasmoids/org.sequoia.startmenu' / name).read_text()
+        text = (ROOT / 'widgets/plasmoids/org.sequoia.startmenu' / name).read_text()
         if name.endswith('AppTile.qml'):
             text = text.replace('duration: 100', 'duration: tile.menu.motionDuration > 0 ? 200 : 0')
         save('plasma/plasmoids/org.sequoia.startmenu/' + name, text)

@@ -42,11 +42,11 @@ with tempfile.TemporaryDirectory(prefix='sequoia-native-tray-', ignore_cleanup_e
     (Path(temporary) / 'plasmawindowedrc').write_text(settings)
     variant = 'Dark' if args.dark else 'Light'
     (Path(temporary) / 'kdeglobals').write_text(
-        (ROOT / f'color-schemes/SequoiaEleven{variant}Solid.colors').read_text()
+        (ROOT / f'themes/color-schemes/SequoiaEleven{variant}Solid.colors').read_text()
         + f'\n[General]\nfont=Adwaita Sans,{13 if args.large else 10},-1,5,400,0,0,0,0,0\n')
     (Path(temporary) / 'plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{variant.lower()}\n')
-    (Path(temporary) / 'plasma').symlink_to(ROOT / 'plasma', target_is_directory=True)
-    (Path(temporary) / 'icons').symlink_to(ROOT / 'icons', target_is_directory=True)
+    (Path(temporary) / 'plasma').symlink_to(ROOT / 'themes/plasma', target_is_directory=True)
+    (Path(temporary) / 'icons').symlink_to(ROOT / 'themes/icons', target_is_directory=True)
     (Path(temporary) / 'kded6rc').write_text('[Module-kded_plasma_welcome]\nautoload=false\n')
     env = dict(os.environ, QT_QPA_PLATFORM=args.platform, QT_QUICK_BACKEND='rhi' if args.graphics else 'software',
                QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion',

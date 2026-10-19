@@ -133,6 +133,8 @@ else:
     panel_bytes = (config / 'plasma-org.kde.plasma.desktop-appletsrc').read_bytes()
     run(env, working, 'python3', ROOT / 'tools/apply-mac-panels.py')
     run(env, working, 'python3', ROOT / 'tools/install-downloads-stack.py')
+    # The collection check also requires the standalone start and desktop menus.
+    run(env, working, 'bash', ROOT / 'tools/install-theme-assets.sh')
     for pattern in ('before-mac-panels-*', 'before-downloads-fan-*'):
         backup, = (data / 'sequoia-eleven/backups').glob(pattern)
         assert (backup / 'plasma-org.kde.plasma.desktop-appletsrc').read_bytes() == panel_bytes

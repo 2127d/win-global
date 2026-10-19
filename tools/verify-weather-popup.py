@@ -74,10 +74,10 @@ qInstallMessageHandler(message)
 with tempfile.TemporaryDirectory(prefix='sequoia-weather-preview-') as temp:
     os.environ['XDG_CONFIG_HOME'] = temp
     variant = 'dark' if dark else 'light'
-    Path(temp, 'kdeglobals').write_text((ROOT / f'color-schemes/SequoiaEleven{variant.title()}Solid.colors').read_text() + f'\n[Icons]\nTheme=SequoiaTahoe-{variant}\n')
+    Path(temp, 'kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{variant.title()}Solid.colors').read_text() + f'\n[Icons]\nTheme=SequoiaTahoe-{variant}\n')
     Path(temp, 'plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{variant}\n')
-    Path(temp, 'plasma').symlink_to(ROOT / 'plasma')
-    Path(temp, 'icons').symlink_to(ROOT / 'icons')
+    Path(temp, 'plasma').symlink_to(ROOT / 'themes/plasma')
+    Path(temp, 'icons').symlink_to(ROOT / 'themes/icons')
     os.environ.update(XDG_DATA_HOME=temp, XDG_STATE_HOME=temp+'/state', XDG_CACHE_HOME=temp+'/cache')
     app = QApplication([])
     plugin = QPluginLoader('/usr/lib64/qt6/plugins/plasma/applets/org.kde.plasma.weather.so')

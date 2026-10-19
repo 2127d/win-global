@@ -124,10 +124,10 @@ if args.app == 'merkuro':
 output = ROOT / 'preview' / f'{preview_name}-islands-{mode}{suffix}.png'
 with tempfile.TemporaryDirectory(prefix='sequoia-quick-preview-') as temporary:
     config = Path(temporary)
-    colors = (ROOT / f'color-schemes/SequoiaEleven{mode.title()}{args.material.title() if args.material else ""}.colors').read_text()
+    colors = (ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}{args.material.title() if args.material else ""}.colors').read_text()
     (config / 'kdeglobals').write_text(colors + '\n[General]\nfont=' + font() + f'\n[Icons]\nTheme=SequoiaTahoe-{mode}\n')
     (config / 'data').mkdir()
-    (config / 'data/icons').symlink_to(ROOT / 'icons', target_is_directory=True)
+    (config / 'data/icons').symlink_to(ROOT / 'themes/icons', target_is_directory=True)
     env = dict(os.environ, XDG_CONFIG_HOME=temporary, XDG_CACHE_HOME=str(config / 'cache'),
                XDG_DATA_HOME=str(config / 'data'), XDG_STATE_HOME=str(config / 'state'),
                QT_QPA_PLATFORM=args.platform, QT_QPA_PLATFORMTHEME='kde', QSG_RHI_BACKEND='opengl',

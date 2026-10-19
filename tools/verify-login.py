@@ -20,9 +20,9 @@ with tempfile.TemporaryDirectory(prefix='sequoia-login-check-') as temporary:
     for mode in ('light', 'dark', 'light'):
         (desktop/'kdeglobals').write_text(f'[General]\nColorScheme=SequoiaEleven{mode.title()}\n')
         assert desktop_mode(desktop) == mode
-        apply_appearance(greeter, ROOT, mode)
+        apply_appearance(greeter, ROOT / 'themes', mode)
         config = read_config(greeter/'kdeglobals')
-        palette = read_config(ROOT/'color-schemes'/f'SequoiaEleven{mode.title()}.colors')
+        palette = read_config(ROOT/'themes/color-schemes'/f'SequoiaEleven{mode.title()}.colors')
         assert config['Colors:Window']['BackgroundNormal'] == palette['Colors:Window']['BackgroundNormal']
         assert config['General']['ColorScheme'] == f'SequoiaEleven{mode.title()}'
         assert config['General']['font'].startswith('Adwaita Sans,10,')
@@ -31,7 +31,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-login-check-') as temporary:
         assert plasma['Theme']['name'] == f'sequoia-eleven-{mode}'
         assert plasma['Unrelated']['Keep'] == 'original'
         modified = (greeter/'kdeglobals').stat().st_mtime_ns
-        apply_appearance(greeter, ROOT, mode)
+        apply_appearance(greeter, ROOT / 'themes', mode)
         assert (greeter/'kdeglobals').stat().st_mtime_ns == modified
     for mode in ('light', 'dark'):
         for material in ('Solid', 'Transparent'):

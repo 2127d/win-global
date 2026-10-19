@@ -21,7 +21,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-material-check-') as temporary:
             defaults.read(package / 'contents/defaults')
             assert defaults['kdeglobals][General']['ColorScheme'] == scheme_id
             decoration_id = defaults['kwinrc][org.kde.kdecoration2']['library']
-            plugin = ROOT / 'application-style/SequoiaEleven/kdecoration' / f'sequoiaeleven-{material}.json'
+            plugin = ROOT / 'themes/application-style/SequoiaEleven/kdecoration' / f'sequoiaeleven-{material}.json'
             assert json.loads(plugin.read_text())['KPlugin']['Id'] == decoration_id
             scheme = configparser.ConfigParser()
             scheme.read(data / 'color-schemes' / f'{scheme_id}.colors')
@@ -40,7 +40,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-material-check-') as temporary:
     assert (data / 'plasma/look-and-feel/org.sequoia.eleven.dark').is_dir()
     for path in [*data.glob('color-schemes/SequoiaEleven*.colors'),
                  *data.glob('plasma/desktoptheme/sequoia-eleven-*/colors'),
-                 ROOT / 'application-style/SequoiaEleven/colors/SequoiaEleven.colors']:
+                 ROOT / 'themes/application-style/SequoiaEleven/colors/SequoiaEleven.colors']:
         scheme = configparser.ConfigParser()
         scheme.read(path)
         assert scheme.getfloat('KDE', 'frameContrast') == 0, path

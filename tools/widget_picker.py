@@ -148,4 +148,4 @@ def delegate(text):
 def stage(destination, system_shell):
     for name, transform in zip(FILES, (desktop, explorer, delegate)):
         (destination / name).write_text(transform((system_shell / name).read_text()))
-    shutil.copy2(ROOT / 'plasma/widget-picker/PickerMetrics.qml', destination / FILES[-1])
+    shutil.copy2(ROOT / 'desktop/widget-picker/PickerMetrics.qml', destination / FILES[-1])

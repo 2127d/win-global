@@ -48,9 +48,9 @@ class ThemeTests(unittest.TestCase):
             theme = f'plasma/desktoptheme/sequoia-eleven-{mode}'
             self.assertFalse((self.live / theme / 'colors').exists())
             self.assertEqual((self.live / theme / 'widgets/switch.svg').read_bytes(),
-                             (ROOT / theme / 'widgets/switch.svg').read_bytes())
+                             (ROOT / 'themes' / theme / 'widgets/switch.svg').read_bytes())
         self.assertEqual((self.live / indicator).read_bytes(),
-                         (ROOT / 'application-style/quick/SwitchIndicator.qml').read_bytes())
+                         (ROOT / 'themes/application-style/quick/SwitchIndicator.qml').read_bytes())
         (self.live / indicator).write_text('user modification')
         result = subprocess.run(command, capture_output=True, text=True)
         self.assertNotEqual(result.returncode, 0)

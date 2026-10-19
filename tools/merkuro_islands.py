@@ -17,14 +17,18 @@ def build(root, destination, fingerprints, replace, background):
         flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Core'], text=True))
         subprocess.run(['c++', '-shared', '-fPIC', str(source), '-o', str(helper), *flags], check=True)
     module = destination / 'org/kde/merkuro/calendar'
-    env = dict(os.environ, QT_QPA_PLATFORM='offscreen', LD_PRELOAD=str(helper),
-               SEQUOIA_EXPORT_MERKURO=str(module))
-    subprocess.run([str(binary)], env=env, check=True, timeout=15)
+    # LD_PRELOAD splits on spaces and colons and has no quoting syntax. An
+    # inherited descriptor also works when the extracted checkout contains either.
+    with helper.open('rb') as preload:
+        env = dict(os.environ, QT_QPA_PLATFORM='offscreen',
+                   LD_PRELOAD=f'/proc/self/fd/{preload.fileno()}',
+                   SEQUOIA_EXPORT_MERKURO=str(module))
+        subprocess.run([str(binary)], env=env, pass_fds=(preload.fileno(),), check=True, timeout=15)
     for path in module.rglob('*'):
         if path.is_file():
             path.chmod(0o644)
     fingerprints[str(binary)] = hashlib.sha256(binary.read_bytes()).hexdigest()
-    bridge_source = root / 'application-style/quick/merkuro-qml.cpp'
+    bridge_source = root / 'themes/application-style/quick/merkuro-qml.cpp'
     flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Qml'], text=True))
     subprocess.run(['c++', '-std=c++17', '-shared', '-fPIC', str(bridge_source), '-o',
                     str(destination / 'merkuro-qml.so'), *flags, '-ldl'], check=True)

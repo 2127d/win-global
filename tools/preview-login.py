@@ -33,7 +33,7 @@ def capture(mode, width, height, output, renderer="software", backdrop=None, dem
         source = source.replace('PlasmaLogin.SessionManagement.requestShutdown(PlasmaLogin.SessionManagement.ConfirmationMode.Skip);', '')
         source = source.replace('PlasmaLogin.SessionManagement.requestReboot(PlasmaLogin.SessionManagement.ConfirmationMode.Skip);', '')
         if demo_status:
-            (theme/'qml/StatusFixture.qml').write_text((ROOT/'login-screen/tests/StatusFixture.qml').read_text())
+            (theme/'qml/StatusFixture.qml').write_text((ROOT/'themes/login-screen/tests/StatusFixture.qml').read_text())
             source = source.replace('systemStatus: SystemStatus {}', 'systemStatus: StatusFixture {}')
         if backdrop:
             source = source.replace('    wallpaper: "../assets/sequoia-forest.jpg"',

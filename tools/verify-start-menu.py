@@ -9,7 +9,7 @@ import tempfile
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = ROOT / 'plasma/plasmoids/org.sequoia.startmenu'
+PACKAGE = ROOT / 'widgets/plasmoids/org.sequoia.startmenu'
 
 
 def child(stage):
@@ -20,7 +20,7 @@ def child(stage):
     for name in ('config', 'data/applications', 'cache', 'run', 'state'):
         (stage / name).mkdir(parents=True, exist_ok=True, mode=0o700)
     (stage / 'data/plasma').mkdir()
-    (stage / 'data/plasma/desktoptheme').symlink_to(ROOT / 'plasma/desktoptheme')
+    (stage / 'data/plasma/desktoptheme').symlink_to(ROOT / 'themes/plasma/desktoptheme')
     (stage / 'config/plasmarc').write_text('[Theme]\nname=sequoia-eleven-light\n')
     marker = stage / 'launched'
     (stage / 'data/applications/sequoia-start-test.desktop').write_text(

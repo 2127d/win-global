@@ -98,7 +98,7 @@ def main():
         target = data / 'plasma/plasmoids' / plugin
         if target.exists():
             shutil.copytree(target, backup / plugin)
-        shutil.copytree(ROOT / 'plasma/plasmoids' / plugin, target, dirs_exist_ok=True)
+        shutil.copytree(ROOT / 'widgets/plasmoids' / plugin, target, dirs_exist_ok=True)
     print('Previous panel configuration:', backup, flush=True)
     result = subprocess.run(['qdbus-qt6', 'org.kde.plasmashell', '/PlasmaShell', 'org.kde.PlasmaShell.evaluateScript', code], check=True, text=True, capture_output=True, timeout=30)
     print(result.stdout)

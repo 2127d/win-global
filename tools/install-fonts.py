@@ -17,7 +17,7 @@ def main():
                         default=Path(os.environ.get('XDG_DATA_HOME') or Path.home()/'.local/share'))
     args = parser.parse_args()
     for family in ['AdwaitaSans', 'Nunito']:
-        source = ROOT/'fonts'/family
+        source = ROOT/'themes/fonts'/family
         manifest = json.loads((source/'sources.json').read_text())
         for name, record in manifest.items():
             if hashlib.sha256((source/name).read_bytes()).hexdigest() != record['sha256']:

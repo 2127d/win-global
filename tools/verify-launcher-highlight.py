@@ -33,7 +33,7 @@ feedback = feedback.replace('Plasmoid.pluginName', 'root.pluginName').replace('P
 feedback = feedback.replace('id: expandedItem', 'id: expandedItem; objectName: "feedback"')
 cases = []
 for mode in ('light', 'dark'):
-    path = ROOT / f'plasma/desktoptheme/sequoia-eleven-{mode}/widgets/tabbar.svg'
+    path = ROOT / f'themes/plasma/desktoptheme/sequoia-eleven-{mode}/widgets/tabbar.svg'
     # A theme with no launcher-specific prefix must keep stock shell geometry.
     fallback = Path(temporary.name) / f'{mode}-fallback.svg'
     fallback.write_text('\n'.join(line for line in path.read_text().splitlines() if 'sequoia-launcher' not in line))
@@ -98,7 +98,7 @@ Item {{ width: 128; height: 128
 # These controls use tabbar directly, without CompactApplet's panel margins.
 for mode in ('light','dark'):
     for width,height in ((100,24),(24,24)):
-        path=ROOT/f'plasma/desktoptheme/sequoia-eleven-{mode}/widgets/tabbar.svg'
+        path=ROOT/f'themes/plasma/desktoptheme/sequoia-eleven-{mode}/widgets/tabbar.svg'
         source=Path(temporary.name)/'shared.qml'
         source.write_text(f'''import QtQuick
 import org.kde.ksvg as KSvg

@@ -20,7 +20,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--stage',type=Path,help='Install the package into a temporary data directory only')
     args=parser.parse_args()
-    source=ROOT/'plasma/plasmoids'/PLUGIN
+    source=ROOT/'widgets/plasmoids'/PLUGIN
     if args.stage:
         shutil.copytree(source,args.stage/'plasma/plasmoids'/PLUGIN,dirs_exist_ok=True)
         return

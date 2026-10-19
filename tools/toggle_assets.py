@@ -40,5 +40,5 @@ def build_switch(base, palette, svg_type):
 if __name__ == '__main__':
     from build import ROOT, PALETTES, Svg
     for mode, palette in PALETTES.items():
-        build_switch(ROOT / 'plasma/desktoptheme' / f'sequoia-eleven-{mode}', palette, Svg)
+        build_switch(ROOT / 'themes/plasma/desktoptheme' / f'sequoia-eleven-{mode}', palette, Svg)
     print('Generated accent-aware Plasma switches for light and dark themes.')

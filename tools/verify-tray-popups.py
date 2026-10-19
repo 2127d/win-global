@@ -48,7 +48,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-tray-popup-',ignore_cleanup_err
     base=Path(temporary)
     for name in ('data','config','cache','state','run','services'): (base/name).mkdir(mode=0o700)
     (base/'data/plasma').mkdir()
-    (base/'data/plasma/desktoptheme').symlink_to(ROOT/'plasma/desktoptheme', target_is_directory=True)
+    (base/'data/plasma/desktoptheme').symlink_to(ROOT/'themes/plasma/desktoptheme', target_is_directory=True)
     plugin_dir=module('install-widget-archives').plugin_directory()
     if args.folder:
         installer=module('install-widget-archives')

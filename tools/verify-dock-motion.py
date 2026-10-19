@@ -9,7 +9,7 @@ from PySide6.QtQml import QQmlComponent, QQmlEngine
 from PySide6.QtTest import QTest
 app = QGuiApplication([])
 engine = QQmlEngine()
-source = Path(__file__).resolve().parents[1] / 'plasma/control-center/taskmanager/DockMotion.qml'
+source = Path(__file__).resolve().parents[1] / 'desktop/control-center/taskmanager/DockMotion.qml'
 component = QQmlComponent(engine, QUrl.fromLocalFile(str(source)))
 assert not component.errors(), component.errors()
 motion = component.createWithInitialProperties(dict(animationsEnabled=True, hovered=False,

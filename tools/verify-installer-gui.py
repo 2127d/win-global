@@ -292,12 +292,13 @@ class AppInstallTests(unittest.TestCase):
             ('settings', 'install-settings-navigation.py', ['--binary', str(gui.ROOT / '.staging/settings-build/bin/systemsettings')],
              'org.sequoia.eleven.systemsettings.desktop'),
             ('gwenview', 'install-gwenview.py', ['--skip-build'], 'org.kde.gwenview.desktop'),
+            ('kcalc', 'install-kcalc.py', ['--skip-build'], 'org.kde.kcalc.desktop'),
         ):
             with self.subTest(app=app), tempfile.TemporaryDirectory(prefix='sequoia-app-gui-test-') as temporary:
                 base = Path(temporary)
                 data, bins = base / 'data with spaces', base / 'bin with spaces'
                 bins.mkdir()
-                binary_name = 'systemsettings' if app == 'settings' else 'gwenview'
+                binary_name = 'systemsettings' if app == 'settings' else app
                 launcher = bins / binary_name
                 launcher.write_text('#!/bin/sh\necho original\n')
                 launcher.chmod(0o755)

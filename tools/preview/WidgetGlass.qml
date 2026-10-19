@@ -14,7 +14,7 @@ Rectangle {
                 required property string modelData
                 width: 400; height: 440
                 readonly property color ink: modelData === "light" ? "#24262b" : "#f2f3f5"
-                readonly property string asset: projectRoot + "/plasma/desktoptheme/sequoia-eleven-" + modelData + "/widgets/background.svg"
+                readonly property string asset: projectRoot + "/themes/plasma/desktoptheme/sequoia-eleven-" + modelData + "/widgets/background.svg"
                 Item {
                     id: wallpaper
                     anchors.fill: parent

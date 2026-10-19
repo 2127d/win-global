@@ -46,7 +46,7 @@ def main():
             path = stage / kind.lower()
             path.mkdir(mode=0o700)
             env[f'XDG_{kind}_' + ('DIR' if kind == 'RUNTIME' else 'HOME')] = str(path)
-        shutil.copytree(ROOT / f'plasma/plasmoids/{PLUGIN}', stage / f'data/plasma/plasmoids/{PLUGIN}')
+        shutil.copytree(ROOT / f'widgets/plasmoids/{PLUGIN}', stage / f'data/plasma/plasmoids/{PLUGIN}')
         subprocess.run(['dbus-run-session', '--', sys.executable, str(Path(__file__).resolve()), '--child'],
                        env=env, check=True, timeout=20)
 

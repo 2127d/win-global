@@ -86,14 +86,14 @@ def _build(destination):
     source = switch_indicator.read_text()
     if 'property T.AbstractButton control' not in source or 'property alias handle:' not in source:
         raise RuntimeError('Installed KDE switch indicator changed; review its interface before installing.')
-    shutil.copy2(ROOT / 'application-style/quick/SwitchIndicator.qml', switch_indicator)
+    shutil.copy2(ROOT / 'themes/application-style/quick/SwitchIndicator.qml', switch_indicator)
     from menu_toggles import desktop_menu
     menu = destination / 'org/kde/desktop/MenuItem.qml'
     menu.write_text(desktop_menu(menu.read_text(), replace))
     shared = destination / 'org/sequoia/eleven'
     shared.mkdir(parents=True)
     for component in ('Island', 'Canvas'):
-        shutil.copy2(ROOT / f'application-style/quick/{component}.qml', shared / f'{component}.qml')
+        shutil.copy2(ROOT / f'themes/application-style/quick/{component}.qml', shared / f'{component}.qml')
     (shared / 'qmldir').write_text('module org.sequoia.eleven\nIsland 1.0 Island.qml\nCanvas 1.0 Canvas.qml\n')
 
     def patch(relative, transform):

@@ -16,7 +16,7 @@ from control_center_dock import style_dock
 from control_center_notifications import style_notifications
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'plasma/control-center'
+SOURCE = ROOT / 'desktop/control-center'
 PLUGIN = Path(subprocess.check_output(['qtpaths6', '--query', 'QT_INSTALL_PLUGINS'], text=True).strip()) / 'plasma/applets/org.kde.plasma.systemtray.so'
 MEDIA_PLUGIN = PLUGIN.with_name('org.kde.plasma.mediacontroller.so')
 MARKER = '.sequoia-control-center'

@@ -22,7 +22,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-sidebar-') as temporar
                     '-o', str(helper), '-I/usr/include/KF6/KWidgetsAddons',
                     *flags, '-lKF6WidgetsAddons'], check=True)
     (config / 'kdeglobals').write_text(
-        (ROOT / f'color-schemes/SequoiaEleven{mode.title()}Transparent.colors').read_text()
+        (ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}Transparent.colors').read_text()
         + f'\n[Icons]\nTheme=SequoiaTahoe-{mode}\n')
     env = dict(os.environ, XDG_CONFIG_HOME=str(config), XDG_CACHE_HOME=str(config / 'cache'),
                XDG_DATA_HOME=str(config / 'data'), XDG_STATE_HOME=str(config / 'state'),

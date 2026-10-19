@@ -12,10 +12,10 @@ subprocess.run(['c++','-std=c++17','-shared','-fPIC',str(root/'tools/verify-dock
 with tempfile.TemporaryDirectory(prefix='sequoia-dock-test-') as temp:
  p=Path(temp)
  (p/'plasmawindowedrc').write_text('[Applets][42]\nplugin=org.kde.plasma.icontasks\n[Applets][42][Configuration][General]\nlaunchers=applications:org.kde.dolphin.desktop,applications:org.kde.konsole.desktop,applications:org.kde.kwrite.desktop\niconSpacing=1\n')
- (p/'kdeglobals').write_text((root/'color-schemes'/('SequoiaElevenDarkSolid.colors' if args.dark else 'SequoiaElevenLightSolid.colors')).read_text())
- (p/'color-schemes').symlink_to(root/'color-schemes')
+ (p/'kdeglobals').write_text((root/'themes/color-schemes'/('SequoiaElevenDarkSolid.colors' if args.dark else 'SequoiaElevenLightSolid.colors')).read_text())
+ (p/'color-schemes').symlink_to(root/'themes/color-schemes')
  (p/'plasmarc').write_text('[Theme]\nname=sequoia-eleven-dark\n')
- (p/'plasma').symlink_to(root/'plasma');(p/'icons').symlink_to(root/'icons')
+ (p/'plasma').symlink_to(root/'themes/plasma');(p/'icons').symlink_to(root/'themes/icons')
  env=dict(os.environ,XDG_CONFIG_HOME=temp,XDG_DATA_HOME=temp,XDG_CACHE_HOME=temp+'/cache',XDG_STATE_HOME=temp+'/state',QT_QPA_PLATFORM='wayland',QT_QUICK_BACKEND='software',QT_FORCE_STDERR_LOGGING='1',SEQUOIA_DOCK_TEST=str(root/('preview/dock-native'+variant+'.png')))
  for flag in ('dark','large','rtl'):
   if getattr(args,flag): env['SEQUOIA_VERIFY_'+flag.upper()]='1'

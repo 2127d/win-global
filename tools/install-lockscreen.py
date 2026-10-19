@@ -204,9 +204,9 @@ def main():
     no_password = (lockscreen / 'NoPasswordUnlock.qml').read_text().replace('SessionManagementScreen {','SequoiaSession {')
     no_password = no_password.replace('PlasmaComponents3.Button {', 'PlasmaComponents3.Button {\n        objectName: "noPasswordUnlock"')
     (destination / 'contents/lockscreen/NoPasswordUnlock.qml').write_text(no_password)
-    for path in (ROOT / 'lockscreen').glob('*.qml'):
+    for path in (ROOT / 'themes/lockscreen').glob('*.qml'):
         shutil.copy2(path, destination / 'contents/lockscreen' / path.name)
-    shutil.copy2(ROOT / 'login-screen/qml/Avatar.qml', destination / 'contents/lockscreen/SequoiaAvatar.qml')
+    shutil.copy2(ROOT / 'themes/login-screen/qml/Avatar.qml', destination / 'contents/lockscreen/SequoiaAvatar.qml')
     marker.write_text('Local appearance override; refresh with tools/install-lockscreen.py after Plasma updates.\n')
     print(f'Installed lock-screen appearance override to {destination}')
 

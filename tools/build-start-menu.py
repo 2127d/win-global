@@ -6,7 +6,7 @@ import tarfile
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'plasma/plasmoids/org.sequoia.startmenu'
+SOURCE = ROOT / 'widgets/plasmoids/org.sequoia.startmenu'
 
 
 def build(destination=None):

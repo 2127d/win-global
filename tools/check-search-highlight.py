@@ -6,8 +6,8 @@ if '--child' not in sys.argv:
  for mode in ('light','dark'):
   with tempfile.TemporaryDirectory(prefix='sequoia-search-border-') as temp:
    p=Path(temp)
-   (p/'plasma').mkdir();(p/'plasma/desktoptheme').symlink_to(root/'plasma/desktoptheme')
-   (p/'icons').symlink_to(root/'icons')
+   (p/'plasma').mkdir();(p/'plasma/desktoptheme').symlink_to(root/'themes/plasma/desktoptheme')
+   (p/'icons').symlink_to(root/'themes/icons')
    (p/'plasmarc').write_text('[Theme]\nname=sequoia-eleven-'+mode+'\n')
    env=dict(os.environ,XDG_CONFIG_HOME=temp,XDG_DATA_HOME=temp,XDG_STATE_HOME=temp+'/state',XDG_CACHE_HOME=temp+'/cache',QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QT_QPA_PLATFORMTHEME='generic',QT_STYLE_OVERRIDE='Fusion')
    subprocess.run(['dbus-run-session','--',sys.executable,__file__,'--child',mode],env=env,check=True,timeout=20)

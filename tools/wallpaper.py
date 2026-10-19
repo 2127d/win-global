@@ -16,7 +16,7 @@ def build_wallpaper():
     from PySide6.QtGui import QImage, QPainter
     from PySide6.QtSvg import QSvgRenderer
 
-    package = ROOT / 'wallpapers' / WALLPAPER_ID
+    package = ROOT / 'themes/wallpapers' / WALLPAPER_ID
     sources = package / 'contents' / 'sources'
     sources.mkdir(parents=True, exist_ok=True)
     (package / 'LICENSE').write_text((ROOT / 'LICENSE').read_text())

@@ -169,7 +169,7 @@ def build_tabbar(base, p, widget_alpha):
 
 def build_theme(mode,p):
     slug = f'sequoia-eleven-{mode}'
-    base = ROOT / 'plasma/desktoptheme' / slug
+    base = ROOT / 'themes/plasma/desktoptheme' / slug
     base.mkdir(parents=True, exist_ok=True)
     (base/'LICENSE').write_text((ROOT/'LICENSE').read_text())
     name = f'Sequoia Eleven {mode.title()}'
@@ -182,8 +182,8 @@ def build_theme(mode,p):
     # A theme-local palette overrides the account accent in KSvg controls.
     # Keep named application color schemes, but let Plasma use kdeglobals.
     (base/'colors').unlink(missing_ok=True)
-    (ROOT/'color-schemes').mkdir(exist_ok=True)
-    (ROOT/'color-schemes'/f'SequoiaEleven{mode.title()}.colors').write_text(scheme)
+    (ROOT/'themes/color-schemes').mkdir(exist_ok=True)
+    (ROOT/'themes/color-schemes'/f'SequoiaEleven{mode.title()}.colors').write_text(scheme)
     for folder, alpha in [('',0.76),('translucent',0.64),('opaque',1),('solid',1)]:
         for file,radius,margin in [('widgets/panel-background',16,6),('dialogs/background',14,12),
                                    ('widgets/background',16,12),('widgets/tooltip',9,8)]:
@@ -271,10 +271,10 @@ def main():
     wallpaper = build_wallpaper()
     for mode,p in PALETTES.items():
         build_theme(mode,p)
-        package = ROOT/'plasma/look-and-feel'/f'org.sequoia.eleven.{mode}'
+        package = ROOT/'themes/plasma/look-and-feel'/f'org.sequoia.eleven.{mode}'
         (package/'contents').mkdir(parents=True,exist_ok=True)
         (package/'contents/splash').mkdir(exist_ok=True)
-        splash = (ROOT/'desktop/Splash.qml').read_text()
+        splash = (ROOT/'themes/plasma/Splash.qml').read_text()
         if mode == 'light':
             for old,new in [('#202124','#f2f3f5'),('#f1f3f7','#24262b'),('#34373e','#d7dae1'),('#9ebfff','#5085de')]:
                 splash = splash.replace(old,new)
@@ -321,11 +321,11 @@ Theme=org.sequoia.eleven.{mode}
     # Keep the original theme IDs for existing installations, and offer explicit
     # material choices as coordinated Global Themes and color schemes.
     for mode, palette in PALETTES.items():
-        original = ROOT/'plasma/look-and-feel'/f'org.sequoia.eleven.{mode}'
+        original = ROOT/'themes/plasma/look-and-feel'/f'org.sequoia.eleven.{mode}'
         for material in ('solid', 'transparent'):
             scheme_id = f'SequoiaEleven{mode.title()}{material.title()}'
             name = f'Sequoia Eleven {mode.title()} {material.title()}'
-            (ROOT/'color-schemes'/f'{scheme_id}.colors').write_text(colors(palette, name, material))
+            (ROOT/'themes/color-schemes'/f'{scheme_id}.colors').write_text(colors(palette, name, material))
             package = original.with_name(f'{original.name}.{material}')
             shutil.copytree(original, package, dirs_exist_ok=True)
             metadata = json.loads((package/'metadata.json').read_text())
@@ -345,14 +345,14 @@ Theme=org.sequoia.eleven.{mode}
     for mode in PALETTES:
         slug=f'sequoia-eleven-{mode}'
         with tarfile.open(dist/f'{slug}-{VERSION}.tar.gz','w:gz') as archive:
-            archive.add(ROOT/'plasma/desktoptheme'/slug,arcname=slug)
+            archive.add(ROOT/'themes/plasma/desktoptheme'/slug,arcname=slug)
     with tarfile.open(dist/f'sequoia-tahoe-icons-{VERSION}.tar.gz','w:gz') as archive:
-        for theme in sorted((ROOT/'icons').glob('SequoiaTahoe*')):
+        for theme in sorted((ROOT/'themes/icons').glob('SequoiaTahoe*')):
             archive.add(theme, arcname=theme.name)
         archive.add(ROOT/'tools/build-tahoe-icons.py', arcname='build-tahoe-icons.py')
-        archive.add(ROOT/'icons/bold-icons.json', arcname='bold-icons.json')
+        archive.add(ROOT/'themes/icons/bold-icons.json', arcname='bold-icons.json')
     with tarfile.open(dist/f'sequoia-eleven-desktop-{VERSION}-source.tar.gz','w:gz') as archive:
-        for name in ['application-style','plasma','wallpapers','color-schemes','icons','lockscreen','login-screen','desktop','fonts','tools','preview','README.md','DEPLOYMENT.md','VALIDATION.md','LICENSE','install.sh','install-gui.py','uninstall-gui.py','Install Sequoia Eleven.desktop','Uninstall Sequoia Eleven.desktop']:
+        for name in ['themes', 'widgets', 'desktop', 'apps', 'tools', 'docs', 'preview', 'README.md', 'LICENSE', 'install.sh', 'install-gui.py', 'uninstall-gui.py', 'Install Sequoia Eleven.desktop', 'Uninstall Sequoia Eleven.desktop']:
             archive.add(ROOT/name,arcname=f'sequoia-eleven/{name}',filter=lambda item: None if (
                 '__pycache__' in item.name or item.name.endswith('.pyc')
                 or (item.name.startswith('sequoia-eleven/preview/') and item.name.endswith(('.log', '.tree')))

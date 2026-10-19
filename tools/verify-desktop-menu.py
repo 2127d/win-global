@@ -76,13 +76,13 @@ def main():
             path = stage / kind.lower()
             path.mkdir(mode=0o700)
             env[f'XDG_{kind}_' + ('DIR' if kind == 'RUNTIME' else 'HOME')] = str(path)
-        shutil.copytree(ROOT / 'plasma/plasmoids' / PLUGIN, stage / 'data/plasma/plasmoids' / PLUGIN)
-        shutil.copytree(ROOT / 'plasma/plasmoids/org.kde.windowtitle.Fork',
+        shutil.copytree(ROOT / 'widgets/plasmoids' / PLUGIN, stage / 'data/plasma/plasmoids' / PLUGIN)
+        shutil.copytree(ROOT / 'widgets/plasmoids/org.kde.windowtitle.Fork',
                         stage / 'data/plasma/plasmoids/org.kde.windowtitle.Fork')
-        shutil.copytree(ROOT / 'plasma/desktoptheme/sequoia-eleven-light',
+        shutil.copytree(ROOT / 'themes/plasma/desktoptheme/sequoia-eleven-light',
                         stage / 'data/plasma/desktoptheme/sequoia-eleven-light')
         (stage / 'config/plasmarc').write_text('[Theme]\nname=sequoia-eleven-light\n')
-        shutil.copy2(ROOT / 'color-schemes/SequoiaElevenLight.colors', stage / 'config/kdeglobals')
+        shutil.copy2(ROOT / 'themes/color-schemes/SequoiaElevenLight.colors', stage / 'config/kdeglobals')
         # Exercise configured folder names whose characters need URL encoding.
         (stage / 'config/user-dirs.dirs').write_text(
             'XDG_DESKTOP_DIR="$HOME/Desktop"\n'

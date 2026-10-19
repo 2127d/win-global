@@ -57,12 +57,12 @@ def main():
                 directory = stage / kind.lower()
                 directory.mkdir(mode=0o700)
                 env[f'XDG_{kind}_' + ('DIR' if kind == 'RUNTIME' else 'HOME')] = str(directory)
-            shutil.copytree(ROOT / f'plasma/plasmoids/{PLUGIN}', stage / f'data/plasma/plasmoids/{PLUGIN}')
-            shutil.copytree(ROOT / f'plasma/desktoptheme/sequoia-eleven-{mode}',
+            shutil.copytree(ROOT / f'widgets/plasmoids/{PLUGIN}', stage / f'data/plasma/plasmoids/{PLUGIN}')
+            shutil.copytree(ROOT / f'themes/plasma/desktoptheme/sequoia-eleven-{mode}',
                             stage / f'data/plasma/desktoptheme/sequoia-eleven-{mode}')
             (stage / 'config/plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{mode}\n')
-            shutil.copy2(ROOT / f'color-schemes/SequoiaEleven{mode.title()}.colors', stage / 'config/kdeglobals')
-            (stage / 'data/icons').symlink_to(ROOT / 'icons')
+            shutil.copy2(ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}.colors', stage / 'config/kdeglobals')
+            (stage / 'data/icons').symlink_to(ROOT / 'themes/icons')
             with (stage / 'config/kdeglobals').open('a') as config:
                 config.write(f'\n[Icons]\nTheme=SequoiaTahoe{"-dark" if mode == "dark" else ""}\n')
             logfile = ROOT / f'preview/digital-clock-{mode}.log'

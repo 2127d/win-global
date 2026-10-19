@@ -15,11 +15,11 @@ from PySide6.QtTest import QTest
 ROOT = Path(__file__).resolve().parents[1]
 app = QApplication([])
 app.setFont(QFont('Adwaita Sans', 10))
-QIcon.setThemeSearchPaths([str(ROOT/'icons'),'/usr/share/icons'])
+QIcon.setThemeSearchPaths([str(ROOT/'themes/icons'),'/usr/share/icons'])
 QIcon.setThemeName('SequoiaTahoe-light')
 view = QQuickView()
 view.setResizeMode(QQuickView.SizeRootObjectToView)
-view.setSource(QUrl.fromLocalFile(str(ROOT/'plasma/plasmoids/org.sequoia.downloads/contents/ui/FanView.qml')))
+view.setSource(QUrl.fromLocalFile(str(ROOT/'widgets/plasmoids/org.sequoia.downloads/contents/ui/FanView.qml')))
 assert view.status() == QQuickView.Ready, view.errors()
 root = view.rootObject()
 with tempfile.TemporaryDirectory(prefix='downloads-fan-fixture-') as temporary:

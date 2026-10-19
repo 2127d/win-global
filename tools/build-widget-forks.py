@@ -98,7 +98,7 @@ def build(destination):
                 ET.register_namespace('', ns['k'])
                 tree.write(path, encoding='utf-8', xml_declaration=True)
             native = package / 'contents/native'; native.mkdir()
-            shutil.copy2(ROOT / 'plasma/widget-forks/native-factory.cpp', native)
+            shutil.copy2(ROOT / 'widgets/widget-forks/native-factory.cpp', native)
             native_meta = json.loads(json.dumps(meta))
             native_meta['KPlugin'].pop('Id')
             (native / 'native-metadata.json').write_text(json.dumps(native_meta, indent=2) + '\n')
@@ -106,7 +106,7 @@ def build(destination):
                             '-o', str(native / 'native-factory.moc')], check=True)
             subprocess.run(['c++', '-std=c++17', '-shared', '-fPIC', str(native / 'native-factory.cpp'),
                             '-o', str(native / (ids[short] + '.so')), *flags], check=True)
-            shutil.copytree(ROOT / 'plasma/widget-forks/LICENSES', package / 'LICENSES')
+            shutil.copytree(ROOT / 'widgets/widget-forks/LICENSES', package / 'LICENSES')
             shutil.copy2(ROOT / 'LICENSE', package / 'LICENSES/MIT.txt')
         tray = packages / IDS['tray']
         bundled = tray / 'contents/bundled'; bundled.mkdir()
@@ -123,9 +123,9 @@ def build(destination):
                         'files': {str(p.relative_to(package)): digest(p) for p in sorted(package.rglob('*')) if p.is_file()}}
             (package / 'sequoia-package.json').write_text(json.dumps(manifest, indent=2) + '\n')
         for name in ('org.sequoia.downloads', 'org.sequoia.dockseparator'):
-            shutil.copytree(ROOT / 'plasma/plasmoids' / name, packages / name)
+            shutil.copytree(ROOT / 'widgets/plasmoids' / name, packages / name)
             shutil.copy2(ROOT / 'LICENSE', packages / name / 'LICENSE')
-        shutil.copytree(ROOT / 'plasma/plasmoids/org.sequoia.startmenu', packages / 'org.sequoia.startmenu')
+        shutil.copytree(ROOT / 'widgets/plasmoids/org.sequoia.startmenu', packages / 'org.sequoia.startmenu')
         destination.mkdir(parents=True, exist_ok=True)
         archives = {'downloads': 'org.sequoia.downloads', 'separator': 'org.sequoia.dockseparator',
                     'icons-only-task-manager-animated': IDS['taskmanager'], 'system-tray': IDS['tray'],

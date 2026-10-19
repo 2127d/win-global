@@ -17,7 +17,8 @@ def main():
     parser.add_argument('--destination', type=Path, default=Path.home() / 'sandbox/widgets')
     args = parser.parse_args()
     destination = args.destination.resolve()
-    if destination == ROOT or ROOT.is_relative_to(destination) or destination.is_relative_to(ROOT / 'plasma'):
+    if destination == ROOT or ROOT.is_relative_to(destination) or any(
+            destination.is_relative_to(ROOT / folder) for folder in ('themes', 'widgets', 'desktop', 'apps', 'tools', 'docs')):
         raise RuntimeError('Choose a separate export folder.')
     if destination.exists() and any(destination.iterdir()):
         previous_export = (destination / '.sequoia-widgets').exists() or {p.name for p in destination.iterdir()} <= FILES

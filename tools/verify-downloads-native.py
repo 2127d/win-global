@@ -8,15 +8,15 @@ subprocess.run(['c++','-std=c++17','-fPIC','-shared',str(root/'tools/verify-down
 with tempfile.TemporaryDirectory(prefix='downloads-native-') as t:
  p=Path(t)
  package=p/'plasma/plasmoids/org.sequoia.downloads'
- shutil.copytree(root/'plasma/plasmoids/org.sequoia.downloads',package)
+ shutil.copytree(root/'widgets/plasmoids/org.sequoia.downloads',package)
  main=package/'contents/ui/main.qml'
  # Native preview must never launch an external application, including when
  # user input happens to land on its briefly visible window.
  main.write_text(main.read_text().replace('Qt.openUrlExternally(destination)', 'console.log("TEST: intercepted activation")'))
  styles=p/'plugins/styles';styles.mkdir(parents=True)
  (styles/'sequoiaeleven6.so').symlink_to(root/'build/desktop/bin/sequoiaeleven6.so')
- (p/'icons').symlink_to(root/'icons')
- (p/'plasma/desktoptheme').symlink_to(root/'plasma/desktoptheme')
+ (p/'icons').symlink_to(root/'themes/icons')
+ (p/'plasma/desktoptheme').symlink_to(root/'themes/plasma/desktoptheme')
  folder=p/'downloads';folder.mkdir()
  for n in ['report.pdf','notes.txt','archive.zip']:(folder/n).touch()
  (p/'plasmawindowedrc').write_text('[Applets][42]\nplugin=org.sequoia.downloads\n[Applets][42][Configuration][General]\nfolderUrl='+folder.as_uri()+'\n[Applets][42][General]\nfolderUrl='+folder.as_uri()+'\n')

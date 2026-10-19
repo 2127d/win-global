@@ -111,7 +111,7 @@ def main():
         env['AKONADI_INSTANCE']=base.name
         override.stage(base/'data', base/'unused', {'plasma-style'}, {})
         for mode in ('light','dark'):
-            source=ROOT/f'plasma/desktoptheme/sequoia-eleven-{mode}'
+            source=ROOT/f'themes/plasma/desktoptheme/sequoia-eleven-{mode}'
             shutil.copytree(source,base/'data/plasma/desktoptheme'/source.name)
         (base/'config/plasmarc').write_text('[Theme]\nname=sequoia-eleven-dark\n')
         (base/'config/plasma-welcomerc').write_text('[General]\nLastSeenVersion=999.0\n')

@@ -52,10 +52,10 @@ qInstallMessageHandler(message)
 with tempfile.TemporaryDirectory(prefix='sequoia-contacts-preview-') as temp:
     os.environ.update(XDG_CONFIG_HOME=temp, XDG_DATA_HOME=temp, XDG_STATE_HOME=temp+'/state', XDG_CACHE_HOME=temp+'/cache')
     variant = 'dark' if dark else 'light'
-    Path(temp, 'kdeglobals').write_text((ROOT / f'color-schemes/SequoiaEleven{variant.title()}Solid.colors').read_text() + f'\n[Icons]\nTheme=SequoiaTahoe-{variant}\n')
+    Path(temp, 'kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{variant.title()}Solid.colors').read_text() + f'\n[Icons]\nTheme=SequoiaTahoe-{variant}\n')
     Path(temp, 'plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{variant}\n')
-    Path(temp, 'plasma').symlink_to(ROOT / 'plasma')
-    Path(temp, 'icons').symlink_to(ROOT / 'icons')
+    Path(temp, 'plasma').symlink_to(ROOT / 'themes/plasma')
+    Path(temp, 'icons').symlink_to(ROOT / 'themes/icons')
     app = QApplication([])
     palette = QPalette()
     for role in (QPalette.Window, QPalette.Base, QPalette.Button): palette.setColor(role, QColor('#252629' if dark else '#edf0f4'))

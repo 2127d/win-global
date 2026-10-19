@@ -18,7 +18,7 @@ def check_panel_backend():
     loader = QPluginLoader(str(plugin_dir / 'plasma/applets/org.kde.panel.so'))
     if not loader.load():
         raise RuntimeError(loader.errorString())
-    upstream = json.loads((ROOT / 'plasma/taskbar/upstream.json').read_text())
+    upstream = json.loads((ROOT / 'desktop/taskbar/upstream.json').read_text())
     for name, expected in upstream['files'].items():
         source = QFile(upstream['resource_prefix'] + name)
         if not source.open(QFile.ReadOnly) or hashlib.sha256(bytes(source.readAll())).hexdigest() != expected:
@@ -29,7 +29,17 @@ def build(destination):
         raise RuntimeError(f'Stage already exists: {destination}. Choose a new --stage directory.')
     check_panel_backend()
     build_dir = ROOT / '.staging/taskbar-build'
-    subprocess.run(['cmake', '-S', str(ROOT / 'plasma/taskbar'), '-B', str(build_dir), '-G', 'Ninja',
+    source = ROOT / 'desktop/taskbar'
+    cache = build_dir / 'CMakeCache.txt'
+    if cache.exists():
+        entries = dict(line.split('=', 1) for line in cache.read_text().splitlines()
+                       if line.startswith(('CMAKE_HOME_DIRECTORY:INTERNAL=', 'CMAKE_CACHEFILE_DIR:INTERNAL=')))
+        if (entries.get('CMAKE_HOME_DIRECTORY:INTERNAL') != str(source)
+                or entries.get('CMAKE_CACHEFILE_DIR:INTERNAL') != str(build_dir)):
+            saved = Path(tempfile.mkdtemp(prefix='taskbar-relocated-', dir=build_dir.parent)) / 'build'
+            build_dir.rename(saved)
+            print(f'Checkout moved; saved the old taskbar build in {saved}', flush=True)
+    subprocess.run(['cmake', '-S', str(source), '-B', str(build_dir), '-G', 'Ninja',
         '-DCMAKE_INSTALL_PREFIX=/usr', '-DCMAKE_BUILD_TYPE=Release', '-DBUILD_TESTING=ON'], check=True)
     subprocess.run(['cmake', '--build', str(build_dir), '--parallel', str(build_jobs())], check=True)
     subprocess.run(['ctest', '--test-dir', str(build_dir), '--output-on-failure'], check=True)

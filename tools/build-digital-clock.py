@@ -6,7 +6,7 @@ import zipfile
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / 'plasma/plasmoids/org.sequoia.digitalclock'
+SOURCE = ROOT / 'widgets/plasmoids/org.sequoia.digitalclock'
 
 
 def build():

@@ -26,7 +26,7 @@ with tempfile.TemporaryDirectory(prefix='kcalc-test-') as temp:
         path = base / kind.lower(); path.mkdir(mode=0o700)
         env[f'XDG_{kind}_HOME' if kind != 'RUNTIME' else 'XDG_RUNTIME_DIR'] = str(path)
     variant = 'Dark' if args.dark else 'Light'
-    (base / 'config/kdeglobals').write_text((ROOT / f'color-schemes/SequoiaEleven{variant}Solid.colors').read_text())
+    (base / 'config/kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{variant}Solid.colors').read_text())
     env.update(QT_QPA_PLATFORM='offscreen', QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='Fusion',
                LD_PRELOAD=str(helper), SEQUOIA_KCALC_VERIFY=str(output), LC_ALL='C.UTF-8')
     result = subprocess.run(['dbus-run-session', '--', str(args.binary.resolve())], env=env, capture_output=True, text=True, timeout=45)

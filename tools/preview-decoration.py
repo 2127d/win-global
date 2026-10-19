@@ -16,7 +16,7 @@ root=Path(__file__).resolve().parents[1]
 temporary=tempfile.TemporaryDirectory(prefix='sequoia-decoration-')
 config=Path(temporary.name)
 (config/'kwinrc').write_text('[org.kde.kdecoration2]\nButtonsOnLeft=XIA\nButtonsOnRight=\nBorderSize=None\n')
-(config/'kdeglobals').write_text((root/'color-schemes'/f'SequoiaEleven{"Dark" if args.dark else "Light"}.colors').read_text()
+(config/'kdeglobals').write_text((root/'themes/color-schemes'/f'SequoiaEleven{"Dark" if args.dark else "Light"}.colors').read_text()
                                + f'\n[General]\nfont={font()}\n[WM]\nactiveFont={font(10, 500)}\n')
 os.environ.update(XDG_CONFIG_HOME=str(config),QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QT_STYLE_OVERRIDE='Fusion')
 from PySide6.QtCore import QCoreApplication, QUrl, QTimer
@@ -51,7 +51,7 @@ def check_alpha():
     alpha = color.alpha()
     valid = 0 < alpha < 250 if args.material == 'transparent' else alpha == 255
     scheme = configparser.ConfigParser()
-    scheme.read(root/'color-schemes'/f'SequoiaEleven{"Dark" if args.dark else "Light"}{args.material.title()}.colors')
+    scheme.read(root/'themes/color-schemes'/f'SequoiaEleven{"Dark" if args.dark else "Light"}{args.material.title()}.colors')
     expected = tuple(map(int, scheme['Colors:Window']['BackgroundNormal'].split(',')))
     if len(expected) == 3:
         expected += (255,)

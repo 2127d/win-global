@@ -17,7 +17,7 @@ if not args.live:
     ensure_private_session()
 ROOT = Path(__file__).resolve().parents[1]
 preview_config = tempfile.TemporaryDirectory(prefix='sequoia-control-preview-')
-scheme = ROOT / f'color-schemes/SequoiaEleven{"Dark" if args.dark else "Light"}Solid.colors'
+scheme = ROOT / f'themes/color-schemes/SequoiaEleven{"Dark" if args.dark else "Light"}Solid.colors'
 (Path(preview_config.name) / 'kdeglobals').write_text(scheme.read_text() + f'\n[Icons]\nTheme=SequoiaTahoe-{"dark" if args.dark else "light"}\n')
 (Path(preview_config.name) / 'plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{"dark" if args.dark else "light"}\n')
 os.environ['XDG_CONFIG_HOME'] = preview_config.name
@@ -51,7 +51,7 @@ app.setFont(QFont('Adwaita Sans', 13 if args.large_font else 10))
 if args.rtl: app.setLayoutDirection(Qt.RightToLeft)
 view = QQuickView()
 view.setResizeMode(QQuickView.SizeRootObjectToView)
-view.setSource(QUrl.fromLocalFile(str(ROOT / 'plasma/control-center/Preview.qml')))
+view.setSource(QUrl.fromLocalFile(str(ROOT / 'desktop/control-center/Preview.qml')))
 assert view.status() == QQuickView.Ready, view.errors()
 root = view.rootObject()
 root.setProperty('live', args.live)

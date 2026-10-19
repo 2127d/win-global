@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+"""Launch a Qt Quick app with the Sequoia Eleven component overlay."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import sys
+
+
+def environment(overlay, original):
+    result = dict(original)
+    try:
+        manifest = json.loads((overlay / 'manifest.json').read_text())
+        valid = all(Path(path).is_file() and hashlib.sha256(Path(path).read_bytes()).hexdigest() == digest
+                    for path, digest in manifest['sources'].items())
+    except (OSError, ValueError, KeyError):
+        valid = False
+    if not valid:
+        print('Sequoia Eleven: KDE components changed; refresh the Quick islands installation. '
+              'Starting with standard components for now.', file=sys.stderr)
+        return result
+    for key in ('QML_IMPORT_PATH', 'QML2_IMPORT_PATH'):
+        result[key] = str(overlay) + (os.pathsep + result[key] if result.get(key) else '')
+    result['QT_QUICK_CONTROLS_STYLE'] = 'org.kde.desktop'
+    return result
+
+
+def main():
+    if len(sys.argv) < 2:
+        sys.exit('Usage: sequoia-quick APPLICATION [ARGUMENTS...]')
+    overlay = Path(__file__).resolve().parent / 'qml'
+    env = environment(overlay, os.environ)
+    if Path(sys.argv[1]).name == 'merkuro-calendar' and env.get('QML_IMPORT_PATH', '').split(os.pathsep)[0] == str(overlay):
+        bridge = overlay / 'merkuro-qml.so'
+        if bridge.exists():
+            env['SEQUOIA_MERKURO_QML'] = str(overlay / 'org/kde/merkuro/calendar')
+            # The loader cannot quote paths containing spaces or colons.
+            descriptor = os.open(bridge, os.O_RDONLY)
+            os.set_inheritable(descriptor, True)
+            env['LD_PRELOAD'] = f'/proc/self/fd/{descriptor}' + (os.pathsep + env['LD_PRELOAD'] if env.get('LD_PRELOAD') else '')
+    os.execvpe(sys.argv[1], sys.argv[1:], env)
+
+
+if __name__ == '__main__':
+    main()

@@ -64,6 +64,15 @@ with tempfile.TemporaryDirectory(prefix='sequoia-quick-check-') as temporary:
     assert f'Exec="{target / "sequoia-quick"}" merkuro-calendar %u\n' in desktop.read_text()
     assert (target / 'qml/merkuro-qml.so').is_file()
     assert '/usr/bin/merkuro-calendar' in json.loads((target / 'qml/manifest.json').read_text())['sources']
+    # Exercise the actual dynamic loader from a prefix containing spaces without
+    # opening the calendar or accessing the user's accounts.
+    probe = Path(temporary) / 'merkuro-calendar'
+    probe.write_text('#!/usr/bin/python3\nfrom pathlib import Path\n'
+                     'assert "merkuro-qml.so" in Path("/proc/self/maps").read_text()\n')
+    probe.chmod(0o755)
+    result = subprocess.run([str(target / 'sequoia-quick'), str(probe)],
+                            env=env, capture_output=True, text=True, check=True)
+    assert 'cannot be preloaded' not in result.stderr, result.stderr
     subprocess.run(install + ['--remove'], check=True, stdout=subprocess.DEVNULL)
     assert not desktop.exists()
 print('PASS: installation/refresh, paths with spaces, argument forwarding, import precedence, stale-version fallback, edit protection, exact restoration')

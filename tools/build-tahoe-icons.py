@@ -141,7 +141,7 @@ def embolden(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=Path.home() / '.local/share/icons')
-    parser.add_argument('--output', type=Path, default=ROOT / 'icons')
+    parser.add_argument('--output', type=Path, default=ROOT / 'themes/icons')
     args = parser.parse_args()
     counts = Counter()
     changed = []

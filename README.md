@@ -32,9 +32,29 @@ Plasma panels and desktop widgets retain their existing finishes.
 
 ![Sequoia Eleven light lock screen](preview/lockscreen-light.png)
 
-## What is included
+## Project folders
 
-The optional [Sequoia Taskbar](plasma/taskbar/README.md) provides a separate
+All components remain in this `win-global` repository:
+
+| Folder | Contents |
+| --- | --- |
+| `themes/` | Application and Plasma styles, global themes, colors, Firefox styling, login and lock screens, icons, fonts, and wallpapers |
+| `widgets/` | Standalone plasmoids and native widget fork sources |
+| `desktop/` | Control center, desktop layouts, taskbar, and widget picker |
+| `apps/` | Settings, Gwenview, and KCalc application forks |
+| `tools/` | Build, install, export, preview, and verification scripts |
+| `docs/` | [Deployment](docs/DEPLOYMENT.md), [desktop repair](docs/DESKTOP-REPAIR.md), and [validation history](docs/VALIDATION.md) |
+| `preview/` | Screenshots and visual review artifacts |
+| `build/`, `.staging/`, `dist/` | Local builds, temporary stages, and distributable packages |
+
+Run the install/uninstall launchers from the repository root as before. Keep the
+whole extracted project together. These folders organize the source checkout;
+installed KDE paths and existing installation receipts retain their standard layout.
+Build helpers preserve and recreate CMake caches when a source directory moves.
+
+## Included components
+
+The optional [Sequoia Taskbar](desktop/taskbar/README.md) provides a separate
 **Add Panel → Sequoia Taskbar** choice with integrated task buttons and support
 for your preferred start menu widget, plus **Appearance → Taskbar** settings for icon sizing, spacing,
 alignment, indicators, pinned applications, panel/dock mode, and Sequoia animations.
@@ -196,7 +216,7 @@ Separator, Kpple Menu and Window Title Fork packages. Separately installed copie
 are preserved through installation, refresh and removal. It also builds the
 native tray, trash and animated task-manager forks, with their runtime dependencies.
 Global Theme includes this component automatically. The separate
-[widget archive installer](plasma/WIDGETS.md) remains available.
+[widget archive installer](widgets/README.md) remains available.
 `install.sh` does not change panels, restart Plasma, activate a
 theme, or change authentication settings. The login theme loads after reboot;
 Plasma Login Manager must already be installed. SDDM is not supported.
@@ -205,7 +225,7 @@ Choose a Sequoia Eleven Global Theme in System Settings after installation.
 Enable **Desktop layout** (called **Use desktop layout from theme** in some
 Plasma versions) when applying it to recreate the saved top bar and dock.
 Leave that option unchecked to keep your current panels and widgets.
-See [the bundled layout details](plasma/layouts/README.md).
+See [the bundled layout details](desktop/layouts/README.md).
 Alternatively, activate it explicitly, with a settings snapshot:
 
 ```sh
@@ -295,7 +315,7 @@ Per-user installers honor `XDG_DATA_HOME` and `XDG_CONFIG_HOME`; unset or empty
 values use the normal directories under the current home. Snapshots can also be
 restored when these directories are outside the home folder. Keep the same XDG
 settings when restoring. Account-path test coverage and its limits are recorded
-in [VALIDATION.md](VALIDATION.md).
+in [VALIDATION.md](docs/VALIDATION.md).
 
 Use `--mode light` for the light appearance. The application and decoration plugin
 names are `SequoiaEleven` and `org.kde.sequoiaeleven`; the original Darkly source,
@@ -365,8 +385,8 @@ Binary on/off actions in Qt Quick menus and native KDE menus use the same toggle
 shape and accent. Exclusive menu choices retain radio indicators. Existing switches
 in network, Bluetooth, audio, and battery popups inherit the Plasma switch artwork.
 
-Everything is maintained here: `application-style/quick/SwitchIndicator.qml`,
-`tools/toggle_assets.py`, and both `plasma/desktoptheme/sequoia-eleven-*/widgets/switch.svg`
+Everything is maintained here: `themes/application-style/quick/SwitchIndicator.qml`,
+`tools/toggle_assets.py`, and both `themes/plasma/desktoptheme/sequoia-eleven-*/widgets/switch.svg`
 files. The normal `./install.sh` includes these changes. For an existing tracked
 installation, refresh just the switches with:
 
@@ -557,7 +577,7 @@ systemctl --user restart plasma-plasmashell.service
 
 This changes the existing tray's overflow button into a sliders button. It preserves
 panel layout and application status icons. The source is in
-[`plasma/control-center`](plasma/control-center); installation lives under
+[`desktop/control-center`](desktop/control-center); installation lives under
 `~/.local/share/sequoia-eleven/control-center`. A user service override starts
 Plasma through a version-checking launcher and a small applet QML entry-point
 helper, because this Plasma release embeds its tray QML in a library. System
@@ -568,7 +588,7 @@ tray until the installer is rerun.
 Unavailable hardware is shown as unavailable. Brightness requires a display
 exposed by PowerDevil; the widget does not simulate brightness with an overlay.
 Wi-Fi and Bluetooth switches act immediately. Power opens Plasma's confirmation
-screen. For previews and verification, see [Control Center validation](plasma/control-center/README.md).
+screen. For previews and verification, see [Control Center validation](desktop/control-center/README.md).
 
 To restore the original tray:
 
@@ -608,7 +628,7 @@ removes the local shell when neither is needed.
 
 ## Login screen
 
-The custom screen in [`login-screen/`](login-screen/README.md) matches the design
+The custom screen in [`themes/login-screen/`](themes/login-screen/README.md) matches the design
 reference: Sequoia forest wallpaper, a frosted central account card, lock/password
 controls, a blue Sign In button and Switch User control. Labeled Sleep, Restart and
 Shut Down buttons use individually blurred circular backgrounds; the original
@@ -630,7 +650,7 @@ controls. It does not restart the display manager or interrupt the desktop.
 A changed greeter binary or unloadable theme falls back to the stock login screen;
 reinstall after Plasma Login upgrades. See the folder README for installed paths.
 
-The login screen uses `wallpapers/sequoia-forest.jpg` for both light and dark
+The login screen uses `themes/wallpapers/sequoia-forest.jpg` for both light and dark
 palettes. The older optional `tools/install-login.py` helper can synchronize that
 palette with a desktop account. It remains separately managed: its printed
 `--restore` command restores its appearance settings and sync services. The new
@@ -745,8 +765,8 @@ See [preview/README.md](preview/README.md) for cleanup and regeneration details.
 
 Edit `tools/build.py` for Plasma geometry, palettes, color schemes, and Global
 Theme packaging. Application and decoration sources are in
-`application-style/SequoiaEleven/`. Original lock-screen components are in
-`lockscreen/`; the installer applies compatible changes to the system's remaining
+`themes/application-style/SequoiaEleven/`. Original lock-screen components are in
+`themes/lockscreen/`; the installer applies compatible changes to the system's remaining
 QML components. No authentication implementation is replaced.
 `tools/wallpaper.py` preserves the original preview backdrop's geometry and
 palettes, generates editable SVGs, and renders the 4K PNGs with PySide6/QtSvg.
@@ -786,7 +806,7 @@ The compiled application plugin styles native Qt 6 widgets; the optional Quick
 extension covers the shared QML components described above. Qt 5, GTK, browser content,
 Electron apps, and sandboxed Flatpaks may use their own styles and icons.
 The optional apply script selects Sequoia Tahoe icons and applies the bundled
-wallpaper unless `--keep-wallpaper` is supplied. See `VALIDATION.md` for verified behavior.
+wallpaper unless `--keep-wallpaper` is supplied. See [validation history](docs/VALIDATION.md) for verified behavior.
 
 Qt Widgets islands apply to standard Qt toolbars, dock panels, framed scroll
 views, and KDE-marked navigation lists. Their 5px outer insets and reserved content
@@ -807,7 +827,7 @@ style and decoration are **GPL-2.0-or-later**; their notices, upstream README,
 AUTHORS, and COPYING are retained. Generated lock-screen files derived from KDE
 retain their original GPL/LGPL notices. Generated Quick component overrides also
 retain their upstream KDE license notices; the original Quick island and tools are MIT. Adwaita Sans and Nunito are distributed unmodified under
-the **SIL Open Font License 1.1**; see `fonts/AdwaitaSans/LICENSE`, `fonts/Nunito/OFL.txt`, and the
+the **SIL Open Font License 1.1**; see `themes/fonts/AdwaitaSans/LICENSE`, `themes/fonts/Nunito/OFL.txt`, and the
 [Nunito project](https://github.com/googlefonts/nunito). This project is not affiliated with Apple,
 Microsoft, or KDE.
 
@@ -838,7 +858,7 @@ account, and restarts Plasma. Existing tray and task-manager instances retain
 their settings and pinned apps; add the forks manually through Add Widgets.
 The editable source stays in this workspace. Archives containing native adapters
 are checked against the target Qt/KDE installation before any files change.
-See [widget installation and portability](plasma/WIDGETS.md) for details.
+See [widget installation and portability](widgets/README.md) for details.
 
 
 ### Panel installation repair (2026-10-07)

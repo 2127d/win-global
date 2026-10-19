@@ -45,7 +45,7 @@ def main():
                         help='Apply the minimized-window fix to the installed Window Title Fork, with backup')
     parser.add_argument('--restart', action='store_true', help='Reload Plasma after updating existing widget code')
     args = parser.parse_args()
-    source = ROOT / 'plasma/plasmoids' / PLUGIN
+    source = ROOT / 'widgets/plasmoids' / PLUGIN
     if args.stage:
         shutil.copytree(source, args.stage / 'plasma/plasmoids' / PLUGIN, dirs_exist_ok=True)
         return
@@ -77,7 +77,7 @@ def main():
             shutil.copy2(title_target / relative, saved)
         for name in ('main.qml', 'PlasmaTasksModel.qml', 'TitleLayout.qml'):
             relative = Path('contents/ui') / name
-            shutil.copy2(ROOT / 'plasma/plasmoids' / title_id / relative, title_target / relative)
+            shutil.copy2(ROOT / 'widgets/plasmoids' / title_id / relative, title_target / relative)
     subprocess.run(['kpackagetool6', '--type', 'Plasma/Applet',
                     '--upgrade' if target.exists() else '--install', str(source)], check=True)
     output = evaluate(SETUP)

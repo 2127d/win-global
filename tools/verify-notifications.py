@@ -22,12 +22,12 @@ variant = 'Dark' if args.dark else 'Light'
 suffix = variant.lower() + ('-large' if args.large else '') + ('-rtl' if args.rtl else '')
 with tempfile.TemporaryDirectory(prefix='sequoia-notification-') as temporary:
     path = Path(temporary)
-    (path/'kdeglobals').write_text((ROOT/f'color-schemes/SequoiaEleven{variant}Solid.colors').read_text()
+    (path/'kdeglobals').write_text((ROOT/f'themes/color-schemes/SequoiaEleven{variant}Solid.colors').read_text()
         + f'\n[General]\nfont={font(13 if args.large else 10)}\nsmallestReadableFont={font(11 if args.large else 9)}\n'
         + f'\n[Icons]\nTheme=SequoiaTahoe-{variant.lower()}\n')
     (path/'plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{variant.lower()}\n')
-    (path/'plasma').symlink_to(ROOT/'plasma')
-    (path/'icons').symlink_to(ROOT/'icons')
+    (path/'plasma').symlink_to(ROOT/'themes/plasma')
+    (path/'icons').symlink_to(ROOT/'themes/icons')
     env = dict(os.environ, XDG_CONFIG_HOME=temporary, XDG_DATA_HOME=temporary,
         XDG_CACHE_HOME=temporary+'/cache', XDG_STATE_HOME=temporary+'/state',
         QT_QUICK_BACKEND='software', QT_FORCE_STDERR_LOGGING='1',

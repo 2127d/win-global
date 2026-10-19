@@ -33,7 +33,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     for kind in ('CONFIG', 'DATA', 'CACHE', 'STATE'):
         path = folder / kind.lower(); path.mkdir()
         env[f'XDG_{kind}_HOME'] = str(path)
-    (folder / 'config/kdeglobals').write_text((ROOT / f'color-schemes/SequoiaEleven{mode.title()}Solid.colors').read_text() + f'\n[Icons]\nTheme=SequoiaTahoe-{mode}\n')
+    (folder / 'config/kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}Solid.colors').read_text() + f'\n[Icons]\nTheme=SequoiaTahoe-{mode}\n')
     runtime = folder / 'runtime'; runtime.mkdir(mode=0o700)
     env['XDG_RUNTIME_DIR'] = str(runtime)
     env['LIBGL_ALWAYS_SOFTWARE'] = '1'
@@ -41,8 +41,8 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
         external = folder / 'data/plasma/systemsettings/externalmodules'
         external.mkdir(parents=True)
         (external / 'sequoia-test-extra.desktop').write_text('[Desktop Entry]\nType=Application\nName=Additional Settings\nComment=Third-party category coverage test\nIcon=preferences-system\nExec=/bin/true\nX-KDE-System-Settings-Parent-Category=unregistered-vendor-category\n')
-    (folder / 'data/color-schemes').symlink_to(ROOT / 'color-schemes', target_is_directory=True)
-    (folder / 'data/icons').symlink_to(ROOT / 'icons', target_is_directory=True)
+    (folder / 'data/color-schemes').symlink_to(ROOT / 'themes/color-schemes', target_is_directory=True)
+    (folder / 'data/icons').symlink_to(ROOT / 'themes/icons', target_is_directory=True)
     env.update(QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software', QT_QPA_PLATFORMTHEME='kde',
                QT_QUICK_CONTROLS_STYLE='org.kde.desktop', QT_STYLE_OVERRIDE='SequoiaEleven', QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'),
                QT_SCALE_FACTOR=args.scale, LC_ALL='C.UTF-8')

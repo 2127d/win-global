@@ -21,7 +21,7 @@ if '--probe' not in sys.argv:
 config = tempfile.TemporaryDirectory(prefix='sequoia-window-config-')
 os.environ.update(QT_QPA_PLATFORM='offscreen', QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion',
                   QT_QUICK_BACKEND='software', XDG_CONFIG_HOME=config.name)
-(Path(config.name) / 'kdeglobals').write_text((ROOT / 'color-schemes/SequoiaElevenLightTransparent.colors').read_text())
+(Path(config.name) / 'kdeglobals').write_text((ROOT / 'themes/color-schemes/SequoiaElevenLightTransparent.colors').read_text())
 from PySide6.QtCore import QCoreApplication, Qt, QUrl
 from PySide6.QtGui import QColor, QPalette, QRegion
 from PySide6.QtQuick import QQuickWindow

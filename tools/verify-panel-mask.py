@@ -17,7 +17,7 @@ app = QGuiApplication([])
 engine = QQmlEngine()
 items = []
 components = []
-for path in sorted((ROOT / 'plasma/desktoptheme').glob('sequoia-eleven-*/**/panel-background.svg')):
+for path in sorted((ROOT / 'themes/plasma/desktoptheme').glob('sequoia-eleven-*/**/panel-background.svg')):
     for width, height in ((977, 60), (1920, 36), (60, 300)):
         component = QQmlComponent(engine)
         component.setData(('import QtQuick\nimport org.kde.ksvg as KSvg\n'
@@ -41,7 +41,7 @@ def verify():
                 assert not mask.contains(QPoint(x, y)), (path, 'blur leaks into a rounded corner')
             assert mask.contains(QRect(16, 16, width - 32, height - 32)), (path, 'interior blur lost')
         for mode in ('light', 'dark'):
-            config = (ROOT / f'plasma/desktoptheme/sequoia-eleven-{mode}/plasmarc').read_text()
+            config = (ROOT / f'themes/plasma/desktoptheme/sequoia-eleven-{mode}/plasmarc').read_text()
             assert '[BlurBehindEffect]\nenabled=true' in config
         print(f'PASS: {len(items)} rendered panel masks; inset edges, rounded corners, interior blur retained')
         app.exit(0)

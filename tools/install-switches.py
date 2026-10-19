@@ -36,10 +36,10 @@ def main():
         targets = {}
         for mode in ('light', 'dark'):
             theme = f'plasma/desktoptheme/sequoia-eleven-{mode}'
-            targets[f'{theme}/widgets/switch.svg'] = ROOT / theme / 'widgets/switch.svg'
+            targets[f'{theme}/widgets/switch.svg'] = ROOT / 'themes' / theme / 'widgets/switch.svg'
             targets[f'{theme}/colors'] = None
         indicator = 'sequoia-eleven/quick-islands/qml/org/kde/desktop/private/SwitchIndicator.qml'
-        targets[indicator] = ROOT / 'application-style/quick/SwitchIndicator.qml'
+        targets[indicator] = ROOT / 'themes/application-style/quick/SwitchIndicator.qml'
         menu = 'sequoia-eleven/quick-islands/qml/org/kde/desktop/MenuItem.qml'
         targets[menu] = QML / 'org/kde/desktop/MenuItem.qml'
         if not (prefix / STATE / 'manifest.json').is_file() or not (prefix / indicator).is_file():

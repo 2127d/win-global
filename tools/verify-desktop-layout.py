@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('theme_installer', ROOT / 'tools/install-theme.py')
 installer = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(installer)
-THEMES = sorted(p.name for p in (ROOT / 'plasma/look-and-feel').iterdir())
+THEMES = sorted(p.name for p in (ROOT / 'themes/plasma/look-and-feel').iterdir())
 
 
 def packaging(base):
@@ -95,7 +95,7 @@ def stop(process):
 
 def native(base):
     assert os.environ.get('SEQUOIA_LAYOUT_TEST') == str(base)
-    expected = json.loads((ROOT / 'plasma/layouts/desktop-layout.json').read_text())['panels']
+    expected = json.loads((ROOT / 'desktop/layouts/desktop-layout.json').read_text())['panels']
     log = (base / 'plasma.log').open('w')
     compositor = shell = None
     try:

@@ -85,7 +85,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-media-popup-') as temp:
     os.environ['XDG_CONFIG_HOME'] = temp
     dark = '--dark' in sys.argv
     large = '--large' in sys.argv
-    Path(temp, 'kdeglobals').write_text((ROOT / f'color-schemes/SequoiaEleven{"Dark" if dark else "Light"}Solid.colors').read_text())
+    Path(temp, 'kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{"Dark" if dark else "Light"}Solid.colors').read_text())
     art = Path(temp, 'art.svg')
     art.write_text('''<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#103a59"/><stop offset=".55" stop-color="#235b70"/><stop offset="1" stop-color="#e39b83"/></linearGradient></defs><rect width="640" height="360" fill="url(#g)"/><circle cx="465" cy="110" r="56" fill="#f9d5a7"/><path d="M0 340L160 140L340 330L470 200L640 355V360H0" fill="#162f45"/><path d="M40 360L250 220L430 360" fill="#29586b"/></svg>''')
     square = Path(temp, 'square.svg')
@@ -114,7 +114,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-media-popup-') as temp:
         qml = Path(temp, 'Preview.qml')
         qml.write_text(f'''import QtQuick
 import org.kde.plasma.private.mpris as Mpris
-import "{(ROOT / 'plasma/control-center/media').as_uri()}" as Custom
+import "{(ROOT / 'desktop/control-center/media').as_uri()}" as Custom
 Rectangle {{
     width: 432; height: 432
     color: "{'#22232c' if dark else '#f6d8dc'}"

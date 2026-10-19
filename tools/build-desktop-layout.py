@@ -9,8 +9,8 @@ SCRIPT = 'contents/layouts/org.kde.plasma.desktop-layout.js'
 
 
 def rendered():
-    layout = json.loads((ROOT / 'plasma/layouts/desktop-layout.json').read_text())
-    template = (ROOT / 'plasma/layouts/desktop-layout.js.in').read_text()
+    layout = json.loads((ROOT / 'desktop/layouts/desktop-layout.json').read_text())
+    template = (ROOT / 'desktop/layouts/desktop-layout.js.in').read_text()
     return template.replace('@PANELS@', json.dumps(layout['panels'], indent=4))
 
 
@@ -19,7 +19,7 @@ def main():
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
     script = rendered()
-    for theme in sorted((ROOT / 'plasma/look-and-feel').glob('org.sequoia.eleven.*')):
+    for theme in sorted((ROOT / 'themes/plasma/look-and-feel').glob('org.sequoia.eleven.*')):
         target = theme / SCRIPT
         if args.check:
             if not target.is_file() or target.read_text() != script:

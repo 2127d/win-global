@@ -61,11 +61,11 @@ def main():
             config.mkdir()
             data = config / 'data'
             data.mkdir()
-            (data / 'icons').symlink_to(ROOT / 'icons', target_is_directory=True)
-            (data / 'plasma').symlink_to(ROOT / 'plasma', target_is_directory=True)
+            (data / 'icons').symlink_to(ROOT / 'themes/icons', target_is_directory=True)
+            (data / 'plasma').symlink_to(ROOT / 'themes/plasma', target_is_directory=True)
             scheme = configparser.ConfigParser(interpolation=None)
             scheme.optionxform = str
-            scheme.read(ROOT / 'color-schemes' / f'SequoiaEleven{mode.title()}.colors')
+            scheme.read(ROOT / 'themes/color-schemes' / f'SequoiaEleven{mode.title()}.colors')
             rgb = ','.join(str(int(accent[i:i+2], 16)) for i in (1, 3, 5))
             scheme['General']['AccentColor'] = rgb
             scheme['Colors:Selection']['BackgroundNormal'] = rgb
@@ -82,7 +82,7 @@ def main():
                        QML_IMPORT_PATH=str(overlay), QT_QUICK_CONTROLS_STYLE='org.kde.desktop',
                        QT_FORCE_STDERR_LOGGING='1', SEQUOIA_SWITCH_ACCENT=accent, SEQUOIA_SWITCH_MODE=mode)
             subprocess.run(['/usr/lib64/qt6/bin/qmltestrunner', '-input',
-                            str(ROOT / 'application-style/quick/tests/tst_switch.qml')], env=env, check=True, timeout=30)
+                            str(ROOT / 'themes/application-style/quick/tests/tst_switch.qml')], env=env, check=True, timeout=30)
             subprocess.run([sys.executable, __file__, '--capture', str(ROOT / 'preview' / f'switches-{mode}.png')],
                            env=env, check=True, timeout=20)
 

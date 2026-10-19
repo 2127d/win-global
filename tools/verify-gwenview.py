@@ -53,7 +53,7 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
                 config.write('\n[General]\nThumbnailBarOrientation=Vertical\n')
         mode = 'Dark' if args.dark else 'Light'
         variant = 'Transparent' if args.transparent else 'Solid'
-        (base / 'config/kdeglobals').write_text((ROOT / f'color-schemes/SequoiaEleven{mode}{variant}.colors').read_text())
+        (base / 'config/kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{mode}{variant}.colors').read_text())
         env.update(QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='SequoiaEleven',
                    QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'))
     for mode in (('sidebar',) if args.sidebar_preview else ('fresh', 'restart', 'disabled')):

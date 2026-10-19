@@ -8,7 +8,7 @@ Rectangle {
     property color ink: dark ? "#f0f3fa" : "#202633"
     property color muted: dark ? "#a9b4c8" : "#616b7c"
     property color accent: dark ? "#8db3ff" : "#2463d4"
-    property string themePath: projectRoot + "/plasma/desktoptheme/sequoia-eleven-" + (dark ? "dark" : "light")
+    property string themePath: projectRoot + "/themes/plasma/desktoptheme/sequoia-eleven-" + (dark ? "dark" : "light")
     color: dark ? "#131925" : "#edf0f6"
 
     component Label: Text {

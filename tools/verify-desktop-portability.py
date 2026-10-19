@@ -15,7 +15,7 @@ def build(project):
         raise RuntimeError(result.stdout + result.stderr)
     assert (project / '.staging/desktop/usr/share/sequoia-fixture/fixture.txt').read_text() == 'portable\n'
     cache = (project / 'build/desktop/CMakeCache.txt').read_text()
-    assert f'CMAKE_HOME_DIRECTORY:INTERNAL={project}/application-style/SequoiaEleven\n' in cache
+    assert f'CMAKE_HOME_DIRECTORY:INTERNAL={project}/themes/application-style/SequoiaEleven\n' in cache
     assert f'CMAKE_CACHEFILE_DIR:INTERNAL={project}/build/desktop\n' in cache
     return result.stdout
 
@@ -23,10 +23,11 @@ def build(project):
 with tempfile.TemporaryDirectory(prefix='sequoia-build-portability-') as temporary:
     root = Path(temporary)
     original = root / 'original account/checkout'
-    source = original / 'application-style/SequoiaEleven'
+    source = original / 'themes/application-style/SequoiaEleven'
     source.mkdir(parents=True)
     (original / 'tools').mkdir()
     shutil.copy2(ROOT / 'tools/build-desktop.sh', original / 'tools')
+    shutil.copy2(ROOT / 'tools/installer_platform.py', original / 'tools')
     (source / 'fixture.txt').write_text('portable\n')
     (source / 'CMakeLists.txt').write_text('''cmake_minimum_required(VERSION 3.20)
 project(PortabilityFixture NONE)

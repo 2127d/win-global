@@ -11,7 +11,7 @@ root=Path(__file__).resolve().parents[1]
 qml=root/'.staging/control-icon-animation.qml'
 qml.write_text('''import QtQuick
 import org.kde.kirigami as Kirigami
-import "../plasma/control-center" as Custom
+import "../desktop/control-center" as Custom
 Rectangle {
     width: 144; height: 144; color: "#303238"
     property int duration: Kirigami.Units.longDuration

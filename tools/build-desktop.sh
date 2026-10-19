@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 project_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
-source_dir="$project_dir/application-style/SequoiaEleven"
+source_dir="$project_dir/themes/application-style/SequoiaEleven"
 build_dir="$project_dir/build/desktop"
 jobs=$(/usr/bin/python3 -c 'import sys; sys.path.insert(0, sys.argv[1]); from installer_platform import build_jobs; print(build_jobs())' "$project_dir/tools")
 printf 'Building desktop theme with %s parallel jobs.\n' "$jobs"

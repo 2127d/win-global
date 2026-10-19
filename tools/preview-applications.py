@@ -18,7 +18,7 @@ os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 preview_config = tempfile.TemporaryDirectory(prefix='sequoia-application-preview-')
 root = Path(__file__).resolve().parents[1]
 scheme_id = f'SequoiaEleven{"Dark" if args.dark else "Light"}{args.material.title() if args.material else ""}'
-(Path(preview_config.name)/'kdeglobals').write_text((root/'color-schemes'/f'{scheme_id}.colors').read_text())
+(Path(preview_config.name)/'kdeglobals').write_text((root/'themes/color-schemes'/f'{scheme_id}.colors').read_text())
 os.environ['XDG_CONFIG_HOME'] = preview_config.name
 os.environ['QT_QPA_PLATFORMTHEME'] = 'generic'
 os.environ['QT_STYLE_OVERRIDE'] = 'Fusion'
@@ -37,7 +37,7 @@ assert style is not None, 'The compiled SequoiaEleven style plugin did not load'
 app.setStyle(style)
 app.setFont(QFont(FONT_FAMILY, 10))
 scheme = configparser.ConfigParser()
-scheme.read(root/'color-schemes'/f'{scheme_id}.colors')
+scheme.read(root/'themes/color-schemes'/f'{scheme_id}.colors')
 palette = QPalette()
 for role, section, key in [
     ('Window','Window','BackgroundNormal'), ('WindowText','Window','ForegroundNormal'),

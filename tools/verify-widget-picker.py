@@ -95,10 +95,10 @@ def main():
         env['AKONADI_INSTANCE'] = base.name
         shell_overrides.stage(base / 'data', base / 'unused', {'plasma-style'}, {})
         theme = f'sequoia-eleven-{args.mode}'
-        shutil.copytree(ROOT / 'plasma/desktoptheme' / theme, base / 'data/plasma/desktoptheme' / theme)
+        shutil.copytree(ROOT / 'themes/plasma/desktoptheme' / theme, base / 'data/plasma/desktoptheme' / theme)
         (base / 'config/plasmarc').write_text(f'[Theme]\nname={theme}\n')
         (base / 'config/plasma-welcomerc').write_text('[General]\nLastSeenVersion=999.0\n')
-        shutil.copy2(ROOT / f'color-schemes/SequoiaEleven{args.mode.title()}.colors', base / 'config/kdeglobals')
+        shutil.copy2(ROOT / f'themes/color-schemes/SequoiaEleven{args.mode.title()}.colors', base / 'config/kdeglobals')
         with (base / 'session.log').open('w') as log:
             result = subprocess.run(['dbus-run-session', '--', sys.executable, str(Path(__file__).resolve()),
                 '--child', str(base), '--width', str(args.width), '--height', str(args.height), '--offset', str(args.offset)],

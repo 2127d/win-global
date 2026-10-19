@@ -43,7 +43,7 @@ for row, mode in enumerate(('light', 'dark')):
         painter.setFont(QFont('Sans Serif', 8))
         painter.drawText(QRectF(x, y + 75, 100, 30), 0x84, label)
         for variant, base in enumerate((Path.home() / f'.local/share/icons/MacTahoe-blue-{mode}',
-                                        ROOT / f'icons/SequoiaTahoe-{mode}')):
+                                        ROOT / f'themes/icons/SequoiaTahoe-{mode}')):
             path = base / relative
             if not path.exists():
                 raise RuntimeError(path)

@@ -66,7 +66,7 @@ SequoiaMediaCard {
             if (current/name).exists(): shutil.copy2(current/name, config/name)
         palette = configparser.ConfigParser(interpolation=None, strict=False)
         palette.optionxform = str
-        palette.read([current/'kdeglobals', root/'color-schemes'/f'SequoiaEleven{args.mode.title()}.colors'])
+        palette.read([current/'kdeglobals', root/'themes/color-schemes'/f'SequoiaEleven{args.mode.title()}.colors'])
         with (config/'kdeglobals').open('w') as stream: palette.write(stream, space_around_delimiters=False)
         subprocess.run(['kwriteconfig6', '--file', str(config/'plasmarc'), '--group', 'Theme',
                         '--key', 'name', f'sequoia-eleven-{args.mode}'], check=True)

@@ -24,13 +24,13 @@ def stage(prefix, source_config, mode, greeter_home):
     for mode_name in ('light', 'dark'):
         for category, name in [('desktoptheme', f'sequoia-eleven-{mode_name}'),
                                ('look-and-feel', f'org.sequoia.eleven.{mode_name}')]:
-            shutil.copytree(ROOT/'plasma'/category/name, data/'plasma'/category/name)
+            shutil.copytree(ROOT/'themes/plasma'/category/name, data/'plasma'/category/name)
         palette = f'SequoiaEleven{mode_name.title()}.colors'
         (data/'color-schemes').mkdir(exist_ok=True)
-        shutil.copy2(ROOT/'color-schemes'/palette, data/'color-schemes'/palette)
-    shutil.copytree(ROOT/'wallpapers/SequoiaEleven', data/'wallpapers/SequoiaEleven')
+        shutil.copy2(ROOT/'themes/color-schemes'/palette, data/'color-schemes'/palette)
+    shutil.copytree(ROOT/'themes/wallpapers/SequoiaEleven', data/'wallpapers/SequoiaEleven')
     for family in ('AdwaitaSans', 'Nunito'):
-        shutil.copytree(ROOT/'fonts'/family, data/'fonts/sequoia-eleven-login'/family)
+        shutil.copytree(ROOT/'themes/fonts'/family, data/'fonts/sequoia-eleven-login'/family)
 
     config = target('/etc/plasmalogin.conf')
     # Preserve authentication, session, and other unrelated settings.

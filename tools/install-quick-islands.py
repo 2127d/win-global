@@ -66,7 +66,7 @@ def main():
                 shutil.rmtree(target)
             raise
         launcher = target / 'sequoia-quick'
-        shutil.copy2(ROOT / 'application-style/quick/sequoia-quick', launcher)
+        shutil.copy2(ROOT / 'themes/application-style/quick/sequoia-quick', launcher)
         launcher.chmod(0o755)
         for app in args.apps:
             name = APPS[app]

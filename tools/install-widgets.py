@@ -94,7 +94,7 @@ def main():
             builder.build(overlay)
             shutil.copy2(builder.SOURCE / 'launch.py', overlay / 'launch.py')
             for name in PACKAGES:
-                source = ROOT / 'plasma/plasmoids' / name
+                source = ROOT / 'widgets/plasmoids' / name
                 install_package(source, stage / 'plasma/plasmoids')
             check_packages(stage)
             if args.stage:

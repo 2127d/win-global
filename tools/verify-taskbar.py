@@ -51,7 +51,7 @@ def child(base, payload):
                     'org.kde.PlasmaShell.evaluateScript', source], text=True, timeout=8).strip()
             wait_for(lambda: script('print(desktops().length);') == '1', 'Plasma did not start')
             script('panels().forEach(p => p.remove());')
-            template = ROOT / 'plasma/taskbar/template/contents/layout.js'
+            template = ROOT / 'desktop/taskbar/template/contents/layout.js'
             print(script(template.read_text() + '\nprint(JSON.stringify(panels().map(p => ({id:p.id,type:p.type}))));'), flush=True)
             def state():
                 return json.loads((base / 'state.json').read_text())

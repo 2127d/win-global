@@ -38,7 +38,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-login-verify-') as temporary:
 
     theme = base/'theme'
     builder.build(theme, theme)
-    subprocess.run(['/usr/lib64/qt6/bin/qmltestrunner', '-input', str(ROOT/'login-screen/tests')],
+    subprocess.run(['/usr/lib64/qt6/bin/qmltestrunner', '-input', str(ROOT/'themes/login-screen/tests')],
                    env=dict(env, LD_PRELOAD=str(theme/'bridge.so')), check=True)
     def greeter_log(timeout=2):
         process = subprocess.Popen([str(builder.GREETER), '--test'],

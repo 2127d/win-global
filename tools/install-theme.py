@@ -12,6 +12,7 @@ import sys
 import tempfile
 
 from theme_files import Receipt, copy_file, exists, payload_files
+from project_paths import asset_source
 from installer_platform import (COMPONENTS, DISTROS, NATIVE, detected_distro,
                                 default_components, login_available, resolve_components, resolve_removals,
                                 install_dependencies, native_layout, packages_for, sudo_command)
@@ -165,9 +166,9 @@ def stage_user(stage, prefix, components=None):
     managed = Receipt(prefix, USER_STATE, user_allowed).data['files']
     # Copy only selected artwork; partial installs do not need native build tools.
     for tree in sorted(USER_TREES):
-        source = ROOT / tree
         if component_for(tree + '/') in components and tree not in (
                 'fonts/sequoia-eleven', 'plasma/shells/org.kde.plasma.desktop', 'sequoia-eleven/quick-islands'):
+            source = asset_source(tree, ROOT)
             if not source.is_dir():
                 raise RuntimeError(f'Missing installer source: {source}. Extract the complete installer archive.')
             if tree.startswith('plasma/plasmoids/') and exists(prefix / tree) and not any(
@@ -180,7 +181,7 @@ def stage_user(stage, prefix, components=None):
     for name in COLOR_FILES:
         if 'colors' in components:
             (stage / name).parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(ROOT / name, stage / name)
+            shutil.copy2(asset_source(name, ROOT), stage / name)
     if 'plasma-style' in components:
         for mode in ('light', 'dark'):
             (stage / f'plasma/desktoptheme/sequoia-eleven-{mode}/colors').unlink(missing_ok=True)
