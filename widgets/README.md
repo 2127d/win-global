@@ -8,6 +8,42 @@ widget files for removal with `./uninstall-gui.py`.
 
 The prebuilt archive workflow below requires matching KDE/Qt versions.
 
+## Packaged animated task manager
+
+[`icons-only-task-manager-animated.tar.gz`](../dist/icons-only-task-manager-animated.tar.gz)
+and its SHA-256 sidecar are stored in `dist/`. The extracted package lives in
+[`widgets/plasmoids/org.sequoia.icontasks.animated/`](plasmoids/org.sequoia.icontasks.animated/).
+It contains version **2.1.1** of
+`org.sequoia.icontasks.animated`, copied on October 19, 2026 from
+`~/.local/share/plasma/plasmoids/org.sequoia.icontasks.animated/`. This user-installed
+copy includes newer animation changes than the system-wide copy found in
+`/usr/share/plasma/plasmoids/`.
+
+The archive preserves all 48 package files, including editable QML, configuration,
+the compiled native adapter and its source, license notices, and the compatibility
+manifest. It targets x86_64 and Qt 6.11.2; the installer also verifies the KDE
+task-manager backend fingerprint. A SHA-256 sidecar verifies the archive itself.
+
+The archive installer scans every `.tar.gz` in its input folder, so use a
+temporary folder to keep this widget separate from the theme archives in `dist/`.
+From the project root, validate or install this packaged widget with:
+
+```sh
+(cd dist && sha256sum -c icons-only-task-manager-animated.tar.gz.sha256)
+widget_stage=$(mktemp -d)
+cp dist/icons-only-task-manager-animated.tar.gz "$widget_stage/"
+python3 tools/install-widget-archives.py --folder "$widget_stage" --check
+python3 tools/install-widget-archives.py --folder "$widget_stage"
+rm -r "$widget_stage"
+```
+
+Installation requires sudo for system files and restarts Plasma. Existing task
+manager instances remain in place; add **Icons-Only Task Manager Animated** through
+**Add Widgets**. The native adapter requires the supplied archive installer;
+Plasma's local-file widget installer is insufficient.
+
+## Full collection export
+
 `~/sandbox/widgets` contains exactly these six files:
 
 - `downloads.tar.gz`
