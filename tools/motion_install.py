@@ -96,9 +96,14 @@ def notify_factor(config):
     # KWin watches KConfig's change notification, not just reconfigure(). Force
     # a notification even when the same palette is reapplied. Restore the exact
     # original value (or absence), using an imperceptible intermediate delta.
+    # KConfig suppresses notifications for absolute filenames. Use its logical
+    # name in the current XDG config directory so KWin receives /kdeglobals.
+    # https://github.com/KDE/kconfig/blob/master/src/core/kconfig.cpp
+    if config.resolve() != config_home().resolve():
+        raise RuntimeError('Notify animation settings only for the current config directory.')
     filename = str(config / 'kdeglobals')
     value = run('kreadconfig6', '--file', filename, '--group', 'KDE', '--key', 'AnimationDurationFactor')
-    args = ('kwriteconfig6', '--file', filename, '--group', 'KDE', '--key', 'AnimationDurationFactor', '--notify')
+    args = ('kwriteconfig6', '--file', 'kdeglobals', '--group', 'KDE', '--key', 'AnimationDurationFactor', '--notify')
     run(*args, str(float(value or '1') + .000000001))
     if value:
         run(*args, value)

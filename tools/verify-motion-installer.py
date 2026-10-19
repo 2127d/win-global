@@ -55,6 +55,8 @@ class MotionTests(unittest.TestCase):
         self.events.append(args)
         if args[0] in ('kreadconfig6', 'kwriteconfig6'):
             path = Path(args[args.index('--file') + 1])
+            if not path.is_absolute():
+                path = self.config / path
             group = ']['.join(args[i+1] for i, a in enumerate(args) if a == '--group')
             key = args[args.index('--key') + 1]
             parser = configparser.ConfigParser(interpolation=None, strict=False)
@@ -139,6 +141,29 @@ class MotionTests(unittest.TestCase):
         self.assertEqual(self.receipt.read_text(), original_receipt)
         self.assertEqual((self.config / 'kwinrc').read_text(), original_settings)
         self.assertIsNone(motion.active_backup(self.data))
+
+    def test_overview_timing_failure_rolls_back_instead_of_reporting_success(self):
+        self.effects.add('overview')
+        original_receipt = self.receipt.read_bytes()
+        def stale_overview(method, name):
+            if method == 'supportInformation' and name == 'overview':
+                return 'overview:\nanimationDuration: 300\n'
+            return self.effect(method, name)
+        with patch.object(motion, 'effect_call', side_effect=stale_overview):
+            with self.assertRaisesRegex(RuntimeError, 'KWin workspace timing did not update'):
+                motion.apply(self.stage())
+        self.assertEqual(self.base.read_text(), 'original widget')
+        self.assertEqual(self.receipt.read_bytes(), original_receipt)
+        self.assertEqual(self.run_command('kreadconfig6', '--file', str(self.config / 'kdeglobals'),
+                                         '--group', 'KDE', '--key', 'AnimationDurationFactor'), '1.5')
+        self.assertEqual(self.run_command('kreadconfig6', '--file', str(self.config / 'kdeglobals'),
+                                         '--group', 'KDE', '--key', 'Other'), 'keep')
+        self.assertIsNone(motion.active_backup(self.data))
+
+    def test_notification_rejects_other_config_directory_without_writes(self):
+        with self.assertRaisesRegex(RuntimeError, 'current config directory'):
+            motion.notify_factor(self.root / 'other-config')
+        self.assertEqual(self.events, [])
 
     def test_changed_files_or_settings_stop_before_restoring(self):
         backup = motion.apply(self.stage())

@@ -744,6 +744,14 @@ Motion Lab preset. This option is unchecked by default, including with
 **Install the complete desktop**. It includes the widgets and Qt Quick styling
 used by the palette. Applying it restarts Plasma.
 
+The installer notifies the running KWin session of the new animation speed and
+checks that Overview uses 200 ms. Earlier installers used an absolute config
+filename, which suppresses KDE change notifications and could leave Overview at
+300 ms despite saving the setting. Use the updated installer if the log reports
+`KWin workspace timing did not update`. The isolated regression check
+`python3 tools/verify-motion-notifications.py` reproduces this failure and verifies
+the fix, reapplication and restoration without changing the live desktop.
+
 Immediately before applying the kit, the installer saves the animation settings,
 enabled effects and replaced files under
 `~/.local/share/sequoia-eleven/backups/motion-TIMESTAMP/` (or `XDG_DATA_HOME`).
