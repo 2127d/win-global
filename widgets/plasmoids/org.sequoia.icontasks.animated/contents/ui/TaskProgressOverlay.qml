@@ -30,16 +30,26 @@ T.ProgressBar {
     contentItem: Item {
         clip: true
 
-        KSvg.FrameSvgItem {
-            id: progressFrame
+        Item {
+            id: progressClip
 
-            LayoutMirroring.enabled: Application.layoutDirection === Qt.RightToLeft
-            anchors.left: parent.left
+            // Reveal the full-size themed frame. Resizing its nine-slice artwork
+            // below the combined border widths makes the end caps overlap.
             width: parent.width * control.position
             height: parent.height
+            x: control.mirrored ? parent.width - width : 0
+            clip: true
 
-            imagePath: "widgets/tasks"
-            prefix: TaskManagerApplet.TaskTools.taskPrefix("progress", Plasmoid.location).concat(TaskManagerApplet.TaskTools.taskPrefix("hover", Plasmoid.location))
+            KSvg.FrameSvgItem {
+                id: progressFrame
+
+                x: control.mirrored ? progressClip.width - width : 0
+                width: control.availableWidth
+                height: parent.height
+
+                imagePath: "widgets/tasks"
+                prefix: TaskManagerApplet.TaskTools.taskPrefix("progress", Plasmoid.location).concat(TaskManagerApplet.TaskTools.taskPrefix("hover", Plasmoid.location))
+            }
         }
     }
 
