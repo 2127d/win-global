@@ -6,6 +6,7 @@ import tarfile
 import shutil
 from typography import FONT_SETTINGS
 from wallpaper import WALLPAPER_ID, build_wallpaper
+from task_progress import without_progress_endcaps
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "2.0.0"
@@ -265,6 +266,8 @@ def build_theme(mode,p):
             # background even when Plasma stretches its frame to the panel height.
             s.frame(direction+state,color,7,opacity=alpha,margin=5,inset=4)
     s.save(base/'widgets/tasks.svg')
+    tasks = base/'widgets/tasks.svg'
+    tasks.write_text(without_progress_endcaps(tasks.read_text()))
 
 
 def main():

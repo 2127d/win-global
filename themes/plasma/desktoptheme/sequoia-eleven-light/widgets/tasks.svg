@@ -142,15 +142,9 @@
 <rect id="attention-hover-hint-bottom-margin" x="800" y="420" width="5" height="5" fill="#ff00ff"/>
 <rect id="attention-hover-hint-left-margin" x="800" y="423" width="5" height="5" fill="#ff00ff"/>
 <rect id="attention-hover-hint-right-margin" x="800" y="426" width="5" height="5" fill="#ff00ff"/>
-<g id="progress-topleft" transform="translate(0 1100)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="progress-top" transform="translate(11 1100)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="4" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="progress-topright" transform="translate(43 1100)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 0) rotate(90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
-<g id="progress-left" transform="translate(0 1111)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="4" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="progress-center" transform="translate(11 1111)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="progress-right" transform="translate(43 1111)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="progress-bottomleft" transform="translate(0 1143)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(0 11) rotate(-90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <g id="progress-bottom" transform="translate(11 1143)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="progress-bottomright" transform="translate(43 1143)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 11) rotate(180)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <rect id="progress-hint-top-margin" x="800" y="456" width="5" height="5" fill="#ff00ff"/>
 <rect id="progress-hint-bottom-margin" x="800" y="459" width="5" height="5" fill="#ff00ff"/>
 <rect id="progress-hint-left-margin" x="800" y="462" width="5" height="5" fill="#ff00ff"/>
@@ -285,15 +279,9 @@
 <rect id="north-attention-hover-hint-bottom-margin" x="800" y="849" width="5" height="5" fill="#ff00ff"/>
 <rect id="north-attention-hover-hint-left-margin" x="800" y="852" width="5" height="5" fill="#ff00ff"/>
 <rect id="north-attention-hover-hint-right-margin" x="800" y="855" width="5" height="5" fill="#ff00ff"/>
-<g id="north-progress-topleft" transform="translate(0 2200)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="north-progress-top" transform="translate(11 2200)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="4" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="north-progress-topright" transform="translate(43 2200)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 0) rotate(90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
-<g id="north-progress-left" transform="translate(0 2211)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="4" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="north-progress-center" transform="translate(11 2211)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="north-progress-right" transform="translate(43 2211)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="north-progress-bottomleft" transform="translate(0 2243)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(0 11) rotate(-90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <g id="north-progress-bottom" transform="translate(11 2243)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="north-progress-bottomright" transform="translate(43 2243)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 11) rotate(180)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <rect id="north-progress-hint-top-margin" x="800" y="885" width="5" height="5" fill="#ff00ff"/>
 <rect id="north-progress-hint-bottom-margin" x="800" y="888" width="5" height="5" fill="#ff00ff"/>
 <rect id="north-progress-hint-left-margin" x="800" y="891" width="5" height="5" fill="#ff00ff"/>
@@ -428,15 +416,9 @@
 <rect id="south-attention-hover-hint-bottom-margin" x="800" y="1278" width="5" height="5" fill="#ff00ff"/>
 <rect id="south-attention-hover-hint-left-margin" x="800" y="1281" width="5" height="5" fill="#ff00ff"/>
 <rect id="south-attention-hover-hint-right-margin" x="800" y="1284" width="5" height="5" fill="#ff00ff"/>
-<g id="south-progress-topleft" transform="translate(0 3300)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="south-progress-top" transform="translate(11 3300)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="4" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="south-progress-topright" transform="translate(43 3300)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 0) rotate(90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
-<g id="south-progress-left" transform="translate(0 3311)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="4" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="south-progress-center" transform="translate(11 3311)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="south-progress-right" transform="translate(43 3311)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="south-progress-bottomleft" transform="translate(0 3343)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(0 11) rotate(-90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <g id="south-progress-bottom" transform="translate(11 3343)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="south-progress-bottomright" transform="translate(43 3343)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 11) rotate(180)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <rect id="south-progress-hint-top-margin" x="800" y="1314" width="5" height="5" fill="#ff00ff"/>
 <rect id="south-progress-hint-bottom-margin" x="800" y="1317" width="5" height="5" fill="#ff00ff"/>
 <rect id="south-progress-hint-left-margin" x="800" y="1320" width="5" height="5" fill="#ff00ff"/>
@@ -571,15 +553,9 @@
 <rect id="west-attention-hover-hint-bottom-margin" x="800" y="1707" width="5" height="5" fill="#ff00ff"/>
 <rect id="west-attention-hover-hint-left-margin" x="800" y="1710" width="5" height="5" fill="#ff00ff"/>
 <rect id="west-attention-hover-hint-right-margin" x="800" y="1713" width="5" height="5" fill="#ff00ff"/>
-<g id="west-progress-topleft" transform="translate(0 4400)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="west-progress-top" transform="translate(11 4400)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="4" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="west-progress-topright" transform="translate(43 4400)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 0) rotate(90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
-<g id="west-progress-left" transform="translate(0 4411)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="4" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="west-progress-center" transform="translate(11 4411)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="west-progress-right" transform="translate(43 4411)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="west-progress-bottomleft" transform="translate(0 4443)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(0 11) rotate(-90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <g id="west-progress-bottom" transform="translate(11 4443)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="west-progress-bottomright" transform="translate(43 4443)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 11) rotate(180)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <rect id="west-progress-hint-top-margin" x="800" y="1743" width="5" height="5" fill="#ff00ff"/>
 <rect id="west-progress-hint-bottom-margin" x="800" y="1746" width="5" height="5" fill="#ff00ff"/>
 <rect id="west-progress-hint-left-margin" x="800" y="1749" width="5" height="5" fill="#ff00ff"/>
@@ -714,15 +690,9 @@
 <rect id="east-attention-hover-hint-bottom-margin" x="800" y="2136" width="5" height="5" fill="#ff00ff"/>
 <rect id="east-attention-hover-hint-left-margin" x="800" y="2139" width="5" height="5" fill="#ff00ff"/>
 <rect id="east-attention-hover-hint-right-margin" x="800" y="2142" width="5" height="5" fill="#ff00ff"/>
-<g id="east-progress-topleft" transform="translate(0 5500)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="east-progress-top" transform="translate(11 5500)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="4" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="east-progress-topright" transform="translate(43 5500)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 0) rotate(90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
-<g id="east-progress-left" transform="translate(0 5511)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="4" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
 <g id="east-progress-center" transform="translate(11 5511)"><rect width="32" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="east-progress-right" transform="translate(43 5511)"><rect width="11" height="32" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="7" height="32" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="east-progress-bottomleft" transform="translate(0 5543)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(0 11) rotate(-90)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <g id="east-progress-bottom" transform="translate(11 5543)"><rect width="32" height="11" fill="#000" fill-opacity="0"/><rect x="0" y="0" width="32" height="7" fill="#2463d4" fill-opacity="0.3"/></g>
-<g id="east-progress-bottomright" transform="translate(43 5543)"><rect width="11" height="11" fill="#000" fill-opacity="0"/><g transform="translate(11 11) rotate(180)"><path d="M 11 4 A 7 7 0 0 0 4 11 L 11 11 Z" fill="#2463d4" fill-opacity="0.3"/></g></g>
 <rect id="east-progress-hint-top-margin" x="800" y="2172" width="5" height="5" fill="#ff00ff"/>
 <rect id="east-progress-hint-bottom-margin" x="800" y="2175" width="5" height="5" fill="#ff00ff"/>
 <rect id="east-progress-hint-left-margin" x="800" y="2178" width="5" height="5" fill="#ff00ff"/>
