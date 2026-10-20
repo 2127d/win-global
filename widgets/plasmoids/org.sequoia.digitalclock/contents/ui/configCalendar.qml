@@ -54,6 +54,7 @@ KCMUtils.ScrollViewKCM {
 
         QQC2.ComboBox {
             id: firstDayOfWeekCombo
+            popup.popupType: QQC2.Popup.Window
 
             Kirigami.FormData.label: i18ndc("plasma_applet_org.kde.plasma.digitalclock", "@label:listbox", "First day of week:")
             Layout.fillWidth: true

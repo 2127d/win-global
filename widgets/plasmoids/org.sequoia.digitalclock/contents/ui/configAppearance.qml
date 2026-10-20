@@ -65,6 +65,8 @@ KCMUtils.SimpleKCM {
 
             QQC2.ComboBox {
                 id: dateDisplayFormat
+                // Give the compositor a menu surface to blur independently.
+                popup.popupType: QQC2.Popup.Window
                 enabled: showDate.checked
                 visible: Plasmoid.formFactor !== PlasmaCore.Types.Vertical
                 Layout.preferredWidth: appearancePage.comboBoxWidth
@@ -83,6 +85,7 @@ KCMUtils.SimpleKCM {
 
         QQC2.ComboBox {
             id: showSecondsComboBox
+            popup.popupType: QQC2.Popup.Window
             Layout.preferredWidth: appearancePage.comboBoxWidth
             Kirigami.FormData.label: i18nd("plasma_applet_org.kde.plasma.digitalclock", "Show seconds:")
             model: [
@@ -125,6 +128,7 @@ KCMUtils.SimpleKCM {
 
             QQC2.ComboBox {
                 id: displayTimeZoneFormat
+                popup.popupType: QQC2.Popup.Window
 
                 Layout.preferredWidth: appearancePage.comboBoxWidth
                 model: [
@@ -155,6 +159,7 @@ KCMUtils.SimpleKCM {
 
             QQC2.ComboBox {
                 id: use24hFormat
+                popup.popupType: QQC2.Popup.Window
                 Layout.preferredWidth: appearancePage.comboBoxWidth
                 model: [
                     i18ndc("plasma_applet_org.kde.plasma.digitalclock", "@item:inlistbox time display option", "12-Hour"),
@@ -185,6 +190,7 @@ KCMUtils.SimpleKCM {
 
             QQC2.ComboBox {
                 id: dateFormat
+                popup.popupType: QQC2.Popup.Window
                 Layout.preferredWidth: appearancePage.comboBoxWidth
                 textRole: "label"
                 model: [

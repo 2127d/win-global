@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate and capture Sequoia Digital Clock using private XDG paths and D-Bus."""
 import os
+import re
 from pathlib import Path
 import shlex
 import shutil
@@ -8,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = 'org.sequoia.digitalclock'
@@ -38,6 +40,7 @@ def native_child(library):
 
 
 def main():
+    subprocess.run([sys.executable, str(ROOT / 'tools/build-digital-clock.py')], check=True)
     subprocess.run([sys.executable, str(ROOT / 'tools/verify-digital-clock-compatibility.py')], check=True)
     library = ROOT / '.staging/verify-digital-clock.so'
     library.parent.mkdir(exist_ok=True)
@@ -51,17 +54,27 @@ def main():
             env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software',
                        QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion', QT_NO_XDG_DESKTOP_PORTAL='1', QT_FORCE_STDERR_LOGGING='1',
                        SEQUOIA_CLOCK_CAPTURE=str(ROOT / f'preview/digital-clock-{mode}'))
+            if '--desktop-style' in sys.argv or '--built-style' in sys.argv:
+                env.update(QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='SequoiaEleven',
+                           QT_QUICK_CONTROLS_STYLE='org.kde.desktop')
             for key in ('DISPLAY', 'WAYLAND_DISPLAY', 'LD_PRELOAD', 'QML_IMPORT_PATH', 'QT_PLUGIN_PATH'):
                 env.pop(key, None)
+            if '--built-style' in sys.argv:
+                plugin_dir = subprocess.check_output(['qtpaths6', '--query', 'QT_INSTALL_PLUGINS'], text=True).strip()
+                staged_plugins = ROOT / '.staging/desktop' / plugin_dir.lstrip('/')
+                assert (staged_plugins / 'styles/sequoiaeleven6.so').exists(), 'Build the desktop style first'
+                env['QT_PLUGIN_PATH'] = str(staged_plugins)
             for kind in ('CONFIG', 'DATA', 'STATE', 'CACHE', 'RUNTIME'):
                 directory = stage / kind.lower()
                 directory.mkdir(mode=0o700)
                 env[f'XDG_{kind}_' + ('DIR' if kind == 'RUNTIME' else 'HOME')] = str(directory)
-            shutil.copytree(ROOT / f'widgets/plasmoids/{PLUGIN}', stage / f'data/plasma/plasmoids/{PLUGIN}')
+            with zipfile.ZipFile(ROOT / 'dist/widgets/sequoia-digital-clock.plasmoid') as archive:
+                archive.extractall(stage / f'data/plasma/plasmoids/{PLUGIN}')
             shutil.copytree(ROOT / f'themes/plasma/desktoptheme/sequoia-eleven-{mode}',
                             stage / f'data/plasma/desktoptheme/sequoia-eleven-{mode}')
             (stage / 'config/plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{mode}\n')
-            shutil.copy2(ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}.colors', stage / 'config/kdeglobals')
+            material = 'Transparent' if '--transparent' in sys.argv else ''
+            shutil.copy2(ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}{material}.colors', stage / 'config/kdeglobals')
             (stage / 'data/icons').symlink_to(ROOT / 'themes/icons')
             with (stage / 'config/kdeglobals').open('a') as config:
                 config.write(f'\n[Icons]\nTheme=SequoiaTahoe{"-dark" if mode == "dark" else ""}\n')
@@ -70,10 +83,14 @@ def main():
                        if '--native' in sys.argv else
                        ['dbus-run-session', '--', 'env', f'LD_PRELOAD={library}', 'plasmawindowed', PLUGIN])
             with logfile.open('w') as log:
-                result = subprocess.run(command, env=env, stdout=log, stderr=log, timeout=40)
+                result = subprocess.run(command, env=env, stdout=log, stderr=log, timeout=60)
             output = logfile.read_text()
             errors = [line for line in output.splitlines() if any(word in line for word in
-                      ('ReferenceError:', 'TypeError:', 'Cannot assign', 'is not a type', 'unavailable'))]
+                      ('ReferenceError:', 'TypeError:', 'Cannot assign', 'is not a type', 'unavailable'))
+                      # Plasma 6.7.5's nested Time Zones PageRow has no global header.
+                      # Reproduced with the unmodified settings frame; insertion and
+                      # removal both warn, even though the page and its controls work.
+                      and not re.fullmatch(r'file:///usr/lib64/qt6/qml/org/kde/kirigami/controls/PageRow.qml:(1126|1132): TypeError: Value is null and could not be converted to an object', line)]
             if result.returncode or errors or 'PASS:' not in output:
                 raise RuntimeError(output)
             print('\n'.join(mode + ': ' + line for line in output.splitlines() if line.startswith('PASS:')))

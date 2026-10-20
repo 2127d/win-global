@@ -49,6 +49,7 @@
 #include <QWindow>
 #if SEQUOIAELEVEN_HAVE_QTQUICK
 #include <QQuickWindow>
+#include <QQuickItem>
 #endif
 #include <QVector>
 // #include <QDebug>
@@ -130,6 +131,21 @@ void BlurHelper::unregisterWidget(QWidget *widget)
 bool BlurHelper::eventFilter(QObject *object, QEvent *event)
 {
 #if SEQUOIAELEVEN_HAVE_QTQUICK
+    // Qt 6.11 closes a ComboBox on focus-out even when focus moves into its
+    // own Popup.Window. Keep that specific handoff alive for the clock's
+    // compositor-blurred menus; ordinary focus loss still dismisses them.
+    if (event->type() == QEvent::FocusOut && object->inherits("QQuickComboBox")) {
+        auto combo = qobject_cast<QQuickItem *>(object);
+        if (combo && combo->window() && combo->window()->objectName() == QLatin1String("sequoiaDigitalClockSettings")) {
+            auto popup = combo->property("popup").value<QObject *>();
+            auto content = popup ? qobject_cast<QQuickItem *>(popup->property("contentItem").value<QObject *>()) : nullptr;
+            if (popup && popup->property("visible").toBool() && popup->property("activeFocus").toBool()
+                && content && content->window() && content->window() != combo->window()
+                && content->window()->transientParent() == combo->window()) {
+                return true;
+            }
+        }
+    }
     if (auto window = qobject_cast<QQuickWindow *>(object); window
         && (event->type() == QEvent::Show || event->type() == QEvent::Expose || event->type() == QEvent::PlatformSurface)) {
         if (!_quickWindows.contains(window)) {
@@ -176,7 +192,7 @@ bool BlurHelper::eventFilter(QObject *object, QEvent *event)
         break;
     }
 
-    // never eat events
+    // Widget blur tracking does not consume events.
     return false;
 }
 
@@ -193,12 +209,23 @@ void BlurHelper::updateQuickWindow(QWindow *window) const
         return;
     }
 
+    // This settings frame opts into the application's normal window material.
+    // Include its transient menu windows (and nested submenus), which Qt Quick
+    // creates as separate surfaces. Other Plasma windows keep their own masks.
+    bool sequoiaClockSettings = false;
+    for (QWindow *owner = quick; owner; owner = owner->transientParent()) {
+        if (owner->objectName() == QLatin1String("sequoiaDigitalClockSettings")) {
+            sequoiaClockSettings = true;
+            break;
+        }
+    }
+
     // Plasma owns its panel and popup blur regions. An empty region here means
     // blur the entire window, replacing its rounded SVG mask with a rectangle
     // on show/expose (including the transparent area around a floating panel).
     const QString appName = QCoreApplication::applicationName();
-    if (appName == QLatin1String("plasmashell") || appName == QLatin1String("plasmawindowed")
-        || appName == QLatin1String("plasma") || appName.startsWith(QLatin1String("plasma-")))
+    if (!sequoiaClockSettings && (appName == QLatin1String("plasmashell") || appName == QLatin1String("plasmawindowed")
+        || appName == QLatin1String("plasma") || appName.startsWith(QLatin1String("plasma-"))))
         return;
 
     // Spectacle's capture UI is a transparent, screen-sized view of the live

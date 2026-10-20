@@ -12,9 +12,13 @@ import QtQuick
 import org.kde.plasma.plasmoid
 import org.kde.plasma.configuration
 import org.kde.plasma.workspace.calendar as PlasmaCalendar
+import "../ui" as Sequoia
 
 ConfigModel {
     id: configModel
+
+    // This object lives for the whole settings session, including plugin pages.
+    readonly property Sequoia.SettingsFrame settingsFrame: Sequoia.SettingsFrame {}
 
     ConfigCategory {
          name: i18nd("plasma_applet_org.kde.plasma.digitalclock", "Appearance")

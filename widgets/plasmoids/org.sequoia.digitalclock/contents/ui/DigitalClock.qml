@@ -457,7 +457,9 @@ MouseArea {
 
         PlasmaComponents.Label {
             id: dateLabel
-            opacity: 0.8
+            // Keep the panel date at the same contrast as the time in every theme.
+            color: timeLabel.color
+            opacity: timeLabel.opacity
 
             visible: Plasmoid.configuration.showDate
 

@@ -104,6 +104,58 @@ if app.applicationName() in ('plasmashell', 'plasmawindowed'):
     settle()
     assert fan.property('testBlurEnabled') is False, 'Downloads blur opt-out lost'
     fan.close()
+
+    settings = QQuickWindow()
+    settings.setObjectName('sequoiaDigitalClockSettings')
+    settings.setColor(QColor('transparent'))
+    settings.resize(600, 400)
+    settings.show()
+    settle()
+    assert settings.property('testBlurEnabled') is True, 'Clock settings did not opt into theme blur'
+    dropdown = QQuickWindow()
+    dropdown.setFlags(Qt.Popup)
+    dropdown.setTransientParent(settings)
+    dropdown.setColor(QColor('transparent'))
+    dropdown.resize(200, 120)
+    for recreate in (False, True):
+        if recreate:
+            dropdown.hide()
+            dropdown.destroy()
+        dropdown.show()
+        settle()
+        assert dropdown.property('testBlurEnabled') is True, 'Clock dropdown blur missing after show/recreation'
+    submenu = QQuickWindow()
+    submenu.setFlags(Qt.Popup)
+    submenu.setTransientParent(dropdown)
+    submenu.setColor(QColor('transparent'))
+    submenu.resize(150, 100)
+    submenu.show()
+    settle()
+    assert submenu.property('testBlurEnabled') is True, 'Nested clock menu blur missing'
+    submenu.setColor(QColor('white'))
+    settle()
+    assert submenu.property('testBlurEnabled') is False, 'Opaque submenu retained blur'
+    submenu.close()
+    dropdown.close()
+    settings.close()
+
+    # KDE's default clock and other applets remain outside this opt-in.
+    native_settings = QQuickWindow()
+    native_settings.setColor(QColor('transparent'))
+    native_settings.resize(600, 400)
+    native_settings.show()
+    native_menu = QQuickWindow()
+    native_menu.setFlags(Qt.Popup)
+    native_menu.setTransientParent(native_settings)
+    native_menu.setColor(QColor('transparent'))
+    native_menu.resize(200, 120)
+    native_menu.show()
+    settle()
+    assert native_settings.property('testBlurRequests') is None, 'Style changed native Plasma settings blur'
+    assert native_menu.property('testBlurRequests') is None, 'Style changed native Plasma menu blur'
+    native_menu.close()
+    native_settings.close()
+    print(f'PASS ({sys.argv[-1]}): Sequoia clock settings, dropdowns and submenus use theme blur; default Plasma settings remain untouched')
     print(f'PASS ({sys.argv[-1]}): Plasma-owned blur survives show, exposure, surface recreation and color changes; Downloads opt-out retained')
     sys.exit(0)
 

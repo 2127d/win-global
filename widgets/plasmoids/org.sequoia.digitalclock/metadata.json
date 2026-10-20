@@ -69,7 +69,7 @@
     "Name": "Sequoia Digital Clock",
     "Website": "https://kde.org/plasma-desktop",
     "Id": "org.sequoia.digitalclock",
-    "Version": "0.1.4"
+    "Version": "0.1.9"
   },
   "X-KDE-ParentApp": "org.kde.plasmashell",
   "X-Plasma-API-Minimum-Version": "6.0",
