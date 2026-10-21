@@ -1,0 +1,2 @@
+module SequoiaGrid
+singleton GridSession 1.0 GridSession.qml

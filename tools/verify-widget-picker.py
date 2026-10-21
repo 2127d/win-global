@@ -36,7 +36,7 @@ def child(base, width, height, offset):
                     break
                 time.sleep(.1)
             env = dict(os.environ, QT_QPA_PLATFORM='wayland', WAYLAND_DISPLAY='picker-test',
-                       LD_PRELOAD=str(ROOT / '.staging/verify-widget-picker.so'))
+                       LD_PRELOAD=str(ROOT / '.staging/verify-widget-picker.so'), SEQUOIA_PICKER_READY=str(base / 'ready'))
             if offset:
                 env['SEQUOIA_PICKER_SECOND_OUTPUT'] = '1'
                 subprocess.run(['kscreen-doctor', '-o', f'output.Virtual-2.position.{offset},120'],
@@ -50,10 +50,18 @@ def child(base, width, height, offset):
                     break
                 time.sleep(.1)
             subprocess.run(['qdbus-qt6', 'org.kde.plasmashell', '/PlasmaShell',
-                'org.kde.PlasmaShell.evaluateScript', 'panels().forEach(p=>p.remove());'], check=True, capture_output=True)
+                'org.kde.PlasmaShell.evaluateScript', 'panels().forEach(p=>p.remove()); var p = new Panel; p.location = "bottom"; p.height = 40;'], check=True, capture_output=True)
+            (base / 'ready').touch()
             if not offset:
                 subprocess.run(['qdbus-qt6', 'org.kde.plasmashell', '/PlasmaShell',
                     'org.kde.PlasmaShell.toggleWidgetExplorer'], check=True, capture_output=True)
+            result = shell.wait(timeout=30)
+            if result:
+                return result
+            # Start a new shell against the same private config to verify that
+            # Plasma persisted the resized and dragged footprints and positions.
+            env['SEQUOIA_GRID_RESTORE'] = '1'
+            shell = subprocess.Popen(['plasmashell', '--no-respawn'], env=env, stdout=log, stderr=log)
             return shell.wait(timeout=30)
         finally:
             stop(shell)
@@ -73,9 +81,17 @@ def main():
         raise SystemExit(child(args.child, args.width, args.height, args.offset))
     library = ROOT / '.staging/verify-widget-picker.so'
     library.parent.mkdir(exist_ok=True)
-    flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Quick', 'Qt6Widgets', 'Qt6Test'], text=True))
+    flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Quick', 'Qt6Widgets', 'Qt6Test', 'Qt6DBus'], text=True))
+    ei = subprocess.run(['pkg-config', '--cflags', '--libs', 'libei-1.0'], text=True, capture_output=True)
+    if ei.returncode == 0:
+        flags += shlex.split(ei.stdout)
+    elif (ROOT / '.staging/test-sdk/libei.h').is_file():
+        flags += ['-I' + str(ROOT / '.staging/test-sdk'), '-l:libei.so.1']
+    else:
+        raise RuntimeError('Install the libei development package to run compositor input tests.')
     source = ROOT / 'tools/verify-widget-picker.cpp'
-    if not library.exists() or source.stat().st_mtime > library.stat().st_mtime:
+    support = ROOT / 'tools/test-support'
+    if not library.exists() or max(p.stat().st_mtime for p in [source, *support.iterdir()]) > library.stat().st_mtime:
         subprocess.run(['c++', '-std=c++17', '-fPIC', '-shared', str(source), '-o', str(library), *flags], check=True)
     with tempfile.TemporaryDirectory(prefix='sequoia-picker-', ignore_cleanup_errors=True) as directory:
         base = Path(directory)
@@ -94,6 +110,8 @@ def main():
         env['XDG_CONFIG_DIRS'] = '/etc/xdg'
         env['AKONADI_INSTANCE'] = base.name
         shell_overrides.stage(base / 'data', base / 'unused', {'plasma-style'}, {})
+        shutil.copytree(ROOT / 'widgets/plasmoids/org.sequoia.gridtest',
+                        base / 'data/plasma/plasmoids/org.sequoia.gridtest')
         theme = f'sequoia-eleven-{args.mode}'
         shutil.copytree(ROOT / 'themes/plasma/desktoptheme' / theme, base / 'data/plasma/desktoptheme' / theme)
         (base / 'config/plasmarc').write_text(f'[Theme]\nname={theme}\n')
@@ -107,7 +125,9 @@ def main():
             raise RuntimeError((base / 'session.log').read_text())
         output = (base / 'plasma.log').read_text()
         errors = [line for line in output.splitlines() if any(name in line for name in
-            ('Desktop.qml', 'WidgetExplorer.qml', 'AppletDelegate.qml', 'PickerMetrics.qml'))
+            ('Desktop.qml', 'WidgetExplorer.qml', 'AppletDelegate.qml', 'PickerMetrics.qml',
+             'GridDesktop.qml', 'GridSession.qml', 'GridTarget.qml', 'GridItem.qml', 'GridGeometry.qml',
+             'PlacementWizard.qml', 'GridTestFace.qml', 'org.sequoia.gridtest'))
             and any(word in line for word in ('Error:', 'Cannot assign', 'Unable to assign', 'unavailable', 'Binding loop'))]
         if result.returncode or errors or 'PASS:' not in output:
             print((base / 'session.log').read_text())

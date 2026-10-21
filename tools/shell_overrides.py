@@ -92,6 +92,7 @@ def stage(stage_root, prefix, selected, managed, *, removing=()):
             shutil.copy2(source / COMPACT, target)
             for name in widget_picker.FILES:
                 if (source / name).exists():
+                    (destination / name).parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(source / name, destination / name)
         (destination / MARKERS['plasma-style']).write_text('Launcher geometry and centered widget picker; refresh through the Sequoia installer after Plasma updates.\n')
 

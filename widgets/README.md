@@ -1,5 +1,13 @@
 # Sequoia widget archives
 
+## Grid system test widget
+
+**Sequoia Grid Test** exercises the new grid, guided placement, responsive presets,
+and native resize handles. Source is in `plasmoids/org.sequoia.gridtest`; the
+standalone package is `dist/widgets/sequoia-grid-test.plasmoid`. See the
+[grid and picker instructions](../desktop/widget-picker/README.md) to install
+the matching shell integration and run isolated Plasma tests.
+
 For a fresh computer, the main installer can build and install the widgets with
 their dependencies. Select **Desktop widgets** in `install-gui.py`, or run
 `./install.sh --components widgets` from the project folder. Global Theme also
@@ -81,7 +89,7 @@ views, search, and button-driven page animations. Its gear opens layout, pinned-
 and animation settings. Editable source lives in `widgets/plasmoids/org.sequoia.startmenu`;
 see its [README](plasmoids/org.sequoia.startmenu/README.md) for details.
 
-The Global Theme installer also supplies the five pure QML widgets used by its
+The Global Theme installer also supplies the pure QML widgets used by its
 [optional desktop layout](../desktop/layouts/README.md), preserving separately installed
 copies. It also builds and installs the native tray, trash and animated task-manager forks on the destination machine; the optional layout selects them.
 

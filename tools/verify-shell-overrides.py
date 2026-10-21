@@ -64,9 +64,9 @@ class ShellTests(unittest.TestCase):
         self.assertEqual(shell.installed(self.receipt().data['files']), {'lockscreen'})
         self.assertEqual(self.read('contents/lockscreen/LockScreenUi.qml'), original)
         self.assertEqual(self.read(shell.COMPACT), (shell.SYSTEM_SHELL / shell.COMPACT).read_bytes())
-        for name in widget_picker.FILES[:-1]:
+        for name in widget_picker.UPSTREAM_FILES:
             self.assertEqual(self.read(name), (shell.SYSTEM_SHELL / name).read_bytes())
-        self.assertFalse((self.live / shell.SHELL / widget_picker.FILES[-1]).exists())
+        self.assertFalse((self.live / shell.SHELL / 'contents/explorer/grid').exists())
         self.install('plasma-style')
         self.remove('plasma-style', 'lockscreen')
         self.assertFalse(payload_files(self.live / shell.SHELL))
@@ -149,6 +149,22 @@ class ShellTests(unittest.TestCase):
         target.write_bytes(original)
         self.receipt().validate()
         self.remove('plasma-style', 'lockscreen')
+
+    def test_grid_test_widget_is_tracked_separately_from_shell(self):
+        self.install('plasma-style')
+        command = [sys.executable, str(installer.ROOT / 'tools/install-widget-picker.py'),
+                   '--prefix', str(self.live), '--with-test-widget']
+        before = self.receipt().manifest.read_bytes()
+        subprocess.run([*command, '--check'], check=True, capture_output=True)
+        self.assertEqual(self.receipt().manifest.read_bytes(), before)
+        subprocess.run(command, check=True, capture_output=True)
+        widget = 'plasma/plasmoids/org.sequoia.gridtest'
+        self.assertIn(widget + '/metadata.json', self.receipt().data['files'])
+        self.receipt().validate()
+        self.remove('plasma-style')
+        self.assertTrue((self.live / widget / 'metadata.json').is_file())
+        self.remove('widgets')
+        self.assertFalse((self.live / widget / 'metadata.json').exists())
 
 if __name__ == '__main__':
     unittest.main()

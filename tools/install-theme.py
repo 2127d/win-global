@@ -61,6 +61,7 @@ APP_FILES = {
 LAYOUT_WIDGETS = {
     'org.sequoia.startmenu', 'org.sequoia.downloads', 'org.sequoia.dockseparator',
     'org.kpple.kppleMenu', 'org.kde.windowtitle.Fork', 'org.sequoia.desktopmenu',
+    'org.sequoia.gridtest',
 }
 USER_TREES = {
     'icons/SequoiaTahoe', 'icons/SequoiaTahoe-light', 'icons/SequoiaTahoe-dark',

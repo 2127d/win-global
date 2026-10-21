@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "minimumColumns": 1,
+    "minimumRows": 1,
+    "panel": true,
+    "preview": "contents/ui/GridTestFace.qml",
+    "presets": [
+        {"name": "Square", "columns": 2, "rows": 2},
+        {"name": "Compact", "columns": 1, "rows": 1},
+        {"name": "Wide", "columns": 4, "rows": 2},
+        {"name": "Tall", "columns": 2, "rows": 4},
+        {"name": "Detailed", "columns": 4, "rows": 4}
+    ]
+}

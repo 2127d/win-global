@@ -1,0 +1,14 @@
+{
+    "KPlugin": {
+        "Id": "org.sequoia.gridtest",
+        "Name": "Sequoia Grid Test",
+        "Description": "An adaptive widget for trying Sequoia grid placement and resizing",
+        "Icon": "view-grid",
+        "Version": "1.0.0",
+        "License": "MIT",
+        "Category": "Utilities"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Sequoia-Grid": "grid.json"
+}
