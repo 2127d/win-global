@@ -23,7 +23,11 @@ stock shell while retaining independently selected shell layers.
 
 Click a card (or press Enter) to see your current screens and panels. Selecting
 a panel adds the panel representation. Selecting a desktop opens one preset at
-a time, with Previous/Next and Use this preset. Click a free grid location to
+a time, with Previous/Next and Use this preset. These steps use a separate,
+centered Sequoia dialog. The global Window palette selects the solid frame or
+the transparent frame with Plasma's compositor blur. The catalog stays hidden
+until placement finishes or is cancelled; Back, Cancel, Escape and window close
+preserve its search and selection. Click a free grid location to
 place the selected footprint. Arrow keys move the preview; Enter places it;
 Escape cancels. Existing widgets and reserved panel space prevent placement.
 Every cell can be a starting position, so a 2×2 footprint is not restricted to
@@ -70,12 +74,13 @@ python3 tools/build-grid-test.py
 python3 tools/verify-shell-overrides.py
 python3 tools/verify-widget-picker.py
 python3 tools/verify-widget-picker.py --width 800 --height 600 --mode light
-python3 tools/verify-widget-picker.py --offset 1280
+python3 tools/verify-widget-picker.py --offset 1280 --material transparent
 ```
 
 The functional test starts a private D-Bus session and virtual Wayland desktop
 with temporary configuration. It never changes the live desktop. It checks the
-destination map, preset placement, panel addition, occupied slots, native live
+separate dialog visibility, rendered solid/transparent frame alpha, wizard
+cancellation, destination map, preset placement, panel addition, occupied slots, native live
 resizing, adaptive content, drag/drop, cancellation, and existing picker behavior.
 It also restarts Plasma to check saved geometry. Compositor-driven drag tests
 require libei development headers alongside the existing Qt development tools.

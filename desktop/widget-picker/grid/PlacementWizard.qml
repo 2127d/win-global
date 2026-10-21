@@ -4,11 +4,11 @@ import QtQuick.Layouts
 import org.kde.plasma.components as PC3
 import org.kde.kirigami as Kirigami
 
-Rectangle {
+FocusScope {
     id: wizard
     objectName: "sequoiaPlacementWizard"
-    color: Kirigami.Theme.backgroundColor
-    radius: 20
+    focus: true
+    Keys.onEscapePressed: event => { GridSession.cancel(); event.accepted = true; }
     readonly property var desktops: GridSession.targets.filter(t => t && t.kind === "desktop" && t.screen >= 0)
     readonly property var panels: GridSession.targets.filter(t => t && t.kind === "panel" && t.screen >= 0)
     readonly property real leftEdge: Math.min(0, ...desktops.map(t => t.geometry.x))

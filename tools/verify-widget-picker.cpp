@@ -60,16 +60,37 @@ static void check(QQuickItem *picker) {
     QTest::keyClick(window, Qt::Key_Return);
     QTest::qWait(500);
     require(eval(picker, "GridSession.phase === 'destination'").toBool(), "Return opens destination chooser");
-    require(window->grabWindow().save(qEnvironmentVariable("SEQUOIA_PICKER_CAPTURE") + ".destinations.png"), "destination map screenshot");
+    auto wizardWindow = qobject_cast<QQuickWindow *>(eval(picker, "placementDialog").value<QObject *>());
+    require(wizardWindow && wizardWindow != window && wizardWindow->isVisible() && !window->isVisible(), "destination has its own window and picker is unmapped");
+    const bool transparent = qEnvironmentVariable("SEQUOIA_PICKER_MATERIAL") == "transparent";
+    fprintf(stderr, "MATERIAL: %s\n", qPrintable(eval(picker, "JSON.stringify({alpha:windowPalette.window.a,hints:placementDialog.backgroundHints})").toString()));
+    require(eval(picker, transparent ? "placementDialog.backgroundHints === PlasmaCore.Dialog.StandardBackground" : "placementDialog.backgroundHints === PlasmaCore.Dialog.SolidBackground").toBool(), "wizard follows global theme material");
+    require(eval(picker, "Math.abs(placementDialog.x - (sidePanel.x + (sidePanel.width-placementDialog.width)/2)) <= 1 && Math.abs(placementDialog.y - (sidePanel.y + (sidePanel.height-placementDialog.height)/2)) <= 1").toBool(), "wizard centered on picker monitor");
+    const auto wizardImage = wizardWindow->grabWindow();
+    const auto backgroundAlpha = wizardImage.pixelColor(QPoint(32,32) * wizardWindow->devicePixelRatio()).alpha();
+    require(transparent ? backgroundAlpha > 0 && backgroundAlpha < 255 : backgroundAlpha == 255, "rendered frame uses transparent or opaque theme surface");
+    require(wizardImage.save(qEnvironmentVariable("SEQUOIA_PICKER_CAPTURE") + ".destinations.png"), "destination map screenshot");
+    QTest::keyClick(wizardWindow, Qt::Key_Escape);
+    QTest::qWait(200);
+    require(window->isVisible() && !wizardWindow->isVisible() && eval(picker, "GridSession.phase === 'catalog' && searchInput.text === 'Sequoia Grid Test'").toBool(), "wizard Escape restores picker and search");
+    eval(picker, "beginPlacement('org.sequoia.gridtest', 'Sequoia Grid Test', 'view-grid')");
+    QTest::qWait(200);
+    wizardWindow->close();
+    QTest::qWait(200);
+    require(window->isVisible() && !wizardWindow->isVisible() && eval(picker, "GridSession.phase === 'catalog'").toBool(), "window close cancels wizard and restores picker");
+    eval(picker, "beginPlacement('org.sequoia.gridtest', 'Sequoia Grid Test', 'view-grid')");
+    QTest::qWait(200);
     fprintf(stderr, "TARGETS: %s\n", qPrintable(eval(picker, "JSON.stringify(GridSession.targets.map(t=>({kind:t.kind,screen:t.screen,ready:t.ready,geometry:t.geometry})))").toString()));
     require(eval(picker, "GridSession.targets.some(t=>t.kind === 'desktop' && t.ready) && GridSession.targets.some(t=>t.kind === 'panel' && t.ready)").toBool(), "live desktop and panel destinations");
     eval(picker, "GridSession.choose(GridSession.targets.find(t=>t.kind === 'desktop' && t.screen === main.containment.screen))");
     require(eval(picker, "GridSession.phase === 'preset' && GridSession.preset.columns === 2 && GridSession.preset.rows === 2").toBool(), "first preset is square");
     eval(picker, "GridSession.presetIndex = 2");
     QTest::qWait(200);
-    require(window->grabWindow().save(qEnvironmentVariable("SEQUOIA_PICKER_CAPTURE") + ".presets.png"), "preset screenshot");
+    require(wizardWindow->isVisible() && !window->isVisible(), "preset window keeps picker hidden");
+    require(wizardWindow->grabWindow().save(qEnvironmentVariable("SEQUOIA_PICKER_CAPTURE") + ".presets.png"), "preset screenshot");
     eval(picker, "GridSession.place()");
     QTest::qWait(200);
+    require(!wizardWindow->isVisible() && !window->isVisible(), "both windows hidden during desktop placement");
     require(eval(picker, "main.opacity === 0 && sidePanel.outputOnly && !sidePanel.hideOnWindowDeactivate").toBool(), "picker hidden for placement without destroying drag source");
     auto placement = qvariant_cast<QQuickItem *>(eval(picker, "GridSession.destination"));
     require(placement, "placement desktop exists");
@@ -210,7 +231,7 @@ static void check(QQuickItem *picker) {
     other.requestActivate();
     QTest::qWait(500);
     require(!window->isVisible(), "activating another window dismisses picker");
-    fprintf(stderr, "PASS: picker search, destination map, desktop/panel placement, presets, occupied cells, native live resize, adaptive layout, drag/drop/cancel, Escape, activity sidebar\n");
+    fprintf(stderr, "PASS: separate themed wizard, material alpha, picker visibility, wizard Escape/close, picker search, destination map, desktop/panel placement, presets, occupied cells, native live resize, adaptive layout, drag/drop/cancel, Escape, activity sidebar\n");
     qApp->quit();
 }
 static void start() {

@@ -76,6 +76,7 @@ def main():
     parser.add_argument('--scale', type=float, default=1)
     parser.add_argument('--offset', type=int, default=0)
     parser.add_argument('--mode', choices=('light', 'dark'), default='dark')
+    parser.add_argument('--material', choices=('solid', 'transparent'), default='solid')
     args = parser.parse_args()
     if args.child:
         raise SystemExit(child(args.child, args.width, args.height, args.offset))
@@ -96,9 +97,10 @@ def main():
     with tempfile.TemporaryDirectory(prefix='sequoia-picker-', ignore_cleanup_errors=True) as directory:
         base = Path(directory)
         env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software',
-                   QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion', KWIN_COMPOSE='Q',
+                   QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='Fusion', KWIN_COMPOSE='Q',
                    QT_FORCE_STDERR_LOGGING='1', QT_SCALE_FACTOR=str(args.scale),
-                   SEQUOIA_PICKER_CAPTURE=str(ROOT / f'preview/widget-picker-{args.width}x{args.height}-{args.mode}-scale{args.scale:g}.png'))
+                   SEQUOIA_PICKER_MATERIAL=args.material,
+                   SEQUOIA_PICKER_CAPTURE=str(ROOT / f'preview/widget-picker-{args.width}x{args.height}-{args.mode}-{args.material}-scale{args.scale:g}.png'))
         for key in ('DISPLAY', 'WAYLAND_DISPLAY', 'LD_PRELOAD', 'QML_IMPORT_PATH', 'QT_PLUGIN_PATH'):
             env.pop(key, None)
         for kind in ('CONFIG', 'DATA', 'STATE', 'CACHE', 'RUNTIME'):
@@ -116,7 +118,7 @@ def main():
         shutil.copytree(ROOT / 'themes/plasma/desktoptheme' / theme, base / 'data/plasma/desktoptheme' / theme)
         (base / 'config/plasmarc').write_text(f'[Theme]\nname={theme}\n')
         (base / 'config/plasma-welcomerc').write_text('[General]\nLastSeenVersion=999.0\n')
-        shutil.copy2(ROOT / f'themes/color-schemes/SequoiaEleven{args.mode.title()}.colors', base / 'config/kdeglobals')
+        shutil.copy2(ROOT / f'themes/color-schemes/SequoiaEleven{args.mode.title()}{args.material.title()}.colors', base / 'config/kdeglobals')
         with (base / 'session.log').open('w') as log:
             result = subprocess.run(['dbus-run-session', '--', sys.executable, str(Path(__file__).resolve()),
                 '--child', str(base), '--width', str(args.width), '--height', str(args.height), '--offset', str(args.offset)],
@@ -127,12 +129,12 @@ def main():
         errors = [line for line in output.splitlines() if any(name in line for name in
             ('Desktop.qml', 'WidgetExplorer.qml', 'AppletDelegate.qml', 'PickerMetrics.qml',
              'GridDesktop.qml', 'GridSession.qml', 'GridTarget.qml', 'GridItem.qml', 'GridGeometry.qml',
-             'PlacementWizard.qml', 'GridTestFace.qml', 'org.sequoia.gridtest'))
+             'PlacementWizard.qml', 'PlacementDialog.qml', 'GridTestFace.qml', 'org.sequoia.gridtest'))
             and any(word in line for word in ('Error:', 'Cannot assign', 'Unable to assign', 'unavailable', 'Binding loop'))]
         if result.returncode or errors or 'PASS:' not in output:
             print((base / 'session.log').read_text())
             raise RuntimeError(output)
-        print('\n'.join(line for line in output.splitlines() if line.startswith(('PASS:', 'GEOMETRY:'))))
+        print('\n'.join(line for line in output.splitlines() if line.startswith(('PASS:', 'GEOMETRY:', 'MATERIAL:'))))
 
 
 if __name__ == '__main__':

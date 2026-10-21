@@ -1,7 +1,7 @@
 """Version-checked grid and placement integration for Plasma's widget explorer.
 
 Keep KDE's catalog, installation, accessibility, keyboard and drag handlers.
-Only the widget explorer floats; the activity switcher remains a sidebar.
+The widget explorer and placement dialog float; the activity switcher remains a sidebar.
 Grid placement uses Plasma's native applet containers and saved geometry.
 """
 from pathlib import Path
@@ -28,7 +28,7 @@ def desktop(text):
     GridDesktop { containment: root.containment; view: desktop }
 ''')
     text = replace(text, '            if (!visible) {\n                sidePanelStack.state = "closed";',
-                   '            if (!visible && !GridSession.hidden) {\n                sidePanelStack.state = "closed";')
+                   '            if (!visible && GridSession.phase === "catalog") {\n                sidePanelStack.state = "closed";')
     text = replace(text, 'sidePanel.opacity = bindingWithItem(item => item.opacity, 1);',
                    'sidePanel.opacity = 1; // Content and background hide independently on Wayland.')
     text = replace(text, '                containment,\n                sidePanel,',
@@ -81,27 +81,33 @@ def explorer(text):
     function beginPlacement(pluginName, name, icon) {
         GridSession.begin(pluginName, name, icon, false);
     }
-    PlacementWizard {
-        parent: main
-        anchors.fill: parent
-        z: 100
-        visible: GridSession.phase === "destination" || GridSession.phase === "preset"
+    // The application Window palette carries the global theme's material alpha.
+    // Kirigami's Plasma palette instead describes the common desktop theme,
+    // which is shared by Sequoia's solid and transparent global themes.
+    SystemPalette { id: windowPalette; colorGroup: SystemPalette.Active }
+    PlacementDialog {
+        id: placementDialog
+        pickerWindow: main.sidePanel
+        backgroundHints: windowPalette.window.a < 1 ? PlasmaCore.Dialog.StandardBackground : PlasmaCore.Dialog.SolidBackground
     }
     Connections {
         target: GridSession
         function onFinished() { main.sidePanel.requestActivate(); }
         // Unmapping a Wayland drag source cancels QDrag. Keep its transparent,
         // input-free surface mapped until Drag.onDragFinished has run.
-        function onHiddenChanged() { main.sidePanel.visible = GridSession.phase !== "placement"; }
+        function onPhaseChanged() {
+            main.sidePanel.visible = GridSession.phase === "catalog" || GridSession.phase === "drag";
+        }
     }
     Binding {
         target: main.sidePanel
         property: "backgroundHints"
-        value: GridSession.phase === "drag" ? PlasmaCore.Dialog.NoBackground : PlasmaCore.Dialog.StandardBackground
+        value: GridSession.phase === "drag" ? PlasmaCore.Dialog.NoBackground
+            : windowPalette.window.a < 1 ? PlasmaCore.Dialog.StandardBackground : PlasmaCore.Dialog.SolidBackground
     }
 ''')
     text = replace(text, '        if (!visible) {\n            KWindowSystem.showingDesktop = false',
-                   '        if (!visible && !GridSession.hidden) {\n            KWindowSystem.showingDesktop = false')
+                   '        if (!visible && GridSession.phase === "catalog") {\n            KWindowSystem.showingDesktop = false')
     text = replace(text, '    Component.onDestruction: {', '    Component.onDestruction: {\n        GridSession.cancel();')
     text = replace(text, '            widgetExplorer.addApplet(pluginName)',
                    '            beginPlacement(pluginName, list.currentItem.widgetTitle, list.currentItem.widgetIcon)')
