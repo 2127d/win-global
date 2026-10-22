@@ -1,0 +1,19 @@
+Sequoia Analog Clock is derived from KDE Plasma Workspace 6.7.5:
+https://invent.kde.org/plasma/plasma-workspace/-/tree/v6.7.5/applets/analog-clock
+
+main.qml, Hand.qml and the extracted ClockFace.qml retain their upstream
+LGPL-2.0-or-later notices. Configuration UI/model files retain GPL-2.0-or-later
+notices. Sources were extracted from the matching Fedora Plasma plugin resources.
+
+contents/images/clock.svg is derived from KDE's Breeze desktop theme artwork:
+https://invent.kde.org/plasma/libplasma/-/blob/v6.7.5/src/desktoptheme/breeze/widgets/clock.svg
+The theme credits KDE Visual Design Group (kde-artists@kde.org) and declares LGPL.
+The original SVG metadata is retained. Sequoia removes only the circular backing,
+shadow and outline from ClockFace; QML supplies the rounded square. Dial marks,
+lettering, hands, center and hint geometry remain from KDE. The Original preset
+loads widgets/clock from the active Plasma theme without modifying it.
+
+Sequoia changes (2026): grid size hints, face selection and preview, 24px rounded
+surface, keyboard/accessibility activation, standalone package identity.
+The additional preview wrapper is MIT licensed; other source-derived files keep
+their original licenses. License texts are included in LICENSES/.

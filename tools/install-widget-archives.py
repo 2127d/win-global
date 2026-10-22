@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install widget .tar.gz files from the current folder, unify notifications, restart Plasma.
+"""Install widget .tar.gz and .plasmoid files, unify notifications, restart Plasma.
 
 Run as your desktop user: python3 install-widgets.py
 The script requests sudo only for system package files. Existing tray/task-manager
@@ -20,6 +20,8 @@ import sys
 import tarfile
 import tempfile
 import xml.etree.ElementTree as ET
+import zipfile
+import stat
 
 NOTIFICATIONS = 'org.sequoia.notifications'
 ORIGINAL_NOTIFICATIONS = 'org.kde.plasma.notifications'
@@ -44,22 +46,39 @@ def package_id(path):
 
 def unpack_archives(folder, stage):
     packages = {}
-    for filename in sorted(folder.glob('*.tar.gz')):
-        with tarfile.open(filename, 'r:gz') as archive:
-            members = archive.getmembers()
-            roots = {PurePosixPath(m.name).parts[0] for m in members if PurePosixPath(m.name).parts}
-            if len(roots) != 1 or not any(m.name.rstrip('/') == next(iter(roots)) + '/metadata.json' for m in members):
-                print(f'Skipping {filename.name}: not a widget archive.')
-                continue
-            if sum(m.size for m in members) > 128 * 1024 * 1024:
-                raise ValueError(f'Widget archive is unexpectedly large: {filename}')
-            for member in members:
-                path = PurePosixPath(member.name)
-                if path.is_absolute() or '..' in path.parts or not (member.isfile() or member.isdir()):
-                    raise ValueError(f'Unsafe archive member in {filename.name}: {member.name}')
-            extracted = stage / filename.name
-            archive.extractall(extracted, filter='data')
-        package = extracted / roots.pop()
+    for filename in sorted([*folder.glob('*.tar.gz'), *folder.glob('*.plasmoid')]):
+        if filename.suffix == '.plasmoid':
+            with zipfile.ZipFile(filename) as archive:
+                members = archive.infolist()
+                if sum(m.file_size for m in members) > 128 * 1024 * 1024:
+                    raise ValueError(f'Widget archive is unexpectedly large: {filename}')
+                if len({m.filename for m in members}) != len(members):
+                    raise ValueError(f'Duplicate archive member in {filename.name}')
+                for member in members:
+                    path = PurePosixPath(member.filename)
+                    if path.is_absolute() or '..' in path.parts or stat.S_ISLNK(member.external_attr >> 16):
+                        raise ValueError(f'Unsafe archive member in {filename.name}: {member.filename}')
+                name = json.loads(archive.read('metadata.json')).get('KPlugin', {}).get('Id', '')
+                if not isinstance(name, str) or not ID.fullmatch(name):
+                    raise ValueError(f'Invalid widget ID in {filename.name}')
+                package = stage / filename.name / name
+                archive.extractall(package)
+        else:
+            with tarfile.open(filename, 'r:gz') as archive:
+                members = archive.getmembers()
+                roots = {PurePosixPath(m.name).parts[0] for m in members if PurePosixPath(m.name).parts}
+                if len(roots) != 1 or not any(m.name.rstrip('/') == next(iter(roots)) + '/metadata.json' for m in members):
+                    print(f'Skipping {filename.name}: not a widget archive.')
+                    continue
+                if sum(m.size for m in members) > 128 * 1024 * 1024:
+                    raise ValueError(f'Widget archive is unexpectedly large: {filename}')
+                for member in members:
+                    path = PurePosixPath(member.name)
+                    if path.is_absolute() or '..' in path.parts or not (member.isfile() or member.isdir()):
+                        raise ValueError(f'Unsafe archive member in {filename.name}: {member.name}')
+                extracted = stage / filename.name
+                archive.extractall(extracted, filter='data')
+            package = extracted / roots.pop()
         name = package_id(package)
         manifest_path = package / 'sequoia-package.json'
         if manifest_path.exists():
@@ -87,7 +106,7 @@ def unpack_archives(folder, stage):
             packages[name] = candidate
         print(f'Validated {filename.name}')
     if not packages:
-        raise ValueError('No valid widget .tar.gz files were found in the current folder.')
+        raise ValueError('No valid widget .tar.gz or .plasmoid files were found in the current folder.')
     return packages
 
 
@@ -333,5 +352,5 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except (ValueError, OSError, subprocess.CalledProcessError, tarfile.TarError) as error:
+    except (ValueError, KeyError, OSError, subprocess.CalledProcessError, tarfile.TarError, zipfile.BadZipFile) as error:
         raise SystemExit(f'Installation failed: {error}')

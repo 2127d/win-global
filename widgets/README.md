@@ -1,5 +1,43 @@
 # Sequoia widget archives
 
+The release inventory is `dist/CONTENTS.txt`. `dist/sequoia-widgets.tar.gz`
+contains an exact copy of `dist/widgets/`: eight widget packages, the quick
+installer, instructions, and checksums. The five panel widgets below use `.tar.gz`;
+Analog Clock, Digital Clock and Grid Test use `.plasmoid` in both locations.
+The included installer handles both formats. Every release archive has
+a SHA-256 sidecar. `python3 tools/build-dist.py` refreshes all distribution
+packages; `python3 tools/verify-dist.py` checks freshness, integrity, compatibility,
+and installation of the three plasmoids into a temporary package directory.
+
+The widget bundle includes widget packages only. Guided preset selection and
+desktop snapping also require **Plasma style** from the complete installer.
+The native widget export command described below remains a separate workflow
+for its original five panel archives.
+
+## Analog Clock
+
+**Sequoia Analog Clock** offers two 2×2 presets: **Sequoia** first, with a
+24-logical-pixel rounded square matching the application window corners, and
+**Original** second, using the active Plasma theme's round clock face. The dial,
+hands and optional seconds hand retain KDE's artwork and native animation.
+The new face follows the theme's View palette. Both presets keep the native live
+clock, localized tooltip, time-zone label, and click/keyboard calendar popup.
+Appearance settings also allow switching faces after placement. Resizing snaps
+to the shared grid while retaining the selected face.
+
+Sources are in `plasmoids/org.sequoia.analogclock`; build the standalone package
+with `python3 tools/build-analog-clock.py`. It produces
+`dist/widgets/sequoia-analog-clock.plasmoid` and its SHA-256 sidecar. On an
+existing managed Sequoia installation, install the clock and matching picker with:
+
+```sh
+python3 tools/install-widget-picker.py --with-widget org.sequoia.analogclock
+```
+
+Reload Plasma, then search **Sequoia Analog Clock** in Add Widgets. The full
+installer includes it under Desktop widgets. The package has a separate identity
+from the stock clock; existing clock instances and layouts are preserved.
+
 ## Grid system test widget
 
 **Sequoia Grid Test** exercises the new grid, guided placement, responsive presets,

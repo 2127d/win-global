@@ -46,7 +46,7 @@
     "contents/ui/Task.qml": "0c74aba0ee76bf65a7cf4af04e89a17dd2881f56a7349ee682ff1361d3548df8",
     "contents/ui/TaskBadgeOverlay.qml": "572e23ec6025be2ad061c2786da0448bf263d3aaf9c04d6198300b0d9e4c6041",
     "contents/ui/TaskList.qml": "1de3ac821c72c3db82b221ddc198b3d75a2fc3dc9cbb213665b94625e530c3cb",
-    "contents/ui/TaskProgressOverlay.qml": "e70981e86cc1b33766526997f503e4891f713d4774e8be843beb10837165c2c0",
+    "contents/ui/TaskProgressOverlay.qml": "2d5952d966ecda71e7f4ffa7eb219b9a4c27ad8b8e20a8fb0f85d4e1ee787c80",
     "contents/ui/TaskTools.js": "74e0b23971ef8f4c53d5693bf4a03f985500ae21ce4e84975244f718bfc57a77",
     "contents/ui/ToolTipDelegate.qml": "b1c0c8fee21ac6e3232f7c6c982d0286f989e88d9375e58f35f9b6f85a55f4ee",
     "contents/ui/ToolTipInstance.qml": "ac6aa4634eed80dbde289a3c8f82f893f23e3339ec85663c6081bc80ec815633",

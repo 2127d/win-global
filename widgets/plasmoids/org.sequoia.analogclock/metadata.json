@@ -1,0 +1,22 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Id": "org.sequoia.analogclock",
+        "Name": "Sequoia Analog Clock",
+        "Description": "An analog clock with Sequoia and original Plasma face presets",
+        "Icon": "clock",
+        "Version": "1.0.0",
+        "License": "GPL-2.0-or-later",
+        "Category": "Date and Time",
+        "Authors": [
+            {
+                "Name": "KDE Plasma contributors"
+            },
+            {
+                "Name": "Sequoia Eleven contributors"
+            }
+        ]
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Sequoia-Grid": "grid.json"
+}

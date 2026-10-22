@@ -1,0 +1,30 @@
+{
+    "version": 1,
+    "minimumColumns": 1,
+    "minimumRows": 1,
+    "panel": true,
+    "preview": "contents/ui/AnalogClockPreview.qml",
+    "previewFiles": [
+        "contents/ui/ClockFace.qml",
+        "contents/ui/Hand.qml",
+        "contents/images/clock.svg"
+    ],
+    "presets": [
+        {
+            "name": "Sequoia",
+            "columns": 2,
+            "rows": 2,
+            "configuration": {
+                "faceStyle": "sequoia"
+            }
+        },
+        {
+            "name": "Original",
+            "columns": 2,
+            "rows": 2,
+            "configuration": {
+                "faceStyle": "original"
+            }
+        }
+    ]
+}

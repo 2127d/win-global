@@ -31,6 +31,62 @@ static QQuickItem *resizeHandle(QQuickItem *root) {
     for (auto child : root->childItems()) if (auto found = resizeHandle(child)) return found;
     return nullptr;
 }
+static QQuickItem *moveHandle(QQuickItem *root, QQuickItem *container) {
+    auto drag = root->property("drag").value<QObject *>();
+    if (drag && drag->property("target").value<QObject *>() == container) return root;
+    for (auto child : root->childItems()) if (auto found = moveHandle(child, container)) return found;
+    return nullptr;
+}
+static void checkAnalogClock(QQuickItem *picker, QQuickWindow *wizardWindow, QQuickItem *grid) {
+    for (int preset = 0; preset < 2; ++preset) {
+        eval(picker, "GridSession.begin('org.sequoia.analogclock', 'Sequoia Analog Clock', 'clock', false); GridSession.choose(GridSession.targets.find(t=>t.kind === 'desktop' && t.screen === main.containment.screen))");
+        require(eval(picker, "GridSession.definition.presets.length === 2").toBool(), "clock has exactly two presets");
+        eval(picker, "GridSession.presetIndex = " + QString::number(preset));
+        QTest::qWait(350);
+        auto preview = named(wizardWindow->contentItem(), "sequoiaAnalogFace");
+        require(preview && preview->property("rounded").toBool() == (preset == 0), "preset preview selects matching clock face");
+        require(wizardWindow->grabWindow().save(qEnvironmentVariable("SEQUOIA_CLOCK_CAPTURE") + (preset == 0 ? "-sequoia.png" : "-original.png")), "clock preset capture");
+        eval(picker, "GridSession.place()");
+        require(eval(grid, "placeAt(" + QString::number(3 + preset * 2) + ",2)").toBool(), "clock placed at chosen grid location");
+        QTest::qWait(350);
+        auto container = qvariant_cast<QQuickItem *>(eval(grid, "layout.children.find(c=>c.applet && c.applet.plasmoid.pluginName === 'org.sequoia.analogclock' && c.applet.plasmoid.configuration.faceStyle === '" + QString(preset == 0 ? "sequoia" : "original") + "')"));
+        require(container && container->width() == 192 && container->height() == 192, "clock instance retains selected preset and 2x2 footprint");
+        auto clock = named(container, "sequoiaAnalogClock");
+        auto face = named(container, "sequoiaAnalogFace");
+        require(clock && face && face->property("rounded").toBool() == (preset == 0), "placed face matches preview");
+        require(eval(clock, "hours === clockSource.dateTime.getHours() && minutes === clockSource.dateTime.getMinutes()").toBool(), "clock uses KDE live time source");
+        eval(clock, "Plasmoid.configuration.showSecondHand = true; Plasmoid.configuration.showTimezoneString = true");
+        QTest::qWait(100);
+        require(eval(clock, "showSecondsHand && showTimezone && clockSource.trackSeconds").toBool() && face->property("showSecondsHand").toBool(), "native seconds and timezone settings retained");
+        eval(container, "configOverlayVisible = true; width = 270; height = 270");
+        QTest::qWait(150);
+        require(container->width() == 288 && container->height() == 288 && face->property("rounded").toBool() == (preset == 0), "resize snaps and preserves face style");
+        eval(container, "width = 192; height = 192");
+        QTest::qWait(100);
+        eval(container, "configOverlayVisible = false");
+        // Keep the picker alive while giving the real calendar keyboard focus.
+        eval(picker, "sidePanel.hideOnWindowDeactivate = false");
+        auto compact = qvariant_cast<QQuickItem *>(eval(clock, "compactRepresentationItem"));
+        compact->window()->requestActivate();
+        QTest::qWait(100);
+        compact->forceActiveFocus();
+        QTest::keyClick(compact->window(), Qt::Key_Space);
+        QTest::qWait(250);
+        fprintf(stderr, "CALENDAR: %s\n", qPrintable(eval(clock, "JSON.stringify({expanded:expanded,loaded:!!fullRepresentationItem,focus:compactRepresentationItem.activeFocus})").toString()));
+        require(eval(clock, "expanded && fullRepresentationItem !== null").toBool(), "native calendar opens from keyboard");
+        eval(clock, "expanded = false");
+        eval(picker, "sidePanel.requestActivate()");
+    }
+    eval(picker, "GridSession.begin('org.sequoia.analogclock', 'Sequoia Analog Clock', 'clock', false); GridSession.choose(GridSession.targets.find(t=>t.kind === 'panel' && t.ready))");
+    QTest::qWait(250);
+    auto panel = qvariant_cast<QQuickItem *>(eval(picker, "GridSession.targets.find(t=>t.kind === 'panel' && t.ready).containment"));
+    auto panelClock = named(panel, "sequoiaAnalogClock");
+    require(panelClock && panelClock->property("panel").toBool(), "clock supports native panel form factor");
+    auto panelFace = named(panelClock, "sequoiaAnalogFace");
+    require(panelFace && panelFace->property("rounded").toBool(), "panel uses first clock preset");
+    eval(picker, "sidePanel.hideOnWindowDeactivate = Qt.binding(()=>!main.preventWindowHide)");
+    fprintf(stderr, "PASS: analog clock presets, live time, seconds/timezone, calendar, resize, panel and preview configuration\n");
+}
 static void check(QQuickItem *picker) {
     auto window = picker->window();
     QTest::qWait(800);
@@ -141,6 +197,32 @@ static void check(QQuickItem *picker) {
     require(container->width() == 192 && container->height() == 384, "native resize produces tall footprint");
     auto face = named(container, "sequoiaGridTestFace");
     require(face && face->property("arrangement").toString() == "Tall", "widget changes layout after resize");
+    // Real movement arrives in small steps, not a single jump past half a cell.
+    // Snapping x/y on every step used to pin the widget to its original cell.
+    QPoint moveStart = container->mapToScene(QPointF(container->width()/2, 60)).toPoint();
+    QTest::mousePress(desktopWindow, Qt::LeftButton, Qt::NoModifier, moveStart);
+    for (int dx = 8; dx <= 208; dx += 8) {
+        QTest::mouseMove(desktopWindow, moveStart + QPoint(dx, 0), 20);
+        QTest::qWait(20);
+    }
+    require(container->x() > 96, "slow edit-mode body drag moves an existing widget");
+    QTest::mouseRelease(desktopWindow, Qt::LeftButton, Qt::NoModifier, moveStart + QPoint(208, 0));
+    QTest::qWait(400);
+    require(container->x() == 192 && container->y() == 96 && container->width() == 192 && container->height() == 384,
+            "existing widget snaps on release without changing its footprint");
+    require(eval(placement, "layout.isRectAvailable(0,96,192,384) && !layout.isRectAvailable(192,96,192,384)").toBool(), "move releases old cells and occupies new cells");
+    // The edit toolbar has a separate native MouseArea drag path.
+    auto grip = moveHandle(container, container);
+    require(grip && grip->isVisible(), "native edit toolbar move handle");
+    moveStart = grip->mapToScene(QPointF(grip->width()/2, grip->height()/2)).toPoint();
+    QTest::mousePress(desktopWindow, Qt::LeftButton, Qt::NoModifier, moveStart);
+    for (int dx = 8; dx <= 208; dx += 8) {
+        QTest::mouseMove(desktopWindow, moveStart - QPoint(dx, 0), 20);
+        QTest::qWait(20);
+    }
+    QTest::mouseRelease(desktopWindow, Qt::LeftButton, Qt::NoModifier, moveStart - QPoint(208, 0));
+    QTest::qWait(400);
+    require(container->x() == 0 && container->y() == 96, "existing widget can move back into released cells");
     eval(container, "configOverlayVisible = false; editMode = false");
     // Exercise the native drag source, compositor routing and desktop DropArea.
     bool dragChecked = false;
@@ -200,6 +282,20 @@ static void check(QQuickItem *picker) {
     input.move(window->mapToGlobal(dragStart + QPoint(40,40)), window->devicePixelRatio());
     QTest::qWait(800);
     require(window->isVisible() && eval(picker, "GridSession.phase === 'catalog' && main.containment.applets.length === " + QString::number(before + 2)).toBool(), "cancelled native drag restores picker without adding widget");
+    checkAnalogClock(picker, wizardWindow, placement);
+    // Leave an existing instance at a new location and verify it after restart.
+    eval(container, "editMode = true; configOverlayVisible = true");
+    QTest::qWait(200);
+    moveStart = container->mapToScene(QPointF(container->width()/2, 60)).toPoint();
+    QTest::mousePress(desktopWindow, Qt::LeftButton, Qt::NoModifier, moveStart);
+    for (int dx = 8; dx <= 112; dx += 8) {
+        QTest::mouseMove(desktopWindow, moveStart + QPoint(dx, 0), 20);
+        QTest::qWait(20);
+    }
+    QTest::mouseRelease(desktopWindow, Qt::LeftButton, Qt::NoModifier, moveStart + QPoint(112, 0));
+    QTest::qWait(400);
+    require(container->x() == 96 && container->y() == 96, "existing widget moved to its saved destination");
+    eval(container, "configOverlayVisible = false; editMode = false");
     eval(picker, "sidePanel.hideOnWindowDeactivate = Qt.binding(()=>!main.preventWindowHide)");
     eval(picker, "searchInput.text = ''; widgetExplorer.widgetsModel.filterType = 'running'; widgetExplorer.widgetsModel.filterQuery = true");
     QTest::qWait(300);
@@ -247,8 +343,9 @@ static void start() {
                         if (eval(grid, "layout && layout.children.filter(c=>c.applet && c.applet.plasmoid.pluginName === 'org.sequoia.gridtest').length === 2").toBool()) {
                             timer->stop();
                             QTest::qWait(600);
-                            require(eval(grid, "layout.children.some(c=>c.applet && c.x === 0 && c.y === 96 && c.width === 192 && c.height === 384)").toBool(), "resized geometry restored after shell restart");
+                            require(eval(grid, "layout.children.some(c=>c.applet && c.x === 96 && c.y === 96 && c.width === 192 && c.height === 384)").toBool(), "resized and repositioned geometry restored after shell restart");
                             require(eval(grid, "layout.children.some(c=>c.applet && c.x === 480 && c.y === 0 && c.width === 192 && c.height === 192)").toBool(), "dragged geometry restored after shell restart");
+                            require(eval(grid, "['sequoia','original'].every(style=>layout.children.some(c=>c.applet && c.applet.plasmoid.pluginName === 'org.sequoia.analogclock' && c.applet.plasmoid.configuration.faceStyle === style && c.applet.plasmoid.configuration.showSecondHand && c.applet.plasmoid.configuration.showTimezoneString))").toBool(), "both clock presets and compatible settings persist after restart");
                             fprintf(stderr, "PASS: widget sizes and positions survive a Plasma restart\n");
                             qApp->quit();
                             return;

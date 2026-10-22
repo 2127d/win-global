@@ -9,14 +9,14 @@ Item {
     property bool adjusting: false
     property bool queued: false
     function schedule() {
-        if (!adjusting && !queued && (container.configOverlayVisible || container.dragActive)) {
+        if (!adjusting && !queued && container.configOverlayVisible && !container.dragActive) {
             queued = true;
             Qt.callLater(snap);
         }
     }
     function snap() {
         queued = false;
-        if (!container || !layout || adjusting) return;
+        if (!container || !layout || adjusting || container.dragActive) return;
         adjusting = true;
         const cell = GridSession.cell;
         const w = Math.max(cell, Math.ceil(container.Layout.minimumWidth / cell) * cell,
@@ -38,8 +38,10 @@ Item {
         target: guard.container
         function onWidthChanged() { guard.schedule(); }
         function onHeightChanged() { guard.schedule(); }
-        function onXChanged() { guard.schedule(); }
-        function onYChanged() { guard.schedule(); }
+        // Plasma moves the container by incremental pointer deltas. Snapping
+        // x/y during a move consumes those deltas and pins slow drags in place.
+        // Its native move/drop path already snaps to the layout's grid and
+        // updates occupancy. Only resizing needs our live geometry correction.
     }
     GridGeometry { id: geometryChange }
 }

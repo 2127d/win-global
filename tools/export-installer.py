@@ -43,7 +43,9 @@ Do not run the installer itself as root. It requests administrator permission
 when needed. Keep the extracted folder to open Uninstall Sequoia Eleven.desktop later.
 You can also run python3 uninstall-gui.py to choose components to remove.
 
-The custom System Tray, Trash, animated task manager, layout widgets and adaptive grid test widget are included. Native widgets are built for the destination machine. Pinned applications must be
+The custom System Tray, Trash, animated task manager, layout widgets, Analog Clock
+and adaptive grid test widget are included. The Digital Clock review package's
+sources and standalone builder are included too. Native widgets are built for the destination machine. Pinned applications must be
 installed separately. Downloads uses your own Downloads folder. The theme uses
 its bundled wallpaper, not a personal wallpaper from the original machine.
 

@@ -23,12 +23,16 @@ QtObject {
     readonly property bool hidden: phase === "placement" || phase === "drag"
     signal finished()
     property QtObject creator: WidgetExplorer {}
-    function addApplet(target, pluginName) {
+    function addApplet(target, pluginName, configuration = null) {
         const previous = target.plasmoid.applets.map(a => a.id);
         creator.containment = target.plasmoid;
         creator.addApplet(pluginName);
         const added = target.plasmoid.applets.find(a => previous.indexOf(a.id) < 0);
         creator.containment = null;
+        if (added) {
+            const settings = configuration || Catalog.widgets[pluginName]?.presets[0].configuration || {};
+            for (const key of Object.keys(settings)) added.configuration[key] = settings[key];
+        }
         return added || null;
     }
 

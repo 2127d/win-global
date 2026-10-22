@@ -7,6 +7,7 @@ Grid placement uses Plasma's native applet containers and saved geometry.
 from pathlib import Path
 import json
 import shutil
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM_FILES = ('contents/views/Desktop.qml', 'contents/explorer/WidgetExplorer.qml',
@@ -238,12 +239,24 @@ def catalog():
             for dimension, minimum in [('columns', 'minimumColumns'), ('rows', 'minimumRows')]:
                 if type(preset.get(dimension)) is not int or not 1 <= definition[minimum] <= preset[dimension] <= 64:
                     raise RuntimeError(f'Invalid grid footprint: {source}')
+            settings = preset.get('configuration', {})
+            if not isinstance(settings, dict) or any(not isinstance(key, str) or type(value) not in (str, bool, int, float) for key, value in settings.items()):
+                raise RuntimeError(f'Invalid preset configuration: {source}')
+            if settings:
+                schema = ET.parse(source / 'contents/config/main.xml')
+                keys = {entry.get('name') for entry in schema.iter() if entry.tag.rsplit('}', 1)[-1] == 'entry'}
+                if not set(settings) <= keys:
+                    raise RuntimeError(f'Unknown preset configuration key: {source}')
         preview = definition.get('preview', '')
         if preview:
             path = (source / preview).resolve()
             if not path.is_relative_to(source.resolve()) or not path.is_file():
                 raise RuntimeError(f'Invalid widget preview: {source}')
-            definition['preview'] = 'previews/' + source.name + '/' + path.name
+            definition['preview'] = 'previews/' + source.name + '/' + preview
+            for dependency in definition.get('previewFiles', []):
+                path = (source / dependency).resolve()
+                if not path.is_relative_to(source.resolve()) or not path.is_file():
+                    raise RuntimeError(f'Invalid widget preview dependency: {source}')
         widgets[metadata['KPlugin']['Id']] = definition
     return widgets
 
@@ -254,7 +267,8 @@ def preview_sources():
         if definition.get('preview'):
             source = ROOT / 'widgets/plasmoids' / plugin
             manifest = json.loads((source / 'grid.json').read_text())
-            result['contents/explorer/grid/' + definition['preview']] = source / manifest['preview']
+            for name in [manifest['preview'], *manifest.get('previewFiles', [])]:
+                result['contents/explorer/grid/previews/' + plugin + '/' + name] = source / name
     return result
 
 

@@ -11,6 +11,7 @@ import signal
 import subprocess
 import tarfile
 import tempfile
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -53,6 +54,22 @@ plugin=org.kde.plasma.notifications
     assert 'hiddenItems=org.sequoia.notifications\n' in updated
     assert 'plugin=org.sequoia.notifications\n' in updated
     packages = installer.unpack_archives(folder, root / 'unpacked')
+    # Plasmoid ZIPs must not escape their staging directory or supply path IDs.
+    for label, metadata, extra in (
+            ('traversal', {'KPlugin': {'Id': 'org.sequoia.bad'}}, '../escaped'),
+            ('invalid-id', {'KPlugin': {'Id': '../escaped'}}, 'contents/ui/main.qml')):
+        invalid = root / label
+        invalid.mkdir()
+        with zipfile.ZipFile(invalid / 'bad.plasmoid', 'w') as archive:
+            archive.writestr('metadata.json', json.dumps(metadata))
+            archive.writestr(extra, 'invalid')
+        try:
+            installer.unpack_archives(invalid, root / (label + '-stage'))
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('Unsafe plasmoid accepted: ' + label)
+    assert not (root / 'escaped').exists()
     assert installer.notification_settings(updated, packages) == updated
     migration = installer.fork_settings(panel.read_text(), packages)
     assert 'plugin=org.sequoia.systemtray\n' in migration

@@ -37,7 +37,9 @@ Dragging a card hides the picker window without destroying the native drag
 source. Desktop drops use the first preset. Native panel drops use the panel
 representation. Completion or cancellation brings the picker back.
 
-Use Plasma's Edit Mode resize handles on the test widget. It snaps while resizing
+In Plasma's Edit Mode, drag an existing widget by its face or the toolbar's move
+handle. It follows the pointer and snaps into the desktop grid when released.
+Use Plasma's resize handles on the test widget. It snaps while resizing
 and changes between compact, square, wide, tall and detailed layouts. Position
 and size are saved by Plasma's existing layout manager. The grid uses its native
 collision map rather than a separate database of desktop positions.
@@ -56,6 +58,15 @@ pixels inside each edge, giving neighboring widgets a consistent 12-pixel gap.
 It keeps all content inside the footprint and has a separate panel presentation.
 The preview and installed widget use the same QML face. Future widgets should
 follow this contract and retain all their native functionality.
+
+Presets may include a `configuration` map of scalar settings declared in the
+widget's config schema. Guided placement applies that map to the new instance;
+panel placement uses the first preset's settings. Native dragging uses the
+widget's schema defaults, which must match the first preset. The preview can
+declare `presetConfiguration` to receive the selection, and list local QML/SVG
+dependencies in `previewFiles`. Paths remain inside the widget package. The
+analog clock exercises two appearances at the same 2×2 footprint; resizing
+changes the footprint without rewriting the user's appearance setting.
 
 The current catalog gives legacy widgets a default footprint; they still retain
 their native minimum sizes and presentation. Their full set of responsive
@@ -81,8 +92,9 @@ The functional test starts a private D-Bus session and virtual Wayland desktop
 with temporary configuration. It never changes the live desktop. It checks the
 separate dialog visibility, rendered solid/transparent frame alpha, wizard
 cancellation, destination map, preset placement, panel addition, occupied slots, native live
-resizing, adaptive content, drag/drop, cancellation, and existing picker behavior.
-It also restarts Plasma to check saved geometry. Compositor-driven drag tests
+resizing, adaptive content, slow moves of existing widgets using both native move
+gestures, released/occupied cells, drag/drop, cancellation, and existing picker
+behavior. It also restarts Plasma to check resized and repositioned geometry. Compositor-driven drag tests
 require libei development headers alongside the existing Qt development tools.
 Test input is restricted to the temporary compositor's D-Bus and runtime directory.
 

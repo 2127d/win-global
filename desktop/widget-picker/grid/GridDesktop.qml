@@ -58,7 +58,7 @@ Item {
         if (!available(column, row)) return false;
         const rect = Qt.rect(column * GridSession.cell, row * GridSession.cell,
                              spanX * GridSession.cell, spanY * GridSession.cell);
-        const applet = GridSession.addApplet(containment, GridSession.plugin);
+        const applet = GridSession.addApplet(containment, GridSession.plugin, GridSession.preset.configuration || {});
         if (!applet || applet.failedToLaunch) {
             GridSession.error = qsTr("The widget could not be loaded.");
             return false;

@@ -2,7 +2,6 @@
 """Generate original, Qt-compatible nine-slice SVG assets and theme packages."""
 from pathlib import Path
 import json
-import tarfile
 import shutil
 from typography import FONT_SETTINGS
 from wallpaper import WALLPAPER_ID, build_wallpaper
@@ -341,25 +340,10 @@ Theme=org.sequoia.eleven.{mode}
             if material == 'transparent':
                 defaults += '\n[kwinrc][Plugins]\nblurEnabled=true\n'
             (package/'contents/defaults').write_text(defaults)
-    dist=ROOT/'dist'
-    dist.mkdir(exist_ok=True)
-    with tarfile.open(dist/f'sequoia-eleven-wallpaper-{VERSION}.tar.gz','w:gz') as archive:
-        archive.add(wallpaper, arcname=WALLPAPER_ID)
-    for mode in PALETTES:
-        slug=f'sequoia-eleven-{mode}'
-        with tarfile.open(dist/f'{slug}-{VERSION}.tar.gz','w:gz') as archive:
-            archive.add(ROOT/'themes/plasma/desktoptheme'/slug,arcname=slug)
-    with tarfile.open(dist/f'sequoia-tahoe-icons-{VERSION}.tar.gz','w:gz') as archive:
-        for theme in sorted((ROOT/'themes/icons').glob('SequoiaTahoe*')):
-            archive.add(theme, arcname=theme.name)
-        archive.add(ROOT/'tools/build-tahoe-icons.py', arcname='build-tahoe-icons.py')
-        archive.add(ROOT/'themes/icons/bold-icons.json', arcname='bold-icons.json')
-    with tarfile.open(dist/f'sequoia-eleven-desktop-{VERSION}-source.tar.gz','w:gz') as archive:
-        for name in ['themes', 'widgets', 'desktop', 'apps', 'tools', 'docs', 'preview', 'README.md', 'LICENSE', 'install.sh', 'install-gui.py', 'uninstall-gui.py', 'Install Sequoia Eleven.desktop', 'Uninstall Sequoia Eleven.desktop']:
-            archive.add(ROOT/name,arcname=f'sequoia-eleven/{name}',filter=lambda item: None if (
-                '__pycache__' in item.name or item.name.endswith('.pyc')
-                or (item.name.startswith('sequoia-eleven/preview/') and item.name.endswith(('.log', '.tree')))
-            ) else item)
+    # The portable installer is the supported source distribution. Do not
+    # recreate the obsolete source tarball containing preview captures.
+    from dist_packages import assets
+    assets()
     print('Built light and dark styles, matching color schemes, adaptive wallpaper, and installation archives.')
 
 

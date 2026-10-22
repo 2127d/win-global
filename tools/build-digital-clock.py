@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import zipfile
 import xml.etree.ElementTree as ET
+from dist_packages import checksum
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'widgets/plasmoids/org.sequoia.digitalclock'
@@ -20,6 +21,9 @@ def build():
         for path in sorted(SOURCE.rglob('*')):
             if path.is_file():
                 archive.write(path, path.relative_to(SOURCE))
+    with zipfile.ZipFile(destination) as archive:
+        assert archive.testzip() is None
+    checksum(destination)
     print(f'Packaged {destination}')
 
 

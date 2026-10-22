@@ -166,5 +166,22 @@ class ShellTests(unittest.TestCase):
         self.remove('widgets')
         self.assertFalse((self.live / widget / 'metadata.json').exists())
 
+    def test_analog_clock_installs_with_picker_and_removes_independently(self):
+        self.install('plasma-style')
+        command = [sys.executable, str(installer.ROOT / 'tools/install-widget-picker.py'),
+                   '--prefix', str(self.live), '--with-widget', 'org.sequoia.analogclock']
+        before = self.receipt().manifest.read_bytes()
+        subprocess.run([*command, '--check'], check=True, capture_output=True)
+        self.assertEqual(self.receipt().manifest.read_bytes(), before)
+        subprocess.run(command, check=True, capture_output=True)
+        widget = 'plasma/plasmoids/org.sequoia.analogclock'
+        self.assertIn(widget + '/contents/ui/ClockFace.qml', self.receipt().data['files'])
+        self.receipt().validate()
+        self.assertFalse((self.live / 'plasma/plasmoids/org.kde.plasma.analogclock').exists())
+        self.remove('widgets')
+        self.assertFalse((self.live / widget).exists())
+        self.assertTrue((self.live / shell.SHELL / 'contents/explorer/grid/PlacementWizard.qml').is_file())
+        self.remove('plasma-style')
+
 if __name__ == '__main__':
     unittest.main()

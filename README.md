@@ -381,7 +381,11 @@ The archives in `dist/sequoia-eleven-{light,dark}-2.0.0.tar.gz` contain these st
 The standalone wallpaper is in `dist/sequoia-eleven-wallpaper-2.0.0.tar.gz`.
 The standalone icon family is in `dist/sequoia-tahoe-icons-2.0.0.tar.gz`;
 install all three SequoiaTahoe directories together under `~/.local/share/icons`.
-The desktop source archive contains the complete source and installation tools.
+`dist/Sequoia-Eleven-Installer.tar.xz` contains the complete installer and the
+sources needed by its options. `dist/CONTENTS.txt` explains each standalone
+package. Rebuild supported distributions with `python3 tools/build-dist.py` and
+check checksums, source freshness and widget completeness with
+`python3 tools/verify-dist.py`.
 
 | Light wallpaper | Dark wallpaper |
 | --- | --- |

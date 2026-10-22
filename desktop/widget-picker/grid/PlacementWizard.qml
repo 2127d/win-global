@@ -119,6 +119,9 @@ FocusScope {
                     anchors.fill: parent
                     source: GridSession.definition.preview || ""
                     active: GridSession.phase === "preset" && !!GridSession.definition.preview
+                    onLoaded: if ("presetConfiguration" in item) {
+                        item.presetConfiguration = Qt.binding(() => GridSession.preset.configuration || {});
+                    }
                 }
                 Rectangle {
                     anchors.fill: parent

@@ -100,6 +100,7 @@ def main():
                    QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='Fusion', KWIN_COMPOSE='Q',
                    QT_FORCE_STDERR_LOGGING='1', QT_SCALE_FACTOR=str(args.scale),
                    SEQUOIA_PICKER_MATERIAL=args.material,
+                   SEQUOIA_CLOCK_CAPTURE=str(ROOT / f'preview/analog-clock-{args.mode}'),
                    SEQUOIA_PICKER_CAPTURE=str(ROOT / f'preview/widget-picker-{args.width}x{args.height}-{args.mode}-{args.material}-scale{args.scale:g}.png'))
         for key in ('DISPLAY', 'WAYLAND_DISPLAY', 'LD_PRELOAD', 'QML_IMPORT_PATH', 'QT_PLUGIN_PATH'):
             env.pop(key, None)
@@ -114,6 +115,8 @@ def main():
         shell_overrides.stage(base / 'data', base / 'unused', {'plasma-style'}, {})
         shutil.copytree(ROOT / 'widgets/plasmoids/org.sequoia.gridtest',
                         base / 'data/plasma/plasmoids/org.sequoia.gridtest')
+        shutil.copytree(ROOT / 'widgets/plasmoids/org.sequoia.analogclock',
+                        base / 'data/plasma/plasmoids/org.sequoia.analogclock')
         theme = f'sequoia-eleven-{args.mode}'
         shutil.copytree(ROOT / 'themes/plasma/desktoptheme' / theme, base / 'data/plasma/desktoptheme' / theme)
         (base / 'config/plasmarc').write_text(f'[Theme]\nname={theme}\n')
@@ -129,7 +132,8 @@ def main():
         errors = [line for line in output.splitlines() if any(name in line for name in
             ('Desktop.qml', 'WidgetExplorer.qml', 'AppletDelegate.qml', 'PickerMetrics.qml',
              'GridDesktop.qml', 'GridSession.qml', 'GridTarget.qml', 'GridItem.qml', 'GridGeometry.qml',
-             'PlacementWizard.qml', 'PlacementDialog.qml', 'GridTestFace.qml', 'org.sequoia.gridtest'))
+             'PlacementWizard.qml', 'PlacementDialog.qml', 'GridTestFace.qml', 'org.sequoia.gridtest',
+             'org.sequoia.analogclock', 'ClockFace.qml', 'AnalogClockPreview.qml'))
             and any(word in line for word in ('Error:', 'Cannot assign', 'Unable to assign', 'unavailable', 'Binding loop'))]
         if result.returncode or errors or 'PASS:' not in output:
             print((base / 'session.log').read_text())
