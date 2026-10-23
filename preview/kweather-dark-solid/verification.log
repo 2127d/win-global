@@ -1,21 +1,21 @@
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Activating service name='org.freedesktop.portal.Desktop' requested by ':1.0' (uid=1000 pid=40000 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Activating service name='org.freedesktop.portal.Desktop' requested by ':1.0' (uid=1000 pid=8213 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
 kf.windowsystem: Could not find any platform plugin
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Activating service name='org.freedesktop.impl.portal.PermissionStore' requested by ':1.1' (uid=1000 pid=40004 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.PermissionStore'
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Activating service name='org.freedesktop.portal.Documents' requested by ':1.1' (uid=1000 pid=40004 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Successfully activated service 'org.freedesktop.portal.Documents'
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Activating service name='org.freedesktop.impl.portal.desktop.kde' requested by ':1.1' (uid=1000 pid=40004 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.desktop.kde'
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Activating service name='org.freedesktop.impl.portal.PermissionStore' requested by ':1.1' (uid=1000 pid=8217 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.PermissionStore'
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Activating service name='org.freedesktop.portal.Documents' requested by ':1.1' (uid=1000 pid=8217 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Successfully activated service 'org.freedesktop.portal.Documents'
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Activating service name='org.freedesktop.impl.portal.desktop.kde' requested by ':1.1' (uid=1000 pid=8217 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.desktop.kde'
 Failed to create wl_display (No such file or directory)
 xdp-kde-clipboard: Couldn't resolve QWaylandApplication - clipboard will not work
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Activating service name='org.freedesktop.impl.portal.desktop.gtk' requested by ':1.1' (uid=1000 pid=40004 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.desktop.gtk'
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Activating service name='org.freedesktop.impl.portal.desktop.gtk' requested by ':1.1' (uid=1000 pid=8217 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.desktop.gtk'
 
-(/usr/libexec/xdg-desktop-portal:40004): xdg-desktop-portal-WARNING **: 18:53:58.563: Failed to connect to PipeWire: Couldn't connect to PipeWire
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Activating service name='org.freedesktop.impl.portal.desktop.kwallet' requested by ':1.1' (uid=1000 pid=40004 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+(/usr/libexec/xdg-desktop-portal:8217): xdg-desktop-portal-WARNING **: 13:47:15.783: Failed to connect to PipeWire: Couldn't connect to PipeWire
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Activating service name='org.freedesktop.impl.portal.desktop.kwallet' requested by ':1.1' (uid=1000 pid=8217 comm="/usr/libexec/xdg-desktop-portal" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
 kf.wallet.ksecretd: Lacking a socket, pipe: 0 env: 0
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Successfully activated service 'org.freedesktop.portal.Desktop'
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Successfully activated service 'org.freedesktop.portal.Desktop'
 qt.qpa.services: Failed to register with host portal QDBusError("org.freedesktop.portal.Error.Failed", "Could not register app ID: Connection already associated with an application ID")
-dbus-daemon[39999]: [session uid=1000 pid=39999 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.desktop.kwallet'
+dbus-daemon[8212]: [session uid=1000 pid=8212 pidfd=5] Successfully activated service 'org.freedesktop.impl.portal.desktop.kwallet'
 network error when fetching forecast: "Proxy connection refused"
 PASS: forecasts, units, day/location selection, styles, palette alpha, settings, location management, reduced motion, responsive layouts and refresh

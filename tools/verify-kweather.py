@@ -12,19 +12,22 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 
 def fixture(base, lat, lon, name, icon):
+    offset = 20 if name == 'Monterey' else 0
     today=datetime.now(timezone.utc).replace(hour=0,minute=0,second=0,microsecond=0)
     days=[]
     for index in range(7):
         date=today+timedelta(days=index)
         hourly=[]
         for hour in range(24):
-            hourly.append(dict(date=(date+timedelta(hours=hour)).isoformat(),temperature=14+index+hour/8,
+            hourly.append(dict(date=(date+timedelta(hours=hour)).isoformat(),temperature=offset+14+index+hour/8,
                 weatherIcon=icon,neutralWeatherIcon=icon,weatherDescription='Rain' if 'showers' in icon else 'Clear',
                 humidity=72,pressure=1013,uvIndex=2,precipitationAmount=0.3,windSpeed=12,windDirectionDegree=220,
                 dewPointTemperature=8,fog=0))
-        days.append(dict(date=date.strftime('%Y-%m-%d'),hourly=hourly,maxTemp=18+index,minTemp=9+index,
+        days.append(dict(date=date.strftime('%Y-%m-%d'),hourly=hourly,maxTemp=offset+18+index,minTemp=offset+9+index,
             weatherIcon=icon,weatherDescription=hourly[0]['weatherDescription'],humidity=72,pressure=1013,
             uvIndex=2+index*0.4,precipitation=2.4))
+    # A zero-range day at the scale's upper endpoint exercises the visible marker.
+    days[-1]['minTemp'] = days[-1]['maxTemp']
     target=base/'cache/kweather/cache'/f'{lat:.2f}'/f'{lon:.2f}'/'cache.json'
     target.parent.mkdir(parents=True,exist_ok=True)
     target.write_text(json.dumps(dict(createdTime=datetime.now(timezone.utc).isoformat(),lat=lat,lon=lon,timezone='UTC',day=days)))

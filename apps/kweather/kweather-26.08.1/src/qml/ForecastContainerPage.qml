@@ -18,7 +18,19 @@ Kirigami.Page {
     readonly property bool dynamic: settingsModel.forecastStyle === "Dynamic"
     readonly property bool sidebar: width >= 980
     readonly property var location: WeatherLocationListModel.locations[currentIndex] || null
-    readonly property var days: location ? location.dayForecasts : []
+    // Snapshot the native value-type lists into JS records. Qt's sequence
+    // modelData wrappers can otherwise keep references to the previous city.
+    readonly property var days: location ? location.dayForecasts.map(d => ({
+        date: d.date, minTemp: d.minTemp, maxTemp: d.maxTemp,
+        weatherIcon: d.weatherIcon, weatherDescription: d.weatherDescription,
+        precipitation: d.precipitation, humidity: d.humidity,
+        uvIndex: d.uvIndex, pressure: d.pressure
+    })) : []
+    readonly property var hourly: location ? location.hourForecasts.map(h => ({
+        date: h.date, temperature: h.temperature, weatherIcon: h.weatherIcon,
+        weatherDescription: h.weatherDescription, precipitationAmount: h.precipitationAmount,
+        windSpeed: h.windSpeed
+    })) : []
     readonly property var current: location ? location.currentHourForecast : null
     readonly property bool hasWeather: current !== null && current !== undefined && days.length > 0
     readonly property var selected: days.length ? days[Math.max(0, Math.min(location.selectedDay, days.length-1))] : null
@@ -209,9 +221,11 @@ Kirigami.Page {
                                 objectName: "weatherHours"
                                 Layout.fillWidth: true; Layout.fillHeight: true
                                 orientation: ListView.Horizontal; spacing: 6; clip: true
-                                model: dashboard.location?.hourForecasts || []
+                                model: dashboard.hourly
                                 delegate: Item {
+                                    required property int index
                                     required property var modelData
+                                    objectName: "weatherHour" + index
                                     width: 84; height: hours.height - 12
                                     ColumnLayout {
                                         anchors.fill: parent; spacing: 7
@@ -245,8 +259,8 @@ Kirigami.Page {
                                     model: dashboard.days
                                     delegate: ItemDelegate {
                                         id: day
-                                        required property var modelData
                                         required property int index
+                                        required property var modelData
                                         objectName: "weatherDay" + index
                                         Layout.fillWidth: true; implicitHeight: 46
                                         padding: 10
@@ -264,11 +278,19 @@ Kirigami.Page {
                                             Kirigami.Icon { source: day.modelData.weatherIcon; implicitWidth: 24; implicitHeight: 24 }
                                             Caption { text: dashboard.temp(day.modelData.minTemp); Layout.preferredWidth: 34; horizontalAlignment: Text.AlignRight }
                                             Rectangle {
+                                                id: temperatureTrack
+                                                objectName: "weatherTemperatureTrack" + day.index
                                                 Layout.fillWidth: true; Layout.minimumWidth: 30; implicitHeight: 5; radius: 3
                                                 color: Qt.alpha(dashboard.ink,0.07)
                                                 Rectangle {
-                                                    x: (day.modelData.minTemp-dashboard.rangeMin)/Math.max(1,dashboard.rangeMax-dashboard.rangeMin) * parent.width
-                                                    width: Math.max(6,(day.modelData.maxTemp-day.modelData.minTemp)/Math.max(1,dashboard.rangeMax-dashboard.rangeMin)*parent.width)
+                                                    objectName: "weatherTemperatureBar" + day.index
+                                                    readonly property real span: Math.max(1,dashboard.rangeMax-dashboard.rangeMin)
+                                                    readonly property real low: Math.max(0,Math.min(1,(day.modelData.minTemp-dashboard.rangeMin)/span))
+                                                    readonly property real high: Math.max(low,Math.min(1,(day.modelData.maxTemp-dashboard.rangeMin)/span))
+                                                    // Keep the minimum visible marker inside the track,
+                                                    // including a zero-range day at the maximum temperature.
+                                                    width: Math.min(temperatureTrack.width,Math.max(6,(high-low)*temperatureTrack.width))
+                                                    x: Math.min(low*temperatureTrack.width,temperatureTrack.width-width)
                                                     height: parent.height; radius: 3
                                                     gradient: Gradient { orientation: Gradient.Horizontal; GradientStop {position:0;color:dashboard.dynamic?"#7bc5df":"#56a5b8"} GradientStop {position:1;color:"#e6b97e"} }
                                                 }

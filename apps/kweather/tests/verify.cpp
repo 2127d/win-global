@@ -27,6 +27,21 @@ static void capture(QQuickWindow *w,const QString &name) {
     QTest::qWait(600);
     check(w->grabWindow().save(qEnvironmentVariable("WEATHER_CAPTURE")+"/"+name+".png"),"screenshot");
 }
+static void checkForecastRows(QQuickItem *dashboard) {
+    QTest::qWait(150);
+    const int count=eval(dashboard,"days.length").toInt();
+    for(int i=0;i<count;++i) {
+        auto day=find(dashboard,"weatherDay"+QString::number(i));
+        check(day,"daily row exists");
+        check(eval(day,"modelData.minTemp")==eval(dashboard,QString("location.dayForecasts[%1].minTemp").arg(i)),"daily low follows active forecast");
+        check(eval(day,"modelData.maxTemp")==eval(dashboard,QString("location.dayForecasts[%1].maxTemp").arg(i)),"daily high follows active forecast");
+        auto bar=find(dashboard,"weatherTemperatureBar"+QString::number(i));
+        check(bar && bar->width()>0 && bar->x()>=0 && bar->x()+bar->width()<=bar->parentItem()->width()+0.01,"temperature bar stays inside its track");
+    }
+    auto hour=find(dashboard,"weatherHour0");
+    check(hour && eval(hour,"modelData.temperature")==eval(dashboard,"location.hourForecasts[0].temperature"),"hourly row follows active day and location");
+    check(eval(dashboard,"selected.maxTemp===location.dayForecasts[location.selectedDay].maxTemp && selected.weatherDescription===location.dayForecasts[location.selectedDay].weatherDescription").toBool(),"selected-day details follow active forecast");
+}
 static void run(QQuickWindow *window,QQuickItem *dashboard) {
     QTest::qWait(700);
     if(qEnvironmentVariable("WEATHER_EMPTY")=="1") {
@@ -37,6 +52,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     check(eval(dashboard,"hasWeather && days.length===7 && location.hourForecasts.length===24").toBool(),"real weather model loaded fixture cache");
     check(eval(dashboard,"location.currentDate").toString()==QLocale().toString(QDateTime::currentDateTimeUtc().date(),QLocale::LongFormat),"header date uses the forecast location timezone");
     window->resize(1180,820);QTest::qWait(200);
+    checkForecastRows(dashboard);
     capture(window,"dynamic");
     auto temperature=find(dashboard,"weatherTemperature");check(temperature,"temperature label");
     auto before=temperature->property("text").toString();
@@ -48,6 +64,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     auto scroll=find(dashboard,"weatherScroll");
     eval(scroll,"contentItem.contentY=400");QTest::qWait(200);click(day);
     check(eval(dashboard,"location.selectedDay===2 && selected.date.getDate()===days[2].date.getDate()").toBool(),"daily selection updates details");
+    checkForecastRows(dashboard);
     eval(scroll,"contentItem.contentY=0");QTest::qWait(200);
     click(find(dashboard,"weatherFlatStyle"));
     check(!dashboard->property("dynamic").toBool(),"flat style switch");
@@ -65,12 +82,17 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     check(!eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"dialogs close");
     eval(dashboard,"switchPageIndex(1)");
     check(eval(dashboard,"location.name==='Monterey'").toBool(),"switch saved location");
+    check(eval(find(dashboard,"weatherDay0"),"modelData.minTemp").toDouble()==29,"daily rows switch to the new location's temperatures");
+    checkForecastRows(dashboard);
     click(find(dashboard,"weatherDynamicStyle"));capture(window,"night");
     eval(dashboard,"settingsModel.animateWeather=false;settingsModel.save()");
     check(!eval(dashboard,"settingsModel.animateWeather").toBool(),"motion can be disabled");
     eval(dashboard,"switchPageIndex(0)");
+    checkForecastRows(dashboard);
     window->resize(760,760);capture(window,"compact");
+    checkForecastRows(dashboard);
     window->resize(390,760);capture(window,"narrow");
+    checkForecastRows(dashboard);
     check(!dashboard->property("sidebar").toBool(),"responsive sidebar");
     click(find(dashboard,"weatherRefresh"));
     QTest::qWait(300);
@@ -82,7 +104,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     for(int i=0;i<50 && eval(dashboard,"location.loading").toBool();++i)QTest::qWait(100);
     check(eval(dashboard,"hasWeather && !location.loading && location.errorMessage.length>0").toBool(),"failed refresh preserves the last forecast");
     capture(window,"offline");
-    qInfo("PASS: forecasts, units, day/location selection, styles, palette alpha, settings, location management, reduced motion, responsive layouts and refresh");
+    qInfo("PASS: forecasts, units, day/location selection, temperature-bar bounds, styles, palette alpha, settings, location management, reduced motion, responsive layouts and refresh");
     window->close();
 }
 static void start() {

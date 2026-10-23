@@ -66,5 +66,8 @@ dialogs, style switching, window alpha, motion preference, responsive sizing and
 refresh, including failed refreshes that preserve the last forecast. `--empty`
 checks startup without data. `apps/kweather/tests/installation.py` checks runtime
 relocation, update fallback, edited-file protection and reversible installation.
+Locations use distinct temperature ranges to catch stale forecast rows after
+switching cities. Bar geometry is checked at wide and narrow sizes, including
+a zero-range day at the upper endpoint of the temperature scale.
 Use `--mode light|dark --material solid|transparent` to test each palette.
 The runtime does not contain the test fixtures or test hook.
