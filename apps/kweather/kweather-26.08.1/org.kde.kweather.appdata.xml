@@ -1,0 +1,1201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+- SPDX-FileCopyrightText: 2020 Han Young <hanyoung@protonmail.com>
+- SPDX-FileCopyrightText: 2020 Devin Lin <espidev@gmail.com>
+- SPDX-License-Identifier: GPL-2.0-or-later
+-->
+<component type="desktop-application">
+  <id>org.kde.kweather</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0-or-later</project_license>
+  <content_rating type="oars-1.1"/>
+  <name>Weather</name>
+  <name xml:lang="ar">الطقس</name>
+  <name xml:lang="az">Hava</name>
+  <name xml:lang="bg">Времето</name>
+  <name xml:lang="ca">Meteorologia</name>
+  <name xml:lang="ca-valencia">Meteorologia</name>
+  <name xml:lang="cs">Počasí</name>
+  <name xml:lang="de">Weather</name>
+  <name xml:lang="el">Καιρός</name>
+  <name xml:lang="en-GB">Weather</name>
+  <name xml:lang="eo">Vetero</name>
+  <name xml:lang="es">Meteorología</name>
+  <name xml:lang="et">Ilm</name>
+  <name xml:lang="eu">Eguraldia</name>
+  <name xml:lang="fi">Weather</name>
+  <name xml:lang="fr">Météo</name>
+  <name xml:lang="gl">Meteoroloxía</name>
+  <name xml:lang="he">מזג אוויר</name>
+  <name xml:lang="hi">मौसम</name>
+  <name xml:lang="hu">Időjárás</name>
+  <name xml:lang="ia">Tempore meteorologic-Weather</name>
+  <name xml:lang="id">Weather</name>
+  <name xml:lang="is">Veðurspá</name>
+  <name xml:lang="it">Meteo</name>
+  <name xml:lang="ka">ამინდი</name>
+  <name xml:lang="ko">날씨</name>
+  <name xml:lang="lt">Orai</name>
+  <name xml:lang="lv">Laikapstākļi</name>
+  <name xml:lang="nb">Værmelding</name>
+  <name xml:lang="nl">Het weer</name>
+  <name xml:lang="nn">Vêrmelding</name>
+  <name xml:lang="pa">ਮੌਸਮ</name>
+  <name xml:lang="pl">Pogoda</name>
+  <name xml:lang="pt">Tempo</name>
+  <name xml:lang="pt-BR">Meteorologia</name>
+  <name xml:lang="ru">Погода</name>
+  <name xml:lang="sa">वातावरणम्‌</name>
+  <name xml:lang="sk">Počasie</name>
+  <name xml:lang="sl">Weather</name>
+  <name xml:lang="sv">Väder</name>
+  <name xml:lang="tr">Hava Durumu</name>
+  <name xml:lang="ug">ھاۋا رايى</name>
+  <name xml:lang="uk">Погода</name>
+  <name xml:lang="zh-CN">天气</name>
+  <name xml:lang="zh-TW">天氣</name>
+  <summary>View real-time weather forecasts</summary>
+  <summary xml:lang="ar">عرض تنبؤات الطقس في الوقت الحقيقي</summary>
+  <summary xml:lang="az">Hava məlumatlarını birbaşa izləmək</summary>
+  <summary xml:lang="bg">Метеорологични прогнози в реално време</summary>
+  <summary xml:lang="ca">Visualitza previsions meteorològiques en temps real</summary>
+  <summary xml:lang="ca-valencia">Visualitza previsions meteorològiques en temps real</summary>
+  <summary xml:lang="cs">Předpovědi počasí v reálném čase</summary>
+  <summary xml:lang="de">Echtzeit-Wettervorhersagen anzeigen</summary>
+  <summary xml:lang="en-GB">View real-time weather forecasts</summary>
+  <summary xml:lang="eo">Rigardi realtempajn veterprognozojn</summary>
+  <summary xml:lang="es">Ver predicciones meteorológicas en tiempo real</summary>
+  <summary xml:lang="eu">Ikusi denbora errealeko eguraldi iragarpenak</summary>
+  <summary xml:lang="fi">Näytä tosiaikaiset sääennusteet</summary>
+  <summary xml:lang="fr">Afficher des prévisions météo en temps réel</summary>
+  <summary xml:lang="gl">Vexa a predición meteorolóxica en tempo real</summary>
+  <summary xml:lang="he">הצגת תחזיות מזג אוויר בזמן אמת</summary>
+  <summary xml:lang="hi">वास्तविक समय मौसम पूर्वानुमान देखें</summary>
+  <summary xml:lang="hu">Valós idejű időjárás-előrejelzések megtekintése</summary>
+  <summary xml:lang="ia">Vista de previsiones de tempore in tempore real </summary>
+  <summary xml:lang="is">Skoðaðu veðurspár í rauntíma</summary>
+  <summary xml:lang="it">Visualizza le previsioni meteo in tempo reale</summary>
+  <summary xml:lang="ka">ამინდის პროგნოზების ნახვა რეალურ დროში</summary>
+  <summary xml:lang="ko">실시간 일기 예보 표시</summary>
+  <summary xml:lang="lt">Rodyti tikralaikes orų prognozes</summary>
+  <summary xml:lang="lv">Iegūstiet reāllaika laikapstākļu prognozes</summary>
+  <summary xml:lang="nb">Vis værmelding i sanntid</summary>
+  <summary xml:lang="nl">Realtime weersverwachtingen bekijken</summary>
+  <summary xml:lang="nn">Vis vêrmelding i sanntid</summary>
+  <summary xml:lang="pl">Oglądaj prognozę pogody w czasie rzeczywistym</summary>
+  <summary xml:lang="pt-BR">Visualize previsões do tempo em tempo real</summary>
+  <summary xml:lang="ru">Просмотр прогнозов погоды в режиме реального времени</summary>
+  <summary xml:lang="sa">वास्तविकसमयस्य मौसमस्य पूर्वानुमानं पश्यन्तु</summary>
+  <summary xml:lang="sk">Zobrazenie predpovedí počasia v reálnom čase</summary>
+  <summary xml:lang="sl">Poglej sprotne vremenske napovedi</summary>
+  <summary xml:lang="sv">Visa väderprognoser i realtid</summary>
+  <summary xml:lang="tr">Gerçek Zamanlı Hava Durumu Tahminleri</summary>
+  <summary xml:lang="uk">Перегляд інтерактивних прогнозів погоди</summary>
+  <summary xml:lang="zh-CN">查看实时天气预报</summary>
+  <summary xml:lang="zh-TW">查看即時天氣預報</summary>
+  <developer id="org.kde">
+    <name translate="no">KDE</name>
+    <url>https://kde.org</url>
+  </developer>
+  <launchable type="desktop-id">org.kde.kweather.desktop</launchable>
+  <recommends>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </recommends>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <description>
+    <p>A convergent weather application for Plasma. Has flat and dynamic/animated views for showing forecasts and other information.</p>
+    <p xml:lang="ar">تطبيق طقس متكيف لبلازما. يحتوي على طرق عرض مسطحة ومتغيرة/متحركة لعرض التنبؤات الجوية وغيرها من المعلومات.</p>
+    <p xml:lang="az">Plasma'da hava proqnozu üçün əlverişli tətbiq. Hava haqqında və digər məlumatları göstərmək üçün hamar və canlı/animasiyalı görünüş.</p>
+    <p xml:lang="bg">Приложение за метеорологична прогноза за Plasma. Има плоски и динамични/анимирани изгледи за показване на прогнози и друга информация.</p>
+    <p xml:lang="ca">Una aplicació convergent de meteorologia per al Plasma. Té vistes planes i dinàmiques/animades per a mostrar els pronòstics i altra informació.</p>
+    <p xml:lang="ca-valencia">Una aplicació convergent de meteorologia per a Plasma. Té vistes planes i dinàmiques/animades per a mostrar els pronòstics i altra informació.</p>
+    <p xml:lang="cs">Konvergentní aplikace pro předpověď počasí pro Plasma. Má jednoduché a dynamické/animované zobrazení pro předpovědi a další informace.</p>
+    <p xml:lang="de">Eine konvergente Wetter-Anwendung für Plasma. Mit flachen und dynamisch animierten Ansichten der Wettervorhersage und weiteren Informationen.</p>
+    <p xml:lang="el">Μία συνοδευτική εφαρμογή πρόγνωσης καιρού για το Plasma. Περιέχει επίπεδες και δυναμικές/κινούμενης εικόνας προβολές για την παρουσίαση προγνώσεων και για άλλες πληροφορίες.</p>
+    <p xml:lang="en-GB">A convergent weather application for Plasma. Has flat and dynamic/animated views for showing forecasts and other information.</p>
+    <p xml:lang="eo">Konverĝa veteraplikaĵo por Plasmo. Havas platajn kaj dinamikajn/viglajn vidojn por montri prognozojn kaj aliajn informojn.</p>
+    <p xml:lang="es">Aplicación meteorológica convergente para Plasma. Contiene una vista plana y otra dinámica/animada para mostrar previsiones meteorológicas y otra información.</p>
+    <p xml:lang="eu">Plasmarako eguraldi aplikazio konbergente bat. Aurreikuspenak eta beste informazio batzuk erakusteko ikuspegi laua eta dinamikoa/animatua ditu.</p>
+    <p xml:lang="fi">Mukautuva sääsovellus Plasmaan. Litteä ja dynaaminen/animoitu näkymä sääennusteiden ja muun tiedon esittämiseen.</p>
+    <p xml:lang="fr">Une application météo convergente pour Plasma. Elle possède des affichages à plat mais aussi dynamique / animé pour l'affichage des prévisions et d'autres informations.</p>
+    <p xml:lang="gl">Unha aplicación meteorolóxica converxente para Plasma. Ten vistas estáticas e dinámicas para amosar as predicións e outra información.</p>
+    <p xml:lang="he">יישום מזג אוויר אחוד לפלזמה. יש לו תצוגות מונפשות/שטוחות להצגת תחזיות ושלל פרטים נוספים.</p>
+    <p xml:lang="hi">प्लाज़्मा के लिए एक अभिसारी मौसम अनुप्रयोग। पूर्वानुमान और अन्य जानकारी दिखाने के लिए समतल और गतिशील/एनिमेटेड दृश्य हैं।</p>
+    <p xml:lang="hu">Konvergens időjárás-alkalmazás a Plasmához. Egyszerű és dinamikus/animált nézetekben jeleníti meg az időjárás-előrejelzéseket és egyéb információkat</p>
+    <p xml:lang="ia">Un application convergente de tempore per Plasma. Il ha vistas platte e dynamic/animate per monstrarprevisiones e altere information.</p>
+    <p xml:lang="id">Sebuah aplikasi cuaca yang konvergen untuk Plasma. Memilki tampilan datar dan beranimasi/dinamis untuk menampilkan ramalan cuaca dan informasi lainnya.</p>
+    <p xml:lang="is">Þægilegt veðurforrit fyrir Plasma. Með bæði flatt og líflegt/hreyfanlegt yfirlitsnið til að skoða veðurspár í rauntíma og aðrar upplýsingar</p>
+    <p xml:lang="it">Un'applicazione meteo convergente per Plasma. Ha viste statiche e dinamiche/animate per mostrare previsioni e altre informazioni.</p>
+    <p xml:lang="ka">კონვერგენტული ამინდის აპლიკაცია Plasma-სთვის. პროგნოზისა და სხვა ინფორმაციის საჩვენებლად გააჩნია ბრტყელი და დინამიკური/ანიმირებული ხედები.</p>
+    <p xml:lang="ko">Plasma용 올인원 날씨 앱입니다. 평면, 동적, 애니메이션 보기로 일기 예보와 기타 정보를 볼 수 있습니다.</p>
+    <p xml:lang="lt">Konverguojanti orų programa, skirta Plasma. Turi plokščią ir dinaminį/animuotą rodinį, skirtą atvaizduoti orų prognozes bei kitą informaciją.</p>
+    <p xml:lang="lv">Konverģenta laikapstākļu programma „Plasma“ darbvirsmai. Tai ir plakans un dinamisks/animāciju skats, parādot prognozes un citu informāciju.</p>
+    <p xml:lang="nb">Værmeldingsprogram for Plasma, tilpasset ulike brukergrensesnitt. Har flat og dynamiske/animerte visninger for værmeldinger og annen værinformasjon.</p>
+    <p xml:lang="nl">Een convergente weer-toepassing voor Plasma. Heeft vlakke en dynamisch/geanimeerde beelden voor het tonen van weersverwachtingen en andere informatie.</p>
+    <p xml:lang="nn">Vêrmeldingsprogram for Plasma, tilpassa ulike brukarflater. Hat flat og dynamiske/animerte visingar for vêrmeldingar og annan vêrinformasjon.</p>
+    <p xml:lang="pa">ਪਲਾਜ਼ਮਾ ਲਈ ਮੌਸਮ ਸੰਬੰਧੀ ਐਪਲੀਕੇਸ਼ਨ ਹੈ। ਇਸ ਵਿੱਚ ਭਵਿੱਖਬਾਣੀਆਂ ਤੇ ਹੋਰ ਜਾਣਕਾਰੀਆਂ ਦਿਖਾਉਣ ਲਈ ਸਰਲ ਅਤੇ ਸਫ਼ਰੀ/ਹਿਲਦੀਆਂ-ਡੁਲਦੀਆਂ ਝਲਕਾਂ ਹਨ।</p>
+    <p xml:lang="pl">Spójna aplikacja pogodowa dla Plazmy. Ma płaskie i dynamiczne/animowane widoki do pokazywania prognozy pogody i innych danych.</p>
+    <p xml:lang="pt">Uma aplicação meteorológica convergente para o Plasma. Tem áreas planas e dinâmicas/animadas para mostrar as previsões e outras informações.</p>
+    <p xml:lang="pt-BR">Um aplicativo de meteorologia convergente feito para o Plasma. Ele inclui visualização simples e dinâmica para exibir a previsão do tempo, além de oturas informações.</p>
+    <p xml:lang="ru">Адаптивное приложение для просмотра прогноза погоды при работе в Plasma. Предусмотрены два варианта оформления: плоское и динамическое.</p>
+    <p xml:lang="sa">प्लाज्मा कृते एकः अभिसरणीयः मौसमानुप्रयोगः । पूर्वानुमानं अन्यसूचनाः च दर्शयितुं सपाटाः गतिशीलाः/सजीवाः दृश्याः सन्ति ।</p>
+    <p xml:lang="sk">Konvergentná aplikácia počasia pre Plasma. Má ploché a dynamické/animované zobrazenia na prezentáciu predpovedí a ďalších informácií.</p>
+    <p xml:lang="sl">Konvergentna aplikacija za vreme za Plasmo. Ima pregledne in dinamično animirane poglede za prikaz napovedi in druge informacije.</p>
+    <p xml:lang="sv">Ett konvergent väderprogram för Plasma. Har enkla och dynamiskt animerade vyer för prognoser och annan information.</p>
+    <p xml:lang="tr">Plasma için yakınsak bir hava durumu uygulaması. Tahminleri ve diğer bilgileri göstermek için düz ve devingen/canlandırılmış görünümlere sahiptir.</p>
+    <p xml:lang="uk">Зручна програма для показу прогнозів погоди для Плазми. Передбачено простий і динамічний/анімований режими перегляду для показу прогнозів погоди та іншої інформації.</p>
+    <p xml:lang="zh-CN">一款针对 Plasma 设计的桌面/移动平台通用天气预报应用。它可通过扁平视图、动态/动画视图来展示天气预报以及其他信息。</p>
+    <p xml:lang="zh-TW">一個 Plasma 用的跨平台天氣應用程式。提供天氣預報和其他資訊的扁平及動態檢視。</p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Desktop dynamic view</caption>
+      <caption xml:lang="ar">عرض حركي سطح المكتب</caption>
+      <caption xml:lang="az">Masaüstü dinamik görünüş</caption>
+      <caption xml:lang="bg">Динамичен изглед за настолна версия</caption>
+      <caption xml:lang="ca">Vista dinàmica a l'escriptori</caption>
+      <caption xml:lang="ca-valencia">Vista dinàmica a l'escriptori</caption>
+      <caption xml:lang="cs">Dynamické zobrazení pro PC</caption>
+      <caption xml:lang="de">Dynamische Ansicht für die Arbeitsfläche</caption>
+      <caption xml:lang="el">Δυναμική προβολή για υπολογιστή</caption>
+      <caption xml:lang="en-GB">Desktop dynamic view</caption>
+      <caption xml:lang="eo">Labortabla dinamika perspektivo</caption>
+      <caption xml:lang="es">Vista dinámica de escritorio</caption>
+      <caption xml:lang="eu">Mahaigaineko ikuspegi dinamikoa</caption>
+      <caption xml:lang="fi">Dynaaminen työpöytänäkymä</caption>
+      <caption xml:lang="fr">Un affichage dynamique pour bureau</caption>
+      <caption xml:lang="gl">Vista dinámica de escritorio.</caption>
+      <caption xml:lang="he">תצוגה דינמית למחשב</caption>
+      <caption xml:lang="hi">डेस्कटॉप गतिशील दृश्य</caption>
+      <caption xml:lang="hu">Dinamikus asztali nézet</caption>
+      <caption xml:lang="ia">Vista dynamic de Scriptorio</caption>
+      <caption xml:lang="id">Tampilan dinamis desktop</caption>
+      <caption xml:lang="is">Lífleg útgáfa fyrir skjáborð</caption>
+      <caption xml:lang="it">Visualizzazione dinamica desktop</caption>
+      <caption xml:lang="ka">სამუშაო მაგიდის დინამიკური ხედი</caption>
+      <caption xml:lang="ko">데스크톱 동적 보기</caption>
+      <caption xml:lang="lt">Darbalaukio dinaminis rodinys</caption>
+      <caption xml:lang="lv">Darbvirsmas dinamiskais skats</caption>
+      <caption xml:lang="nb">Dynamisk skrivebordsvisning</caption>
+      <caption xml:lang="nl">Dynamisch beeld op bureaublad</caption>
+      <caption xml:lang="nn">Dynamisk skrivebordsvising</caption>
+      <caption xml:lang="pa">ਡੈਸਕਫਾਪ ਸਫ਼ਰੀ ਝਲਕ</caption>
+      <caption xml:lang="pl">Dynamiczny widok urządzenia biurkowego</caption>
+      <caption xml:lang="pt">Área dinâmica para computadores</caption>
+      <caption xml:lang="pt-BR">Visualização dinâmica para desktop</caption>
+      <caption xml:lang="ru">Динамический режим для ПК</caption>
+      <caption xml:lang="sa">डेस्कटॉप गतिशील दृश्य</caption>
+      <caption xml:lang="sk">Dynamické zobrazenie na počítači</caption>
+      <caption xml:lang="sl">Namizni dinamični pogled</caption>
+      <caption xml:lang="sv">Skrivbord dynamisk vy</caption>
+      <caption xml:lang="tr">Masaüstü devingen görünüm</caption>
+      <caption xml:lang="uk">Динамічний вигляд на комп'ютері</caption>
+      <caption xml:lang="zh-CN">桌面端动态视图</caption>
+      <caption xml:lang="zh-TW">桌面版動態檢視</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-desktop-dynamic.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Desktop Welcome Screen</caption>
+      <caption xml:lang="ar">شاشة الترحيب لسطح المكتب</caption>
+      <caption xml:lang="bg">Приветстващ прозорец за настолна версия</caption>
+      <caption xml:lang="ca">Pantalla de benvinguda de l'escriptori</caption>
+      <caption xml:lang="ca-valencia">Pantalla de benvinguda de l'escriptori</caption>
+      <caption xml:lang="cs">Úvodní obrazovka plochy</caption>
+      <caption xml:lang="de">Willkommensbildschirm für die Arbeitsfläche</caption>
+      <caption xml:lang="es">Pantalla de bienvenida al escritorio</caption>
+      <caption xml:lang="eu">Mahaigaineko ongietorri pantaila</caption>
+      <caption xml:lang="fi">Työpöydän tervetulonäyttö</caption>
+      <caption xml:lang="fr">Écran de bienvenue pour ordinateur de bureau</caption>
+      <caption xml:lang="he">מסך קבלת פנים של שולחן העבודה</caption>
+      <caption xml:lang="ia">Schermo de benvenite de scriptorio</caption>
+      <caption xml:lang="is">Upphafsskjár tölvu</caption>
+      <caption xml:lang="it">Schermata di benvenuto del desktop</caption>
+      <caption xml:lang="ka">სამუშაო მაგიდის მისალმების ეკრანი</caption>
+      <caption xml:lang="ko">데스크톱 환영 화면</caption>
+      <caption xml:lang="lt">Pasisveikinimo langas darbalaukyje</caption>
+      <caption xml:lang="lv">Darbvirsmas sveiciena ekrāns</caption>
+      <caption xml:lang="nl">Welkomstscherm van bureaublad</caption>
+      <caption xml:lang="nn">Velkomstbilete – skrivebord</caption>
+      <caption xml:lang="pl">Ekran powitalny urządzenia biurkowego</caption>
+      <caption xml:lang="pt-BR">Tela de boas-vindas do desktop</caption>
+      <caption xml:lang="ru">Экран приветствия на рабочем столе</caption>
+      <caption xml:lang="sk">Uvítacia obrazovka na počítači</caption>
+      <caption xml:lang="sl">Pozdravni zaslon namizja</caption>
+      <caption xml:lang="sv">Skrivbord välkomstskärm</caption>
+      <caption xml:lang="tr">Masaüstü karşılama ekranı</caption>
+      <caption xml:lang="uk">Сторінка вітання стільниці</caption>
+      <caption xml:lang="zh-CN">桌面欢迎屏幕</caption>
+      <caption xml:lang="zh-TW">桌面版歡迎畫面</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-desktop-startup.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Desktop dynamic view</caption>
+      <caption xml:lang="ar">عرض حركي سطح المكتب</caption>
+      <caption xml:lang="az">Masaüstü dinamik görünüş</caption>
+      <caption xml:lang="bg">Динамичен изглед за настолна версия</caption>
+      <caption xml:lang="ca">Vista dinàmica a l'escriptori</caption>
+      <caption xml:lang="ca-valencia">Vista dinàmica a l'escriptori</caption>
+      <caption xml:lang="cs">Dynamické zobrazení pro PC</caption>
+      <caption xml:lang="de">Dynamische Ansicht für die Arbeitsfläche</caption>
+      <caption xml:lang="el">Δυναμική προβολή για υπολογιστή</caption>
+      <caption xml:lang="en-GB">Desktop dynamic view</caption>
+      <caption xml:lang="eo">Labortabla dinamika perspektivo</caption>
+      <caption xml:lang="es">Vista dinámica de escritorio</caption>
+      <caption xml:lang="eu">Mahaigaineko ikuspegi dinamikoa</caption>
+      <caption xml:lang="fi">Dynaaminen työpöytänäkymä</caption>
+      <caption xml:lang="fr">Un affichage dynamique pour bureau</caption>
+      <caption xml:lang="gl">Vista dinámica de escritorio.</caption>
+      <caption xml:lang="he">תצוגה דינמית למחשב</caption>
+      <caption xml:lang="hi">डेस्कटॉप गतिशील दृश्य</caption>
+      <caption xml:lang="hu">Dinamikus asztali nézet</caption>
+      <caption xml:lang="ia">Vista dynamic de Scriptorio</caption>
+      <caption xml:lang="id">Tampilan dinamis desktop</caption>
+      <caption xml:lang="is">Lífleg útgáfa fyrir skjáborð</caption>
+      <caption xml:lang="it">Visualizzazione dinamica desktop</caption>
+      <caption xml:lang="ka">სამუშაო მაგიდის დინამიკური ხედი</caption>
+      <caption xml:lang="ko">데스크톱 동적 보기</caption>
+      <caption xml:lang="lt">Darbalaukio dinaminis rodinys</caption>
+      <caption xml:lang="lv">Darbvirsmas dinamiskais skats</caption>
+      <caption xml:lang="nb">Dynamisk skrivebordsvisning</caption>
+      <caption xml:lang="nl">Dynamisch beeld op bureaublad</caption>
+      <caption xml:lang="nn">Dynamisk skrivebordsvising</caption>
+      <caption xml:lang="pa">ਡੈਸਕਫਾਪ ਸਫ਼ਰੀ ਝਲਕ</caption>
+      <caption xml:lang="pl">Dynamiczny widok urządzenia biurkowego</caption>
+      <caption xml:lang="pt">Área dinâmica para computadores</caption>
+      <caption xml:lang="pt-BR">Visualização dinâmica para desktop</caption>
+      <caption xml:lang="ru">Динамический режим для ПК</caption>
+      <caption xml:lang="sa">डेस्कटॉप गतिशील दृश्य</caption>
+      <caption xml:lang="sk">Dynamické zobrazenie na počítači</caption>
+      <caption xml:lang="sl">Namizni dinamični pogled</caption>
+      <caption xml:lang="sv">Skrivbord dynamisk vy</caption>
+      <caption xml:lang="tr">Masaüstü devingen görünüm</caption>
+      <caption xml:lang="uk">Динамічний вигляд на комп'ютері</caption>
+      <caption xml:lang="zh-CN">桌面端动态视图</caption>
+      <caption xml:lang="zh-TW">桌面版動態檢視</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-desktop-dynamic2.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Desktop flat view</caption>
+      <caption xml:lang="ar">عرض مسطح لسطح المكتب</caption>
+      <caption xml:lang="bg">Плосък изглед за настолна версия</caption>
+      <caption xml:lang="ca">Vista plana de l'escriptori</caption>
+      <caption xml:lang="ca-valencia">Vista plana de l'escriptori</caption>
+      <caption xml:lang="cs">Plochý pohled pracovní plochy</caption>
+      <caption xml:lang="de">Flache Ansicht für die Arbeitsfläche</caption>
+      <caption xml:lang="es">Vista plana de escritorio</caption>
+      <caption xml:lang="eu">Mahaigaineko ikuspegi laua</caption>
+      <caption xml:lang="fi">Litteä työpöytänäkymä</caption>
+      <caption xml:lang="fr">Affichage à plat pour ordinateur de bureau</caption>
+      <caption xml:lang="he">תצוגה שטוחה לשולחן עבודה</caption>
+      <caption xml:lang="ia">Vista platte de Scriptorio</caption>
+      <caption xml:lang="is">Flöt útgáfa fyrir skjáborð</caption>
+      <caption xml:lang="it">Vista piatta del desktop</caption>
+      <caption xml:lang="ka">სამუშაო მაგიდის ბრტყელი ხედი</caption>
+      <caption xml:lang="ko">데스크톱 평면 보기</caption>
+      <caption xml:lang="lt">Darbalaukio plokščias rodinys</caption>
+      <caption xml:lang="lv">Darbvirsmas plakanais skats</caption>
+      <caption xml:lang="nl">Vlakke weergave van bureaublad</caption>
+      <caption xml:lang="nn">Flat vising – skrivebord</caption>
+      <caption xml:lang="pl">Płaski widok urządzenia biurkowego</caption>
+      <caption xml:lang="pt-BR">Visualização plana para desktop</caption>
+      <caption xml:lang="ru">Плоский режим для ПК</caption>
+      <caption xml:lang="sk">Ploché zobrazenie na počítači</caption>
+      <caption xml:lang="sl">Namizni ploski pogled</caption>
+      <caption xml:lang="sv">Skrivbord enkel vy</caption>
+      <caption xml:lang="tr">Masaüstü düz görünüm</caption>
+      <caption xml:lang="uk">Простий перегляд на робочій станції</caption>
+      <caption xml:lang="zh-CN">桌面扁平视图</caption>
+      <caption xml:lang="zh-TW">桌面版扁平檢視</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-desktop-flat.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Desktop flat view</caption>
+      <caption xml:lang="ar">عرض مسطح لسطح المكتب</caption>
+      <caption xml:lang="bg">Плосък изглед за настолна версия</caption>
+      <caption xml:lang="ca">Vista plana de l'escriptori</caption>
+      <caption xml:lang="ca-valencia">Vista plana de l'escriptori</caption>
+      <caption xml:lang="cs">Plochý pohled pracovní plochy</caption>
+      <caption xml:lang="de">Flache Ansicht für die Arbeitsfläche</caption>
+      <caption xml:lang="es">Vista plana de escritorio</caption>
+      <caption xml:lang="eu">Mahaigaineko ikuspegi laua</caption>
+      <caption xml:lang="fi">Litteä työpöytänäkymä</caption>
+      <caption xml:lang="fr">Affichage à plat pour ordinateur de bureau</caption>
+      <caption xml:lang="he">תצוגה שטוחה לשולחן עבודה</caption>
+      <caption xml:lang="ia">Vista platte de Scriptorio</caption>
+      <caption xml:lang="is">Flöt útgáfa fyrir skjáborð</caption>
+      <caption xml:lang="it">Vista piatta del desktop</caption>
+      <caption xml:lang="ka">სამუშაო მაგიდის ბრტყელი ხედი</caption>
+      <caption xml:lang="ko">데스크톱 평면 보기</caption>
+      <caption xml:lang="lt">Darbalaukio plokščias rodinys</caption>
+      <caption xml:lang="lv">Darbvirsmas plakanais skats</caption>
+      <caption xml:lang="nl">Vlakke weergave van bureaublad</caption>
+      <caption xml:lang="nn">Flat vising – skrivebord</caption>
+      <caption xml:lang="pl">Płaski widok urządzenia biurkowego</caption>
+      <caption xml:lang="pt-BR">Visualização plana para desktop</caption>
+      <caption xml:lang="ru">Плоский режим для ПК</caption>
+      <caption xml:lang="sk">Ploché zobrazenie na počítači</caption>
+      <caption xml:lang="sl">Namizni ploski pogled</caption>
+      <caption xml:lang="sv">Skrivbord enkel vy</caption>
+      <caption xml:lang="tr">Masaüstü düz görünüm</caption>
+      <caption xml:lang="uk">Простий перегляд на робочій станції</caption>
+      <caption xml:lang="zh-CN">桌面扁平视图</caption>
+      <caption xml:lang="zh-TW">桌面版扁平檢視</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-desktop-flat2.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Mobile dynamic view</caption>
+      <caption xml:lang="ar">عرض حركي للجوال</caption>
+      <caption xml:lang="az">Mobil dinamik görünüş</caption>
+      <caption xml:lang="bg">Динамичен изглед за мобилна версия</caption>
+      <caption xml:lang="ca">Vista dinàmica al mòbil</caption>
+      <caption xml:lang="ca-valencia">Vista dinàmica en el mòbil</caption>
+      <caption xml:lang="cs">Mobilní dynamické zobrazení</caption>
+      <caption xml:lang="de">Dynamische Ansicht für Mobilgeräte</caption>
+      <caption xml:lang="el">Δυναμική προβολή για κινητό</caption>
+      <caption xml:lang="en-GB">Mobile dynamic view</caption>
+      <caption xml:lang="eo">Poŝtelefona dinamika perspektivo</caption>
+      <caption xml:lang="es">Vista dinámica móvil</caption>
+      <caption xml:lang="eu">Mugikorreko ikuspegi dinamikoa</caption>
+      <caption xml:lang="fi">Dynaaminen mobiilinäkymä</caption>
+      <caption xml:lang="fr">Un affichage dynamique pour mobile</caption>
+      <caption xml:lang="gl">Vista dinámica de móbil.</caption>
+      <caption xml:lang="he">תצוגה דינמית לניידים</caption>
+      <caption xml:lang="hi">मोबाइल गतिशील दृश्य</caption>
+      <caption xml:lang="hu">Dinamikus mobilnézet</caption>
+      <caption xml:lang="ia">Vista dynamic de Mobile</caption>
+      <caption xml:lang="id">Tampilan dinamis ponsel</caption>
+      <caption xml:lang="is">Lífleg farsímaútgáfa</caption>
+      <caption xml:lang="it">Visualizzazione dinamica mobile</caption>
+      <caption xml:lang="ka">მობილური დინამიკური ხედი</caption>
+      <caption xml:lang="ko">모바일 동적 보기</caption>
+      <caption xml:lang="lt">Mobilusis dinaminis rodinys</caption>
+      <caption xml:lang="lv">Mobilās ierīces dinamiskais skats</caption>
+      <caption xml:lang="nb">Dynamisk mobilvisning</caption>
+      <caption xml:lang="nl">Dynamisch beeld op mobiel</caption>
+      <caption xml:lang="nn">Dynamisk vising – mobil</caption>
+      <caption xml:lang="pa">ਮੋਬਾਇਲ ਸਫ਼ਰੀ ਝਲਕ</caption>
+      <caption xml:lang="pl">Dynamiczny widok urządzenia przenośnego</caption>
+      <caption xml:lang="pt">Área dinâmica para dispositivos móveis</caption>
+      <caption xml:lang="pt-BR">Visualização dinâmica para dispositivo móvel</caption>
+      <caption xml:lang="ru">Динамический режим для мобильных устройств</caption>
+      <caption xml:lang="sa">चल गतिशील दृश्य</caption>
+      <caption xml:lang="sk">Dynamické zobrazenie na mobile</caption>
+      <caption xml:lang="sl">Mobilni dinamični pogled</caption>
+      <caption xml:lang="sv">Mobil dynamisk vy</caption>
+      <caption xml:lang="tr">Taşınabilir devingen görünüm</caption>
+      <caption xml:lang="uk">Динамічний вигляд на мобільному пристрої</caption>
+      <caption xml:lang="zh-CN">移动端动态视图</caption>
+      <caption xml:lang="zh-TW">行動版動態檢視</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-mobile-dynamic.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Mobile Welcome Screen</caption>
+      <caption xml:lang="ar">شاشة الترحيب للجوال</caption>
+      <caption xml:lang="bg">Приветстващ прозорец за мобилна версия</caption>
+      <caption xml:lang="ca">Pantalla de benvinguda del mòbil</caption>
+      <caption xml:lang="ca-valencia">Pantalla de benvinguda del mòbil</caption>
+      <caption xml:lang="cs">Mobilní uvítací obrazovka</caption>
+      <caption xml:lang="de">Willkommensbildschirm für Mobilgeräte</caption>
+      <caption xml:lang="es">Pantalla de bienvenida móvil</caption>
+      <caption xml:lang="eu">Mugikorreko ongietorri pantaila</caption>
+      <caption xml:lang="fi">Mobiilin tervetulonäyttö</caption>
+      <caption xml:lang="fr">Écran de bienvenue pour ordinateur mobile</caption>
+      <caption xml:lang="he">מסך קבלת פנים לניידים</caption>
+      <caption xml:lang="ia">Schermo de benvenite de Mobile</caption>
+      <caption xml:lang="is">Upphafsskjár síma</caption>
+      <caption xml:lang="it">Schermata di benvenuto mobile</caption>
+      <caption xml:lang="ka">მობილური ვერსიის მისალმების ეკრანი</caption>
+      <caption xml:lang="ko">모바일 환영 화면</caption>
+      <caption xml:lang="lt">Mobilusis pasisveikinimo langas</caption>
+      <caption xml:lang="lv">Mobilās ierīces sveiciena ekrāns</caption>
+      <caption xml:lang="nl">Welkomstscherm van mobiel</caption>
+      <caption xml:lang="nn">Velkomstbilete – mobil</caption>
+      <caption xml:lang="pl">Ekran powitalny urządzenia przenośnego</caption>
+      <caption xml:lang="pt-BR">Tela de boas-vindas do dispositivo móvel</caption>
+      <caption xml:lang="ru">Экран приветствия на мобильном устройстве</caption>
+      <caption xml:lang="sk">Uvítacia obrazovka na mobile</caption>
+      <caption xml:lang="sl">Mobilni pozdravni zaslon</caption>
+      <caption xml:lang="sv">Mobil välkomstskärm</caption>
+      <caption xml:lang="tr">Taşınabilir karşılama ekranı</caption>
+      <caption xml:lang="uk">Сторінка вітання для мобільних пристроїв</caption>
+      <caption xml:lang="zh-CN">手机欢迎屏幕</caption>
+      <caption xml:lang="zh-TW">行動版歡迎畫面</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-mobile-startup.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Mobile dynamic view</caption>
+      <caption xml:lang="ar">عرض حركي للجوال</caption>
+      <caption xml:lang="az">Mobil dinamik görünüş</caption>
+      <caption xml:lang="bg">Динамичен изглед за мобилна версия</caption>
+      <caption xml:lang="ca">Vista dinàmica al mòbil</caption>
+      <caption xml:lang="ca-valencia">Vista dinàmica en el mòbil</caption>
+      <caption xml:lang="cs">Mobilní dynamické zobrazení</caption>
+      <caption xml:lang="de">Dynamische Ansicht für Mobilgeräte</caption>
+      <caption xml:lang="el">Δυναμική προβολή για κινητό</caption>
+      <caption xml:lang="en-GB">Mobile dynamic view</caption>
+      <caption xml:lang="eo">Poŝtelefona dinamika perspektivo</caption>
+      <caption xml:lang="es">Vista dinámica móvil</caption>
+      <caption xml:lang="eu">Mugikorreko ikuspegi dinamikoa</caption>
+      <caption xml:lang="fi">Dynaaminen mobiilinäkymä</caption>
+      <caption xml:lang="fr">Un affichage dynamique pour mobile</caption>
+      <caption xml:lang="gl">Vista dinámica de móbil.</caption>
+      <caption xml:lang="he">תצוגה דינמית לניידים</caption>
+      <caption xml:lang="hi">मोबाइल गतिशील दृश्य</caption>
+      <caption xml:lang="hu">Dinamikus mobilnézet</caption>
+      <caption xml:lang="ia">Vista dynamic de Mobile</caption>
+      <caption xml:lang="id">Tampilan dinamis ponsel</caption>
+      <caption xml:lang="is">Lífleg farsímaútgáfa</caption>
+      <caption xml:lang="it">Visualizzazione dinamica mobile</caption>
+      <caption xml:lang="ka">მობილური დინამიკური ხედი</caption>
+      <caption xml:lang="ko">모바일 동적 보기</caption>
+      <caption xml:lang="lt">Mobilusis dinaminis rodinys</caption>
+      <caption xml:lang="lv">Mobilās ierīces dinamiskais skats</caption>
+      <caption xml:lang="nb">Dynamisk mobilvisning</caption>
+      <caption xml:lang="nl">Dynamisch beeld op mobiel</caption>
+      <caption xml:lang="nn">Dynamisk vising – mobil</caption>
+      <caption xml:lang="pa">ਮੋਬਾਇਲ ਸਫ਼ਰੀ ਝਲਕ</caption>
+      <caption xml:lang="pl">Dynamiczny widok urządzenia przenośnego</caption>
+      <caption xml:lang="pt">Área dinâmica para dispositivos móveis</caption>
+      <caption xml:lang="pt-BR">Visualização dinâmica para dispositivo móvel</caption>
+      <caption xml:lang="ru">Динамический режим для мобильных устройств</caption>
+      <caption xml:lang="sa">चल गतिशील दृश्य</caption>
+      <caption xml:lang="sk">Dynamické zobrazenie na mobile</caption>
+      <caption xml:lang="sl">Mobilni dinamični pogled</caption>
+      <caption xml:lang="sv">Mobil dynamisk vy</caption>
+      <caption xml:lang="tr">Taşınabilir devingen görünüm</caption>
+      <caption xml:lang="uk">Динамічний вигляд на мобільному пристрої</caption>
+      <caption xml:lang="zh-CN">移动端动态视图</caption>
+      <caption xml:lang="zh-TW">行動版動態檢視</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-mobile-dynamic2.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Mobile flat view</caption>
+      <caption xml:lang="ar">عرض مسطح للجوال</caption>
+      <caption xml:lang="az">Mobil hamar görünüş</caption>
+      <caption xml:lang="bg">Плосък изглед за мобилна версия</caption>
+      <caption xml:lang="ca">Vista plana al mòbil</caption>
+      <caption xml:lang="ca-valencia">Vista plana en el mòbil</caption>
+      <caption xml:lang="cs">Jednoduché mobilní zobrazení</caption>
+      <caption xml:lang="de">Flache Ansicht für Mobilgeräte</caption>
+      <caption xml:lang="el">Επίπεδη προβολή για κινητό</caption>
+      <caption xml:lang="en-GB">Mobile flat view</caption>
+      <caption xml:lang="eo">Poŝtelefona plata perspektivo</caption>
+      <caption xml:lang="es">Vista plana móvil</caption>
+      <caption xml:lang="eu">Mugikorreko ikuspegi laua</caption>
+      <caption xml:lang="fi">Litteä mobiilinäkymä</caption>
+      <caption xml:lang="fr">Un affichage à plat pour mobile</caption>
+      <caption xml:lang="gl">Vista estática de móbil.</caption>
+      <caption xml:lang="he">תצוגה שטוחה לניידים</caption>
+      <caption xml:lang="hi">मोबाइल फ्लैट दृश्य</caption>
+      <caption xml:lang="hu">Egyszerű mobilnézet</caption>
+      <caption xml:lang="ia">Vista platte de Mobile</caption>
+      <caption xml:lang="id">Tampilan datar ponsel</caption>
+      <caption xml:lang="is">Flöt farsímaútgáfa</caption>
+      <caption xml:lang="it">Visualizzazione statica mobile</caption>
+      <caption xml:lang="ka">ბრტყელი მობილური ხედი</caption>
+      <caption xml:lang="ko">데스크톱 평면 보기</caption>
+      <caption xml:lang="lt">Mobilusis plokščias rodinys</caption>
+      <caption xml:lang="lv">Mobilās ierīces plakanais skats</caption>
+      <caption xml:lang="nb">Flat mobilvisning</caption>
+      <caption xml:lang="nl">Vlak beeld op mobiel</caption>
+      <caption xml:lang="nn">Flat vising – mobil</caption>
+      <caption xml:lang="pa">ਮੋਬਾਈਲ ਸਰਲ ਝਲਕ</caption>
+      <caption xml:lang="pl">Płaski widok urządzenia przenośnego</caption>
+      <caption xml:lang="pt">Área plana para dispositivos móveis</caption>
+      <caption xml:lang="pt-BR">Visão simples para dispositivo móvel</caption>
+      <caption xml:lang="ru">Плоский режим для мобильных устройств</caption>
+      <caption xml:lang="sa">चल सपाट दृश्य</caption>
+      <caption xml:lang="sk">Ploché zobrazenie na mobile</caption>
+      <caption xml:lang="sl">Mobilni pregledni pogled</caption>
+      <caption xml:lang="sv">Mobil enkel vy</caption>
+      <caption xml:lang="tr">Taşınabilir düz görünüm</caption>
+      <caption xml:lang="uk">Простий вигляд на мобільному пристрої</caption>
+      <caption xml:lang="zh-CN">移动端扁平视图</caption>
+      <caption xml:lang="zh-TW">行動版扁平檢視</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-mobile-flat.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Mobile flat view</caption>
+      <caption xml:lang="ar">عرض مسطح للجوال</caption>
+      <caption xml:lang="az">Mobil hamar görünüş</caption>
+      <caption xml:lang="bg">Плосък изглед за мобилна версия</caption>
+      <caption xml:lang="ca">Vista plana al mòbil</caption>
+      <caption xml:lang="ca-valencia">Vista plana en el mòbil</caption>
+      <caption xml:lang="cs">Jednoduché mobilní zobrazení</caption>
+      <caption xml:lang="de">Flache Ansicht für Mobilgeräte</caption>
+      <caption xml:lang="el">Επίπεδη προβολή για κινητό</caption>
+      <caption xml:lang="en-GB">Mobile flat view</caption>
+      <caption xml:lang="eo">Poŝtelefona plata perspektivo</caption>
+      <caption xml:lang="es">Vista plana móvil</caption>
+      <caption xml:lang="eu">Mugikorreko ikuspegi laua</caption>
+      <caption xml:lang="fi">Litteä mobiilinäkymä</caption>
+      <caption xml:lang="fr">Un affichage à plat pour mobile</caption>
+      <caption xml:lang="gl">Vista estática de móbil.</caption>
+      <caption xml:lang="he">תצוגה שטוחה לניידים</caption>
+      <caption xml:lang="hi">मोबाइल फ्लैट दृश्य</caption>
+      <caption xml:lang="hu">Egyszerű mobilnézet</caption>
+      <caption xml:lang="ia">Vista platte de Mobile</caption>
+      <caption xml:lang="id">Tampilan datar ponsel</caption>
+      <caption xml:lang="is">Flöt farsímaútgáfa</caption>
+      <caption xml:lang="it">Visualizzazione statica mobile</caption>
+      <caption xml:lang="ka">ბრტყელი მობილური ხედი</caption>
+      <caption xml:lang="ko">데스크톱 평면 보기</caption>
+      <caption xml:lang="lt">Mobilusis plokščias rodinys</caption>
+      <caption xml:lang="lv">Mobilās ierīces plakanais skats</caption>
+      <caption xml:lang="nb">Flat mobilvisning</caption>
+      <caption xml:lang="nl">Vlak beeld op mobiel</caption>
+      <caption xml:lang="nn">Flat vising – mobil</caption>
+      <caption xml:lang="pa">ਮੋਬਾਈਲ ਸਰਲ ਝਲਕ</caption>
+      <caption xml:lang="pl">Płaski widok urządzenia przenośnego</caption>
+      <caption xml:lang="pt">Área plana para dispositivos móveis</caption>
+      <caption xml:lang="pt-BR">Visão simples para dispositivo móvel</caption>
+      <caption xml:lang="ru">Плоский режим для мобильных устройств</caption>
+      <caption xml:lang="sa">चल सपाट दृश्य</caption>
+      <caption xml:lang="sk">Ploché zobrazenie na mobile</caption>
+      <caption xml:lang="sl">Mobilni pregledni pogled</caption>
+      <caption xml:lang="sv">Mobil enkel vy</caption>
+      <caption xml:lang="tr">Taşınabilir düz görünüm</caption>
+      <caption xml:lang="uk">Простий вигляд на мобільному пристрої</caption>
+      <caption xml:lang="zh-CN">移动端扁平视图</caption>
+      <caption xml:lang="zh-TW">行動版扁平檢視</caption>
+      <image>https://cdn.kde.org/screenshots/kweather/kweather-mobile-flat2.png</image>
+    </screenshot>
+  </screenshots>
+  <branding>
+    <color type="primary" scheme_preference="light">#f7c109</color>
+    <color type="primary" scheme_preference="dark">#2d3b42</color>
+  </branding>
+  <categories>
+    <category>Utility</category>
+    <category>KDE</category>
+  </categories>
+  <provides>
+    <binary>kweather</binary>
+  </provides>
+  <url type="homepage">https://invent.kde.org/utilities/kweather</url>
+  <url type="bugtracker">https://bugs.kde.org/describecomponents.cgi?product=kweather</url>
+  <url type="vcs-browser">https://invent.kde.org/utilities/kweather</url>
+  <releases>
+    <release version="26.08.1" date="2026-09-10"/>
+    <release version="26.08.0" date="2026-08-20"/>
+    <release version="26.04.3" date="2026-07-02"/>
+    <release version="26.04.2" date="2026-06-04"/>
+    <release version="26.04.1" date="2026-05-07"/>
+    <release version="26.04.0" date="2026-04-16"/>
+    <release version="25.12.3" date="2026-03-05"/>
+    <release version="25.12.2" date="2026-02-05"/>
+    <release version="25.12.1" date="2026-01-08"/>
+    <release version="25.12.0" date="2025-12-11"/>
+    <release version="25.08.3" date="2025-11-06"/>
+    <release version="25.08.2" date="2025-10-09"/>
+    <release version="25.08.1" date="2025-09-11"/>
+    <release version="25.08.0" date="2025-08-14"/>
+    <release version="25.04.3" date="2025-07-03"/>
+    <release version="25.04.2" date="2025-06-05"/>
+    <release version="25.04.1" date="2025-05-08"/>
+    <release version="25.04.0" date="2025-04-17"/>
+    <release version="24.12.3" date="2025-03-06"/>
+    <release version="24.12.2" date="2025-02-06"/>
+    <release version="24.12.1" date="2025-01-09"/>
+    <release version="24.12.0" date="2024-12-12"/>
+    <release version="24.08.3" date="2024-11-07"/>
+    <release version="24.08.2" date="2024-10-10"/>
+    <release version="24.08.1" date="2024-09-12"/>
+    <release version="24.08.0" date="2024-08-22"/>
+    <release version="24.05.2" date="2024-07-04"/>
+    <release version="24.05.1" date="2024-06-13"/>
+    <release version="24.05.0" date="2024-05-23"/>
+    <release version="24.02.2" date="2024-04-11"/>
+    <release version="24.02.1" date="2024-03-21"/>
+    <release version="24.02.0" date="2024-02-28"/>
+    <release version="23.08.5" date="2024-02-15"/>
+    <release version="23.08.4" date="2023-12-07"/>
+    <release version="23.08.3" date="2023-11-09"/>
+    <release version="23.08.2" date="2023-10-12"/>
+    <release version="23.08.1" date="2023-09-14"/>
+    <release version="23.08.0" date="2023-08-24"/>
+    <release version="23.04.3" date="2023-07-06"/>
+    <release version="23.04.2" date="2023-06-08"/>
+    <release version="23.04.1" date="2023-05-11"/>
+    <release version="23.04.0" date="2023-04-20"/>
+    <release version="23.01" date="2023-01-30">
+      <url>https://plasma-mobile.org/2023/01/30/january-blog-post/</url>
+    </release>
+    <release version="22.11" date="2022-11-30">
+      <url>https://plasma-mobile.org/2022/11/30/plasma-mobile-gear-22-11/</url>
+    </release>
+    <release version="22.09" date="2022-09-27">
+      <url>https://www.plasma-mobile.org/2022/09/27/plasma-mobile-gear-22-09/</url>
+    </release>
+    <release version="22.06" date="2022-06-24">
+      <url>https://www.plasma-mobile.org/2022/06/28/plasma-mobile-gear-22-06/</url>
+      <description>
+        <ul>
+          <li>User interface improvements and bugfixes</li>
+          <li xml:lang="ar">تحسينات على واجهة المستخدم وإصلاح علل</li>
+          <li xml:lang="bg">Подобрения в потребителския интерфейс и корекции на грешки</li>
+          <li xml:lang="ca">Millores en la interfície d'usuari i correccions d'errors</li>
+          <li xml:lang="ca-valencia">Millores en la interfície d'usuari i esmenes d'errors</li>
+          <li xml:lang="cs">Vylepšení uživatelského rozhraní a opravy chyb</li>
+          <li xml:lang="de">Verbesserungen der Benutzeroberfläche und Fehlerbehebungen</li>
+          <li xml:lang="es">Mejoras de la interfaz de usuario y corrección de fallos</li>
+          <li xml:lang="fi">Käyttöliittymäparannuksia ja viankorjauksia</li>
+          <li xml:lang="fr">Améliorations de l'interface utilisateur et corrections de bogues</li>
+          <li xml:lang="he">שיפורי ממשק משתמש ותיקוני תקלות</li>
+          <li xml:lang="ia">Melioramentos de interfacie de usator e correctiones de faltas</li>
+          <li xml:lang="is">Ýmsar betrumbætur á viðmóti og villur lagfærðar</li>
+          <li xml:lang="it">Miglioramenti dell'interfaccia utente e correzioni di bug</li>
+          <li xml:lang="ka">მომხმარებლის ინტერფეისის გაუმჯობესება და შეცდომების გამოსწორება</li>
+          <li xml:lang="lt">Naudotojo sąsajos patobulinimai ir klaidų ištaisymai</li>
+          <li xml:lang="nl">Verbeteringen aan het gebruikersinterface en reparaties van bugs</li>
+          <li xml:lang="nn">Forbetra brukarflate og feilfiksar</li>
+          <li xml:lang="pt-BR">Melhorias na interface do usuário e correções de bugs</li>
+          <li xml:lang="ru">Улучшения интерфейса и исправления ошибок</li>
+          <li xml:lang="sk">Vylepšenia používateľského rozhrania a opravy chýb</li>
+          <li xml:lang="sl">Izboljšave uporabniškega vmesnika in popravki napak</li>
+          <li xml:lang="sv">Förbättringar av användargränssnitt och felrättningar</li>
+          <li xml:lang="tr">Kullanıcı arayüzü iyileştirmeleri ve hata düzeltmeleri</li>
+          <li xml:lang="uk">Удосконалення інтерфейсу користувача та виправлення вад</li>
+          <li xml:lang="zh-CN">用户界面改进和程序缺陷修复</li>
+          <li xml:lang="zh-TW">使用者介面改善與錯誤修正</li>
+        </ul>
+      </description>
+    </release>
+    <release version="22.04" date="2022-04-26">
+      <url>https://www.plasma-mobile.org/2022/04/26/plasma-mobile-gear-22-04/</url>
+      <description>
+        <ul>
+          <li>User interface improvements and bugfixes</li>
+          <li xml:lang="ar">تحسينات على واجهة المستخدم وإصلاح علل</li>
+          <li xml:lang="bg">Подобрения в потребителския интерфейс и корекции на грешки</li>
+          <li xml:lang="ca">Millores en la interfície d'usuari i correccions d'errors</li>
+          <li xml:lang="ca-valencia">Millores en la interfície d'usuari i esmenes d'errors</li>
+          <li xml:lang="cs">Vylepšení uživatelského rozhraní a opravy chyb</li>
+          <li xml:lang="de">Verbesserungen der Benutzeroberfläche und Fehlerbehebungen</li>
+          <li xml:lang="es">Mejoras de la interfaz de usuario y corrección de fallos</li>
+          <li xml:lang="fi">Käyttöliittymäparannuksia ja viankorjauksia</li>
+          <li xml:lang="fr">Améliorations de l'interface utilisateur et corrections de bogues</li>
+          <li xml:lang="he">שיפורי ממשק משתמש ותיקוני תקלות</li>
+          <li xml:lang="ia">Melioramentos de interfacie de usator e correctiones de faltas</li>
+          <li xml:lang="is">Ýmsar betrumbætur á viðmóti og villur lagfærðar</li>
+          <li xml:lang="it">Miglioramenti dell'interfaccia utente e correzioni di bug</li>
+          <li xml:lang="ka">მომხმარებლის ინტერფეისის გაუმჯობესება და შეცდომების გამოსწორება</li>
+          <li xml:lang="lt">Naudotojo sąsajos patobulinimai ir klaidų ištaisymai</li>
+          <li xml:lang="nl">Verbeteringen aan het gebruikersinterface en reparaties van bugs</li>
+          <li xml:lang="nn">Forbetra brukarflate og feilfiksar</li>
+          <li xml:lang="pt-BR">Melhorias na interface do usuário e correções de bugs</li>
+          <li xml:lang="ru">Улучшения интерфейса и исправления ошибок</li>
+          <li xml:lang="sk">Vylepšenia používateľského rozhrania a opravy chýb</li>
+          <li xml:lang="sl">Izboljšave uporabniškega vmesnika in popravki napak</li>
+          <li xml:lang="sv">Förbättringar av användargränssnitt och felrättningar</li>
+          <li xml:lang="tr">Kullanıcı arayüzü iyileştirmeleri ve hata düzeltmeleri</li>
+          <li xml:lang="uk">Удосконалення інтерфейсу користувача та виправлення вад</li>
+          <li xml:lang="zh-CN">用户界面改进和程序缺陷修复</li>
+          <li xml:lang="zh-TW">使用者介面改善與錯誤修正</li>
+        </ul>
+      </description>
+    </release>
+    <release version="22.02" date="2022-02-09">
+      <url>https://www.plasma-mobile.org/2022/02/09/plasma-mobile-gear-22-02/</url>
+      <description>
+        <ul>
+          <li>User interface improvements and bugfixes</li>
+          <li xml:lang="ar">تحسينات على واجهة المستخدم وإصلاح علل</li>
+          <li xml:lang="bg">Подобрения в потребителския интерфейс и корекции на грешки</li>
+          <li xml:lang="ca">Millores en la interfície d'usuari i correccions d'errors</li>
+          <li xml:lang="ca-valencia">Millores en la interfície d'usuari i esmenes d'errors</li>
+          <li xml:lang="cs">Vylepšení uživatelského rozhraní a opravy chyb</li>
+          <li xml:lang="de">Verbesserungen der Benutzeroberfläche und Fehlerbehebungen</li>
+          <li xml:lang="es">Mejoras de la interfaz de usuario y corrección de fallos</li>
+          <li xml:lang="fi">Käyttöliittymäparannuksia ja viankorjauksia</li>
+          <li xml:lang="fr">Améliorations de l'interface utilisateur et corrections de bogues</li>
+          <li xml:lang="he">שיפורי ממשק משתמש ותיקוני תקלות</li>
+          <li xml:lang="ia">Melioramentos de interfacie de usator e correctiones de faltas</li>
+          <li xml:lang="is">Ýmsar betrumbætur á viðmóti og villur lagfærðar</li>
+          <li xml:lang="it">Miglioramenti dell'interfaccia utente e correzioni di bug</li>
+          <li xml:lang="ka">მომხმარებლის ინტერფეისის გაუმჯობესება და შეცდომების გამოსწორება</li>
+          <li xml:lang="lt">Naudotojo sąsajos patobulinimai ir klaidų ištaisymai</li>
+          <li xml:lang="nl">Verbeteringen aan het gebruikersinterface en reparaties van bugs</li>
+          <li xml:lang="nn">Forbetra brukarflate og feilfiksar</li>
+          <li xml:lang="pt-BR">Melhorias na interface do usuário e correções de bugs</li>
+          <li xml:lang="ru">Улучшения интерфейса и исправления ошибок</li>
+          <li xml:lang="sk">Vylepšenia používateľského rozhrania a opravy chýb</li>
+          <li xml:lang="sl">Izboljšave uporabniškega vmesnika in popravki napak</li>
+          <li xml:lang="sv">Förbättringar av användargränssnitt och felrättningar</li>
+          <li xml:lang="tr">Kullanıcı arayüzü iyileştirmeleri ve hata düzeltmeleri</li>
+          <li xml:lang="uk">Удосконалення інтерфейсу користувача та виправлення вад</li>
+          <li xml:lang="zh-CN">用户界面改进和程序缺陷修复</li>
+          <li xml:lang="zh-TW">使用者介面改善與錯誤修正</li>
+        </ul>
+      </description>
+    </release>
+    <release version="21.12" date="2021-12-07">
+      <url>https://www.plasma-mobile.org/2021/12/07/plasma-mobile-gear-21-12/</url>
+      <description>
+        <p>Changes:</p>
+        <p xml:lang="ar">التغييرات:</p>
+        <p xml:lang="bg">Промени:</p>
+        <p xml:lang="ca">Canvis:</p>
+        <p xml:lang="ca-valencia">Canvis:</p>
+        <p xml:lang="cs">Změny:</p>
+        <p xml:lang="de">Änderungen:</p>
+        <p xml:lang="es">Cambios:</p>
+        <p xml:lang="fi">Muutokset:</p>
+        <p xml:lang="fr">Modifications :</p>
+        <p xml:lang="he">שינויים:</p>
+        <p xml:lang="ia">%1 Modificationes</p>
+        <p xml:lang="is">Breytingar:</p>
+        <p xml:lang="it">Modifiche:</p>
+        <p xml:lang="ka">ცვლილებები:</p>
+        <p xml:lang="lt">Pakeitimai:</p>
+        <p xml:lang="nl">Wijzigingen:</p>
+        <p xml:lang="nn">Endringar:</p>
+        <p xml:lang="pl">Zmiany:</p>
+        <p xml:lang="pt-BR">Alterações:</p>
+        <p xml:lang="ru">Изменения:</p>
+        <p xml:lang="sk">Zmeny:</p>
+        <p xml:lang="sl">Spremembe:</p>
+        <p xml:lang="sv">Ändringar:</p>
+        <p xml:lang="tr">Değişiklikler:</p>
+        <p xml:lang="ug">ئۆزگىرىش:</p>
+        <p xml:lang="uk">Зміни:</p>
+        <p xml:lang="zh-CN">更改：</p>
+        <p xml:lang="zh-TW">變更：</p>
+        <ul>
+          <li>Performance improvements in Dynamic view</li>
+          <li xml:lang="ar">تحسينات في الأداء في العرض الحركي</li>
+          <li xml:lang="bg">Подобрения в производителността в динамичния изглед</li>
+          <li xml:lang="ca">Millores de rendiment a la vista dinàmica</li>
+          <li xml:lang="ca-valencia">Millores de rendiment a la vista dinàmica</li>
+          <li xml:lang="cs">Vylepšení výkonu v dynamickém zobrazení</li>
+          <li xml:lang="de">Leistungsverbesserungen bei der dynamischen Ansicht</li>
+          <li xml:lang="es">Mejoras de rendimiento en la vista dinámica.</li>
+          <li xml:lang="fi">suorituskykyparannukset dynaamisessa näkymässä</li>
+          <li xml:lang="fr">Améliorations des performances dans la vue dynamique</li>
+          <li xml:lang="he">שיפורי ביצועים בתצוגה דינמית</li>
+          <li xml:lang="ia">Melioramentod de prestation in vista Dynamic</li>
+          <li xml:lang="it">Miglioramenti delle prestazioni nella vista dinamica</li>
+          <li xml:lang="ka">შესრულების გაუმჯობესება დინამიკურ ხედში</li>
+          <li xml:lang="lt">Našumo patobulinimai dinaminiame rodinyje</li>
+          <li xml:lang="nl">Verbeteringen van prestaties in dynamische weergave</li>
+          <li xml:lang="nn">Forbetra yting i dynamisk vising</li>
+          <li xml:lang="pt-BR">Melhorias de desempenho na visualização dinâmica</li>
+          <li xml:lang="ru">Улучшение производительности в динамическом представлении</li>
+          <li xml:lang="sk">Vylepšenia výkonu v dynamickom zobrazení</li>
+          <li xml:lang="sl">Izboljšave delovanja v dinamičnem pogledu</li>
+          <li xml:lang="sv">Prestandaförbättringar i dynamisk vy</li>
+          <li xml:lang="tr">Devingen görünümde başarım iyileştirmeleri</li>
+          <li xml:lang="uk">Удосконалення швидкодії у динамічному режимі перегляду</li>
+          <li xml:lang="zh-CN">动态视图的性能改进</li>
+          <li xml:lang="zh-TW">改善動態檢視的效能</li>
+          <li>Dynamic view action bar rewritten to be inline to content</li>
+          <li xml:lang="ar">أُعيدت كتابة شريط إجراءات العرض الحركي ليكون مضمنًا في المحتوى</li>
+          <li xml:lang="bg">Динамична лента за действие на изгледа, пренаписана така, че да е вградена в съдържанието</li>
+          <li xml:lang="ca">Barra d'acció de vista dinàmica reescrita per a estar inclosa al contingut</li>
+          <li xml:lang="ca-valencia">Barra d'acció de vista dinàmica reescrita per a estar inclosa al contingut</li>
+          <li xml:lang="cs">Dynamická lišta akcí zobrazení byla přepracována tak, aby byla v souladu s obsahem</li>
+          <li xml:lang="es">Barra de acción de vista dinámica reescrita para estar en línea con el contenido.</li>
+          <li xml:lang="fi">dynaamisen näkymä toimintopalkki kirjoitettu uudelleen sisällön sisään</li>
+          <li xml:lang="fr">La barre d'actions de vue dynamique a été réécrite pour être intégrée au contenu</li>
+          <li xml:lang="he">סרגל פעולות התצוגה הדינמית שוכתב כדי שיהיה מיושר לתוכן</li>
+          <li xml:lang="ia">Barra de action de vista Dymanic rescribite per esser in linea al contento</li>
+          <li xml:lang="it">Barra delle azioni di visualizzazione dinamica riscritta per essere in linea con il contenuto</li>
+          <li xml:lang="ka">დინამიკური ხედის ქმედების ზოლი თავიდან გადაიწერა რომ იყოს ხაზზე შემცველობასთან</li>
+          <li xml:lang="lt">Dinaminio rodinio veiksmų juosta perrašyta taip, kad būtų įterpta į turinį</li>
+          <li xml:lang="nl">Actiebalk van dynamische weergave herschreven om inline te zijn met inhoud</li>
+          <li xml:lang="nn">Handlingalinja ved dynamisk vising er skriven om til å visast inni innhaldet</li>
+          <li xml:lang="pt-BR">A barra de ação da visualização dinâmica foi reescrita para ficar integrada ao conteúdo</li>
+          <li xml:lang="ru">Панель действий динамического представления переписана для размещения в строке с содержимым</li>
+          <li xml:lang="sk">Panel akcií dynamického zobrazenia prepísaný tak, aby bol v riadku s obsahom</li>
+          <li xml:lang="sl">Dinamična vrstica dejanj za prikaz, prepisana tako, da je v vrstici z vsebino</li>
+          <li xml:lang="sv">Åtgärdsraden för dynamisk visning omskriven så att den är tillsammans med innehåll</li>
+          <li xml:lang="tr">Devingen görünüm eylem çubuğu, içeriğe paralel olacak şekilde yeniden yazıldı.</li>
+          <li xml:lang="uk">Переписано панель дій динамічного перегляду так, щоб вона лишалася в одному рядку зі вмістом</li>
+          <li xml:lang="zh-CN">动态视图操作栏重写为内嵌内容</li>
+          <li xml:lang="zh-TW">重寫動態檢視的動作列來與內容放在一起</li>
+          <li>Allow setting non-current location in default forecasts page</li>
+          <li xml:lang="ar">السماح بضبط موقع غير الحالي في صفحة التنبؤات المبدئية</li>
+          <li xml:lang="bg">Разрешаване на задаване на неактуално местоположение на страницата с прогнози по подразбиране</li>
+          <li xml:lang="ca">Permet establir la ubicació no actual a la pàgina de previsions predeterminades</li>
+          <li xml:lang="ca-valencia">Permet establir la ubicació no actual a la pàgina de previsions predeterminades</li>
+          <li xml:lang="cs">Umožněno nastavení jiné než aktuální polohy na stránce výchozích předpovědí</li>
+          <li xml:lang="es">Permitir configurar una ubicación no actual en la página de pronósticos predeterminada.</li>
+          <li xml:lang="fi">sallii asettaa muun kuin nykyisen sijainnin oletusennustesivulle</li>
+          <li xml:lang="fr">Autoriser la définition d'un emplacement non courant sur la page par défaut des prévisions</li>
+          <li xml:lang="he">לאפשר הגדרת מקום שאינו הנוכחי בעמוד התשקיפים כברירת מחדל</li>
+          <li xml:lang="ia">Permitte assignar location non currente in pagina de prevision predefinite</li>
+          <li xml:lang="it">Consente l'impostazione della posizione non corrente nella pagina delle previsioni predefinite</li>
+          <li xml:lang="ka">არამუდმივი მდებარეობების დაყენების დაშვება ნაგულისხმევი პროგნოზების გვერდზე</li>
+          <li xml:lang="lt">Leidžiama numatytajame orų prognozių puslapyje nustatyti ne dabartinę vietą</li>
+          <li xml:lang="nl">Sta toe om een ​​niet-huidige locatie in te stellen op de pagina met standaardvoorspellingen.</li>
+          <li xml:lang="nn">Mogleg å velja ikkje-lokal stad som standard på vêrmeldingssida</li>
+          <li xml:lang="pt-BR">Permitir a configuração de uma localização diferente da atual na página de previsões padrão</li>
+          <li xml:lang="ru">Разрешено задание не текущего местоположения на странице прогнозов по умолчанию</li>
+          <li xml:lang="sk">Umožnenie nastavenia iného ako aktuálneho miesta na predvolenej stránke predpovedí</li>
+          <li xml:lang="sl">Dovoli nastavitev netrenutne lokacije na strani s privzetimi napovedmi</li>
+          <li xml:lang="sv">Tillåt inställning av andra platser än den aktuella på standardprognossidan</li>
+          <li xml:lang="tr">Öntanımlı tahminler sayfasında geçerli olmayan bir konum ayarlanmasına izin veriliyor.</li>
+          <li xml:lang="uk">Уможливлено встановлення місця, відмінного від поточного, на сторінці типових прогнозів</li>
+          <li xml:lang="zh-CN">允许在默认预报页面设置为非当前地理位置</li>
+          <li xml:lang="zh-TW">允許在預設預報頁面設定非目前所在的位置</li>
+          <li>Added ability to fetch temperature units from system locale</li>
+          <li xml:lang="ar">أُضيفت القدرة على جلب وحدات درجة الحرارة من محلية النظام</li>
+          <li xml:lang="bg">Добавена е възможност за извличане на температурни единици от системния език</li>
+          <li xml:lang="ca">Afegeix la capacitat d'obtenir unitats de temperatura de la configuració regional del sistema</li>
+          <li xml:lang="ca-valencia">Afig la capacitat d'obtindre unitats de temperatura de la configuració regional del sistema</li>
+          <li xml:lang="cs">Přidána možnost načíst jednotky teploty ze systémového nastavení místního formátu</li>
+          <li xml:lang="es">Se ha añadido la capacidad de obtener unidades de temperatura de la configuración regional del sistema.</li>
+          <li xml:lang="fi">lisätty ominaisuus saada lämpötilayksiköt maa-asetuksista</li>
+          <li xml:lang="fr">Ajout de la possibilité de charger les unités de température à partir des paramètres régionaux du système</li>
+          <li xml:lang="he">נוספה האפשרות למשוך את יחידות הטמפרטורה לפי הגדרות המקום של המערכת</li>
+          <li xml:lang="ia">Addite habilitate a trovar unitates de temperatura ex le locale de systema</li>
+          <li xml:lang="it">Aggiunta la possibilità di recuperare le unità di temperatura dalle impostazioni locali del sistema</li>
+          <li xml:lang="ka">დაემატა ტემპერატურის ერთეულის სისტემური ლოკალიდან მიღების შესაძლებლობა</li>
+          <li xml:lang="lt">Pridėta galimybė gauti temperatūros vienetus iš sistemos lokalės</li>
+          <li xml:lang="nl">Mogelijkheid toegevoegd om temperatuureenheden op te halen uit de taalinstelling van het systeem.</li>
+          <li xml:lang="nn">Gjort det mogleg å henta temperatur­eining frå systeminnstillingane</li>
+          <li xml:lang="pt-BR">Adicionada a capacidade de obter unidades de temperatura da localização do sistema</li>
+          <li xml:lang="ru">Добавлена возможность получения единиц измерения температуры из системной локали</li>
+          <li xml:lang="sk">Pridaná možnosť získania jednotiek teploty zo systémového miestneho nastavenia</li>
+          <li xml:lang="sl">Dodana možnost pridobivanja temperaturnih enot iz sistemskih nastavitev</li>
+          <li xml:lang="sv">Tillägg av möjlighet att hämta temperaturenheter från systemets landsinställning</li>
+          <li xml:lang="tr">Sistem yerel ayarlarından sıcaklık birimlerini alma özelliği eklendi.</li>
+          <li xml:lang="uk">Додано можливість отримання температурної шкали з загальносистемної локалі</li>
+          <li xml:lang="zh-CN">新增从系统区域设置中获取温度单位的功能</li>
+          <li xml:lang="zh-TW">新增從系統地域取得溫度單位設定值的功能</li>
+          <li>Fixed timezone format not being correctly read for local location time</li>
+          <li xml:lang="ar">أُصلح تنسيق المنطقة الزمنية الذي لم يُقرأ بشكل صحيح لوقت الموقع المحلي</li>
+          <li xml:lang="bg">Поправен е форматът на часовата зона, който не се четеше правилно за местното време</li>
+          <li xml:lang="ca">Corregeix el format del fus horari que no es llegia correctament per a l'hora local de la ubicació</li>
+          <li xml:lang="ca-valencia">Corregix el format del fus horari que no es llegia correctament per a l'hora local de la ubicació</li>
+          <li xml:lang="cs">Formát pevného časového pásma není správně načítán pro místní čas</li>
+          <li xml:lang="es">Corrección para el formato de zona horaria no se lee correctamente para la hora de la ubicación local.</li>
+          <li xml:lang="fi">korjattu paikallisen sijainnin kellonajan aikavyöhykkeen virheellinen muotoilu</li>
+          <li xml:lang="fr">Correction du format de fuseau horaire fixe incorrectement lu pour l'heure locale</li>
+          <li xml:lang="he">תוקנה בעיה שתבנית אזור הזמן לא נקראת כראוי לשעה של המקום הנוכחי</li>
+          <li xml:lang="ia">Corrigite formato de fuso horari que non es correctemente legite per tempore de location local</li>
+          <li xml:lang="it">Corretto il formato del fuso orario che non veniva letto correttamente per l'ora locale</li>
+          <li xml:lang="ka">გასწორდა დროის სარტყლის ფორმატის არასწორი წაკითხვა ლოკალური მდებარეობის დროისთვის</li>
+          <li xml:lang="lt">Fiksuotas laiko formatas nebuvo teisingai perskaitomas vietiniam vietos laikui</li>
+          <li xml:lang="nl">Het probleem is opgelost waarbij de tijdzone-indeling niet correct werd uitgelezen voor de lokale tijd.</li>
+          <li xml:lang="nn">Retta at tidssone­formatet ikkje vart lese rett for tida ved lokal stad</li>
+          <li xml:lang="pt-BR">Corrigido o problema que impedia a leitura correta do formato de fuso horário para a hora local</li>
+          <li xml:lang="ru">Исправлено некорректное чтение формата часового пояса для местного времени</li>
+          <li xml:lang="sk">Opravený formát časového pásma, ktorý sa nesprávne načítaval pre miestny čas polohy</li>
+          <li xml:lang="sl">Odpravljena je bila nepravilna oblika časovnega pasu za lokalni čas lokacije.</li>
+          <li xml:lang="sv">Rättade att tidszonens format inte lästes korrekt för lokal tid</li>
+          <li xml:lang="tr">Yerel konum saati için saat dilimi biçiminin doğru okunamaması sorunu düzeltildi.</li>
+          <li xml:lang="uk">Виправлено читання формату часового поясу для місцевого часу</li>
+          <li xml:lang="zh-CN">修复了无法从本地位置时间正确读取时区格式</li>
+          <li xml:lang="zh-TW">修正時區格式沒有為本地時間正確讀取的問題</li>
+        </ul>
+      </description>
+    </release>
+    <release version="21.08" date="2021-08-31">
+      <url>https://www.plasma-mobile.org/2021/08/31/plasma-mobile-gear-21-08/</url>
+    </release>
+    <release version="21.07" date="2021-07-20">
+      <description>
+        <p>Changes:</p>
+        <p xml:lang="ar">التغييرات:</p>
+        <p xml:lang="bg">Промени:</p>
+        <p xml:lang="ca">Canvis:</p>
+        <p xml:lang="ca-valencia">Canvis:</p>
+        <p xml:lang="cs">Změny:</p>
+        <p xml:lang="de">Änderungen:</p>
+        <p xml:lang="es">Cambios:</p>
+        <p xml:lang="fi">Muutokset:</p>
+        <p xml:lang="fr">Modifications :</p>
+        <p xml:lang="he">שינויים:</p>
+        <p xml:lang="ia">%1 Modificationes</p>
+        <p xml:lang="is">Breytingar:</p>
+        <p xml:lang="it">Modifiche:</p>
+        <p xml:lang="ka">ცვლილებები:</p>
+        <p xml:lang="lt">Pakeitimai:</p>
+        <p xml:lang="nl">Wijzigingen:</p>
+        <p xml:lang="nn">Endringar:</p>
+        <p xml:lang="pl">Zmiany:</p>
+        <p xml:lang="pt-BR">Alterações:</p>
+        <p xml:lang="ru">Изменения:</p>
+        <p xml:lang="sk">Zmeny:</p>
+        <p xml:lang="sl">Spremembe:</p>
+        <p xml:lang="sv">Ändringar:</p>
+        <p xml:lang="tr">Değişiklikler:</p>
+        <p xml:lang="ug">ئۆزگىرىش:</p>
+        <p xml:lang="uk">Зміни:</p>
+        <p xml:lang="zh-CN">更改：</p>
+        <p xml:lang="zh-TW">變更：</p>
+        <ul>
+          <li>Rewrote the weather plasmoid</li>
+          <li xml:lang="ar">أُعيدت كتابة بلازمويد الطقس</li>
+          <li xml:lang="bg">Пренаписан е плазмоид за метеорологичните данни</li>
+          <li xml:lang="ca">Reescrit el plasmoide meteorològic</li>
+          <li xml:lang="ca-valencia">Reescrit el plasmoide meteorològic</li>
+          <li xml:lang="cs">Přepsán plasmoid počasí</li>
+          <li xml:lang="de">Wetter-Miniprogram überarbeitet</li>
+          <li xml:lang="es">Reescritura del plasmoide de meteorología.</li>
+          <li xml:lang="fi">kirjoitettu sääsovelma uudelleen</li>
+          <li xml:lang="fr">Réécrit le plasmoïde de météo</li>
+          <li xml:lang="he">פלזמואיד מזג האוויר נכתב מחדש</li>
+          <li xml:lang="ia">Rescribeva le plasmoid del tempore meteorologic</li>
+          <li xml:lang="it">Riscritto il plasmoide meteorologico</li>
+          <li xml:lang="ka">თავიდან დაიწერა ამინდის პლაზმოიდი</li>
+          <li xml:lang="lt">Perrašytas orų Plasma įskiepis</li>
+          <li xml:lang="nl">De weer-plasmoid is herschreven</li>
+          <li xml:lang="nn">Skreiv om vêr-plasmoiden</li>
+          <li xml:lang="pt-BR">Reescrita do plasmoide meteorológico</li>
+          <li xml:lang="ru">Переписан плазмоид погоды</li>
+          <li xml:lang="sk">Prepísaný plasmoید počasia</li>
+          <li xml:lang="sl">Ponovno prepisan vremenski plazmoid</li>
+          <li xml:lang="sv">Skrev om väderplasmoiden</li>
+          <li xml:lang="tr">Hava durumu Plasmoid’i yeniden yazıldı.</li>
+          <li xml:lang="uk">Переписано плазмоїд погоди</li>
+          <li xml:lang="zh-CN">重写天气 Plasma 小程序</li>
+          <li xml:lang="zh-TW">重寫天氣 Plasmoid 元件</li>
+          <li>Use inline page indicator for flat mode forecasts</li>
+          <li xml:lang="ar">استخدام مؤشر صفحة مضمن لتنبؤات الوضع المسطح</li>
+          <li xml:lang="bg">Използване на вграден индикатор на страницата за прогнози в плосък режим</li>
+          <li xml:lang="ca">Usa l'indicador de pàgina inclosa per a les previsions en mode pla</li>
+          <li xml:lang="ca-valencia">Utilitza l'indicador de pàgina inclosa per a les previsions en mode pla</li>
+          <li xml:lang="cs">Použit inline indikátor stránky pro předpovědi v jednoduchém režimu</li>
+          <li xml:lang="es">Usar el indicador de página en línea para pronósticos en modo plano.</li>
+          <li xml:lang="fi">Käytä litteän tilan ennusteisiin tekstinsisäistä sivuosoitinta</li>
+          <li xml:lang="fr">Utilisez un indicateur intégré de page pour les prévisions en mode à plat</li>
+          <li xml:lang="he">להשתמש במחוון פנימי בעמוד לתשקיפים במצב שטוח</li>
+          <li xml:lang="ia">Usa indicator d epagina integrate pe rprevisiones de modo plan</li>
+          <li xml:lang="it">Utilizza l'indicatore di pagina in linea per le previsioni in modalità piatta</li>
+          <li xml:lang="ka">ხაზშივე გვერდის მაჩვენებლის გამოყენება ბრტყელი რეჟიმის პროგნოზებისთვის</li>
+          <li xml:lang="lt">Plokščios veiksenos orų prognozėms naudojamas įterptas puslapio indikatorius</li>
+          <li xml:lang="nl">Gebruik de inline pagina-indicator voor voorspellingen in vlakke modus.</li>
+          <li xml:lang="nn">Bruk innebygd sideindikator for vêrmeldingar i flat modus</li>
+          <li xml:lang="pt-BR">Uso do indicador de página embutido para previsões em modo plano</li>
+          <li xml:lang="ru">Использован встроенный индикатор страницы для прогнозов в плоском режиме</li>
+          <li xml:lang="sk">Použitie riadkového indikátora strany pre predpovede v plochom režime</li>
+          <li xml:lang="sl">Uporabite indikator strani v vrstici za napovedi v ravnem načinu</li>
+          <li xml:lang="sv">Använd sidindikator på plats för prognoser i platt läge</li>
+          <li xml:lang="tr">Düz kip tahminleri için satır içi sayfa göstergesi kullanılıyor.</li>
+          <li xml:lang="uk">Використано індикатор вбудованої сторінки для прогнозів у простому режимі</li>
+          <li xml:lang="zh-CN">在扁平模式的预报中使用内嵌页面指示器</li>
+          <li xml:lang="zh-TW">用行內頁面指示器顯示扁平模式預報</li>
+          <li>Fix location ordering not persisting</li>
+          <li xml:lang="ar">إصلاح عدم استمرار ترتيب المواقع</li>
+          <li xml:lang="bg">Поправка на подреждането на местоположенията, което не се запазва</li>
+          <li xml:lang="ca">Corregeix l'ordre de les ubicacions que no persisteix</li>
+          <li xml:lang="ca-valencia">Corregix l'ordre de les ubicacions que no persistix</li>
+          <li xml:lang="cs">Oprava nefunkčního řazení poloh</li>
+          <li xml:lang="es">Se ha corregido el problema de que el orden de ubicación no persistía.</li>
+          <li xml:lang="fi">korjattu sijaintijärjestyksen pysymättömyys</li>
+          <li xml:lang="fr">Correction de l'ordre des emplacements non permanent</li>
+          <li xml:lang="he">תוקנה בעיה שסדר המקומות אינו עקבי</li>
+          <li xml:lang="ia">Corrige ordinar de location non persistente</li>
+          <li xml:lang="it">Corregge l'ordinamento delle posizioni che non viene mantenuta</li>
+          <li xml:lang="ka">გასწორდა მდებარეობის მიმდევრობის არამუდმივობა</li>
+          <li xml:lang="lt">Ištaisyta klaida, kai vietų tvarka nebūdavo pastovi</li>
+          <li xml:lang="nl">Het probleem met de niet-behoudende locatievolgorde is opgelost.</li>
+          <li xml:lang="nn">Retta at rekkjefølgja på stadar ikkje vart lagra</li>
+          <li xml:lang="pt-BR">Corrigido o problema de persistência na ordenação de locais</li>
+          <li xml:lang="ru">Исправлено сохранение порядок расположений</li>
+          <li xml:lang="sk">Oprava neukladania poradia miest</li>
+          <li xml:lang="sl">Odprava težave z vrstnim redom lokacij, ki se ne ohranja</li>
+          <li xml:lang="sv">Rätta att platsordningen inte kvarstår</li>
+          <li xml:lang="tr">Konum sıralamasının kalıcı olmaması sorunu düzeltildi.</li>
+          <li xml:lang="uk">Виправлено сумісність упорядковування місць</li>
+          <li xml:lang="zh-CN">修复了位置排序不能记忆的问题</li>
+          <li xml:lang="zh-TW">修正位置排序不會儲存的問題</li>
+        </ul>
+      </description>
+      <url>https://www.plasma-mobile.org/2021/07/20/plasma-mobile-gear-21-07/</url>
+    </release>
+    <release version="21.06" date="2021-06-10">
+      <description>
+        <p>Changes:</p>
+        <p xml:lang="ar">التغييرات:</p>
+        <p xml:lang="bg">Промени:</p>
+        <p xml:lang="ca">Canvis:</p>
+        <p xml:lang="ca-valencia">Canvis:</p>
+        <p xml:lang="cs">Změny:</p>
+        <p xml:lang="de">Änderungen:</p>
+        <p xml:lang="es">Cambios:</p>
+        <p xml:lang="fi">Muutokset:</p>
+        <p xml:lang="fr">Modifications :</p>
+        <p xml:lang="he">שינויים:</p>
+        <p xml:lang="ia">%1 Modificationes</p>
+        <p xml:lang="is">Breytingar:</p>
+        <p xml:lang="it">Modifiche:</p>
+        <p xml:lang="ka">ცვლილებები:</p>
+        <p xml:lang="lt">Pakeitimai:</p>
+        <p xml:lang="nl">Wijzigingen:</p>
+        <p xml:lang="nn">Endringar:</p>
+        <p xml:lang="pl">Zmiany:</p>
+        <p xml:lang="pt-BR">Alterações:</p>
+        <p xml:lang="ru">Изменения:</p>
+        <p xml:lang="sk">Zmeny:</p>
+        <p xml:lang="sl">Spremembe:</p>
+        <p xml:lang="sv">Ändringar:</p>
+        <p xml:lang="tr">Değişiklikler:</p>
+        <p xml:lang="ug">ئۆزگىرىش:</p>
+        <p xml:lang="uk">Зміни:</p>
+        <p xml:lang="zh-CN">更改：</p>
+        <p xml:lang="zh-TW">變更：</p>
+        <ul>
+          <li>Reworked the locations page to better handle long location names</li>
+          <li xml:lang="ar">أُعيدت صياغة صفحة المواقع للتعامل بشكل أفضل مع أسماء المواقع الطويلة</li>
+          <li xml:lang="bg">Страницата с местоположения е преработена, за да се обработват по-добре дългите имена на местоположения.</li>
+          <li xml:lang="ca">Refà la pàgina d'ubicacions per gestionar millor els noms de les ubicacions llargues</li>
+          <li xml:lang="ca-valencia">Refà la pàgina d'ubicacions per a gestionar millor els noms de les ubicacions llargues</li>
+          <li xml:lang="cs">Přepracována stránka s lokalitami, aby lépe zvládala jejich dlouhé názvy</li>
+          <li xml:lang="es">Se ha modificado la página de ubicaciones para manejar mejor los nombres largos de ubicaciones.</li>
+          <li xml:lang="fi">parannettu sijaintisivua selviämään paremmin pitkistä paikannimistä</li>
+          <li xml:lang="fr">Refonte de la page des emplacements pour mieux gérer les noms longs d'emplacements</li>
+          <li xml:lang="he">עמוד המקומות עבר עבודה מחדש לטיפול טוב יותר בשמות מקומות ארוכים</li>
+          <li xml:lang="ia">Relaborava le pagina de location per manear meliormente longe nomine de location</li>
+          <li xml:lang="it">La pagina delle posizioni è stata rielaborata per gestire meglio i nomi di posizione lunghi</li>
+          <li xml:lang="ka">გადაკეთდა მდებარეობის გვერდი, რომ უკეთ აღიქვას გრძელი მდებარეობის სახელები</li>
+          <li xml:lang="lt">Atnaujintas vietų puslapis, kad būtų geriau apdorojami ilgi vietovių pavadinimai</li>
+          <li xml:lang="nl">De pagina met locaties is opnieuw bewerkt om lange locatienamen beter te verwerken.</li>
+          <li xml:lang="nn">Reviderte stadsida slik at ho handterer lange stadnamn betre</li>
+          <li xml:lang="pt-BR">Reformulada a página de locais para lidar melhor com nomes de locais longos</li>
+          <li xml:lang="ru">Переработана страница местоположений для лучшей обработки длинных названий</li>
+          <li xml:lang="sk">Prepracovaná stránka miest na lepšie spracovanie dlhých názvov miest</li>
+          <li xml:lang="sl">Predelana stran z lokacijami za boljše obvladovanje dolgih imen lokacij</li>
+          <li xml:lang="sv">Omarbetade platssidan för att bättre hantera långa platsnamn</li>
+          <li xml:lang="tr">Konumlar sayfası, uzun konum adlarını daha iyi işleyecek şekilde yeniden düzenlendi.</li>
+          <li xml:lang="uk">Перероблено сторінку місць так, щоб на ній краще було видно довгі назви місць</li>
+          <li xml:lang="zh-CN">重构位置页面以适应长名称</li>
+          <li xml:lang="zh-TW">修改位置頁面來改善對於較長的位置名稱的處理</li>
+          <li>Add maximum width to dynamic forecast to better deal with widescreen</li>
+          <li xml:lang="ar">إضافة عرض أقصى للتنبؤ الحركي للتعامل بشكل أفضل مع الشاشات العريضة</li>
+          <li xml:lang="bg">Добавена е максимална ширина към динамичната прогноза, за да се представи по-добре в широкоекранен режим</li>
+          <li xml:lang="ca">Afegeix l'amplada màxima a la previsió dinàmica per gestionar millor les pantalles amples</li>
+          <li xml:lang="ca-valencia">Afig l'amplària màxima a la previsió dinàmica per a gestionar millor les pantalles amples</li>
+          <li xml:lang="cs">Přidána maximální šířka k dynamické předpovědi, aby se lépe přizpůsobila širokoúhlému displeji</li>
+          <li xml:lang="es">Se ha añadido la anchura máxima al pronóstico dinámico para aprovechar mejor las pantallas anchas.</li>
+          <li xml:lang="fi">lisätty dynaamiseen ennusteeseen enimmäisleveys leveiden näyttöjen tukemiseksi paremmin</li>
+          <li xml:lang="fr">Ajouter une largeur maximale à la prévision dynamique pour mieux gérer les écrans larges</li>
+          <li xml:lang="he">הוספת רוחב מרבי לתשקיף דינמי כדי להתמודד טוב יותר עם מסך רחב</li>
+          <li xml:lang="ia">Adde largessa maxime a prevision dynamic per tractar meliormente schermos large</li>
+          <li xml:lang="it">Aggiunge la larghezza massima alle previsioni dinamiche per gestire meglio lo schermo panoramico</li>
+          <li xml:lang="ka">დაემატა მაქსიმალური სიგანე დინამიკურ პროგნოზებს ფართო ეკრანებთან უკეთესად სამუშაოდ</li>
+          <li xml:lang="lt">Į dinaminę orų prognozę pridėtas didžiausias plotis, kad būtų geriau susitvarkoma plačiuose ekranuose</li>
+          <li xml:lang="nl">Voeg de maximale breedte toe aan de dynamische voorspelling om beter om te gaan met breedbeeldschermen.</li>
+          <li xml:lang="nn">Lagt til maksbreidd for dynamisk vêrmelding, for betre støtte for breie skjermar</li>
+          <li xml:lang="pt-BR">Adicionada largura máxima à previsão dinâmica para melhor lidar com telas widescreen</li>
+          <li xml:lang="ru">Определена максимальная ширина для динамического прогноза для лучшей работы с широкоэкранными дисплеями</li>
+          <li xml:lang="sk">Pridanie maximálnej šírky dynamickej predpovede na lepšie prispôsobenie širokouhlým obrazovkám</li>
+          <li xml:lang="sl">Dinamični napovedi doda največjo širino za boljše delovanje v širokem zaslonu</li>
+          <li xml:lang="sv">Lägg till maximal bredd till dynamisk prognos för att bättre hantera breda bildskärmar</li>
+          <li xml:lang="tr">Geniş ekranlarla daha iyi başa çıkmak için devingen tahmine maksimum genişlik eklendi.</li>
+          <li xml:lang="uk">Додано максимальну ширину для динамічних прогнозів так, щоб це краще працювало на широких екранах</li>
+          <li xml:lang="zh-CN">为动态预报添加最大宽度以适应宽屏</li>
+          <li xml:lang="zh-TW">為動態預報設定最大寬度來改善寬螢幕上的顯示</li>
+          <li>Remove plasmoid (it is being reworked!)</li>
+          <li xml:lang="ar">إزالة البلازمويد (تجري إعادة صياغته!)</li>
+          <li xml:lang="bg">Премахнат е плазмоида (той се преработва!)</li>
+          <li xml:lang="ca">Elimina el plasmoide (s'està tornant a fer!)</li>
+          <li xml:lang="ca-valencia">Elimina el plasmoide (s'està tornant a fer!)</li>
+          <li xml:lang="cs">Odstraněn plasmoid (je přepracováván!)</li>
+          <li xml:lang="es">Eliminar plasmoide (¡se está trabajando en ello!)</li>
+          <li xml:lang="fi">Poista sovelma (sitä kunnostetaan!)</li>
+          <li xml:lang="fr">Supprimer le plasmoïde (Il est en cours de refonte !)</li>
+          <li xml:lang="he">הפלזמואיד הוסר (עובדים עליו מחדש!)</li>
+          <li xml:lang="ia">Remove plasmoid (il ha essite relaborate!)</li>
+          <li xml:lang="it">Rimuove il plasmoide (è in fase di rielaborazione!)</li>
+          <li xml:lang="ka">პლაზმოიდის წაშლა (მიმდინარეობს მისი თავიდან დამუშავება!)</li>
+          <li xml:lang="lt">Pašalintas Plasma įskiepis (jis yra perdaromas!)</li>
+          <li xml:lang="nl">Plasmoid verwijderen (het wordt opnieuw bewerkt!)</li>
+          <li xml:lang="nn">Fjerna plasmoiden (han vert revidert!)</li>
+          <li xml:lang="pt-BR">Removido o plasmoide (está sendo reformulado!)</li>
+          <li xml:lang="ru">Удалён виджет (ведётся переработка!)</li>
+          <li xml:lang="sk">Odstránenie plazmoidu (prebieha jeho prepracovanie!)</li>
+          <li xml:lang="sl">Odstrani plazmoid (se predeluje!).</li>
+          <li xml:lang="sv">Ta bort plasmoid (den håller på att omarbetas)</li>
+          <li xml:lang="tr">Plasmoid kaldırıldı (yeniden yazılıyor).</li>
+          <li xml:lang="uk">Вилучено плазмоїд (переписування!)</li>
+          <li xml:lang="zh-CN">移除 Plasma 小程序 (正在重写)</li>
+          <li xml:lang="zh-TW">移除 Plasmoid 元件（我們正在重寫它！）</li>
+          <li>Fixed default page not being loaded when new locations are added</li>
+          <li xml:lang="ar">أُصلح عدم تحميل الصفحة المبدئية عند إضافة مواقع جديدة</li>
+          <li xml:lang="bg">Поправена е страницата по подразбиране, която не се зареждаше при добавяне на нови местоположения</li>
+          <li xml:lang="ca">Corregeix la pàgina predeterminada que no es carregava quan s'afegien ubicacions noves</li>
+          <li xml:lang="ca-valencia">Corregix la pàgina predeterminada que no es carregava quan s'afegien ubicacions noves</li>
+          <li xml:lang="cs">Opravena chyba, kdy se při přidání nových lokalit nenačítala výchozí stránka</li>
+          <li xml:lang="es">Se ha corregido el problema de que la página predeterminada no se cargaba cuando se añadían nuevas ubicaciones.</li>
+          <li xml:lang="fi">korjattu oletussivun lataumattomuus uusien sijaintien lisäyksen jälkeen</li>
+          <li xml:lang="fr">Correction de l'absence de chargement de la page par défaut lors de l'ajout de nouveaux emplacements</li>
+          <li xml:lang="he">תוקנה בעיה שעמוד ברירת המחדל לא נטען כשנוספים מקומות חדשים</li>
+          <li xml:lang="ia">Corrigite que le pagina predefinite non es cargate quando nove locationes es addite</li>
+          <li xml:lang="it">Risolto il problema per cui la pagina predefinita non veniva caricata quando venivano aggiunte nuove posizioni</li>
+          <li xml:lang="ka">გასწორდა ნაგულისხმევი გვერდის არჩატვირთვა ახალი მდებარეობების დამატებისას</li>
+          <li xml:lang="lt">Fiksuotas numatytasis puslapis nebuvo įkeliamas, kai buvo pridėtos naujos vietos</li>
+          <li xml:lang="nl">Opgelost: de standaardpagina werd niet geladen wanneer nieuwe locaties werden toegevoegd.</li>
+          <li xml:lang="nn">Retta feil med at standardsida ikkje var lasta når nye stadar vert lagde til</li>
+          <li xml:lang="pt-BR">Corrigido o problema em que a página padrão não carregava quando novos locais eram adicionados</li>
+          <li xml:lang="ru">Исправлена ошибка загрузки страницы по умолчанию при добавлении новых местоположений</li>
+          <li xml:lang="sk">Opravené nenačítanie predvolenej stránky pri pridaní nových lokalít</li>
+          <li xml:lang="sl">Popravljena je bila napaka, da se privzeta stran ni naložila ob dodajanju novih lokacij</li>
+          <li xml:lang="sv">Rättade problemet med att standardsidan inte lästes in vid tillägg av nya platser</li>
+          <li xml:lang="tr">Yeni konumlar eklendiğinde öntanımlı sayfanın yüklenmemesi sorunu düzeltildi.</li>
+          <li xml:lang="uk">Виправлено помилку, пов'язану із тим, що типова сторінка не завантажувалася, якщо додано нові місця</li>
+          <li xml:lang="zh-CN">修复了在添加新位置时默认页面不加载的问题</li>
+          <li xml:lang="zh-TW">修正新增位置時不會載入預設頁面的問題</li>
+          <li>Unify application settings location</li>
+          <li xml:lang="ar">توحيد موقع إعدادات التطبيق</li>
+          <li xml:lang="bg">Унифициране на местоположението на настройките на приложението</li>
+          <li xml:lang="ca">Unifica la configuració de la ubicació a l'aplicació</li>
+          <li xml:lang="ca-valencia">Unifica la configuració de la ubicació a l'aplicació</li>
+          <li xml:lang="cs">Sjednoceno umístění nastavení aplikace</li>
+          <li xml:lang="es">Unificar la ubicación de la configuración de la aplicación.</li>
+          <li xml:lang="fi">yhtenäistetty sovelluksen asetusten sijainti</li>
+          <li xml:lang="fr">Unifier l'emplacement de la configuration de l'application</li>
+          <li xml:lang="he">איחוד מקום הגדרות היישום</li>
+          <li xml:lang="ia">Uni locationes de preferentias de application</li>
+          <li xml:lang="it">Unifica la posizione delle impostazioni dell'applicazione</li>
+          <li xml:lang="ka">გაერთიანდა აპლიკაციის მორგების მდებარეობა</li>
+          <li xml:lang="lt">Suvienyta programos nuostatų vieta</li>
+          <li xml:lang="nl">De locatie van de toepassingsinstellingen eenduidig maken</li>
+          <li xml:lang="nn">Harmonisert plasseringa programinnstillingane</li>
+          <li xml:lang="pt-BR">Unificada a localização das configurações do aplicativo</li>
+          <li xml:lang="ru">Унифицировано расположение параметров приложения</li>
+          <li xml:lang="sk">Zjednotenie umiestnenia nastavení aplikácie</li>
+          <li xml:lang="sl">Poenoti nastavitev lokacije aplikacije</li>
+          <li xml:lang="sv">Kombinera plats för programinställningar</li>
+          <li xml:lang="tr">Uygulama ayarlarının konumu birleştirildi.</li>
+          <li xml:lang="uk">Уніфіковано розташування параметрів роботи програми</li>
+          <li xml:lang="zh-CN">统一应用程序设置位置</li>
+          <li xml:lang="zh-TW">統一應用程式設定位置</li>
+          <li>Enable qml debugging when in debug mode</li>
+          <li xml:lang="ar">تمكين تنقيب qml عند التواجد في وضع التنقيح</li>
+          <li xml:lang="bg">Активиране на qml дебъгване в режим на дебъгване</li>
+          <li xml:lang="ca">Activa la depuració del QML quan és en el mode de depuració</li>
+          <li xml:lang="ca-valencia">Activa la depuració de QML quan s'estiga en el mode de depuració</li>
+          <li xml:lang="cs">Povoleno ladění qml v režimu ladění</li>
+          <li xml:lang="es">Habilitar modo de depuración qml en el modo de depuración.</li>
+          <li xml:lang="fi">Käytä virheenpaikannustilassa QML-virheenpaikannusta</li>
+          <li xml:lang="fr">Activer le débogage de QML lorsqu'en mode de débogage</li>
+          <li xml:lang="he">הפעלת ניפוי שגיאות ב־qml במצב ניפוי שגיאות</li>
+          <li xml:lang="ia">Habilita cribrar de qml quando in modo de cribrar</li>
+          <li xml:lang="it">Abilita il debug qml quando si è in modalità debug</li>
+          <li xml:lang="ka">qml გამართვის ჩართვა გამართვის რეჟიმში</li>
+          <li xml:lang="lt">Įjungtas qml derinimas, kai esama derinimo veiksenoje</li>
+          <li xml:lang="nl">Schakel QML-foutopsporing in wanneer u zich in de foutopsporingsmodus bevindt.</li>
+          <li xml:lang="nn">Slått på QML-feilsøking i feilsøkingsmodus</li>
+          <li xml:lang="pt-BR">Ativada a depuração do QML quando no modo de depuração</li>
+          <li xml:lang="ru">Добавлена возможность отладки QML в режиме отладки</li>
+          <li xml:lang="sk">Povolenie ladenia QML v režime ladenia</li>
+          <li xml:lang="sl">Omogoči odpravljanje napak qml v načinu odpravljanja napak</li>
+          <li xml:lang="sv">Aktivera qml-felsökning i felsökningsläge</li>
+          <li xml:lang="tr">Hata ayıklama kipindeyken QML hata ayıklamasına izin veriliyor.</li>
+          <li xml:lang="uk">Уможливлено діагностику qml, якщо програма перебуває у діагностичному режимі</li>
+          <li xml:lang="zh-CN">在调试模式下启用 QML 调试</li>
+          <li xml:lang="zh-TW">使用除錯模式時也啟用 QML 除錯</li>
+        </ul>
+      </description>
+      <url>https://www.plasma-mobile.org/2021/06/10/plasma-mobile-update-june/</url>
+    </release>
+    <release version="21.05" date="2021-05-10"/>
+  </releases>
+</component>

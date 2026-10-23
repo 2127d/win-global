@@ -1,0 +1,509 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the kweather package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kweather\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2026-05-29 00:47+0000\n"
+"PO-Revision-Date: 2026-03-25 07:08+0100\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.9\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Temuri Doghonadze"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "Temuri.doghonadze@gmail.com"
+
+#: formatter.cpp:36 formatter.cpp:44
+#, kde-format
+msgctxt "A temperature"
+msgid "%1°"
+msgstr "%1°"
+
+#: formatter.cpp:53
+#, kde-format
+msgid "%1 km/h"
+msgstr "%1 კმ/სთ"
+
+#: formatter.cpp:56
+#, kde-format
+msgid "%1 mph"
+msgstr "%1 მ/წთ"
+
+#: formatter.cpp:59
+#, kde-format
+msgid "%1 m/s"
+msgstr "%1 მ/წმ"
+
+#: formatter.cpp:69
+#, kde-format
+msgid "%1 hPa"
+msgstr "%1 ჰპა"
+
+#: formatter.cpp:72
+#, kde-format
+msgid "%1 mmHg"
+msgstr "%1 მმHg"
+
+#: formatter.cpp:78
+#, kde-format
+msgctxt "%1 represents percent value, % is the percent sign"
+msgid "%1%"
+msgstr "%1%"
+
+#: formatter.cpp:83
+#, kde-format
+msgid "%1"
+msgstr "%1"
+
+#: formatter.cpp:89
+#, kde-format
+msgctxt "sunrise time not available"
+msgid "-"
+msgstr "-"
+
+#: formatter.cpp:101
+#, kde-format
+msgctxt "in as inches"
+msgid "%1 in"
+msgstr "%1 დუიმი"
+
+#: formatter.cpp:104
+#, kde-format
+msgctxt "mm as millimeters"
+msgid "%1 mm"
+msgstr "%1 მმ"
+
+#: krunner/kweatherrunner.cpp:37
+#, kde-format
+msgctxt "Command to get weather"
+msgid "weather"
+msgstr "ამინდი"
+
+#: krunner/kweatherrunner.cpp:126
+#, kde-format
+msgctxt ""
+"Weather forecast: %1 is temperature, %2 is description, %3 is location"
+msgid "%1°C - %2 in %3"
+msgstr "%1°C - %2 %3-ში"
+
+#: krunner/kweatherrunner.cpp:127
+#, kde-format
+msgctxt "Weather forecast subtext: %1 is high temp, %2 is low temp"
+msgid "High: %1°C Low: %2°C"
+msgstr "მაღალი: %1°C დაბალი: %2°C"
+
+#: main.cpp:60 qml/DefaultPage.qml:69 qml/Main.qml:23
+#, kde-format
+msgid "Weather"
+msgstr "ამინდი"
+
+#: main.cpp:62
+#, kde-format
+msgid "A convergent weather application for Plasma"
+msgstr "კონვერგენტული ამინდის აპლიკაცია Plasma-სთვის"
+
+#: main.cpp:64
+#, kde-format
+msgid "© 2020-2024 Plasma Development Team"
+msgstr "© 2010-2024 Plasma -ის პროგრამისტების გუნდი"
+
+#: main.cpp:66
+#, kde-format
+msgid "Han Young"
+msgstr "ჰან იანგი"
+
+#: main.cpp:67
+#, kde-format
+msgid "Devin Lin"
+msgstr "Devin Lin"
+
+#: plasmoid/LocationSelector.qml:45
+#, kde-format
+msgid "No location found on system, please add some in kweather"
+msgstr "სისტემაში მდებარეობა ვერ ვიპოვე. დაამატეთ ის KWeather-ში"
+
+#: plasmoid/LocationSelector.qml:45
+#, kde-format
+msgid "Please select the location"
+msgstr "აირჩეთ მდებარეობა"
+
+#: plasmoid/WeatherContainer.qml:65
+#, kde-format
+msgid "%1%"
+msgstr "%1%"
+
+#: plasmoid/WeatherContainer.qml:81
+#, kde-format
+msgid "%1mm"
+msgstr "%1მმ"
+
+#: plasmoid/WeatherContainer.qml:133 plasmoid/WeatherContainer.qml:172
+#, kde-format
+msgid "Select Location"
+msgstr "მდებარეობის არჩევა"
+
+#: plasmoid/WeatherContainer.qml:138
+#, kde-format
+msgid "Open KWeather"
+msgstr "KWeather-ის გახსნა"
+
+#: qml/components/PageHeader.qml:44
+#, kde-format
+msgid "Navigate Back"
+msgstr "უკან გადასვლა"
+
+#: qml/DefaultPage.qml:21 qml/ForecastContainerPage.qml:31
+#, kde-format
+msgid "Forecast"
+msgstr "პროგნოზი"
+
+#: qml/DefaultPage.qml:28
+#, kde-format
+msgid "Network error when obtaining current location"
+msgstr "ქსელის შეცდომა მიმდინარე მდებარეობის დადგენისას"
+
+#: qml/DefaultPage.qml:77 qml/locationslist/AddLocationDialog.qml:14
+#: qml/locationslist/LocationsListDialog.qml:22
+#: qml/locationslist/LocationsListPage.qml:22
+#: qml/locationslist/LocationsListView.qml:85 qml/SetupWizard.qml:47
+#, kde-format
+msgid "Add Location"
+msgstr "მდებარეობის დამატება"
+
+#: qml/forecast/dynamic/DynamicForecastContent.qml:161
+#: qml/forecast/flat/FlatLocationForecast.qml:155
+#, kde-format
+msgid "Hourly"
+msgstr "საათობრივ"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:37
+#: qml/forecast/flat/FlatLocationForecast.qml:94
+#, kde-format
+msgid "Updated at %1"
+msgstr "განახლების დრო: %1"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:57
+#: qml/ForecastContainerPage.qml:55
+#: qml/locationslist/LocationsListDialog.qml:14
+#: qml/locationslist/LocationsListPage.qml:15
+#, kde-format
+msgid "Locations"
+msgstr "მდებარეობები"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:62
+#, kde-format
+msgid "Choose location"
+msgstr "აირჩიეთ მდებარეობა"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:77
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:82
+#: qml/ForecastContainerPage.qml:60 qml/settings/SettingsDialog.qml:12
+#: qml/settings/SettingsPage.qml:16
+#, kde-format
+msgid "Settings"
+msgstr "მორგება"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:98
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:103
+#: qml/ForecastContainerPage.qml:67
+#, kde-format
+msgid "Refresh"
+msgstr "განახლება"
+
+#: qml/forecast/dynamic/DynamicForecastPage.qml:73
+#: qml/forecast/flat/FlatLocationForecast.qml:43
+#, kde-format
+msgid "Weather refreshed for %1"
+msgstr "ამინდი განახლდა %1-სთვის"
+
+#: qml/forecast/flat/FlatLocationForecast.qml:110
+#, kde-format
+msgid "Daily"
+msgstr "დღიურად"
+
+#: qml/InfoCard.qml:47
+#, kde-format
+msgid "Precipitation"
+msgstr "ნალექი"
+
+#: qml/InfoCard.qml:70
+#, kde-format
+msgid "Humidity"
+msgstr "ტენიანბა"
+
+#: qml/InfoCard.qml:93
+#, kde-format
+msgid "Pressure"
+msgstr "წნევა"
+
+#: qml/InfoCard.qml:116
+#, kde-format
+msgid "UV Index"
+msgstr "UV ინდექსი"
+
+#: qml/locationslist/AddLocationListView.qml:48
+#, kde-format
+msgid "Search for a location…"
+msgstr "მდებარეობის ძებნა…"
+
+#: qml/locationslist/AddLocationListView.qml:87
+#, kde-format
+msgid "Unable to connect"
+msgstr "დაკავშირება შეუძლებელია"
+
+#: qml/locationslist/AddLocationListView.qml:99
+#, kde-format
+msgid "Search for a location"
+msgstr "მდებარეობის ძებნა"
+
+#: qml/locationslist/AddLocationListView.qml:128
+#, kde-format
+msgid "No results"
+msgstr "შედეგების გარეშე"
+
+#: qml/locationslist/AddLocationPage.qml:15
+#, kde-format
+msgid "Add location"
+msgstr "მდებარეობის დამატება"
+
+#: qml/locationslist/LocationsListView.qml:69
+#, kde-format
+msgid "Unable to fetch timezone information"
+msgstr "დროის სარტყლის მიღების შეცდომა"
+
+#: qml/locationslist/LocationsListView.qml:80
+#, kde-format
+msgid "Add a location"
+msgstr "მდებარეობის დამატება"
+
+#: qml/locationslist/LocationsListView.qml:227
+#, kde-format
+msgid "Delete"
+msgstr "წაშლა"
+
+#: qml/settings/PrecipitationUnitComboBox.qml:12
+#, kde-format
+msgid "Precipitation Units"
+msgstr "ნალექის ერთეული"
+
+#: qml/settings/PrecipitationUnitComboBox.qml:25
+#, kde-format
+msgctxt "Millimeters"
+msgid "mm"
+msgstr "მმ"
+
+#: qml/settings/PrecipitationUnitComboBox.qml:29
+#, kde-format
+msgctxt "Inches"
+msgid "in"
+msgstr "დუიმი"
+
+#: qml/settings/PressureUnitComboBox.qml:12
+#, kde-format
+msgid "Pressure Units"
+msgstr "წნევის ერთეული"
+
+#: qml/settings/PressureUnitComboBox.qml:25
+#, kde-format
+msgctxt "Hectopascal Pressure"
+msgid "hPa"
+msgstr "ჰპა"
+
+#: qml/settings/PressureUnitComboBox.qml:29
+#, kde-format
+msgctxt "Millimetre of mercury"
+msgid "mmHg"
+msgstr "მმHg"
+
+#: qml/settings/SettingsComponent.qml:24
+#, kde-format
+msgid "General"
+msgstr "ძირითადი"
+
+#: qml/settings/SettingsComponent.qml:31
+#, kde-format
+msgid "Forecast Style"
+msgstr "პროგნოზის სტილი"
+
+#: qml/settings/SettingsComponent.qml:44 qml/SetupWizard.qml:519
+#, kde-format
+msgid "Flat"
+msgstr "ბრტყელი"
+
+#: qml/settings/SettingsComponent.qml:48 qml/SetupWizard.qml:483
+#, kde-format
+msgid "Dynamic"
+msgstr "დინამიკა"
+
+#: qml/settings/SettingsComponent.qml:63
+#, kde-format
+msgid "About"
+msgstr "შესახებ"
+
+#: qml/settings/SettingsComponent.qml:72 qml/SetupWizard.qml:46
+#, kde-format
+msgid "Units"
+msgstr "საზომი ერთეულები"
+
+#: qml/settings/SpeedUnitComboBox.qml:12
+#, kde-format
+msgid "Speed Units"
+msgstr "სიჩქარის ერთეული"
+
+#: qml/settings/SpeedUnitComboBox.qml:25
+#, kde-format
+msgctxt "kilometers per hour"
+msgid "kph"
+msgstr "კმ/სთ"
+
+#: qml/settings/SpeedUnitComboBox.qml:29
+#, kde-format
+msgctxt "miles per hour"
+msgid "mph"
+msgstr "მ/სთ"
+
+#: qml/settings/SpeedUnitComboBox.qml:33
+#, kde-format
+msgctxt "meters per second"
+msgid "m/s"
+msgstr "მ/წმ"
+
+#: qml/settings/TemperatureUnitComboBox.qml:12
+#, kde-format
+msgid "Temperature Units"
+msgstr "ტემპერატურის ერთეული"
+
+#: qml/settings/TemperatureUnitComboBox.qml:25
+#, kde-format
+msgid "Use System Default"
+msgstr "სისტემის ნაგულისხმევის გამოყენება"
+
+#: qml/settings/TemperatureUnitComboBox.qml:29
+#, kde-format
+msgid "Celsius"
+msgstr "ცელსიუსი"
+
+#: qml/settings/TemperatureUnitComboBox.qml:33
+#, kde-format
+msgid "Fahrenheit"
+msgstr "ფარენჰეიტი"
+
+#: qml/SetupWizard.qml:45
+#, kde-format
+msgid "Appearance"
+msgstr "გარეგნობა"
+
+#: qml/SetupWizard.qml:238
+#, kde-format
+msgid "Welcome to <b>Weather</b>"
+msgstr "მოგესალმებით <b>ამინდის</b> აპლიკაციაში"
+
+#: qml/SetupWizard.qml:261
+#, kde-format
+msgid ""
+"View hourly and daily weather forecasts, along with other detailed "
+"information such as wind speed and precipitation."
+msgstr ""
+"ნახეთ საათობრივი და ყოველდღიური ამინის პროგნოზები სხვა ისეთ დეტალურ "
+"ინფორმაციასთან ერთად, როგორიცაა ქარის სიჩქარე და ნალექები."
+
+#: qml/SetupWizard.qml:282
+#, kde-format
+msgid ""
+"Save multiple locations and switch between them easily with the locations "
+"list."
+msgstr ""
+"შეინახეთ მრავალი მდებარეობა და გადართეთ მათ შორის მარტივად მდებარეობების "
+"სიით."
+
+#: qml/SetupWizard.qml:304
+#, kde-format
+msgid ""
+"Built by the community, and powered by data from the Norwegian "
+"Meteorological Institute."
+msgstr ""
+"აშენდა საზოგადოების მიერ და უზრუნველყოფილია ნორვეგიის მეტეოროლოგიური "
+"ინსტიტუტის მონაცემებით."
+
+#: qml/SetupWizard.qml:311
+#, kde-format
+msgid "Get Started"
+msgstr "დაწყება"
+
+#: qml/SetupWizard.qml:412
+#, kde-format
+msgid "Back"
+msgstr "უკან"
+
+#: qml/SetupWizard.qml:431
+#, kde-format
+msgid "Next"
+msgstr "შემდეგი"
+
+#: qml/SetupWizard.qml:455
+#, kde-format
+msgid "The style can be changed later in the settings."
+msgstr "სტილის შეცვლა მოგვიანებით, პარამეტრებში შეგიძლიათ."
+
+#: qml/SetupWizard.qml:490
+#, kde-format
+msgid "Animated and full-color backgrounds for weather forecasts."
+msgstr "ანიმაციური და სრული ფერადი ფონი ამინდის პროგნოზებისთვის."
+
+#: qml/SetupWizard.qml:526
+#, kde-format
+msgid "Flat and simple backgrounds for weather forecasts."
+msgstr "ბრტყელი და მარტივი ფონი ამინდის პროგნოზისთვის."
+
+#: qml/SunriseCard.qml:50
+#, kde-format
+msgid "Sunrise"
+msgstr "აისი"
+
+#: qml/SunriseCard.qml:73
+#, kde-format
+msgid "Sunset"
+msgstr "მზის ჩასვლა"
+
+#: qml/SunriseCard.qml:96
+#, kde-format
+msgid "Moon Phase"
+msgstr "მთვარის ფაზა"
+
+#: qml/TemperatureChartCard.qml:81
+#, kde-format
+msgid "temperature"
+msgstr "ტემპერატურა"
+
+#~ msgid "Local date: %1"
+#~ msgstr "ლოკალური თარიღი: %1"
+
+#~ msgid "Local time: %1"
+#~ msgstr "ლოკალური დრო: %1"
+
+#~ msgid "Continue"
+#~ msgstr "გაგრძელება"
+
+#~ msgid "Select forecast theme"
+#~ msgstr "აირჩიეთ პროგნოზის თემა"
+
+#~ msgid "Finish"
+#~ msgstr "დასრულება"
+
+#~ msgid "Add current location"
+#~ msgstr "მიმდინარე მდებარეობის დამტება"

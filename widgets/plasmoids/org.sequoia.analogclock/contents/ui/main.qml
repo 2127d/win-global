@@ -17,7 +17,6 @@ import org.kde.plasma.components as PlasmaComponents
 import org.kde.kirigami as Kirigami
 
 import org.kde.plasma.clock
-import org.kde.plasma.workspace.calendar as PlasmaCalendar
 
 PlasmoidItem {
     id: analogclock
@@ -41,7 +40,8 @@ PlasmoidItem {
     property bool showTimezone: Plasmoid.configuration.showTimezoneString
 
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
-    preferredRepresentation: compactRepresentation
+    preferredRepresentation: fullRepresentation
+    activationTogglesExpanded: false
 
     toolTipMainText: {
         const day = Qt.locale().toString(clockSource.dateTime, "dddd");
@@ -51,29 +51,22 @@ PlasmoidItem {
 
     Clock {
         id: clockSource
-        trackSeconds: analogclock.showSecondsHand || !!analogclock.compactRepresentationItem?.containsMouse
+        trackSeconds: analogclock.showSecondsHand || !!analogclock.fullRepresentationItem?.containsMouse
     }
 
-    compactRepresentation: MouseArea {
+    fullRepresentation: MouseArea {
         id: representation
 
         Layout.minimumWidth: analogclock.panel ? Kirigami.Units.iconSizes.smallMedium : 96
         Layout.minimumHeight: analogclock.panel ? Kirigami.Units.iconSizes.smallMedium : 96
 
-        property bool wasExpanded
-
         activeFocusOnTab: true
         hoverEnabled: true
+        acceptedButtons: Qt.NoButton
 
         Accessible.name: Plasmoid.title
         Accessible.description: i18nc("@info:tooltip", "Current time is %1; Current date is %2", analogclock.currentTime, analogclock.currentDate)
-        Accessible.role: Accessible.Button
-
-        Accessible.onPressAction: analogclock.expanded = !analogclock.expanded
-        Keys.onSpacePressed: analogclock.expanded = !analogclock.expanded
-        Keys.onReturnPressed: analogclock.expanded = !analogclock.expanded
-        onPressed: wasExpanded = analogclock.expanded
-        onClicked: analogclock.expanded = !wasExpanded
+        Accessible.role: Accessible.StaticText
 
         ClockFace {
             anchors {
@@ -114,16 +107,5 @@ PlasmoidItem {
                 elide: Text.ElideRight
             }
         }
-    }
-
-    fullRepresentation: PlasmaCalendar.MonthView {
-        Layout.minimumWidth: Kirigami.Units.gridUnit * 22
-        Layout.maximumWidth: Kirigami.Units.gridUnit * 80
-        Layout.minimumHeight: Kirigami.Units.gridUnit * 22
-        Layout.maximumHeight: Kirigami.Units.gridUnit * 40
-
-        readonly property var appletInterface: analogclock
-
-        today: clockSource.dateTime
     }
 }

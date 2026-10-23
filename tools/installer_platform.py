@@ -30,7 +30,8 @@ COMPONENTS = {
 OPTIONAL_COMPONENTS = {'animation-kit'}
 APPS = {'settings': ('Settings makeover', 'Requires System Settings 6.7.5.'),
         'gwenview': ('Gwenview makeover', 'Requires Gwenview 26.08.1.'),
-        'kcalc': ('KCalc makeover', 'Modern keys and mode-aware resizing. Requires KCalc 26.08.1.')}
+        'kcalc': ('KCalc makeover', 'Modern keys and mode-aware resizing. Requires KCalc 26.08.1.'),
+        'kweather': ('Weather makeover', 'Atmospheric skies and Sequoia forecast cards. Requires KWeather 26.08.1 from Flatpak.')}
 NATIVE = {'application-style', 'decorations'}
 
 # A preset must never point at theme assets or layout widgets we did not install.
@@ -203,6 +204,16 @@ def packages_for(distro, components, apps=()):
                      'arch': ['gmp', 'mpfr', 'libmpc'],
                      'ubuntu': ['libgmp-dev', 'libmpfr-dev', 'libmpc-dev'],
                      'debian': ['libgmp-dev', 'libmpfr-dev', 'libmpc-dev']}[distro]
+    if 'kweather' in apps:
+        packages += {
+            'fedora': ['flatpak', 'qt6-qtcharts-devel', 'qt6-qtpositioning-devel', 'qt6-qtsvg-devel',
+                       'kf6-kholidays-devel', 'kf6-kirigami-addons-devel', 'kf6-qqc2-desktop-style'],
+            'arch': ['flatpak', 'qt6-charts', 'qt6-positioning', 'qt6-svg', 'kholidays', 'kirigami-addons', 'qqc2-desktop-style'],
+            'ubuntu': ['flatpak', 'qt6-charts-dev', 'qt6-positioning-dev', 'qt6-svg-dev', 'libkf6holidays-dev',
+                       'kirigami-addons-dev', 'qml6-module-org-kde-kholidays', 'qml6-module-org-kde-desktop'],
+            'debian': ['flatpak', 'qt6-charts-dev', 'qt6-positioning-dev', 'qt6-svg-dev', 'libkf6holidays-dev',
+                       'kirigami-addons-dev', 'qml6-module-org-kde-kholidays', 'qml6-module-org-kde-desktop'],
+        }[distro]
     return sorted(set(packages))
 
 def package_command(distro, packages):
@@ -255,6 +266,17 @@ def application_version(executable):
         return None
 
 def app_problem(app):
+    if app == 'kweather':
+        try:
+            import json
+            location = Path(subprocess.check_output(['flatpak', 'info', '--show-location', 'org.kde.kweather'], text=True, stderr=subprocess.DEVNULL).strip())
+            manifest = json.loads((location / 'files/manifest.json').read_text())
+            source = next(m['sources'][0]['url'] for m in manifest['modules'] if m['name'] == 'kweather')
+            if source.endswith('/kweather-26.08.1.tar.xz'):
+                return ''
+        except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError):
+            pass
+        return 'Weather makeover requires KWeather 26.08.1 installed through Flatpak (org.kde.kweather).'
     executable, required = {'settings': ('systemsettings', '6.7.5'), 'gwenview': ('gwenview', '26.08.1'), 'kcalc': ('kcalc', '26.08.1')}[app]
     version = application_version(executable)
     if version != required:

@@ -18,7 +18,7 @@ PAYLOAD = (
     'themes/application-style', 'themes/color-schemes', 'themes/fonts',
     'themes/icons', 'themes/lockscreen', 'themes/login-screen',
     'themes/plasma', 'themes/wallpapers',
-    'apps/settings', 'apps/gwenview', 'apps/kcalc',
+    'apps/settings', 'apps/gwenview', 'apps/kcalc', 'apps/kweather',
 )
 EXCLUDED = {'.git', '.staging', '__pycache__', 'CMakeFiles', 'CMakeCache.txt'}
 INTRO = '''SEQUOIA ELEVEN — INSTALLER
@@ -50,12 +50,12 @@ installed separately. Downloads uses your own Downloads folder. The theme uses
 its bundled wallpaper, not a personal wallpaper from the original machine.
 
 This archive includes the theme, layout, installer and sources for the optional
-Settings/Gwenview/KCalc makeovers. It excludes build caches, SDKs, screenshots, backups,
+Settings/Gwenview/KCalc/Weather makeovers. It excludes build caches, SDKs, screenshots, backups,
 and Firefox projects.
 
 The installer supports Arch, Fedora, Ubuntu and Debian when their releases
 provide the required Plasma 6 development packages. Tested with Fedora 44,
-Plasma 6.7.5 and Qt 6.11.2. Optional Settings/Gwenview makeovers require the
+Plasma 6.7.5 and Qt 6.11.2. Optional app makeovers require the
 matching application versions shown by the installer. The login theme requires
 Plasma Login Manager; it does not support SDDM.
 Both the GUI and default command-line installation omit the login screen when

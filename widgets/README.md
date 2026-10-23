@@ -21,7 +21,8 @@ for its original five panel archives.
 **Original** second, using the active Plasma theme's round clock face. The dial,
 hands and optional seconds hand retain KDE's artwork and native animation.
 The new face follows the theme's View palette. Both presets keep the native live
-clock, localized tooltip, time-zone label, and click/keyboard calendar popup.
+clock, localized time/date tooltip and time-zone label. Both are standalone
+time displays; clicking or activating the clock does not open a calendar.
 Appearance settings also allow switching faces after placement. Resizing snaps
 to the shared grid while retaining the selected face.
 

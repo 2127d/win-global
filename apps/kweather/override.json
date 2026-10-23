@@ -1,0 +1,32 @@
+{
+  "application": "KWeather",
+  "version": "26.08.1",
+  "source_directory": "kweather-26.08.1",
+  "sources": [
+    {
+      "url": "https://download.kde.org/stable/release-service/26.08.1/src/kweathercore-26.08.1.tar.xz",
+      "sha256": "e89bcad036347f76b39bf4d83b68ab37d903e13cde24347e3d724b0e509ea7fd",
+      "x-checker-data": {
+        "type": "anitya",
+        "project-id": 8763,
+        "stable-only": true,
+        "url-template": "https://download.kde.org/stable/release-service/$version/src/kweathercore-$version.tar.xz"
+      },
+      "type": "archive"
+    },
+    {
+      "url": "https://download.kde.org/stable/release-service/26.08.1/src/kweather-26.08.1.tar.xz",
+      "sha256": "21b61ca4a29f49c2ab717624605e9dbe0abd8054aac2fd26098492f29c871cfa",
+      "x-checker-data": {
+        "is-main-source": true,
+        "type": "anitya",
+        "project-id": 8763,
+        "stable-only": true,
+        "url-template": "https://download.kde.org/stable/release-service/$version/src/kweather-$version.tar.xz"
+      },
+      "type": "archive"
+    }
+  ],
+  "installed_package": "org.kde.kweather/x86_64/stable (Flatpak)",
+  "status": "Sequoia forecast dashboard, atmospheric Dynamic view and palette-driven Flat view"
+}

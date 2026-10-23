@@ -1,0 +1,239 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the kweathercore package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kweathercore\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"PO-Revision-Date: 2025-08-20 08:00+0200\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.6\n"
+
+#: capalertinfo.cpp:108
+#, kde-format
+msgctxt "language (country)"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
+
+#: kweathercore.cpp:93 kweathercore.cpp:94 kweathercore.cpp:95
+msgid "Clear"
+msgstr "სუფთა ცა"
+
+#: kweathercore.cpp:96 kweathercore.cpp:97 kweathercore.cpp:98
+msgid "Cloudy"
+msgstr "მოღრუბლული"
+
+#: kweathercore.cpp:99
+msgid "Partly Sunny"
+msgstr "ნაწილობრივ მზიანი"
+
+#: kweathercore.cpp:100 kweathercore.cpp:101
+msgid "Light Clouds"
+msgstr "ღია ღრუბლები"
+
+#: kweathercore.cpp:102 kweathercore.cpp:103 kweathercore.cpp:104
+msgid "Fog"
+msgstr "ნისლი"
+
+#: kweathercore.cpp:106 kweathercore.cpp:107 kweathercore.cpp:108
+msgid "Heavy Rain"
+msgstr "თავსხმა წვიმა"
+
+#: kweathercore.cpp:109 kweathercore.cpp:110 kweathercore.cpp:111
+msgid "Thunderstorm with Heavy Rain"
+msgstr "ჭექა-ქუხილი ძლიერ წვიმასთან ერთად"
+
+#: kweathercore.cpp:112 kweathercore.cpp:113 kweathercore.cpp:114
+msgid "Heavy Rain Shower"
+msgstr "ძლიერი თავსხმა წვიმა"
+
+#: kweathercore.cpp:115 kweathercore.cpp:116 kweathercore.cpp:117
+msgid "Thunderstorm with Heavy Rain Shower"
+msgstr "ჭექა-ქუხილი ძლიერი წვიმის შხაპთან ერთად"
+
+#: kweathercore.cpp:119 kweathercore.cpp:120 kweathercore.cpp:121
+msgid "Heavy Sleet"
+msgstr "მძიმე ჭყაპი"
+
+#: kweathercore.cpp:122 kweathercore.cpp:123 kweathercore.cpp:124
+msgid "Thunderstorm with Heavy Sleet"
+msgstr "ჭექა-ქუხილი ძლიერ თოვლიჭყაპთან ერთად"
+
+#: kweathercore.cpp:125 kweathercore.cpp:126 kweathercore.cpp:127
+msgid "Heavy Sleet Shower"
+msgstr "მძიმე ჭყაპის შხაპი"
+
+#: kweathercore.cpp:128 kweathercore.cpp:129 kweathercore.cpp:130
+msgid "Thunderstorm with Heavy Sleet Shower"
+msgstr "ჭექა-ქუხილი ძლიერ თოვლიჭყაპის შხაპთან ერთად"
+
+#: kweathercore.cpp:132 kweathercore.cpp:133 kweathercore.cpp:134
+msgid "Heavy Snow"
+msgstr "თოვლი"
+
+#: kweathercore.cpp:135 kweathercore.cpp:136 kweathercore.cpp:137
+msgid "Heavy Snow Shower"
+msgstr "ძლიერი თავსხმა თოვლი"
+
+#: kweathercore.cpp:138 kweathercore.cpp:139 kweathercore.cpp:140
+msgid "Thunderstorm with Heavy Snow Shower"
+msgstr "ჭექა-ქუხილი ძლიერ თოვლის შხაპთან ერთად"
+
+#: kweathercore.cpp:142 kweathercore.cpp:143 kweathercore.cpp:144
+msgid "Light Rain"
+msgstr "მსუბუქი წვიმა"
+
+#: kweathercore.cpp:145 kweathercore.cpp:146 kweathercore.cpp:147
+msgid "Thunderstorm with Light Rain"
+msgstr "ჭექა-ქუხილი მსუბუქ წვიმასთან ერთად"
+
+#: kweathercore.cpp:148 kweathercore.cpp:149 kweathercore.cpp:150
+msgid "Light Rain Shower"
+msgstr "მსუბუქი წვიმის შხაპი"
+
+#: kweathercore.cpp:151 kweathercore.cpp:152 kweathercore.cpp:153
+msgid "Thunderstorm with Light Rain Shower"
+msgstr "ჭექა-ქუხილი მსუბუქი წვიმის შხაპთან ერთად"
+
+#: kweathercore.cpp:155 kweathercore.cpp:156 kweathercore.cpp:157
+msgid "Light Sleet"
+msgstr "მსუბუქი ჭყაპი"
+
+#: kweathercore.cpp:158 kweathercore.cpp:159 kweathercore.cpp:160
+msgid "Thunderstorm with Light Sleet"
+msgstr "ჭექა-ქუხილი მსუბუქ თოვლიჭყაპთან ერთად"
+
+#: kweathercore.cpp:161 kweathercore.cpp:162 kweathercore.cpp:163
+msgid "Light Sleet Shower"
+msgstr "მსუბუქი ჭყაპის შხაპი"
+
+#: kweathercore.cpp:165 kweathercore.cpp:166 kweathercore.cpp:167
+msgid "Light Snow"
+msgstr "მსუბუქი თოვლი"
+
+#: kweathercore.cpp:168 kweathercore.cpp:169 kweathercore.cpp:170
+msgid "Thunderstorm with Light Snow"
+msgstr "ჭექა-ქუხილი მსუბუქ თოვლთან ერთად"
+
+#: kweathercore.cpp:171 kweathercore.cpp:172 kweathercore.cpp:173
+msgid "Light Snow Shower"
+msgstr "მსუბუქი თოვლის შხაპი"
+
+#: kweathercore.cpp:175 kweathercore.cpp:176 kweathercore.cpp:177
+msgid "Thunderstorm with Light Sleet Shower"
+msgstr "ჭექა-ქუხილი მსუბუქი თოვლიჭყაპის შხაპთან ერთად"
+
+#: kweathercore.cpp:178 kweathercore.cpp:179 kweathercore.cpp:180
+msgid "Thunderstorm with Light Snow Shower"
+msgstr "ჭექა-ქუხილი მსუბუქი თოვლის შხაპთან ერთად"
+
+#: kweathercore.cpp:182 kweathercore.cpp:183 kweathercore.cpp:184
+msgid "Partly Cloudy"
+msgstr "ნაწილობრივ მოღრუბლული"
+
+#: kweathercore.cpp:186 kweathercore.cpp:187 kweathercore.cpp:188
+msgid "Rain"
+msgstr "წვიმა"
+
+#: kweathercore.cpp:189 kweathercore.cpp:190 kweathercore.cpp:191
+msgid "Thunderstorm with Rain"
+msgstr "ჭექა-ქუხილი წვიმასთან ერთად"
+
+#: kweathercore.cpp:192 kweathercore.cpp:193 kweathercore.cpp:194
+msgid "Rain Shower"
+msgstr "წვიმის შხაპი"
+
+#: kweathercore.cpp:195 kweathercore.cpp:196 kweathercore.cpp:197
+msgid "Thunderstorm with Rain Shower"
+msgstr "ჭექა-ქუხილი წვიმის შხაპთან ერთად"
+
+#: kweathercore.cpp:199 kweathercore.cpp:200 kweathercore.cpp:201
+msgid "Sleet"
+msgstr "ჭყაპი"
+
+#: kweathercore.cpp:202 kweathercore.cpp:203 kweathercore.cpp:204
+msgid "Thunderstorm with Sleet"
+msgstr "ჭექა-ქუხილი თოვლიჭყაპთან ერთად"
+
+#: kweathercore.cpp:205 kweathercore.cpp:206 kweathercore.cpp:207
+msgid "Sleet Shower"
+msgstr "თოვლჭყაპის შხაპი"
+
+#: kweathercore.cpp:208 kweathercore.cpp:209 kweathercore.cpp:210
+msgid "Thunderstorm with Sleet Shower"
+msgstr "ჭექა-ქუხილი თოვლიჭყაპის შხაპთან ერთად"
+
+#: kweathercore.cpp:212 kweathercore.cpp:213 kweathercore.cpp:214
+msgid "Snow"
+msgstr "თოვლი"
+
+#: kweathercore.cpp:215 kweathercore.cpp:216 kweathercore.cpp:217
+msgid "Thunderstorm with Snow"
+msgstr "ჭექა-ქუხილი თოვლთან ერთად"
+
+#: kweathercore.cpp:218 kweathercore.cpp:219 kweathercore.cpp:220
+msgid "Snow Shower"
+msgstr "თოვლის შხაპი"
+
+#: kweathercore.cpp:221 kweathercore.cpp:222 kweathercore.cpp:223
+msgid "Thunderstorm with Snow Shower"
+msgstr "ჭექა-ქუხილი სთოვლის შხაპთან ერთად"
+
+#: kweathercore_p.h:20
+#, kde-format
+msgid "Unknown"
+msgstr "უცნობი"
+
+#~ msgid "Immediate"
+#~ msgstr "უეცარი"
+
+#~ msgid "Expected"
+#~ msgstr "მოსალოდნელი"
+
+#~ msgid "Future"
+#~ msgstr "მომავალი"
+
+#~ msgid "Past"
+#~ msgstr "წარსული"
+
+#~ msgid "Extreme"
+#~ msgstr "ექსტრემალური"
+
+#~ msgid "Severe"
+#~ msgstr "მძიმე"
+
+#~ msgid "Moderate"
+#~ msgstr "საშუალო"
+
+#~ msgid "Minor"
+#~ msgstr "მცირე"
+
+#~ msgid "Observed"
+#~ msgstr "შემჩნეულია"
+
+#~ msgid "Likely"
+#~ msgstr "დიდი შანსია"
+
+#~ msgid "Possible"
+#~ msgstr "შესაძლოა"
+
+#~ msgid "Unlikely"
+#~ msgstr "მცირე შანსით"
+
+#~ msgid "Storm"
+#~ msgstr "ქარიშხალი"
+
+#~ msgid "New Moon"
+#~ msgstr "ახალი მთვარე"
+
+#~ msgid "Full Moon"
+#~ msgstr "სრული მთვარე"

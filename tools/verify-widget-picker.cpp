@@ -37,6 +37,37 @@ static QQuickItem *moveHandle(QQuickItem *root, QQuickItem *container) {
     for (auto child : root->childItems()) if (auto found = moveHandle(child, container)) return found;
     return nullptr;
 }
+static void checkClockActivation(QQuickItem *clock) {
+    auto display = qvariant_cast<QQuickItem *>(eval(clock, "fullRepresentationItem"));
+    require(display && display->window() == clock->window(), "clock face is inline in desktop or panel");
+    // Plasma calls an inline full representation 'expanded' too. Check that
+    // activation keeps this same display in its host window, without a popup.
+    const bool expanded = clock->property("expanded").toBool();
+    const bool acceptsFocus = !(display->window()->flags() & Qt::WindowDoesNotAcceptFocus);
+    if (acceptsFocus) display->window()->requestActivate();
+    QTest::qWait(100);
+    QTest::mouseClick(display->window(), Qt::LeftButton, Qt::NoModifier,
+                      display->mapToScene(QPointF(display->width()/2, display->height()/2)).toPoint());
+    QTest::qWait(100);
+    require(eval(clock, "preferredRepresentation === fullRepresentation && compactRepresentationItem === null").toBool()
+            && display->window() == clock->window() && clock->property("expanded").toBool() == expanded,
+            "clicking clock opens no calendar");
+    // Panel windows do not accept focus; QTest would send their keys to the
+    // active picker instead. Exercise keyboard input on the desktop hosts.
+    if (acceptsFocus) {
+        display->forceActiveFocus();
+        for (auto key : {Qt::Key_Space, Qt::Key_Return}) {
+            QTest::keyClick(display->window(), key);
+            QTest::qWait(50);
+            require(clock->property("expanded").toBool() == expanded && display->window() == clock->window(),
+                    "keyboard activation opens no calendar");
+        }
+    }
+    require(eval(clock, "!activationTogglesExpanded && toolTipMainText.length > 0 && toolTipSubText === currentTime + '\\n' + currentDate").toBool(),
+            "native activation disabled while time/date tooltip remains");
+    require(eval(display, "Accessible.role === Accessible.StaticText && Accessible.description.length > 0").toBool(),
+            "clock exposes accessible time/date without a button action");
+}
 static void checkAnalogClock(QQuickItem *picker, QQuickWindow *wizardWindow, QQuickItem *grid) {
     for (int preset = 0; preset < 2; ++preset) {
         eval(picker, "GridSession.begin('org.sequoia.analogclock', 'Sequoia Analog Clock', 'clock', false); GridSession.choose(GridSession.targets.find(t=>t.kind === 'desktop' && t.screen === main.containment.screen))");
@@ -64,17 +95,9 @@ static void checkAnalogClock(QQuickItem *picker, QQuickWindow *wizardWindow, QQu
         eval(container, "width = 192; height = 192");
         QTest::qWait(100);
         eval(container, "configOverlayVisible = false");
-        // Keep the picker alive while giving the real calendar keyboard focus.
+        // Keep the picker alive while exercising the clock's real input path.
         eval(picker, "sidePanel.hideOnWindowDeactivate = false");
-        auto compact = qvariant_cast<QQuickItem *>(eval(clock, "compactRepresentationItem"));
-        compact->window()->requestActivate();
-        QTest::qWait(100);
-        compact->forceActiveFocus();
-        QTest::keyClick(compact->window(), Qt::Key_Space);
-        QTest::qWait(250);
-        fprintf(stderr, "CALENDAR: %s\n", qPrintable(eval(clock, "JSON.stringify({expanded:expanded,loaded:!!fullRepresentationItem,focus:compactRepresentationItem.activeFocus})").toString()));
-        require(eval(clock, "expanded && fullRepresentationItem !== null").toBool(), "native calendar opens from keyboard");
-        eval(clock, "expanded = false");
+        checkClockActivation(clock);
         eval(picker, "sidePanel.requestActivate()");
     }
     eval(picker, "GridSession.begin('org.sequoia.analogclock', 'Sequoia Analog Clock', 'clock', false); GridSession.choose(GridSession.targets.find(t=>t.kind === 'panel' && t.ready))");
@@ -84,8 +107,15 @@ static void checkAnalogClock(QQuickItem *picker, QQuickWindow *wizardWindow, QQu
     require(panelClock && panelClock->property("panel").toBool(), "clock supports native panel form factor");
     auto panelFace = named(panelClock, "sequoiaAnalogFace");
     require(panelFace && panelFace->property("rounded").toBool(), "panel uses first clock preset");
+    eval(picker, "sidePanel.hideOnWindowDeactivate = false");
+    for (const auto style : {"sequoia", "original"}) {
+        eval(panelClock, QString("Plasmoid.configuration.faceStyle = '%1'").arg(style));
+        checkClockActivation(panelClock);
+    }
+    eval(picker, "sidePanel.requestActivate()");
+    QTest::qWait(200);
     eval(picker, "sidePanel.hideOnWindowDeactivate = Qt.binding(()=>!main.preventWindowHide)");
-    fprintf(stderr, "PASS: analog clock presets, live time, seconds/timezone, calendar, resize, panel and preview configuration\n");
+    fprintf(stderr, "PASS: analog clock presets, live time, seconds/timezone, no calendar on mouse/keyboard activation, tooltip/accessibility, resize, panel and preview configuration\n");
 }
 static void check(QQuickItem *picker) {
     auto window = picker->window();
@@ -284,6 +314,7 @@ static void check(QQuickItem *picker) {
     require(window->isVisible() && eval(picker, "GridSession.phase === 'catalog' && main.containment.applets.length === " + QString::number(before + 2)).toBool(), "cancelled native drag restores picker without adding widget");
     checkAnalogClock(picker, wizardWindow, placement);
     // Leave an existing instance at a new location and verify it after restart.
+    eval(picker, "sidePanel.hideOnWindowDeactivate = false");
     eval(container, "editMode = true; configOverlayVisible = true");
     QTest::qWait(200);
     moveStart = container->mapToScene(QPointF(container->width()/2, 60)).toPoint();
@@ -296,6 +327,8 @@ static void check(QQuickItem *picker) {
     QTest::qWait(400);
     require(container->x() == 96 && container->y() == 96, "existing widget moved to its saved destination");
     eval(container, "configOverlayVisible = false; editMode = false");
+    eval(picker, "sidePanel.requestActivate()");
+    QTest::qWait(200);
     eval(picker, "sidePanel.hideOnWindowDeactivate = Qt.binding(()=>!main.preventWindowHide)");
     eval(picker, "searchInput.text = ''; widgetExplorer.widgetsModel.filterType = 'running'; widgetExplorer.widgetsModel.filterQuery = true");
     QTest::qWait(300);

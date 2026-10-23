@@ -1,0 +1,30 @@
+#
+# Copyright 2020 Han Young <hanyoung@protonmail.com>
+# Copyright 2020 Devin Lin <espidev@gmail.com>
+#
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+
+/compile_commands.json
+.cache/
+*.qmlc
+build*/
+.kdev4/
+.idea/
+kweather.kdev4
+CMakeLists.txt.user
+
+/cmake-build-debug
+/test.sh
+/flatpak-build-desktop
+/.flatpak-builder
+/mobiletest.sh
+
+kweather.cflags
+kweather.config
+kweather.creator
+kweather.creator.user
+kweather.cxxflags
+kweather.files
+kweather.includes
+.clang-format

@@ -14,6 +14,7 @@ lettering, hands, center and hint geometry remain from KDE. The Original preset
 loads widgets/clock from the active Plasma theme without modifying it.
 
 Sequoia changes (2026): grid size hints, face selection and preview, 24px rounded
-surface, keyboard/accessibility activation, standalone package identity.
+surface, accessible time/date description, standalone package identity, and
+removal of the calendar popup and its activation handlers from both faces.
 The additional preview wrapper is MIT licensed; other source-derived files keep
 their original licenses. License texts are included in LICENSES/.

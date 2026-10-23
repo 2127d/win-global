@@ -1,0 +1,652 @@
+# Translation of kweather.po to Ukrainian
+# Copyright (C) 2020-2021 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Yuri Chornoivan <yurchor@ukr.net>, 2020, 2021, 2022, 2023, 2024, 2025, 2026.
+msgid ""
+msgstr ""
+"Project-Id-Version: kweather\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2026-05-29 00:47+0000\n"
+"PO-Revision-Date: 2026-03-25 08:48+0200\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 23.04.3\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Юрій Чорноіван"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "yurchor@ukr.net"
+
+#: formatter.cpp:36 formatter.cpp:44
+#, kde-format
+msgctxt "A temperature"
+msgid "%1°"
+msgstr "%1°"
+
+#: formatter.cpp:53
+#, kde-format
+msgid "%1 km/h"
+msgstr "%1 км/год"
+
+#: formatter.cpp:56
+#, kde-format
+msgid "%1 mph"
+msgstr "%1 миль/год"
+
+#: formatter.cpp:59
+#, kde-format
+msgid "%1 m/s"
+msgstr "%1 м/с"
+
+#: formatter.cpp:69
+#, kde-format
+msgid "%1 hPa"
+msgstr "%1 гПа"
+
+#: formatter.cpp:72
+#, kde-format
+msgid "%1 mmHg"
+msgstr "%1 мм рт.ст."
+
+#: formatter.cpp:78
+#, kde-format
+msgctxt "%1 represents percent value, % is the percent sign"
+msgid "%1%"
+msgstr "%1%"
+
+#: formatter.cpp:83
+#, kde-format
+msgid "%1"
+msgstr "%1"
+
+#: formatter.cpp:89
+#, kde-format
+msgctxt "sunrise time not available"
+msgid "-"
+msgstr "-"
+
+#: formatter.cpp:101
+#, kde-format
+msgctxt "in as inches"
+msgid "%1 in"
+msgstr "%1 дюймів"
+
+#: formatter.cpp:104
+#, kde-format
+msgctxt "mm as millimeters"
+msgid "%1 mm"
+msgstr "%1 мм"
+
+#: krunner/kweatherrunner.cpp:37
+#, kde-format
+msgctxt "Command to get weather"
+msgid "weather"
+msgstr "погода"
+
+#: krunner/kweatherrunner.cpp:126
+#, kde-format
+msgctxt ""
+"Weather forecast: %1 is temperature, %2 is description, %3 is location"
+msgid "%1°C - %2 in %3"
+msgstr "%1°C - %2 у %3"
+
+#: krunner/kweatherrunner.cpp:127
+#, kde-format
+msgctxt "Weather forecast subtext: %1 is high temp, %2 is low temp"
+msgid "High: %1°C Low: %2°C"
+msgstr "Найвища: %1°C Найнижча: %2°C"
+
+#: main.cpp:60 qml/DefaultPage.qml:69 qml/Main.qml:23
+#, kde-format
+msgid "Weather"
+msgstr "Погода"
+
+#: main.cpp:62
+#, kde-format
+msgid "A convergent weather application for Plasma"
+msgstr "Зручна програма для показу прогнозів погоди для Плазми"
+
+#: main.cpp:64
+#, kde-format
+msgid "© 2020-2024 Plasma Development Team"
+msgstr "© Команда розробників Плазми, 2020–2024"
+
+#: main.cpp:66
+#, kde-format
+msgid "Han Young"
+msgstr "Han Young"
+
+#: main.cpp:67
+#, kde-format
+msgid "Devin Lin"
+msgstr "Devin Lin"
+
+#: plasmoid/LocationSelector.qml:45
+#, kde-format
+msgid "No location found on system, please add some in kweather"
+msgstr ""
+"У системі не виявлено даних щодо місця перебування — будь ласка, додайте ці "
+"дані у kweather"
+
+#: plasmoid/LocationSelector.qml:45
+#, kde-format
+msgid "Please select the location"
+msgstr "Будь ласка, виберіть місце перебування"
+
+#: plasmoid/WeatherContainer.qml:65
+#, kde-format
+msgid "%1%"
+msgstr "%1%"
+
+#: plasmoid/WeatherContainer.qml:81
+#, kde-format
+msgid "%1mm"
+msgstr "%1мм"
+
+#: plasmoid/WeatherContainer.qml:133 plasmoid/WeatherContainer.qml:172
+#, kde-format
+msgid "Select Location"
+msgstr "Вибір місця перебування"
+
+#: plasmoid/WeatherContainer.qml:138
+#, kde-format
+msgid "Open KWeather"
+msgstr "Відкрити KWeather"
+
+#: qml/components/PageHeader.qml:44
+#, kde-format
+msgid "Navigate Back"
+msgstr "Перейти назад"
+
+#: qml/DefaultPage.qml:21 qml/ForecastContainerPage.qml:31
+#, kde-format
+msgid "Forecast"
+msgstr "Прогноз"
+
+#: qml/DefaultPage.qml:28
+#, kde-format
+msgid "Network error when obtaining current location"
+msgstr "Помилка мережі під час спроби отримання даних щодо поточного місця"
+
+#: qml/DefaultPage.qml:77 qml/locationslist/AddLocationDialog.qml:14
+#: qml/locationslist/LocationsListDialog.qml:22
+#: qml/locationslist/LocationsListPage.qml:22
+#: qml/locationslist/LocationsListView.qml:85 qml/SetupWizard.qml:47
+#, kde-format
+msgid "Add Location"
+msgstr "Додати місце"
+
+#: qml/forecast/dynamic/DynamicForecastContent.qml:161
+#: qml/forecast/flat/FlatLocationForecast.qml:155
+#, kde-format
+msgid "Hourly"
+msgstr "Щогодини"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:37
+#: qml/forecast/flat/FlatLocationForecast.qml:94
+#, kde-format
+msgid "Updated at %1"
+msgstr "Оновлено о %1"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:57
+#: qml/ForecastContainerPage.qml:55
+#: qml/locationslist/LocationsListDialog.qml:14
+#: qml/locationslist/LocationsListPage.qml:15
+#, kde-format
+msgid "Locations"
+msgstr "Місця"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:62
+#, kde-format
+msgid "Choose location"
+msgstr "Виберіть місце"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:77
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:82
+#: qml/ForecastContainerPage.qml:60 qml/settings/SettingsDialog.qml:12
+#: qml/settings/SettingsPage.qml:16
+#, kde-format
+msgid "Settings"
+msgstr "Параметри"
+
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:98
+#: qml/forecast/dynamic/DynamicForecastHeader.qml:103
+#: qml/ForecastContainerPage.qml:67
+#, kde-format
+msgid "Refresh"
+msgstr "Освіжити"
+
+#: qml/forecast/dynamic/DynamicForecastPage.qml:73
+#: qml/forecast/flat/FlatLocationForecast.qml:43
+#, kde-format
+msgid "Weather refreshed for %1"
+msgstr "Прогноз погоди для %1 оновлено"
+
+#: qml/forecast/flat/FlatLocationForecast.qml:110
+#, kde-format
+msgid "Daily"
+msgstr "Щодня"
+
+#: qml/InfoCard.qml:47
+#, kde-format
+msgid "Precipitation"
+msgstr "Опади"
+
+#: qml/InfoCard.qml:70
+#, kde-format
+msgid "Humidity"
+msgstr "Вологість"
+
+#: qml/InfoCard.qml:93
+#, kde-format
+msgid "Pressure"
+msgstr "Тиск"
+
+#: qml/InfoCard.qml:116
+#, kde-format
+msgid "UV Index"
+msgstr "УФ-індекс"
+
+#: qml/locationslist/AddLocationListView.qml:48
+#, kde-format
+msgid "Search for a location…"
+msgstr "Шукати місцевість…"
+
+#: qml/locationslist/AddLocationListView.qml:87
+#, kde-format
+msgid "Unable to connect"
+msgstr "Не вдалося з'єднатись"
+
+#: qml/locationslist/AddLocationListView.qml:99
+#, kde-format
+msgid "Search for a location"
+msgstr "Пошук місцевості"
+
+#: qml/locationslist/AddLocationListView.qml:128
+#, kde-format
+msgid "No results"
+msgstr "Немає результатів"
+
+#: qml/locationslist/AddLocationPage.qml:15
+#, kde-format
+msgid "Add location"
+msgstr "Додати місце"
+
+#: qml/locationslist/LocationsListView.qml:69
+#, kde-format
+msgid "Unable to fetch timezone information"
+msgstr "Не вдалося отримати дані щодо часового поясу"
+
+#: qml/locationslist/LocationsListView.qml:80
+#, kde-format
+msgid "Add a location"
+msgstr "Додати місце"
+
+#: qml/locationslist/LocationsListView.qml:227
+#, kde-format
+msgid "Delete"
+msgstr "Вилучити"
+
+#: qml/settings/PrecipitationUnitComboBox.qml:12
+#, kde-format
+msgid "Precipitation Units"
+msgstr "Одиниця виміру опадів"
+
+#: qml/settings/PrecipitationUnitComboBox.qml:25
+#, kde-format
+msgctxt "Millimeters"
+msgid "mm"
+msgstr "мм"
+
+#: qml/settings/PrecipitationUnitComboBox.qml:29
+#, kde-format
+msgctxt "Inches"
+msgid "in"
+msgstr "дюйм"
+
+#: qml/settings/PressureUnitComboBox.qml:12
+#, kde-format
+msgid "Pressure Units"
+msgstr "Одиниці тиску"
+
+#: qml/settings/PressureUnitComboBox.qml:25
+#, kde-format
+msgctxt "Hectopascal Pressure"
+msgid "hPa"
+msgstr "гПа"
+
+#: qml/settings/PressureUnitComboBox.qml:29
+#, kde-format
+msgctxt "Millimetre of mercury"
+msgid "mmHg"
+msgstr "мм рт.ст."
+
+#: qml/settings/SettingsComponent.qml:24
+#, kde-format
+msgid "General"
+msgstr "Загальне"
+
+#: qml/settings/SettingsComponent.qml:31
+#, kde-format
+msgid "Forecast Style"
+msgstr "Стиль прогнозу"
+
+#: qml/settings/SettingsComponent.qml:44 qml/SetupWizard.qml:519
+#, kde-format
+msgid "Flat"
+msgstr "Нейтральний"
+
+#: qml/settings/SettingsComponent.qml:48 qml/SetupWizard.qml:483
+#, kde-format
+msgid "Dynamic"
+msgstr "Динамічний"
+
+#: qml/settings/SettingsComponent.qml:63
+#, kde-format
+msgid "About"
+msgstr "Про програму"
+
+#: qml/settings/SettingsComponent.qml:72 qml/SetupWizard.qml:46
+#, kde-format
+msgid "Units"
+msgstr "Одиниці виміру"
+
+#: qml/settings/SpeedUnitComboBox.qml:12
+#, kde-format
+msgid "Speed Units"
+msgstr "Одиниці швидкості"
+
+#: qml/settings/SpeedUnitComboBox.qml:25
+#, kde-format
+msgctxt "kilometers per hour"
+msgid "kph"
+msgstr "км/год"
+
+#: qml/settings/SpeedUnitComboBox.qml:29
+#, kde-format
+msgctxt "miles per hour"
+msgid "mph"
+msgstr "милі/год"
+
+#: qml/settings/SpeedUnitComboBox.qml:33
+#, kde-format
+msgctxt "meters per second"
+msgid "m/s"
+msgstr "м/с"
+
+#: qml/settings/TemperatureUnitComboBox.qml:12
+#, kde-format
+msgid "Temperature Units"
+msgstr "Одиниці температури"
+
+#: qml/settings/TemperatureUnitComboBox.qml:25
+#, kde-format
+msgid "Use System Default"
+msgstr "Типовий системний"
+
+#: qml/settings/TemperatureUnitComboBox.qml:29
+#, kde-format
+msgid "Celsius"
+msgstr "градуси Цельсія"
+
+#: qml/settings/TemperatureUnitComboBox.qml:33
+#, kde-format
+msgid "Fahrenheit"
+msgstr "градуси Фаренгейта"
+
+#: qml/SetupWizard.qml:45
+#, kde-format
+msgid "Appearance"
+msgstr "Вигляд"
+
+#: qml/SetupWizard.qml:238
+#, kde-format
+msgid "Welcome to <b>Weather</b>"
+msgstr "Вітаємо у <b>Погоді</b>"
+
+#: qml/SetupWizard.qml:261
+#, kde-format
+msgid ""
+"View hourly and daily weather forecasts, along with other detailed "
+"information such as wind speed and precipitation."
+msgstr ""
+"Перегляд прогнозів погоди за годинами та днями, а також інші докладні "
+"відомості, зокрема щодо швидкості вітру та вологості."
+
+#: qml/SetupWizard.qml:282
+#, kde-format
+msgid ""
+"Save multiple locations and switch between them easily with the locations "
+"list."
+msgstr ""
+"Зберегти декілька місць і перемикатися між ними за допомогою списку місць."
+
+#: qml/SetupWizard.qml:304
+#, kde-format
+msgid ""
+"Built by the community, and powered by data from the Norwegian "
+"Meteorological Institute."
+msgstr ""
+"Побудовано спільнотою на основі даних від Норвезького метеорологічного "
+"інституту."
+
+#: qml/SetupWizard.qml:311
+#, kde-format
+msgid "Get Started"
+msgstr "Розпочати"
+
+#: qml/SetupWizard.qml:412
+#, kde-format
+msgid "Back"
+msgstr "Назад"
+
+#: qml/SetupWizard.qml:431
+#, kde-format
+msgid "Next"
+msgstr "Далі"
+
+#: qml/SetupWizard.qml:455
+#, kde-format
+msgid "The style can be changed later in the settings."
+msgstr "Стиль можна пізніше змінити у параметрах програми."
+
+#: qml/SetupWizard.qml:490
+#, kde-format
+msgid "Animated and full-color backgrounds for weather forecasts."
+msgstr "Анімовані і однотонні фонові зображення для прогнозів погоди."
+
+#: qml/SetupWizard.qml:526
+#, kde-format
+msgid "Flat and simple backgrounds for weather forecasts."
+msgstr "Звичайні і прості фонові зображення для прогнозів погоди."
+
+#: qml/SunriseCard.qml:50
+#, kde-format
+msgid "Sunrise"
+msgstr "Схід"
+
+#: qml/SunriseCard.qml:73
+#, kde-format
+msgid "Sunset"
+msgstr "Захід"
+
+#: qml/SunriseCard.qml:96
+#, kde-format
+msgid "Moon Phase"
+msgstr "Фаза місяця"
+
+#: qml/TemperatureChartCard.qml:81
+#, kde-format
+msgid "temperature"
+msgstr "температура"
+
+#~ msgid "Local date: %1"
+#~ msgstr "Місцева дата: %1"
+
+#~ msgid "Local time: %1"
+#~ msgstr "Місцевий час: %1"
+
+#~ msgid "Continue"
+#~ msgstr "Продовжити"
+
+#~ msgid "Select forecast theme"
+#~ msgstr "Виберіть тему прогнозу погоди"
+
+#~ msgid "Finish"
+#~ msgstr "Завершити"
+
+#~ msgid "Add current location"
+#~ msgstr "Додати поточне місце"
+
+#~ msgid "No locations configured"
+#~ msgstr "Місць не налаштовано"
+
+#~ msgid "Dynamic mode may cause performance issues on embedded platforms"
+#~ msgstr ""
+#~ "Динамічний режим може спричинити проблеми зі швидкодією на вбудованих "
+#~ "платформах"
+
+#~ msgid "Search for a place..."
+#~ msgstr "Шукати місце…"
+
+#~ msgid "Left"
+#~ msgstr "Ліворуч"
+
+#~ msgid "Right"
+#~ msgstr "Праворуч"
+
+#~ msgid "Remove"
+#~ msgstr "Вилучити"
+
+#~ msgid "API Token"
+#~ msgstr "Ключ програмного інтерфейсу"
+
+#~ msgid "Not Set"
+#~ msgstr "Не встановлено"
+
+#~ msgid "Added"
+#~ msgstr "Додано"
+
+#~ msgid "Close"
+#~ msgstr "Закрити"
+
+#~ msgid "OpenWeatherMap API Token"
+#~ msgstr "Ключ до програмного інтерфейсу OpenWeatherMap"
+
+#~ msgid "Add your own OpenWeatherMap API token."
+#~ msgstr "Додайте ваш власний ключ до програмного інтерфейсу OpenWeatherMap."
+
+#~ msgid "Token added is stored as PLAIN TEXT in system."
+#~ msgstr "Доданий ключ буде збережено у системі у форматі ЗВИЧАЙНОГО ТЕКСТУ."
+
+#~ msgid "Add your API token here... "
+#~ msgstr "Тут можна додати ключ до програмного інтерфейсу…"
+
+#~ msgid "© 2020-2021 KDE Community"
+#~ msgstr "© Спільнота KDE, 2020–2021"
+
+#~ msgid "A convergent weather application for Plasma."
+#~ msgstr "Зручна програма для показу прогнозів погоди для Плазми."
+
+#~ msgid "Weather application in Kirigami"
+#~ msgstr "Погодна програма на Kirigami"
+
+#~ msgid "A mobile friendly weather app built with Kirigami."
+#~ msgstr ""
+#~ "Пристосована до мобільних пристроїв програма для спостереження за погодою "
+#~ "на основі Kirigami."
+
+#~ msgid "Storm"
+#~ msgstr "Буря"
+
+#~ msgid "Heavy Snow"
+#~ msgstr "Сильний сніг"
+
+#~ msgid "Fog"
+#~ msgstr "Туман"
+
+#~ msgid "Heavy Sleet"
+#~ msgstr "Сильний мокрий сніг"
+
+#~ msgid "Cloudy"
+#~ msgstr "Хмарно"
+
+#~ msgid "Light Snow"
+#~ msgstr "Невеликий сніг"
+
+#~ msgid "Light Sleet"
+#~ msgstr "Невеликий мокрий сніг"
+
+#~ msgid "Sleet"
+#~ msgstr "Мокрий сніг"
+
+#~ msgid "Heavy Rain"
+#~ msgstr "Сильний дощ"
+
+#~ msgid "Snow"
+#~ msgstr "Сніг"
+
+#~ msgid "Light Rain"
+#~ msgstr "Легкий дощ"
+
+#~ msgid "Light Clouds"
+#~ msgstr "Легка хмарність"
+
+#~ msgid "Partly Sunny"
+#~ msgstr "Частково сонячно"
+
+#~ msgid "Partly Cloudy"
+#~ msgstr "Мінлива хмарність"
+
+#~ msgid "Clear"
+#~ msgstr "Ясно"
+
+#~ msgid "Mostly Sunny"
+#~ msgstr "Переважно сонячно"
+
+#~ msgid "Rain Showers"
+#~ msgstr "Злива"
+
+#~ msgid "Thunderstorm"
+#~ msgstr "Гроза"
+
+#~ msgid "Mist"
+#~ msgstr "Імла"
+
+#~ msgid "Select Weather Source"
+#~ msgstr "Виберіть джерело погодних даних"
+
+#~ msgid "Select Backend"
+#~ msgstr "Виберіть модуль обробки"
+
+#~ msgctxt "Norway Meteorologisk Institutt"
+#~ msgid "Norway Meteorologisk Institutt"
+#~ msgstr "Норвезький метеорологічний інститут"
+
+#~ msgid "Flat (Performance)"
+#~ msgstr "Проста (висока швидкодія)"
+
+#~ msgid "Dynamic (Animated)"
+#~ msgstr "Динамічна (анімована)"
+
+#~ msgid "Run in background mode"
+#~ msgstr "Працювати у фоновому режимі"
+
+#~ msgid "Add Current Location"
+#~ msgstr "Додати поточне місце"
+
+#~ msgid "Add city"
+#~ msgstr "Додати запис міста"

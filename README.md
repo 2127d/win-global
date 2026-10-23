@@ -41,7 +41,7 @@ All components remain in this `win-global` repository:
 | `themes/` | Application and Plasma styles, global themes, colors, Firefox styling, login and lock screens, icons, fonts, and wallpapers |
 | `widgets/` | Standalone plasmoids and native widget fork sources |
 | `desktop/` | Control center, desktop layouts, taskbar, and widget picker |
-| `apps/` | Settings, Gwenview, and KCalc application forks |
+| `apps/` | Settings, Gwenview, KCalc, and Weather application forks |
 | `tools/` | Build, install, export, preview, and verification scripts |
 | `docs/` | [Deployment](docs/DEPLOYMENT.md), [desktop repair](docs/DESKTOP-REPAIR.md), and [validation history](docs/VALIDATION.md) |
 | `preview/` | Screenshots and visual review artifacts |
@@ -131,7 +131,7 @@ The native Qt wizard guides you through:
    is detected and checked before invoking its package manager.
 2. **Components:** choose the complete desktop or individual components.
    The complete-desktop option checks and grays out the standard theme choices; turning it
-   off restores your individual choices. **Settings**, **Gwenview** and **KCalc** makeovers
+   off restores your individual choices. **Settings**, **Gwenview**, **KCalc** and **Weather** makeovers
    are separate, optional choices, including when installing no theme components.
    **Desktop widgets** can be installed on their own. Selecting **Global Theme,
    desktop layout & splash** automatically includes its required application style,
@@ -162,7 +162,7 @@ dependencies needed by the selection. Package names are based on the official
 provide those packages; the installer does not change repositories or upgrade
 your distribution. Only Fedora has had an actual installation test in this workspace.
 
-Native theme, Settings, Gwenview and KCalc builds automatically use all available logical
+Native theme, Settings, Gwenview, KCalc and Weather builds automatically use all available logical
 CPU cores and report the parallel job count in the installation log. An explicit
 `BUILD_JOBS=2` environment setting can limit builds when needed.
 Gwenview dependencies include both the Qt 6 annotation and color-picker development
@@ -172,7 +172,8 @@ extract the updated installer and select only **Gwenview makeover** to retry.
 Use KDE Plasma 6 with Qt 6.7 or newer and KDE Frameworks 6.10 or newer for the
 native theme; window decorations require KDecoration3. The bundled app forks
 require **System Settings 6.7.5** (Qt 6.10+, Frameworks 6.26+),
-**Gwenview 26.08.1**, and **KCalc 26.08.1** respectively. Version checks run before package installation.
+**Gwenview 26.08.1**, **KCalc 26.08.1**, and **KWeather 26.08.1** from Flatpak
+(Weather needs Qt 6.9+ and Frameworks 6.26+). Version checks run before package installation.
 Quick styling and lock-screen overrides also validate the installed KDE sources;
 different releases may need updated overrides. Choosing a distro does not make
 older KDE releases compatible. The login screen is omitted from the GUI's full
@@ -289,7 +290,7 @@ Open **Uninstall Sequoia Eleven.desktop**, or run as the same desktop user:
 ```
 
 The graphical uninstaller lets you select the whole theme, individual components,
-and the Settings/Gwenview/KCalc makeovers. Review the selection before clicking
+and the Settings/Gwenview/KCalc/Weather makeovers. Review the selection before clicking
 **Remove selected components**, then follow progress and save the log if needed.
 Use **Open Appearance Settings** to select another theme first, and replace any
 Sequoia panel widgets you intend to remove. Removing a component also removes
@@ -483,6 +484,12 @@ while drawers, headers, framed views, and cards remain opaque. Solid schemes
 keep the same geometry with opaque canvases too. Restart applications
 after changing material so their window buffers and palettes are recreated.
 Application-specific overrides live under `apps/`, with one folder per app.
+The [Weather makeover](apps/kweather/README.md) adds a forecast dashboard,
+animated atmospheric skies in Dynamic mode, and Sequoia palette/material support
+in Flat mode. Locations, forecasts and unit preferences keep KDE's native models.
+Select **Weather makeover**, or use `tools/build-kweather.py` and
+`tools/install-kweather.py --skip-build`. The original Flatpak remains available;
+first installation imports its saved locations without overwriting native settings.
 The [KCalc makeover](apps/kcalc/README.md) adds rounded keys, calculation history
 above the input, live inline answers, a visible mode selector, and automatic
 sizing when switching calculator modes.
