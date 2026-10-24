@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24">
-    <style type="text/css" id="current-color-scheme">
-        .ColorScheme-Text {
-            color:#363636;
-        }
-    </style><g transform="translate(1,1)">
-    <path d="m14 3c-1.662 0-3 1.338-3 3s1.338 3 3 3 3-1.338 3-3-1.338-3-3-3zm-6 3c-1.6619997 0-3 1.3380003-3 3 0 1.662 1.3380003 3 3 3s3-1.338 3-3c0-1.6619997-1.3380003-3-3-3zm6 4c-0.646346 0-1.255994 0.134157-1.818359 0.361328l0.455078 0.914063c0.427816-0.160506 0.877766-0.275391 1.363281-0.275391 1.482985 0 2.758385 0.807292 3.449219 2h1.130859c-0.769461-1.767167-2.523243-3-4.580078-3zm-6 3c-2.7700166 0-5 2.229983-5 5v1h10v-1c0-2.770017-2.229983-5-5-5zm0 1c2.216017 0 4 1.783983 4 4h-8c0-2.216017 1.7839834-4 4-4zm8 0v1h1v-1h-1zm0 2v1h1v-1h-1zm0 2v1h1v-1h-1z" class="ColorScheme-Text" fill="currentColor" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M40-272q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v32q0 33-23.5 56.5T600-160H120q-33 0-56.5-23.5T40-240v-32Zm800 112H738q11-18 16.5-38.5T760-240v-40q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v40q0 33-23.5 56.5T840-160ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113ZM120-240h480v-32q0-11-5.5-20T580-306q-54-27-109-40.5T360-360q-56 0-111 13.5T140-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T440-640q0-33-23.5-56.5T360-720q-33 0-56.5 23.5T280-640q0 33 23.5 56.5T360-560Zm0 320Zm0-400Z"/></g>
+</svg>

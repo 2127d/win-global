@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" version="1.1">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; } .ColorScheme-Highlight { color:#4285f4; }</style>
- </defs>
- <path class="ColorScheme-Text" d="m11 3c-2.84 0-5.1406 2.3102-5.1406 5.1602 0 1.68 0.79102 3.1596 2.041 4.0996 0.57 0.43 1.0488 0.98976 1.0488 1.7598l0.050781 0.98047h4l0.06055-0.98047c0.04-0.77 0.46906-1.3298 1.0391-1.7598 1.25-0.94 2.041-2.4196 2.041-4.0996-3e-6 -2.85-2.3006-5.1602-5.1406-5.1602zm0 1c2.2977 0 4.1406 1.8482 4.1406 4.1602 0 1.3665-0.6338 2.5422-1.6426 3.3008-0.70793 0.53405-1.3739 1.3876-1.4355 2.498v0.0059l-2e-3 0.0039-0.0019 0.03122h-2.1074l-0.00195-0.03125v0.05078c-3.2e-6 -1.1856-0.75951-2.0398-1.4473-2.5586-1.0088-0.7586-1.6426-1.9343-1.6426-3.3008 0-2.312 1.8429-4.1602 4.1406-4.1602zm-2 12v1h4v-1zm1 2v1h2v-1z" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M576-96q-79.38 0-149.19-30T304.5-208.5Q252-261 222-330.96t-30-149.5q0-79.54 30-149.04 30-69.5 82.5-122T426.81-834q69.81-30 149.19-30 34.74 0 69.49 7 34.74 7 66.51 21 11 5 16.5 13.5T734-803q0 8.28-3.5 15.64Q727-780 720-775q-68 54-106 131t-38 163.51Q576-393 613-316q37 77 106 131 7 5 10.5 12.52T733-157q0 11-5.5 20T711-123q-31.76 14-66.01 20.5T576-96Zm0-72q12 0 24-1t24-3q-57-65-88.5-143.63T504-480.13q0-85.87 31.5-164.88Q567-724.02 624-788q-12-2-24-3t-24-1q-129.67 0-220.84 91.23-91.16 91.23-91.16 221Q264-350 355.16-259q91.17 91 220.84 91Zm-72-312Z"/></g>
 </svg>

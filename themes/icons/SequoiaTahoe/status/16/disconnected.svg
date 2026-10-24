@@ -1,18 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-            color:#f2f2f2;
-        }
-        .ColorScheme-ButtonFocus {
-            color:#3daee9;
-        }
-        .ColorScheme-NegativeText {
-            color:#da4453;
-        }</style>
- <g id="icon" class="ColorScheme-Text" color="#f2f2f2" fill="currentColor">
-  <path d="m7.8398 9.6016 0.72852 5.1094 1.2617-0.66406 0.58789 1.6211 1.9219-1.0117-1.248-1.2754 0.4082-0.21484-0.27148-0.74414-1.2617 0.66406-0.31836-2.2363-1.8086-1.248z" opacity=".35" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m12.491 11.757 1.2621-0.66469-4.5136-3.1148 0.72724 5.1089 1.2621-0.66469 0.5888 1.6213 1.922-1.0122z" opacity=".65" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m13.918 10.089 1.2621-0.66469-4.5136-3.1148 0.72724 5.1089 1.2621-0.66469 0.5888 1.6213 1.922-1.0122z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m1 0c-0.554 0-1 0.446-1 1v4c0 0.554 0.446 1 1 1h1c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1h1c0.554 0 1-0.446 1-1v-4c0-0.554-0.446-1-1-1zm0 1h6v4h-6z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m9 1v3h1v-1.8711c1.7654 0.45582 2.9991 2.0478 3 3.8711v1h1v-1c0-2.7614-2.2386-5-5-5zm-7 7v2c0 2.7614 2.2386 5 5 5v-3h-1v1.8711c-1.7654-0.45582-2.9991-2.0478-3-3.8711v-2z" opacity=".65" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="m611-452-65-64h41.72q15.42 0 25.85 10.35Q624-495.3 624-480q0 9-4 16t-10 12h1Zm183 336q-11 11-25.5 11T743-116L115-743q-11-11-11-25.5t11-25.5q11-11 25.5-11t25.5 11l628 628q11 11 11 25t-11 25ZM288-288q-79.68 0-135.84-56.16T96-480q0-63.93 38-113.97Q172-644 242-673l70 73h-23q-51 0-86 35t-35 85q0 50 35 85t85 35h108q15.3 0 25.65 10.29Q432-339.42 432-324.21t-10.35 25.71Q411.3-288 396-288H288Zm83.89-156q-14.89 0-25.39-10.29t-10.5-25.5q0-15.21 10.35-25.71T372-516h20l71 72h-91.11ZM729-332q-8-12-5.5-26.5T738-381q25-17 39.5-43t14.5-56q0-50-35-85t-85-35H564q-15.3 0-25.65-10.29Q528-620.58 528-635.79t10.35-25.71Q548.7-672 564-672h108q79.68 0 135.84 56.16T864-480q0 48.27-23 90.13Q818-348 778-322q-12 8-26.5 5T729-332Z"/></g>
 </svg>

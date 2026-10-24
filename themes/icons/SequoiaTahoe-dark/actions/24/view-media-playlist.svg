@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 5.5 4 C 4.671579 4 4.000008 4.67157 4 5.5 C 4.000008 6.32843 4.671579 7 5.5 7 C 6.328421 7 6.999992 6.32843 7 5.5 C 6.999992 4.67157 6.328421 4 5.5 4 z M 8 5 L 8 6 L 9 6 L 9 5 L 8 5 z M 10 5 L 10 6 L 20 6 L 20 5 L 10 5 z M 10 7 L 10 8 L 13 8 L 13 7 L 10 7 z M 5.5 10 C 4.671573 9.9999999 4 10.671572 4 11.5 C 4 12.328428 4.671573 13.000001 5.5 13 C 6.328427 13 7 12.328428 7 11.5 C 7 10.671572 6.328427 9.999999 5.5 10 z M 8 11 L 8 12 L 9 12 L 9 11 L 8 11 z M 10 11 L 10 12 L 20 12 L 20 11 L 10 11 z M 10 13 L 10 14 L 14 14 L 14 13 L 10 13 z M 5.5 16 C 4.671573 16 4 16.671572 4 17.5 C 4 18.328428 4.671573 19.000001 5.5 19 C 6.328427 19 7 18.328428 7 17.5 C 7 16.671572 6.328427 15.999999 5.5 16 z M 8 17 L 8 18 L 9 18 L 9 17 L 8 17 z M 10 17 L 10 18 L 20 18 L 20 17 L 10 17 z M 10 19 L 10 20 L 17 20 L 17 19 L 10 19 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M640-160q-50 0-85-35t-35-85q0-50 35-85t85-35q11 0 21 1.5t19 6.5v-288q0-17 11.5-28.5T720-720h120q17 0 28.5 11.5T880-680q0 17-11.5 28.5T840-640h-80v360q0 50-35 85t-85 35ZM160-320q-17 0-28.5-11.5T120-360q0-17 11.5-28.5T160-400h240q17 0 28.5 11.5T440-360q0 17-11.5 28.5T400-320H160Zm0-160q-17 0-28.5-11.5T120-520q0-17 11.5-28.5T160-560h400q17 0 28.5 11.5T600-520q0 17-11.5 28.5T560-480H160Zm0-160q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h400q17 0 28.5 11.5T600-680q0 17-11.5 28.5T560-640H160Z"/></g>
 </svg>

@@ -1,14 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      .ColorScheme-Highlight {
-        color:#3daee9;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 13 8 L 13 16 L 13 20 L 14 20 L 14 18.638672 A 4 4 0 0 0 17 20 A 4 4 0 0 0 21 16 A 4 4 0 0 0 17 12 A 4 4 0 0 0 14 13.361328 L 14 8 L 13 8 z M 7 12 A 4 4 0 0 0 3 16 A 4 4 0 0 0 7 20 A 4 4 0 0 0 10 18.638672 L 10 20 L 11 20 L 11 12 L 10 12 L 10 13.361328 A 4 4 0 0 0 7 12 z M 7 13 A 3 3 0 0 1 10 16 A 3 3 0 0 1 7 19 A 3 3 0 0 1 4 16 A 3 3 0 0 1 7 13 z M 17 13 A 3 3 0 0 1 20 16 A 3 3 0 0 1 17 19 A 3 3 0 0 1 14 16 A 3 3 0 0 1 17 13 z " class="ColorScheme-Text" />
- <path style="fill:currentColor;fill-opacity:1;stroke:none" d="M 14 4 L 17 8 L 20 4 L 14 4 z " class="ColorScheme-Highlight" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M300-240q-51 0-81-27.5T189-340q0-44 34.5-72.5T312-441q23 0 45 4t38 11v-12q0-29-20.5-47T320-503q-15 0-29.5 4.5T264-485q-13 10-24.5 7T221-489q-7-8-7-19t11-19q20-16 45-23.5t51-7.5q69 0 103 32.5t34 97.5v147q0 13-9.5 22t-22.5 9q-13 0-22-9.5t-9-22.5v-5h-4q-14 23-38 35t-53 12Zm12-54q35 0 59.5-24t24.5-56q-14-8-33.5-12.5T324-391q-32 0-50 14t-18 37q0 20 16 33t40 13Zm348-98v-208q0-17 11.5-28.5T700-640q17 0 28.5 11.5T740-600v208l36-36q11-11 28-11t28 11q11 11 11 28t-11 28L728-268q-12 12-28 12t-28-12L568-372q-11-11-11-28t11-28q11-11 28-11t28 11l36 36Z"/></g>
 </svg>

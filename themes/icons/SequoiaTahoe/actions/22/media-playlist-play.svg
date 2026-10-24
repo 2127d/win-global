@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 11 3 C 6.568002 3 3 6.568002 3 11 C 3 15.431998 6.568002 19 11 19 C 11.692084 19 12.360349 18.903948 13 18.740234 L 13 17.707031 C 12.366247 17.894565 11.696167 18 11 18 C 7.122001 18 4 14.877999 4 11 C 4 7.122001 7.122001 4 11 4 C 14.877999 4 18 7.122001 18 11 C 18 11.696167 17.894565 12.366247 17.707031 13 L 18.740234 13 C 18.903948 12.360349 19 11.692084 19 11 C 19 6.568002 15.431998 3 11 3 z M 10 5 L 10 12 L 11 12 L 16 12 L 16 11 L 11 11 L 11 5 L 10 5 z M 14 13 L 14 19 L 20 16 L 14 13 z " class="ColorScheme-Text" />  
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M180.28-396q-15.28 0-25.78-10.29-10.5-10.29-10.5-25.5t10.34-25.71q10.34-10.5 25.62-10.5h215.76q15.28 0 25.78 10.29 10.5 10.29 10.5 25.5t-10.34 25.71Q411.32-396 396.04-396H180.28Zm.01-150q-15.29 0-25.79-10.29t-10.5-25.5q0-15.21 10.34-25.71t25.63-10.5h359.74q15.29 0 25.79 10.29t10.5 25.5q0 15.21-10.34 25.71T540.03-546H180.29Zm0-150q-15.29 0-25.79-10.29t-10.5-25.5q0-15.21 10.34-25.71t25.63-10.5h359.74q15.29 0 25.79 10.29t10.5 25.5q0 15.21-10.34 25.71T540.03-696H180.29Zm472.09 485.98q-5.13 3.02-10.25 3.02-5.13 0-9.19-2t-6.5-6.5Q624-220 624-225v-246q0-5 2.44-9.5t6.5-6.5q4.06-2 9.19-2 5.12 0 10.25 3.02L841-363q4 3 6 6.5t2 8.5q0 5-2 8.5t-6 6.5L652.38-210.02Z"/></g>
 </svg>

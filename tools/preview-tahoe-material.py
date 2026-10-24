@@ -24,8 +24,22 @@ SAMPLES = [
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--capture-before', action='store_true')
+parser.add_argument('--expanded', action='store_true')
 args = parser.parse_args()
 baseline = ROOT / '.staging/tahoe-material-before'
+if args.expanded:
+    baseline = ROOT / '.staging/tahoe-material-expanded-before'
+    SAMPLES = [
+        ('Bold', 'actions/22/format-text-bold.svg'), ('Underline', 'actions/22/format-text-underline.svg'),
+        ('Text color', 'actions/22/format-text-color.svg'), ('Reply all', 'actions/22/mail-reply-all.svg'),
+        ('Send mail', 'actions/22/mail-send.svg'), ('Attachment', 'actions/22/mail-attachment.svg'),
+        ('New folder', 'actions/22/folder-new.svg'), ('Archive', 'actions/22/archive-extract.svg'),
+        ('Bookmark', 'actions/22/bookmark-new.svg'), ('Crop', 'actions/22/transform-crop.svg'),
+        ('Rotate', 'actions/22/object-rotate-left.svg'), ('Bulleted list', 'actions/22/format-list-unordered.svg'),
+        ('Camera', 'devices/22/camera-photo.svg'), ('Printer', 'devices/22/printer.svg'),
+        ('Touchpad', 'devices/22/input-touchpad.svg'), ('Power', 'actions/22/system-shutdown.svg'),
+        ('Lock screen', 'actions/22/system-lock-screen.svg'), ('Warning', 'status/22/dialog-warning.svg'),
+    ]
 theme = ROOT / 'themes/icons/SequoiaTahoe-light'
 if args.capture_before:
     for _, path in SAMPLES:
@@ -47,7 +61,7 @@ def icon(path,x,y,size,color):
     renderer=QSvgRenderer(QByteArray(data.encode()));assert renderer.isValid(),path
     renderer.render(p,QRectF(x,y,size,size))
 label(30,43,'Sequoia Tahoe',24,'#202938',True)
-label(30,74,'Rounded actions / Material 3 trial',14,'#4d6079')
+label(30,74,'Expanded controls / Material 3' if args.expanded else 'Rounded actions / Material 3 trial',14,'#4d6079')
 label(30,101,'Current → Rounded   ·   Real SVG renders at 44 px, with native 16 / 22 / 24 px samples',10)
 for index,(name,path) in enumerate(SAMPLES):
     x=30+(index%6)*207; y=122+(index//6)*170
@@ -67,5 +81,5 @@ p.setPen(QColor('#303c4e'));p.setBrush(QColor('#202936'));p.drawRoundedRect(QRec
 label(50,773,'Dark toolbar + tray',10,'#c0cada',True)
 for i,(_,path) in enumerate(SAMPLES[6:]): icon(theme/path,250+i*70,770,24,'#eef2f8')
 p.end()
-output=ROOT/'preview/tahoe-material-rounded.png';output.parent.mkdir(exist_ok=True)
+output=ROOT/('preview/tahoe-material-expanded.png' if args.expanded else 'preview/tahoe-material-rounded.png');output.parent.mkdir(exist_ok=True)
 assert image.save(str(output));print(output)

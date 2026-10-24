@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <g fill="#dedede">
-  <path d="m5.0746 0c-0.40017 0-0.79634 0.48521-1.1771 0.90104s-0.90907 1.0962-0.90907 1.6267v12.293c0 0.6529 0.53787 1.1788 1.2056 1.1788h7.5885c0.66772 0 1.2056-0.52592 1.2056-1.1788v-12.293c0-0.5305-0.52823-1.2109-0.90907-1.6267-0.38083-0.4158-0.777-0.90104-1.1771-0.90104h-3.5546zm0.79899 0.65712h4.2293c0.35402 0 0.68336 0.13053 0.93481 0.41667l0.64541 0.75c0.30953 0.40389 0.39594 0.63328 0.39594 1.0556h-8.1816c0-0.42227 0.086418-0.65166 0.39594-1.0556l0.64541-0.75c0.25145-0.28614 0.58079-0.41667 0.93482-0.41667zm-1.9762 2.8984h8.1816v11.556h-8.1816z" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <rect x="3.8985" y="3.56" width="8.1816" height="11.556" rx="0" ry="0" opacity=".3" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <ellipse cx="7.9893" cy="1.62" rx="1.1505" ry=".34722" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m8.02 1.27s0.10043-0.20624 0.33144-0.26516c0.23102-0.0589-0.10043 0.37319-0.33144 0.26516z" fill-rule="evenodd" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M312-696q-20 0-34 14t-14 34q0 20 14 34t34 14q20 0 34-14t14-34q0-20-14-34t-34-14Zm0 384q-20 0-34 14t-14 34q0 20 14 34t34 14q20 0 34-14t14-34q0-20-14-34t-34-14ZM192-816h576q20.4 0 34.2 13.8Q816-788.4 816-768v240q0 20.4-13.8 34.2Q788.4-480 768-480H192q-20.4 0-34.2-13.8Q144-507.6 144-528v-240q0-20.4 13.8-34.2Q171.6-816 192-816Zm24 72v192h528v-192H216Zm-24 312h576q20.4 0 34.2 13.8Q816-404.4 816-384v240q0 20.4-13.8 34.2Q788.4-96 768-96H192q-20.4 0-34.2-13.8Q144-123.6 144-144v-240q0-20.4 13.8-34.2Q171.6-432 192-432Zm24 72v192h528v-192H216Zm0-384v192-192Zm0 384v192-192Z"/></g>
 </svg>

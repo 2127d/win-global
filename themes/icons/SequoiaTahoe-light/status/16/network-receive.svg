@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <path d="m3 1c-1.662 0-3 1.338-3 3v5c0 1.662 1.338 3 3 3h3v2h-1.5c-0.277 0-0.5 0.223-0.5 0.5s0.223 0.5 0.5 0.5h7c0.277 0 0.5-0.223 0.5-0.5s-0.223-0.5-0.5-0.5h-2.5v-2h3v-1h-9c-1.108 0-2-0.892-2-2v-5c0-1.108 0.892-2 2-2h7v-1zm9 0c-0.554 0-1 0.446-1 1v5c0 0.554 0.446 1 1 1h1v6.5c0 0.277 0.223 0.5 0.5 0.5s0.5-0.223 0.5-0.5v-6.5h1c0.554 0 1-0.446 1-1v-5c0-0.554-0.446-1-1-1zm0 1h3v2h-3zm0 3h3v2h-3zm-5 7h1v2h-1z" fill="#363636" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="3.5" cy="6.5" r=".5" fill="#363636" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="6.5" cy="6.5" r=".5" fill="#363636" opacity=".65" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="9.5" cy="6.5" r=".5" fill="#363636" opacity=".35" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M444-330v-402.02q0-15.29 10.29-25.64Q464.58-768 479.79-768t25.71 10.34q10.5 10.35 10.5 25.64V-330l176.21-176.21Q703-517 717.5-517t25.98 11Q754-495 754-480.5t-10.82 25.31L505.09-217.4q-5.41 5.4-11.72 7.9-6.31 2.5-13.53 2.5-7.21 0-13.53-2.5Q460-212 455-217L217-455q-11-11-10.5-25.5t11.02-25.5q11.48-11 26.15-11 14.66 0 25.33 11l175 176Z"/></g>
 </svg>

@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" enable-background="new" version="1.1">
- <g fill="#dedede">
-  <path d="m2 2c-0.554 0-1 0.446-1 1v4c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-4c0-0.554-0.446-1-1-1h-2zm0 1h2v4h-2v-4z" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m7 2c-0.554 0-1 0.446-1 1v4c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-4c0-0.554-0.446-1-1-1zm0 1h2v4h-2z" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m12 2c-0.554 0-1 0.446-1 1v4c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-4c0-0.554-0.446-1-1-1zm0 1h2v4h-2z" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m2 9c-0.554 0-1 0.446-1 1v4c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-4c0-0.554-0.446-1-1-1zm0 1h2v4h-2z" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m7 9c-0.554 0-1 0.446-1 1v4c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-4c0-0.554-0.446-1-1-1zm0 1h2v4h-2z" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m12 9c-0.554 0-1 0.446-1 1v4c0 0.554 0.446 1 1 1h2c0.554 0 1-0.446 1-1v-4c0-0.554-0.446-1-1-1zm0 1h2v4h-2z" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M96-192v-576h768v576H96Zm72-408h102v-96H168v96Zm174 0h102v-96H342v96Zm174 0h102v-96H516v96Zm174 0h102v-96H690v96Zm0 168h102v-96H690v96Zm-174 0h102v-96H516v96Zm-174 0h102v-96H342v96Zm-72-96H168v96h102v-96Zm420 264h102v-96H690v96Zm-174 0h102v-96H516v96Zm-174 0h102v-96H342v96Zm-174 0h102v-96H168v96Z"/></g>
 </svg>

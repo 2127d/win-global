@@ -1,9 +1,5 @@
-<svg width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
- <defs>
-  <linearGradient id="linearGradient1090" x1="15.909" x2="15.909" y1="7.1975" y2="25.334" gradientTransform="translate(29.474 -3.3333)" gradientUnits="userSpaceOnUse">
-   <stop stop-color="#fff" offset="0"/>
-   <stop stop-color="#ececec" offset="1"/>
-  </linearGradient>
- </defs>
- <path d="m16 6c-3.6728 0-6.7334 2.4527-7.875 5.8035-3.4462 0.44563-6.125 3.4159-6.125 7.0537 0 3.9449 3.134 7.1429 7 7.1429h15.4c3.0928 0 5.6-2.5584 5.6-5.7143 0-3.1559-2.5072-5.7143-5.6-5.7143 0-4.7337-3.761-8.5714-8.4-8.5714z" fill="url(#linearGradient1090)" stroke-width="2.0203"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M260-160q-91 0-155.5-63T40-377q0-78 47-139t123-78q25-92 100-149t170-57q117 0 198.5 81.5T760-520q69 8 114.5 59.5T920-340q0 75-52.5 127.5T740-160H260Zm0-80h480q42 0 71-29t29-71q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-83 0-141.5 58.5T280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41Zm220-240Z"/></g>
 </svg>

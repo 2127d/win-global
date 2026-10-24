@@ -1,14 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-  <style type="text/css" id="current-color-scheme">
-        .ColorScheme-Text {
-            color:#363636;
-        }
-        .ColorScheme-NegativeText {
-            color:#da4453;
-        }
-    </style>
-  <g transform="translate(1,1)">
-    <path d="m5.1210938 3 2 2h.8789062v.8789062l1 1v-1.8789062h4v3h-2.878906l1 1h3.171875l1 1h.707031v3h-.707031l-.085938.085938.707031.707031.085938-.085938v.171875l1 1v-9.5859372l-2.292969-2.2929688zm8.8789062 2h1c.554 0 1 .446 1 1v3.2929688l-1.292969-1.2929688h-.707031zm-9 2.1210938v11.8789062h11.878906l-1.24414-1.244141c-.173646.145663-.38935.244141-.634766.244141h-1v-1.878906l-1-1v2.878906h-4v-3h3.878906l-1-1h-4.1718748l-1-1h-.7070312v-3h.7070312l.5859376-.5859375-.7070313-.7070313-.5859375.5859376v-1.171875zm1 6.5859372 1.2929688 1.292969h.7070312v3h-1c-.554 0-1-.446-1-1z" class="ColorScheme-Text" fill="currentColor" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-    <path d="m3.5 2.7929688-.7070312.7070312 15.353516 15.353516.353516.353515.707031-.707031-.353515-.353516-15-15z" class="ColorScheme-NegativeText" fill="currentColor" stroke-linecap="square" stroke-miterlimit="0" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M433-880h287q33 0 56.5 23.5T800-800v447q0 17-11.5 28.5T760-313q-17 0-28.5-11.5T720-353v-447H434l-52 52q-12 12-28 11.5T326-748q-12-12-12.5-28.5T325-805l52-52q11-11 25.5-17t30.5-6ZM240-80q-33 0-56.5-23.5T160-160v-447q0-16 6-30.5t17-25.5l1-1L56-792q-12-12-11.5-28T57-848q12-11 28-11.5t28 11.5l735 735q11 11 11 27.5T848-57q-12 12-28.5 12T791-57L240-608v448h480v-81l80 80v1q0 33-23.5 56.5T720-80H240Zm301-453Zm-75 152Z"/></g>
 </svg>

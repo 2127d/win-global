@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
-    <g transform="translate(-833 115)">
-        <path color="#000" d="M841.5-114a.5.5 0 1 0 0 1h3.793l-4.793 4.793-4.646-4.647a.5.5 0 1 0-.707.708l5.353 5.353 5.5-5.5v3.793a.5.5 0 1 0 1 0v-5.5z" fill="#dedede" fill-rule="evenodd" font-family="sans-serif" font-weight="400" overflow="visible" style="line-height:normal;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000;text-transform:none;text-orientation:mixed;shape-padding:0;isolation:auto;mix-blend-mode:normal;stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" white-space="normal" />
-        
-        <path d="M834-101c0 1 1 1 1 1h2s1 0 1-1v-.5c0-1.5 2-1.5 2-1.5h2s2 0 2 1.5v.5c0 1 1 1 1 1h2s1 0 1-1v-1c0-3.5-5.5-3-5.5-3h-3s-5.5-.5-5.5 3z" fill="#dedede" fill-rule="evenodd" opacity=".4" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M216-552v128.93q0 15.33-10.29 25.7T180.21-387q-15.21 0-25.71-10.34T144-422.96v-215.76q0-15.28 10.34-25.78 10.34-10.5 25.62-10.5h215.76q15.28 0 25.78 10.29 10.5 10.29 10.5 25.5t-10.31 25.71Q411.38-603 396.13-603H267l213 213 259.71-259.71Q751-661 765.5-661t25.98 11Q802-639 802-624.5t-11.32 25.82L531.32-339.32Q520-328 507-323t-27 5q-14 0-27-5t-24-16L216-552Z"/></g>
 </svg>

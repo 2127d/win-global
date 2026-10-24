@@ -1,9 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#dedede;
-      }</style>
- </defs>
- <path class="ColorScheme-Text" d="m10.479 0.60156a0.50005 0.50005 0 0 0-0.42969 0.16406l-8.0605 9.0527a0.50005 0.50005 0 0 0-0.12109 0.26367l-0.64844 4.666a0.50005 0.50005 0 0 0 0.62109 0.55273l4.4609-1.1523a0.50005 0.50005 0 0 0 0.25-0.1543l8.1172-9.1953a0.50005 0.50005 0 0 0 0.10547-0.4707c-0.26791-0.92467-0.8858-1.7818-1.6543-2.4531-0.7685-0.67131-1.6934-1.1631-2.6406-1.2734zm0.08398 1.0918c0.62417 0.12324 1.3132 0.42434 1.8984 0.93555 0.58206 0.50845 0.98516 1.16 1.2168 1.7793l-7.7754 8.8086-3.5898 0.92773 0.52344-3.7734z" fill="currentColor" stroke-linecap="round" stroke-linejoin="round" style="-inkscape-stroke:none;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path class="ColorScheme-Text" d="m2.7871 9.3223a0.5 0.5 0 0 0-0.61328 0.35156 0.5 0.5 0 0 0 0.34961 0.61328c0.54043 0.14725 1.4015 0.69729 2.0957 1.334 0.69422 0.6367 1.2295 1.4189 1.293 1.7051a0.5 0.5 0 0 0 0.5957 0.37891 0.5 0.5 0 0 0 0.38086-0.5957c-0.17267-0.77817-0.82047-1.5154-1.5938-2.2246-0.77328-0.7092-1.6659-1.3331-2.5078-1.5625z" fill="currentColor" stroke-linecap="round" stroke-linejoin="round" style="-inkscape-stroke:none;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M216-216h51l375-375-51-51-375 375v51Zm-35.82 72q-15.18 0-25.68-10.3-10.5-10.29-10.5-25.52v-86.85q0-14.33 5-27.33 5-13 16-24l477-477q11-11 23.84-16 12.83-5 27-5 14.16 0 27.16 5t24 16l51 51q11 11 16 24t5 26.54q0 14.45-5.02 27.54T795-642L318-165q-11 11-23.95 16t-27.24 5h-86.63ZM744-693l-51-51 51 51Zm-127.95 76.95L591-642l51 51-25.95-25.05Z"/></g>
 </svg>

@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" version="1.1" viewBox="0 0 16 16">
- <g fill="#363636">
-  <path d="m8.9961 8.6016-2.4219 2.3906-1.6055-1.6992-3.8145 3.8145c0.099901 0.34977 0.24629 0.67938 0.43164 0.98242l3.3633-3.3633 5.1387 5.2734h0.91211c0.14894 0 0.29678-0.00773 0.44141-0.023438l-4.1797-4.2578 1.7383-1.7188 4.8496 4.8105c0.23488-0.23816 0.44003-0.50566 0.60938-0.79688l-5.4629-5.4121z" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m6.9688 6.9844c0 0.55469-0.44922 1-1 1-0.55469 0-1-0.44531-1-1 0-0.55078 0.44531-1 1-1 0.55078 0 1 0.44922 1 1z" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m4 0c-1.662 0-3 1.338-3 3v10c0 1.662 1.338 3 3 3h8c1.662 0 3-1.338 3-3v-9l-4-4zm0 1h6v2c0 1.108 0.892 2 2 2h2v8c0 1.108-0.892 2-2 2h-8c-1.108 0-2-0.892-2-2v-10c0-1.108 0.892-2 2-2z" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M312-144q-29.7 0-50.85-21.12Q240-186.23 240-215.88v-71.89h-72q-29.7 0-50.85-21.11Q96-330 96-360v-168q0-40 28-68t68-28h576q40 0 68 28t28 68v168q0 29.7-21.12 50.85Q821.77-288 792.12-288h-71.89v72q0 29.7-21.11 50.85Q678-144 648-144H312ZM168-360h72q0-29.7 21.15-50.85Q282.3-432 312-432h336q29.7 0 50.85 21.15Q720-389.7 720-360h73v-153.67Q793-530 781-541t-28-11H206q-16.15 0-27.07 11.04Q168-529.92 168-513.6V-360Zm480-264v-120H312v120h-72v-120q0-30 21.15-51T312-816h336q29.7 0 50.85 21.15Q720-773.7 720-744v120h-72Zm59.79 168q15.21 0 25.71-10.29t10.5-25.5q0-15.21-10.29-25.71t-25.5-10.5q-15.21 0-25.71 10.29t-10.5 25.5q0 15.21 10.29 25.71t25.5 10.5ZM648-216v-144H312v144h336ZM168-552h625-625Z"/></g>
 </svg>

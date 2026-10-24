@@ -1,9 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#dedede;
-      }</style>
- </defs>
- <path class="ColorScheme-Text" d="m1 8v1h1v-1zm2 0v1h1v-1zm2 0v1h1v-1zm2 0v1h1v-1zm2 0v1h1v-1zm2 0v1h1v-1zm2 0v1h1v-1zm2 0v1h1v-1z" color="#dedede" fill="currentColor" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path d="m10.711 1.1035c-0.13286 0.0081079-0.26661 0.03056-0.40039 0.066406l-7.7266 2.0703c-1.0702 0.28677-1.7008 1.379-1.4141 2.4492l0.35156 1.3105h1.0332l-0.41992-1.5703c-0.14339-0.53512 0.17191-1.0812 0.70703-1.2246l7.7285-2.0703c0.53512-0.14339 1.0812 0.17191 1.2246 0.70703l1.1133 4.1582h1.0352l-1.1836-4.416c-0.25093-0.93647-1.1188-1.5372-2.0488-1.4805zm-8.3867 8.8965 0.91602 3.416c0.28677 1.0702 1.379 1.7008 2.4492 1.4141l7.7266-2.0703c1.0702-0.28677 1.7008-1.379 1.4141-2.4492l-0.083984-0.31055h-1.0332l0.15234 0.57031c0.14339 0.53512-0.17191 1.0812-0.70703 1.2246l-7.7285 2.0703c-0.53512 0.14339-1.0812-0.17191-1.2246-0.70703l-0.8457-3.1582h-1.0352z" fill="#dedede" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M168-240q-29.7 0-50.85-21.15Q96-282.3 96-312v-336q0-29.7 21.15-50.85Q138.3-720 168-720h624q29.7 0 50.85 21.15Q864-677.7 864-648v336q0 29.7-21.15 50.85Q821.7-240 792-240H168Zm0-72h624v-336H672v132q0 15.3-10.29 25.65Q651.42-480 636.21-480t-25.71-10.35Q600-500.7 600-516v-132h-84v132q0 15.3-10.29 25.65Q495.42-480 480.21-480t-25.71-10.35Q444-500.7 444-516v-132h-84v132q0 15.3-10.29 25.65Q339.42-480 324.21-480t-25.71-10.35Q288-500.7 288-516v-132H168v336Zm156-168Zm156 0Zm156 0Zm-156 0Z"/></g>
 </svg>

@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 12.996094 4.0019531 C 10.084881 6.9214265 7.1639221 9.8282666 4.2539062 12.738281 L 4.2558594 12.742188 L 4.0058594 12.992188 L 4 12.992188 L 4 17 L 8.0078125 17 C 10.912799 14.097947 14.007775 10.997369 16.998047 8.0039062 L 13 4.0039062 L 12.996094 4.0019531 z M 12.412109 5.9980469 L 15 8.5878906 L 10.732422 12.855469 L 8.1445312 10.265625 L 12.412109 5.9980469 z M 17.5 9 C 17.01354 10.7025 15.821805 12.166091 15.296875 13.337891 C 15.113175 13.686291 15 14.0773 15 14.5 C 15 15.885 16.115 17 17.5 17 C 18.885 17 20 15.885 20 14.5 C 20 14.0773 19.886835 13.686291 19.703125 13.337891 C 19.178205 12.166091 17.98645 10.7025 17.5 9 z M 7.4375 10.972656 L 10.025391 13.5625 L 9.3183594 14.269531 L 6.7285156 11.679688 C 6.9659019 11.445071 7.2013442 11.208507 7.4375 10.972656 z M 6.0214844 12.386719 L 8.6113281 14.976562 L 8.6152344 14.978516 L 7.9082031 15.685547 L 7.9042969 15.683594 L 5.3144531 13.09375 L 6.0214844 12.386719 z M 4 19 L 4 20 L 20 20 L 20 19 L 4 19 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor" transform="translate(480.0 -480.0) scale(0.91000000) translate(-480.0 480.0)"><path d="m332-932 315 315q23 23 23 57t-23 57L457-313q-23 23-57 23t-57-23L153-503q-23-23-23-57t23-57l190-191-68-68q-12-12-11.5-28t12.5-28q12-11 28-11.5t28 11.5Zm68 181L209-560h382L400-751Zm360 471q-33 0-56.5-23.5T680-360q0-21 12.5-45t27.5-45q9-12 19-25t21-25q11 12 21 25t19 25q15 21 27.5 45t12.5 45q0 33-23.5 56.5T760-280ZM160 0q-33 0-56.5-23.5T80-80q0-33 23.5-56.5T160-160h640q33 0 56.5 23.5T880-80q0 33-23.5 56.5T800 0H160Z"/></g>
 </svg>

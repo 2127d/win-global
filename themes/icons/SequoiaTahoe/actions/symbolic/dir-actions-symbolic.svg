@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" version="1.1" viewBox="0 0 16 16">
- <path d="m2 2c-1.108 0-2 0.892-2 2v9c0 1.108 0.892 2 2 2h8v-1h-8c-0.554 0-1-0.446-1-1v-6h15v-2c0-1.108-0.892-2-2-2h-7.6289c-0.57985-0.0229-0.6047 0.076884-1.0391-0.35742-0.43381-0.43381-0.613-0.64213-1.332-0.64258zm0 1h2c0.31116-1.7e-6 0.52033 1.419e-4 0.99805 0.4707 0.47877 0.47161 0.6388 0.5293 1 0.5293h8.002c0.554 0 1 0.446 1 1v1h-14v-2c0-0.554 0.446-1 1-1z" fill="#363636" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="13" cy="9" r="1" fill="#363636" stroke-width="0" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="13" cy="12" r="1" fill="#363636" stroke-width="0" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="13" cy="15" r="1" fill="#363636" stroke-width="0" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor" transform="translate(480.0 -480.0) scale(0.97000000) translate(-480.0 480.0)"><path d="M168-192q-32 0-52-21.16t-20-50.88v-432.24Q96-726 116-747t52-21h185.64q14.35 0 27.36 5 13 5 24 16l75 75h349q15.3 0 25.65 10.29Q865-651.42 865-636.21t-10.35 25.71Q844.3-600 829-600H451l-96-96H168v432l63-212q7-23 26-37.5t43-14.5h539q36 0 58 29t11 64l-57 192q-8 23-21 37t-38 14H168Zm75-72h538l59-192H300l-57 192Zm-75-213v-219 219Zm75 213 57-192-57 192Z"/></g>
 </svg>

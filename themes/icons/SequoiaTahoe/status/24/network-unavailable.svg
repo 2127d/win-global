@@ -1,26 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" viewBox="0 0 24 24">
-  <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#f2f2f2;
-      }
-      .ColorScheme-Background {
-        color:#eff0f1;
-      }
-      .ColorScheme-Highlight {
-        color:#3498db;
-      }
-      .ColorScheme-ButtonText {
-        color:#f2f2f2;
-      }
-      .ColorScheme-NegativeText{
-        color:#e74c3c;
-      }
-      </style>
-  <g transform="translate(1,1)">
-    <g id="network-unavailable" transform="translate(-226,-76) translate(44,0)">
-      <path ns1:nodetypes="cccssccccccccccccssccccccccccccccccccccccccccc" style="opacity:0.35;fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m 185,79 v 6 h 2 v 7 c 0,1.662 1.338,3 3,3 h 1 1 2 v -5 h -5 v 1 1 h 1 1 V 93 93.726562 94 h -1 c -1.108,0 -2,-0.892 -2,-2 v -7 h 2 v -6 z m 6,0 v 1 h 9 v 7 h 1 v -8 h -1 z m -5,1 h 3 v 4 h -3 z m 1,1 v 2 h 1 v -2 z m -2,5 v 6 h 1 v -6 z" id="path1595" class="ColorScheme-Text" ns2:connector-curvature="0" />
-      <rect style="opacity:1;fill:none;fill-opacity:1;stroke:none" id="rect1597" width="24" height="24" x="182" y="76" />
-      <path id="path1609" d="M 195.84845,89.003252 195,89.851689 197.15156,92.003252 195,94.154815 l 0.84845,0.848437 2.15156,-2.151564 2.15154,2.151564 L 201,94.154815 198.84844,92.003252 201,89.851689 l -0.84845,-0.848437 -2.15154,2.151563 z" class="ColorScheme-NegativeText" style="fill:currentColor;fill-opacity:1;stroke:none;stroke-width:1.19999874" ns2:connector-curvature="0" />
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="m625-449-71-71h46q17 0 28.5 11.5T640-480q0 10-4 18t-11 13ZM820-84q-11 11-28 11t-28-11L84-764q-11-11-11-28t11-28q11-11 28-11t28 11l680 680q11 11 11 28t-11 28ZM280-280q-83 0-141.5-58.5T80-480q0-69 42-123t108-71l74 74h-24q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h25l79 80H360Zm380 112q-9-14-6.5-30t16.5-25q23-17 36.5-42t13.5-55q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 49-22.5 91.5T795-318q-14 9-30 6.5T740-328Z"/></g>
 </svg>

@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 2 2 L 2 4 L 4 4 L 4 2 L 2 2 z M 7 2 L 7 4 L 9 4 L 9 2 L 7 2 z M 12 2 L 12 4 L 14 4 L 14 2 L 12 2 z M 2 7 L 2 9 L 4 9 L 4 7 L 2 7 z M 7 7 L 7 9 L 9 9 L 9 7 L 7 7 z M 12 7 L 12 9 L 14 9 L 14 7 L 12 7 z M 2 12 L 2 14 L 4 14 L 4 12 L 2 12 z M 7 12 L 7 14 L 9 14 L 9 12 L 7 12 z M 12 12 L 12 14 L 14 14 L 14 12 L 12 12 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M215.74-528Q186-528 165-549.5 144-571 144-600v-144q0-29.7 21.18-50.85Q186.35-816 216.09-816h144.17Q390-816 411-794.85q21 21.15 21 50.85v144q0 29-21.18 50.5-21.17 21.5-50.91 21.5H215.74Zm0 384Q186-144 165-165.18q-21-21.17-21-50.91v-144.17Q144-390 165.18-411q21.17-21 50.91-21h144.17Q390-432 411-410.82q21 21.17 21 50.91v144.17Q432-186 410.82-165q-21.17 21-50.91 21H215.74ZM600-528q-29 0-50.5-21.5T528-600v-144q0-29.7 21.5-50.85Q571-816 600-816h144q29.7 0 50.85 21.15Q816-773.7 816-744v144q0 29-21.15 50.5T744-528H600Zm0 384q-29 0-50.5-21.18-21.5-21.17-21.5-50.91v-144.17Q528-390 549.5-411q21.5-21 50.5-21h144q29.7 0 50.85 21.18Q816-389.65 816-359.91v144.17Q816-186 794.85-165 773.7-144 744-144H600ZM216-600h144v-144H216v144Zm384 0h144v-144H600v144Zm0 384h144v-144H600v144Zm-384 0h144v-144H216v144Zm384-384Zm0 240Zm-240 0Zm0-240Z"/></g>
 </svg>

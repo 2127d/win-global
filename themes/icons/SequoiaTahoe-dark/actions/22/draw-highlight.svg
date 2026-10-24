@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 22 22">
- <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-		color:#dedede;
-	}</style>
- <path class="ColorScheme-Text" style="fill:currentColor;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m15.238 4.0002-0.35217 0.36046-8.97 9.0943-0.029002 0.04558c-0.061 0.099-0.27119 0.4489-0.58419 1.0869-0.314 0.638-0.70032 1.5108-1.0123 2.4928l-0.29002 0.91979 0.91979-0.29002c0.85454-0.27528 1.6883-0.61386 2.4928-1.0123 0.638-0.314 0.9859-0.52019 1.0869-0.58419l0.045575-0.029 9.4548-9.3222zm-7.8113 9.1592 7.7782-7.7782 1.4142 1.4142-7.7782 7.7782zm-0.53724 0.73058 1.2209 1.2209-0.17816 0.1754c7e-3 -5e-3 -0.37922 0.22676-0.96122 0.51376-0.214 0.105-0.53617 0.22098-0.83417 0.33698l-0.27345-0.27345c0.116-0.298 0.23198-0.62016 0.33698-0.83416 0.287-0.582 0.51914-0.96584 0.51514-0.95984z" />
- <path class="ColorScheme-Text" style="fill:currentColor;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m4.9997 16h12c0.554 0 1 0.446 1 1s-0.446 1-1 1h-13z" opacity=".25" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor" transform="translate(480.0 -480.0) scale(0.90000000) translate(-480.0 480.0)"><path d="M192 0q-39.6 0-67.8-28.2Q96-56.4 96-96q0-39.6 28.2-67.8Q152.4-192 192-192h576q39.6 0 67.8 28.2Q864-135.6 864-96q0 39.6-28.2 67.8Q807.6 0 768 0H192Zm405-506-91-91-145 145 91 90 145-144Zm-40-142 91 91 144-145-90-90-145 144Zm-75-26 192 192-171 171q-22 20-50.5 21.5T404-308q-10 10-22 15t-25.9 5H235q-12 0-16-11.5t4-19.5l85-85q-21-20-20-49.5t23-49.5l171-171Zm0 0 169-169q21-21 51-21t50.81 20.98L843-753q20 21.57 20 50.79Q863-673 843-651L674-482 482-674Z"/></g>
 </svg>

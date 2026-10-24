@@ -1,9 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" version="1.1" viewBox="0 0 24 24">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#dedede;
-      }</style>
- </defs>
- <path class="ColorScheme-Text" d="m9.2501 6c-0.25664-6.44e-5 -0.50348 0.098533-0.68945 0.27539l-4.6309 4.4121-0.61914 0.58789c-0.41438 0.3942-0.41438 1.055 0 1.4492l0.61914 0.58789 4.6309 4.4121c0.18597 0.17686 0.43281 0.27545 0.68945 0.27539h10.75c0.55226-5.5e-5 0.99994-0.44774 1-1v-10c-5.5e-5 -0.55226-0.44774-0.99994-1-1h-10.75zm0 1h10.75v10h-10.75l-4.6309-4.4102-0.61914-0.58984 0.61914-0.58984 4.6309-4.4102z" fill="currentColor" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path class="ColorScheme-Text" d="m11.99 9 2.0098 2.0098 2.0098-2.0098 0.99024 0.99023-2.0098 2.0098 2.0098 2.0098-0.99024 0.99023-2.0098-2.0098-2.0098 2.0098-0.99023-0.99023 2.0098-2.0098-2.0098-2.0098z" fill="currentColor" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M200-40q-33 0-56.5-23.5T120-120v-200q0-83 58.5-141.5T320-520h40v-320q0-33 23.5-56.5T440-920h80q33 0 56.5 23.5T600-840v320h40q83 0 141.5 58.5T840-320v200q0 33-23.5 56.5T760-40H200Zm0-80h80v-120q0-17 11.5-28.5T320-280q17 0 28.5 11.5T360-240v120h80v-120q0-17 11.5-28.5T480-280q17 0 28.5 11.5T520-240v120h80v-120q0-17 11.5-28.5T640-280q17 0 28.5 11.5T680-240v120h80v-200q0-50-35-85t-85-35H320q-50 0-85 35t-35 85v200Zm320-400v-320h-80v320h80Zm0 0h-80 80Z"/></g>
 </svg>

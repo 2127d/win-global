@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 2 2 L 2 3 L 14 3 L 14 2 L 2 2 z M 7 4 L 7 5 L 14 5 L 14 4 L 7 4 z M 4.5019531 4.0019531 L 4.3125 4.2207031 L 2 6.7207031 L 2.65625 7.4082031 L 4 5.9707031 L 4 14 L 5.0019531 14 L 5.0019531 5.9707031 L 6.3457031 7.4082031 L 7.0019531 6.7207031 L 4.6894531 4.2207031 L 4.5019531 4.0019531 z M 9 6 L 9 7 L 14 7 L 14 6 L 9 6 z M 8 8 L 8 9 L 14 9 L 14 8 L 8 8 z M 9 10 L 9 11 L 14 11 L 14 10 L 9 10 z M 7 12 L 7 13 L 14 13 L 14 12 L 7 12 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M360-288q-29.7 0-50.85-21.15Q288-330.3 288-360v-384q0-29.7 21.15-50.85Q330.3-816 360-816h384q29.7 0 50.85 21.15Q816-773.7 816-744v384q0 29.7-21.15 50.85Q773.7-288 744-288H360Zm0-72h384v-384H360v384ZM180.21-594q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm0 150q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm0 150q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm0 150q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm150 0q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm150 0q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Zm150 0q-15.21 0-25.71-10.29t-10.5-25.5q0-15.21 10.29-25.71t25.5-10.5q15.21 0 25.71 10.29t10.5 25.5q0 15.21-10.29 25.71t-25.5 10.5Z"/></g>
 </svg>

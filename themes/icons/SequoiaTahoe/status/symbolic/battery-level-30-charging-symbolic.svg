@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <g id="g10" fill="#363636">
-  <path id="path4" d="m2 3c-1.108 0-2 0.892-2 2v6c0 1.108 0.892 2 2 2h9c1.108 0 2-0.892 2-2v-6c0-1.108-0.892-2-2-2h-9zm0 1h9c0.554 0 1 0.446 1 1v6c0 0.554-0.446 1-1 1h-9c-0.554 0-1-0.446-1-1v-6c0-0.554 0.446-1 1-1z" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path id="rect6" d="m2.5 5c-0.277 0-0.5 0.223-0.5 0.5v5c0 0.277 0.223 0.5 0.5 0.5h1c0.277 0 0.5-0.223 0.5-0.5v-0.5h-0.5a1.0001 1.0001 0 0 1-0.83203-1.5547l1.332-1.998v-0.94727c0-0.277-0.223-0.5-0.5-0.5h-1z" fill="#ff7f2a" class="warning" />
-  <path id="path8" d="m14 6v4a2 2 0 0 0 2-2 2 2 0 0 0-2-2z" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
- <path id="path12" d="m6.834 4-3.334 5h3l-0.75 3h0.41602l3.334-5h-3l0.75-3z" fill="#363636" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+<!-- Sequoia rounded UI and device state artwork, Apache-2.0. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor" transform="translate(12 12) scale(0.97000000) translate(-12 -12)"><g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="2.2" y="7" width="15" height="10" rx="2"/></g><rect x="4.4" y="9.2" width="3.180" height="5.6" rx="0.800" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="m22 6-3.4 6h3.5l-3.2 6"/></g>
 </svg>

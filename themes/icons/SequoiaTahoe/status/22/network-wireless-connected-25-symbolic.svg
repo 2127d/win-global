@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
-<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
-<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }</style></defs>
-<g class="ColorScheme-Text" fill="currentColor" transform="translate(480 -480) scale(0.90909091) translate(-480 480)"><path d="M357-369q28-20 59.5-29t63.5-9q32 0 64 9t59 29l251-250q-81-61-176-93t-198-32q-103 0-198 32t-176 93l251 250Zm72 174L56-568q-11-11-16-24t-5-27q0-16 6.5-30T61-674q85-70 197-106t222-36q110 0 222 36t197 106q13 11 19.5 25t6.5 30q0 14-5 27t-16 24L531-195q-11 11-24 16t-27 5q-14 0-27-5t-24-16Z"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+<!-- Sequoia rounded UI and device state artwork, Apache-2.0. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><circle cx="12" cy="18.1" r="1.15" fill="currentColor" opacity="1.000"/><path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" d="M9 14.5q3-2.8 6 0" opacity="0.220"/><path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" d="M6 11.5q6-5.5 12 0" opacity="0.220"/><path fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" d="M3 8.5q9-8.2 18 0" opacity="0.220"/></g>
 </svg>

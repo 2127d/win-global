@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 22 22">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#dedede;
-      }</style>
- </defs>
- <path class="ColorScheme-Text" d="m8.8164 4.9102v1.0898h-3.8184v1.0859h6.0957c-0.366 1.053-0.94447 2.0528-1.7305 2.9258-0.507-0.562-0.92777-1.1791-1.2598-1.8281h-1.0918c0.398 0.889 0.94495 1.7303 1.627 2.4883l-2.7773 2.7383 0.77539 0.77539 2.7285-2.7285 1.6953 1.6973 0.41406-1.1133-1.3867-1.3711 0.01563-0.01563c0.949-1.059 1.6274-2.2745 2.0254-3.5625h1.5977v-1.0918h-3.8184v-1.0898zm4.6387 4.3652-2.4551 6.5469h1.0918l0.61133-1.6367h2.5918l0.61719 1.6367h1.0898l-2.4551-6.5469zm0.54492 1.457 0.88477 2.3613h-1.7676z" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="m608-213-33.11 93.41Q571-109 561.63-102.5 552.25-96 541-96q-20 0-30.5-16t-3.5-34l143-381q4.81-11 14.42-18 9.62-7 21.16-7h28.84q11.54 0 21.16 7 9.61 7 14.42 18l144 382q7 18-4.37 33.5Q878.26-96 859.32-96q-12.32 0-21.82-7T824-121l-32.21-92H608ZM360-405 194-241q-11 11-25 10.5T144-242q-11-11-11-25t11-25l167-165q-36-38-67-79t-54-89h82q18 32 36 54.5t52 60.5q38-42 70-87.5t52-98.5H84q-15.3 0-25.65-10.29Q48-716.58 48-731.79t10.35-25.71Q68.7-768 84-768h240v-60q0-15.3 10.29-25.65Q344.58-864 359.79-864t25.71 10.35Q396-843.3 396-828v60h240q15.3 0 25.65 10.29Q672-747.42 672-732.21t-10.35 25.71Q651.3-696 636-696h-77.57Q537-627 497-568.5T409-457l91 90-28 74-112-112Zm272 126h136l-66-189-70 189Z"/></g>
 </svg>

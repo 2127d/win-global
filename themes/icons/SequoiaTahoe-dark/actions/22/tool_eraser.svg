@@ -1,1 +1,5 @@
-draw-eraser.svg
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M672-264h156q15 0 25.5 10.5T864-228q0 15-10.5 25.5T828-192H600l72-72Zm-422 72q-8 0-14.5-3t-11.5-8L117-310q-21-21-21.5-50.5T117-412l431-431q22-22 51-22t51 22l193 193q21 21 21.5 50.5T843-548L498-203q-5 5-11.5 8t-14.5 3H250Zm207-72 335-335-193-193-431 431 97 97h192Zm23-216Z"/></g>
+</svg>

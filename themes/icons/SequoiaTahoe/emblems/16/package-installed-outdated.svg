@@ -1,15 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <style id="current-color-scheme" type="text/css">.ColorScheme-NeutralText {
-            color:#f67400;
-        }
-        .ColorScheme-Text {
-            color:#232629;
-        }</style>
- <rect class="ColorScheme-NeutralText" width="16" height="16" rx="2" fill="currentColor" />
- <path class="ColorScheme-Text" d="m2 0c-1.108 0-2 .892-2 2v12c0 1.108.892 2 2 2h12c1.108 0 2-.892 2-2v-12c0-1.108-.892-2-2-2zm0 1h12c.554 0 1 .446 1 1v12c0 .554-.446 1-1 1h-12c-.554 0-1-.446-1-1v-12c0-.554.446-1 1-1z" fill="currentColor" fill-opacity=".6" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:.6;stroke-linecap:round;stroke-linejoin:round" />
- <g fill="#ffffff" stroke-opacity=".26047">
-  <path d="m8 2a6 6 0 0 0-6 6 6 6 0 0 0 6 6 6 6 0 0 0 6-6 6 6 0 0 0-6-6zm0 1a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5z" style="stroke:#ffffff;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <rect x="7" y="4.1309" width="1" height="4.8691" style="stroke:#ffffff;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <rect x="7" y="8" width="4" height="1" style="stroke:#ffffff;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M480-144q-70 0-131.13-26.6-61.14-26.6-106.4-71.87-45.27-45.26-71.87-106.4Q144-410 144-480t26.6-131.13q26.6-61.14 71.87-106.4 45.26-45.27 106.4-71.87Q410-816 480-816q81 0 149.5 35T744-686v-94q0-15.3 10.29-25.65Q764.58-816 779.79-816t25.71 10.35Q816-795.3 816-780v168q0 15.3-10.35 25.65Q795.3-576 780-576H612q-15.3 0-25.65-10.29Q576-596.58 576-611.79t10.35-25.71Q596.7-648 612-648h71q-35.91-44.8-88.45-70.4Q542-744 480-744q-109 0-186.5 77.5T216-480q0 109 77.5 186.5T480-216q102 0 176.5-67.5T742-450q2-14 13-22t25.06-8q14.94 0 25.44 9.5Q816-461 814-447q-13 128-107.5 215.5T480-144Zm36-366 90 90q11 11 10.5 25T605-370q-11 11-25.5 11T554-370l-98.71-98.71Q450-474 447-480.69q-3-6.69-3-13.82v-141.81q0-15.17 10.5-25.42Q465-672 480-672t25.5 10.35Q516-651.3 516-636v126Z"/></g>
 </svg>

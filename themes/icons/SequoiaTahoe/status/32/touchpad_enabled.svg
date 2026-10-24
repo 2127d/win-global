@@ -1,23 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" width="32" height="32">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#f2f2f2;
-      }
-      .ColorScheme-Background {
-        color:#eff0f1;
-      }
-      .ColorScheme-Highlight {
-        color:#3daee9;
-      }
-      .ColorScheme-ButtonText {
-        color:#f2f2f2;
-      }
-      .ColorScheme-NegativeText {
-        color:#da4453;
-      }
-      </style>
-    <g transform="translate(0,32) translate(-22,-32)" id="touchpad_enabled" ns1:label="#touchpad_enabled">
-    <path id="path12" class="ColorScheme-Text" d="M 27 4 C 26.446 4 26 4.446 26 5 L 26 27 C 26 27.554 26.446 28 27 28 L 49 28 C 49.554 28 50 27.554 50 27 L 50 5 C 50 4.446 49.554 4 49 4 L 27 4 z M 27 5 L 49 5 L 49 22 L 27 22 L 27 5 z M 27 23 L 37 23 L 37 27 L 27 27 L 27 23 z M 39 23 L 49 23 L 49 27 L 39 27 L 39 23 z " style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-    <path id="path14" d="M 22 0 L 22 32 L 54 32 L 54 0 L 22 0 z " style="opacity:1;fill:none" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M660-160q58 0 99-41t41-99v-60H520v60q0 58 41 99t99 41ZM521-440h99v-114q-38 11-65.5 42T521-440Zm179 0h99q-6-41-33.5-72T700-554v114ZM660-80q-92 0-156-64t-64-156v-120q0-92 64-156t156-64q92 0 156 64t64 156v120q0 92-64 156T660-80Zm-500-80q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h680q17 0 28.5 11.5T880-760q0 17-11.5 28.5T840-720H160v480h161q17 0 28.5 11.5T361-200q0 17-11.5 28.5T321-160H160Zm0-80v-480 480Z"/></g>
 </svg>

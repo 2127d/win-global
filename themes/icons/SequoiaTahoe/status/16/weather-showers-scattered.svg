@@ -1,11 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <defs>
-  <style id="current-color-scheme" type="text/css">
-   .ColorScheme-Text { color:#f2f2f2; } .ColorScheme-Highlight { color:#5294e2; }
-  </style>
- </defs>
- <path d="m8 2c-1.8364 0-3.3667 1.2018-3.9375 2.8438-1.7231 0.21836-3.0625 1.6745-3.0625 3.457 0 1.933 1.567 3.5 3.5 3.5h0.51758l0.41602-0.7207 0.86523-1.5 1.2812 2.2207h0.072266c0.072018-0.35503 0.16751-0.70082 0.34766-0.98438l0.81641-1.4141 0.86523-1.5 1.6777 2.9082c0.19633 0.30364 0.35971 0.62932 0.44141 0.99023h0.39844c1.5464 0 2.8008-1.2544 2.8008-2.8008s-1.2544-2.8008-2.8008-2.8008c0-2.3195-1.8797-4.1992-4.1992-4.1992z" style="fill:currentColor;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" class="ColorScheme-Text" />
- <g transform="translate(-.47543)" style="fill:currentColor" class="ColorScheme-Text" opacity=".5">
-  <path transform="translate(.47543)" d="m9.6816 9.9023-0.83789 1.4512c-0.37691 0.59326-0.46984 1.1961 0 1.6719 0.24384 0.25574 0.54052 0.29688 0.83789 0.29688 0.29737 0 0.59405-0.041135 0.83789-0.29688 0.46984-0.47579 0.43042-1.0062 0-1.6719l-0.83789-1.4512zm-3.3828 1.6777-0.83789 1.4512c-0.37691 0.59326-0.46984 1.1961 0 1.6719 0.24384 0.25574 0.54052 0.29688 0.83789 0.29688s0.59405-0.041135 0.83789-0.29688c0.46984-0.47579 0.43042-1.0062 0-1.6719l-0.83789-1.4512z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor" transform="translate(480.0 -480.0) scale(0.97000000) translate(-480.0 480.0)"><path d="M185-482q-14 7-27.5 2.5T137-498L52-668q-7-14-2.5-27.5T68-716q14-7 28-2.5t20 18.5l85 170q7 14 2.5 27.5T185-482Zm119 238q-14 7-28 2.5T255-260l-68-136q-7-14-2-27.5t19-20.5q14-7 27.5-2.5T252-428l68 136q7 14 2.5 27.5T304-244Zm108-175q-14 7-27.5 2.5T364-435L248-668q-7-14-2.5-27.5T264-716q14-7 28-2.5t20 18.5l117 233q7 14 2 27.5T412-419Zm116-160q-14 7-27.5 2.5T480-595l-36-73q-7-14-2.5-27.5T460-716q14-7 28-2.5t20 18.5l36 73q7 14 2.5 27.5T528-579Zm-28 335q-14 7-27.5 2.5T452-260l-37-73q-7-14-2-27.5t19-20.5q14-7 27.5-2.5T480-365l36 73q7 14 2.5 27.5T500-244Zm196 0q-14 7-27.5 2.5T648-260L531-493q-7-14-2.5-28t18.5-21q14-7 28-2.5t21 18.5l116 234q7 14 2.5 27.5T696-244Zm94-203q-14 7-27.5 2T742-464L640-668q-7-14-2.5-27.5T656-716q14-7 28-2.5t21 18.5l101 204q7 14 2.5 28T790-447Zm101 204q-14 7-27.5 2T843-260l-51-101q-7-14-2-28t19-21q14-7 27.5-2.5T857-394l51 102q7 14 2 28t-19 21Z"/></g>
 </svg>

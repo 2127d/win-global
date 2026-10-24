@@ -1,22 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" xmlns:ns2="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns4="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" viewBox="0 0 16 16" id="svg2" version="1.1" ns1:version="0.91 r13725" ns2:docname="mail-reply-all.svg">
-  <metadata id="metadata10">
-    <rdf:RDF>
-      <ns4:Work rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </ns4:Work>
-    </rdf:RDF>
-  </metadata>
-  <ns2:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" ns1:pageopacity="0" ns1:pageshadow="2" ns1:window-width="1366" ns1:window-height="703" id="namedview8" showgrid="true" ns1:zoom="45.254834" ns1:cx="4.6599621" ns1:cy="7.7606839" ns1:window-x="0" ns1:window-y="0" ns1:window-maximized="1" ns1:current-layer="svg2" ns1:object-nodes="true">
-    <ns1:grid type="xygrid" id="grid3344" />
-  </ns2:namedview>
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
-  <path style="fill:#363636;fill-opacity:1;stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 6,4 1,8 6,12 6,10.71875 2.6015625,8 6,5.28125 6,4 Z" id="rect3348-8-9-7" ns1:connector-curvature="0" />
-  <path style="fill:#363636;fill-opacity:1;stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 9,4 4,8 9,12 9,9 14,9 14,7 9,7 Z" id="rect3348-8-9" ns1:connector-curvature="0" ns2:nodetypes="cccccccc" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="m198-510 134 134q11 11 11 25.5t-11 25.98Q321-314 306.5-314T281-325L121.21-484.79Q116-490 113.5-496.3t-2.5-13.5q0-7.2 2.5-13.5T121-535l160-160q11-11 25.67-11 14.66 0 25.33 11 11 10.67 11 25.33Q343-655 332-644L198-510Zm228 36 98 98q11 11 11 25.5t-11 25.98Q513-314 498.5-314T473-325L313.21-484.79Q308-490 305.5-496.3t-2.5-13.5q0-7.2 2.5-13.5T313-535l160-160q11-11 25.67-11 14.66 0 25.33 11 11 10.67 11 25.33Q535-655 524-644l-98 98h198q79.68 0 135.84 56.16T816-354v108q0 15.3-10.29 25.65Q795.42-210 780.21-210t-25.71-10.35Q744-230.7 744-246v-108q0-50-35-85t-85-35H426Z"/></g>
 </svg>

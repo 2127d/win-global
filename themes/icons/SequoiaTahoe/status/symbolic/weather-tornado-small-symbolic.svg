@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M175-816h610q42 0 63 36.5t-1 72.5L542-199q-21 35-62 35t-62-35L113-707q-22-36-1-72.5t63-36.5Zm0 72 72 120h466l72-120H175Zm115 192 72 120h236l72-120H290Zm116 192 74 124 74-124H406Z"/></g>
+</svg>

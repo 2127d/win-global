@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
-    <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 6 2 L 6 20 L 15 20 L 15 2 L 6 2 z M 7 3 L 14 3 L 14 5 L 7 5 L 7 3 z M 7 6 L 14 6 L 14 15.5 L 14 19 L 7 19 L 7 15.5 L 7 6 z M 7 15.5 A 0.5 0.5 0 0 0 7.5 16 A 0.5 0.5 0 0 0 8 15.5 A 0.5 0.5 0 0 0 7.5 15 A 0.5 0.5 0 0 0 7 15.5 z M 14 15.5 A 0.5 0.5 0 0 0 13.5 15 A 0.5 0.5 0 0 0 13 15.5 A 0.5 0.5 0 0 0 13.5 16 A 0.5 0.5 0 0 0 14 15.5 z M 8.5 13 A 0.5 0.5 0 0 0 8 13.5 A 0.5 0.5 0 0 0 8.5 14 A 0.5 0.5 0 0 0 9 13.5 A 0.5 0.5 0 0 0 8.5 13 z M 10.5 13 A 0.5 0.5 0 0 0 10 13.5 A 0.5 0.5 0 0 0 10.5 14 A 0.5 0.5 0 0 0 11 13.5 A 0.5 0.5 0 0 0 10.5 13 z M 12.5 13 A 0.5 0.5 0 0 0 12 13.5 A 0.5 0.5 0 0 0 12.5 14 A 0.5 0.5 0 0 0 13 13.5 A 0.5 0.5 0 0 0 12.5 13 z M 9.5 15 A 0.5 0.5 0 0 0 9 15.5 A 0.5 0.5 0 0 0 9.5 16 A 0.5 0.5 0 0 0 10 15.5 A 0.5 0.5 0 0 0 9.5 15 z M 11.5 15 A 0.5 0.5 0 0 0 11 15.5 A 0.5 0.5 0 0 0 11.5 16 A 0.5 0.5 0 0 0 12 15.5 A 0.5 0.5 0 0 0 11.5 15 z M 8.5 17 A 0.5 0.5 0 0 0 8 17.5 A 0.5 0.5 0 0 0 8.5 18 A 0.5 0.5 0 0 0 9 17.5 A 0.5 0.5 0 0 0 8.5 17 z M 10.5 17 A 0.5 0.5 0 0 0 10 17.5 A 0.5 0.5 0 0 0 10.5 18 A 0.5 0.5 0 0 0 11 17.5 A 0.5 0.5 0 0 0 10.5 17 z M 12.5 17 A 0.5 0.5 0 0 0 12 17.5 A 0.5 0.5 0 0 0 12.5 18 A 0.5 0.5 0 0 0 13 17.5 A 0.5 0.5 0 0 0 12.5 17 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M84-144q-15.3 0-25.65-10.29Q48-164.58 48-179.79t10.35-25.71Q68.7-216 84-216h792q15.3 0 25.65 10.29Q912-195.42 912-180.21t-10.35 25.71Q891.3-144 876-144H84Zm84-120q-29.7 0-50.85-21.15Q96-306.3 96-336v-408q0-29.7 21.15-50.85Q138.3-816 168-816h624q29.7 0 50.85 21.15Q864-773.7 864-744v408q0 29.7-21.15 50.85Q821.7-264 792-264H168Zm0-72h624v-408H168v408Zm0 0v-408 408Z"/></g>
 </svg>

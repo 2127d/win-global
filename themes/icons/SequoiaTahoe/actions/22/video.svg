@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 3 3 L 3 19 L 19 19 L 19 3 L 3 3 z M 6 4 L 16 4 L 16 9.9003906 L 6 9.9003906 L 6 4 z M 4 5 L 5 5 L 5 6 L 4 6 L 4 5 z M 17 5 L 18 5 L 18 6 L 17 6 L 17 5 z M 4 7 L 5 7 L 5 8 L 4 8 L 4 7 z M 17 7 L 18 7 L 18 8 L 17 8 L 17 7 z M 4 9 L 5 9 L 5 10 L 4 10 L 4 9 z M 17 9.0996094 L 18 9.0996094 L 18 10.099609 L 17 10.099609 L 17 9.0996094 z M 4 12 L 5 12 L 5 13 L 4 13 L 4 12 z M 6 12 L 16 12 L 16 18 L 6 18 L 6 12 z M 17 12 L 18 12 L 18 13 L 17 13 L 17 12 z M 4 14 L 5 14 L 5 15 L 4 15 L 4 14 z M 17 14 L 18 14 L 18 15 L 17 15 L 17 14 z M 4 16 L 5 16 L 5 17 L 4 17 L 4 16 z M 17 16 L 18 16 L 18 17 L 17 17 L 17 16 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M684-529q13-8.34 13-23.17Q697-567 684-575L497-694q-14-8-27.5-.47T456-671v238q0 15.94 13.5 23.47Q483-402 497-410l187-119ZM312-240q-29.7 0-50.85-21.15Q240-282.3 240-312v-480q0-29.7 21.15-50.85Q282.3-864 312-864h480q29.7 0 50.85 21.15Q864-821.7 864-792v480q0 29.7-21.15 50.85Q821.7-240 792-240H312Zm0-72h480v-480H312v480ZM168-96q-29.7 0-50.85-21.15Q96-138.3 96-168v-516q0-15.3 10.29-25.65Q116.58-720 131.79-720t25.71 10.35Q168-699.3 168-684v516h516q15.3 0 25.65 10.29Q720-147.42 720-132.21t-10.35 25.71Q699.3-96 684-96H168Zm144-696v480-480Z"/></g>
 </svg>

@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 18.564453 3.7558594 L 15.298828 9.5742188 L 12.882812 8.1386719 L 11.861328 9.8574219 L 17.511719 13.216797 L 18.533203 11.496094 L 16.158203 10.083984 L 19.435547 4.2441406 L 18.564453 3.7558594 z M 8 7 A 1 1 0 0 0 7 8 A 1 1 0 0 0 8 9 A 1 1 0 0 0 9 8 A 1 1 0 0 0 8 7 z M 4.5 8 A 0.5 0.5 0 0 0 4 8.5 A 0.5 0.5 0 0 0 4.5 9 A 0.5 0.5 0 0 0 5 8.5 A 0.5 0.5 0 0 0 4.5 8 z M 6 10 A 1 1 0 0 0 5 11 A 1 1 0 0 0 6 12 A 1 1 0 0 0 7 11 A 1 1 0 0 0 6 10 z M 11 11 C 9.8815125 12.564268 7.8355055 13.810894 4 14 L 4 15 C 6.1137135 18.371692 9 20 13 20 L 14 20 C 15.311249 18.412805 16.357513 16.967619 17 15 L 17 14 L 12 11 L 11 11 z M 11.529297 12.101562 L 15.857422 14.699219 C 15.284594 16.24586 14.385404 17.602833 13.273438 18.96875 C 9.999999 19 7.052768 17.540538 5.3261719 14.830078 C 8.4443879 14.51946 10.345716 13.545307 11.529297 12.101562 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M280-720v520-520Zm0 600q-33 0-56.5-23.5T200-200v-520h-1q-17 0-28-11.5T160-760q0-17 11.5-28.5T200-800h160q0-17 11.5-28.5T400-840h160q17 0 28.5 11.5T600-800h160q17 0 28.5 11.5T800-760q0 17-11.5 28.5T760-720v140q0 17-11.5 28.5T720-540q-17 0-28.5-11.5T680-580v-140H280v520h107q17 0 28.5 11.5T427-160q0 16-11.5 28T387-120H280Zm120-520q-17 0-28.5 11.5T360-600v280q0 17 11.5 28.5T400-280q17 0 28.5-11.5T440-320v-280q0-17-11.5-28.5T400-640Zm160 0q-17 0-28.5 11.5T520-600v60q0 17 11.5 28.5T560-500q17 0 28.5-11.5T600-540v-60q0-17-11.5-28.5T560-640ZM680-80q-83 0-141.5-58.5T480-280q0-83 58.5-141.5T680-480q41 0 77.5 16t63.5 43q27 27 43 63.5t16 77.5q0 83-58.5 141.5T680-80Zm20-208v-92q0-8-6-14t-14-6q-8 0-14 6t-6 14v91q0 8 3 15.5t9 13.5l60 60q6 6 14 6t14-6q6-6 6-14t-6-14l-60-60Z"/></g>
 </svg>

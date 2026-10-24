@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#363636;
-      }</style>
- </defs>
- <path class="ColorScheme-Text" d="m8 2.9999c-1.108 0-2 0.892-2 2v1c-1.662 0-3 1.338-3 3v8c0 1.662 1.338 3 3 3h12c1.662 0 3-1.338 3-3v-8c0-1.662-1.338-3-3-3v-1c0-1.108-0.892-2-2-2zm0 1h8c0.554 0 1 0.446 1 1v6.1582l-3.1406 2.3887c-1.0302 0.78348-2.6886 0.78347-3.7188 0l-3.1406-2.3887v-6.1582c0-0.554 0.446-1 1-1zm0.5 2c-0.277 0-0.5 0.223-0.5 0.5s0.223 0.5 0.5 0.5h7c0.277 0 0.5-0.223 0.5-0.5s-0.223-0.5-0.5-0.5zm-2.5 1v3.3984l-1.9883-1.5117c0.059506-1.0538 0.9191-1.8867 1.9883-1.8867zm12 0c1.0692 0 1.9288 0.83294 1.9883 1.8867l-1.9883 1.5117zm-9.5 2c-0.277 0-0.5 0.223-0.5 0.5s0.223 0.5 0.5 0.5h7c0.277 0 0.5-0.223 0.5-0.5s-0.223-0.5-0.5-0.5zm-4.5 1.1094 3.8008 2.8906-3.8008 2.8887zm16 2e-3v5.7773l-3.7969-2.8887 3.7969-2.8887zm-11.391 3.5039 0.7207 0.54883c1.4653 1.1144 3.8764 1.1144 5.3418 0l0.71875-0.54687 4.5977 3.4961c-0.05951 1.0538-0.9191 1.8867-1.9883 1.8867h-12c-1.0692 0-1.9288-0.83294-1.9883-1.8867l4.5977-3.498z" fill="currentColor" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm640-480L501-453q-5 3-10.5 4.5T480-447q-5 0-10.5-1.5T459-453L160-640v400h640v-400ZM480-520l320-200H160l320 200ZM160-640v10-59 1-32 32-.5 58.5-10 400-400Z"/></g>
 </svg>

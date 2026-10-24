@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      </style>
-  </defs><g transform="translate(1,1)">
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m 3.0000001,3.0000001 0,4 -1,0 0,1 0,9.9999999 c 0,0.554 0.446,1 1,1 L 19,19 l 1,0 0,-1 0,-9.9999999 c 0,-0.554 -0.446,-1 -1,-1 l -5,0 0,-4 z m 1,1 8.9999999,0 0,3 -2.507812,0 c -0.470484,-0.6273203 -1.2080451,-0.9975468 -1.9921881,-1 -0.786206,6.144e-4 -1.526323,0.3710349 -1.9980467,1 l -2.5019531,0 z m -1,4 1,0 2.0507812,0 4.8945307,0 2.054688,0 1,0 5,0 L 19,11 l -2,0 -5,0 c -1.108,0 -2.0000001,0.892 -2.0000001,2 0,1.108 0.8920001,2 2.0000001,2 l 5,0 2,0 0,3 -15.9999999,0 z M 13,12 c 0.552285,0 1,0.447715 1,1 0,0.552285 -0.447715,1 -1,1 -0.552285,0 -1,-0.447715 -1,-1 0,-0.552285 0.447715,-1 1,-1 z" class="ColorScheme-Text" />
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M200-200v-560 560Zm0 80q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v100h-80v-100H200v560h560v-100h80v100q0 33-23.5 56.5T760-120H200Zm320-160q-33 0-56.5-23.5T440-360v-240q0-33 23.5-56.5T520-680h280q33 0 56.5 23.5T880-600v240q0 33-23.5 56.5T800-280H520Zm280-80v-240H520v240h280Zm-160-60q25 0 42.5-17.5T700-480q0-25-17.5-42.5T640-540q-25 0-42.5 17.5T580-480q0 25 17.5 42.5T640-420Z"/></g>
+</svg>

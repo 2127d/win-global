@@ -1,14 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      .ColorScheme-PositiveText {
-        color:#27ae60;
-      }
-      </style>
-  </defs>
-  <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 7 4 C 7 4 6 3.99997 6 5 L 4 5 L 4 8 L 4 19 L 4 20 L 20 20 L 20 19 L 20 8 L 20 5 L 18 5 C 18 3.99997 17 4 17 4 L 14 4 C 14 4 13 3.99997 13 5 L 11 5 C 11 3.99997 10 4 10 4 L 7 4 z M 7 5 L 10 5 L 10 6 L 7 6 L 7 5 z M 14 5 L 17 5 L 17 6 L 14 6 L 14 5 z M 5 8 L 19 8 L 19 19 L 5 19 L 5 8 z " class="ColorScheme-Text" />
-  <path style="fill:currentColor;fill-opacity:1;stroke:none" class="ColorScheme-PositiveText" d="M 7 9 L 7 11 L 9 11 L 9 9 L 7 9 z M 11 9 L 11 11 L 13 11 L 13 9 L 11 9 z M 15 9 L 15 11 L 17 11 L 17 9 L 15 9 z M 7 12 L 7 14 L 9 14 L 9 12 L 7 12 z M 11 12 L 11 14 L 13 14 L 13 12 L 11 12 z M 15 12 L 15 14 L 17 14 L 17 12 L 15 12 z M 15 15 L 15 17 L 17 17 L 17 15 L 15 15 z " />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-40q0-17 11.5-28.5T280-880q17 0 28.5 11.5T320-840v40h320v-40q0-17 11.5-28.5T680-880q17 0 28.5 11.5T720-840v40h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"/></g>
 </svg>

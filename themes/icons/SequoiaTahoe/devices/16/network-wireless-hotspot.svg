@@ -1,11 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-    <style type="text/css" id="current-color-scheme">
-        .ColorScheme-Text {
-            color:#363636;
-        }
-    </style>
-    <g class="ColorScheme-Text" fill="currentColor">
-        <path d="m8 8c-.554688 0-1 .445312-1 1v5h2v-5c0-.554688-.445312-1-1-1z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-        <path d="m8 2c-3.878906 0-7 3.121094-7 7 0 1.9375.78125 3.691406 2.046875 4.953125l.707031-.707031c-1.085937-1.085938-1.753906-2.585938-1.753906-4.246094 0-3.324219 2.675781-6 6-6s6 2.675781 6 6c0 1.660156-.667969 3.160156-1.753906 4.246094l.707031.707031c1.265625-1.261719 2.046875-3.015625 2.046875-4.953125 0-3.878906-3.121094-7-7-7zm0 3c-2.214844 0-4 1.785156-4 4 0 1.109375.445312 2.105469 1.171875 2.828125l.703125-.703125c-.539062-.542969-.875-1.292969-.875-2.125 0-1.660156 1.339844-3 3-3s3 1.339844 3 3c0 .832031-.335938 1.582031-.875 2.125l.703125.703125c.726563-.722656 1.171875-1.71875 1.171875-2.828125 0-2.214844-1.785156-4-4-4z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M234-170q-11 11-26.5 10T182-173q-41-51-63.5-112.5T96-416q0-80 30-149.5t82.5-122Q261-740 331-770t149-30q80 0 149.5 30t122 82.5Q804-635 834-565.5T864-416q0 69-22.5 131.5T777-172q-10 12-25 13t-26-10q-11-11-11.5-26t9.5-27q32-40 50-89.5T792-416q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 55 17.5 104t49.5 90q9 12 9.5 26.5T234-170Zm102-102q-11 11-26 10.5T286-274q-22-30-34-66t-12-76q0-100 70-170t170-70q100 0 170 70t70 170q0 40-12.5 77T672-272q-8 11-22.5 11.5T624-271q-11-11-11-25.5t8-27.5q13-20 20-43t7-49q0-70-49-119t-119-49q-70 0-119 49t-49 119q0 26 7 49t20 43q8 13 8 27t-11 25Zm144-72q-30 0-51-21t-21-51q0-30 21-51t51-21q30 0 51 21t21 51q0 30-21 51t-51 21Z"/></g>
 </svg>

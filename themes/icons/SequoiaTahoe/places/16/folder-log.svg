@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
-    <path style="fill:currentColor;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 2 2 L 2 3 L 14 3 L 14 2 L 2 2 z M 2.5 4 C 2.223 4 2 4.223 2 4.5 C 2 4.777 2.223 5 2.5 5 C 2.777 5 3 4.777 3 4.5 C 3 4.223 2.777 4 2.5 4 z M 4 4 L 4 5 L 13 5 L 13 4 L 4 4 z M 4 6 L 4 7 L 8 7 L 8 6 L 4 6 z M 2.5 9 C 2.223 9 2 9.223 2 9.5 C 2 9.777 2.223 10 2.5 10 C 2.777 10 3 9.777 3 9.5 C 3 9.223 2.777 9 2.5 9 z M 4 9 L 4 10 L 13 10 L 13 9 L 4 9 z M 4 11 L 4 12 L 12 12 L 12 11 L 4 11 z M 2 13 L 2 14 L 14 14 L 14 13 L 2 13 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M216-144q-29.7 0-50.85-21.15Q144-186.3 144-216v-528q0-29.7 21.15-50.85Q186.3-816 216-816h528q29.7 0 50.85 21.15Q816-773.7 816-744v528q0 29.7-21.15 50.85Q773.7-144 744-144H216Zm0-72h528v-528H216v528Zm0-528v528-528Zm108 456h216q15.3 0 25.65-10.29Q576-308.58 576-323.79t-10.35-25.71Q555.3-360 540-360H324q-15.3 0-25.65 10.29Q288-339.42 288-324.21t10.35 25.71Q308.7-288 324-288Zm0-156h312q15.3 0 25.65-10.29Q672-464.58 672-479.79t-10.35-25.71Q651.3-516 636-516H324q-15.3 0-25.65 10.29Q288-495.42 288-480.21t10.35 25.71Q308.7-444 324-444Zm0-156h312q15.3 0 25.65-10.29Q672-620.58 672-635.79t-10.35-25.71Q651.3-672 636-672H324q-15.3 0-25.65 10.29Q288-651.42 288-636.21t10.35 25.71Q308.7-600 324-600Z"/></g>
 </svg>

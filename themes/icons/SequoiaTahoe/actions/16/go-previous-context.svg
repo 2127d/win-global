@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 6 2 L 0.70703125 7.2929688 L 0 8 L 0.70703125 8.7070312 L 6 14 L 15 14 L 16 14 L 16 2 L 15 2 L 6 2 z M 9 4 L 10 4 L 10 5 L 9 5 C 8.44778 5 8 5.44771 8 6 L 8 7 C 8 7.38251 7.86072 7.73504 7.625 8 C 7.86072 8.26497 8 8.6175 8 9 L 8 10 C 8 10.55222 8.44771 11 9 11 L 10 11 L 10 12 L 9 12 C 7.89549 12 7 11.10452 7 10 L 7 9 C 7 8.72385 6.77614 8.5 6.5 8.5 L 6 8.5 L 6 7.5 L 6.5 7.5 C 6.77614 7.5 7 7.27616 7 7 L 7 6 C 7 4.89549 7.89548 4 9 4 z M 11 4 L 12 4 C 13.10452 4 14 4.89549 14 6 L 14 7 C 14 7.27616 14.22386 7.5 14.5 7.5 L 15 7.5 L 15 8.5 L 14.5 8.5 C 14.22386 8.5 14 8.72385 14 9 L 14 10 C 14 11.10452 13.10451 12 12 12 L 11 12 L 11 11 L 12 11 C 12.55229 11 13 10.55222 13 10 L 13 9 C 13 8.6175 13.13928 8.26497 13.375 8 C 13.13928 7.73504 13 7.38251 13 7 L 13 6 C 13 5.44771 12.55222 5 12 5 L 11 5 L 11 4 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="m330-444 176.21 176.21Q517-257 517-242.5t-11 25.98Q495-206 480.5-206t-25.31-10.82L217.4-454.91q-5.4-5.41-7.9-11.72-2.5-6.31-2.5-13.53 0-7.21 2.5-13.53Q212-500 217-505l238-238q11-11 25.67-11 14.66 0 25.33 11 11 10.67 11 25.33 0 14.67-10.84 25.51L330-516h402.02q15.29 0 25.64 10.29Q768-495.42 768-480.21t-10.34 25.71Q747.31-444 732.02-444H330Z"/></g>
 </svg>

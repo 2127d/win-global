@@ -1,23 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      .ColorScheme-Background {
-        color:#eff0f1;
-      }
-      .ColorScheme-Highlight {
-        color:#3daee9;
-      }
-      .ColorScheme-ButtonText {
-        color:#363636;
-      }
-      </style>
-  <g transform="translate(1,1)">
-    <g transform="translate(-304,-534.3622) translate(-22,2e-05)" id="kalarm-disabled">
-      <rect y="534.36218" x="326" height="22" width="22" id="rect4178-6" style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-      <path id="path4183-7" class="ColorScheme-Text" transform="translate(304,534.3622)" d="M 33 3 A 1.5 1.5 0 0 0 31.5 4.5 A 1.5 1.5 0 0 0 31.667969 5.1855469 A 5 5 0 0 0 28 10 A 3.5 6 0 0 1 25 15.931641 L 25 16.953125 L 25 17 L 35 17 L 35 16 L 26.804688 16 A 4.5 7 0 0 0 29 10 A 4 4 0 0 1 33 6 A 4 4 0 0 1 37 10 A 4.5 7 0 0 0 37.443359 13 L 38.472656 13 A 3.5 6 0 0 1 38 10 A 5 5 0 0 0 34.333984 5.1816406 A 1.5 1.5 0 0 0 34.5 4.5 A 1.5 1.5 0 0 0 33 3 z " style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-      <path id="rect4145" transform="translate(304,534.3622)" d="M 36 14 L 36 20 L 38 20 L 38 14 L 36 14 z M 39 14 L 39 20 L 41 20 L 41 14 L 39 14 z " class="ColorScheme-Text" style="fill:currentColor;fill-opacity:0.6;stroke:currentColor;stroke-width:0.70909;stroke-opacity:0.6;stroke-linecap:round;stroke-linejoin:round" />
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M770-299q-16-5-23-19.5t-2-29.5q8-23 11.5-44.5T760-436q0-118-81.5-201T480-720q-26 0-47.5 3T392-707q-14 5-27.5-2.5T346-733q-5-16 3-31t25-20q25-8 51.5-12t54.5-4q76 0 141.5 28.5t114 78Q784-644 812-577.5T840-436q0 26-4.5 53T822-328q-5 17-20.5 25.5T770-299Zm-62-483q-11-11-11-28t11-28q11-11 28-11t28 11l114 114q11 11 11 28t-11 28q-11 11-28 11t-28-11L708-782ZM480-80q-74 0-139.5-28T226-184q-49-48-77.5-113T120-436q0-62 18.5-116.5T192-652l-34-34-20 20q-11 11-28 11t-28-11q-11-11-11-28t11-28l20-20-46-46q-11-11-11-28t11-28q11-11 28-11t28 11l736 736q11 11 11 28t-11 28q-11 11-28 11t-28-11l-98-98q-45 33-99.5 51.5T480-80Zm0-79q42 0 82-13t74-36L248-594q-23 35-35.5 75.5T200-436q0 116 82 196.5T480-159Zm-38-242Zm114-114Z"/></g>
 </svg>

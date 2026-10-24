@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" version="1.1">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }</style>
- </defs>
- <path class="ColorScheme-Text" d="m11 4c-1.108 0-2 0.892-2 2v1h-2c-1.108 0-2 0.892-2 2v9c0 1.108 0.892 2 2 2h6c1.108 0 2-0.892 2-2v-1h2c1.108 0 2-0.892 2-2v-6l-5-5h-1zm0 1h2v5h5v5c0 0.554-0.446 1-1 1h-2v-4l-5-5v-1c0-0.1385 0.027656-0.27091 0.078125-0.39062 0.15141-0.35916 0.50638-0.60938 0.92188-0.60938zm3 0.41406 3.5859 3.5859h-3.5859zm-7 2.5859h2v5h5v5c0 0.554-0.446 1-1 1h-6c-0.554 0-1-0.446-1-1v-9c0-0.1385 0.027656-0.27091 0.078125-0.39062 0.15141-0.35916 0.50638-0.60938 0.92188-0.60938zm3 0.41406 3.5859 3.5859h-3.5859z" fill="currentColor" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+<!-- Sequoia rounded UI and device state artwork, Apache-2.0. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="16" height="19" rx="3.3"/><path d="M8 7.5h8M8 12h8m-8 4.5h5"/></g></g>
 </svg>

@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 6.3828125 2 L 2 13 L 3.3574219 13 L 4.546875 10 L 9 10 L 9.4746094 10 L 10 10 L 10 9 L 10 7.828125 L 7.7480469 2 L 6.3828125 2 z M 7.0625 3.328125 C 7.17566 3.704205 7.773975 5.4100894 8.859375 8.4433594 L 9.0839844 9 L 4.9414062 9 L 7.0625 3.328125 z M 11 9 L 11 14 L 12 14 L 13.5 14 C 14.32843 14 15 13.32843 15 12.5 C 15 11.9667 14.73181 11.48473 14.3125 11.21875 C 14.42796 11.00621 14.5 10.75888 14.5 10.5 C 14.5 9.67157 13.82844 9 13 9 L 12 9 L 11 9 z M 12 10 L 13 10 C 13.27614 10 13.5 10.22386 13.5 10.5 C 13.5 10.77614 13.27614 11 13 11 L 12 11 L 12 10 z M 12 12 L 13 12 L 13.5 12 C 13.77615 12 14 12.22386 14 12.5 C 14 12.77614 13.77615 13 13.5 13 L 12 13 L 12 12 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M768-144q-20.4 0-34.2-13.75-13.8-13.76-13.8-34.09v-47.83Q720-260 733.8-274t34.2-14h48v-48h-72q-9.6 0-16.8-7.2-7.2-7.2-7.2-16.8 0-9.6 7.2-16.8 7.2-7.2 16.8-7.2h72q20.4 0 34.2 13.75 13.8 13.76 13.8 34.09v47.83Q864-268 850.2-254T816-240h-48v48h72q9.6 0 16.8 7.2 7.2 7.2 7.2 16.8 0 9.6-7.2 16.8-7.2 7.2-16.8 7.2h-72ZM340.45-288q-23.45 0-33.95-19.5-10.5-19.5 1.51-39.31L429-538 319.03-710.16Q307-729 317-748.5q10-19.5 32.86-19.5 10.55 0 19.35 5 8.79 5 13.79 13l95 153 99-154q4.89-8.1 13.44-12.55Q599-768 608.58-768q23.52 0 33.97 20T641-709L530-538l122 191q12 19 1.5 39t-33.08 20q-10.42 0-18.92-5-8.5-5-13.5-13L482-474 372-305q-4.89 8.1-13.44 12.55Q350-288 340.45-288Z"/></g>
 </svg>

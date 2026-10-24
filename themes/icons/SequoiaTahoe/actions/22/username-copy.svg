@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 8 3 A 3 3 0 0 0 5 6 A 3 3 0 0 0 8 9 A 3 3 0 0 0 11 6 A 3 3 0 0 0 8 3 z M 8 4 A 2 2 0 0 1 10 6 A 2 2 0 0 1 8 8 A 2 2 0 0 1 6 6 A 2 2 0 0 1 8 4 z M 12 6 L 12 7 L 19 7 L 19 14 L 16 14 L 15 14 L 15 15 L 15 18 L 11 18 L 11 16 L 10 16 L 10 17 L 10 18 L 10 19 L 16 19 L 20 15 L 20 14 L 20 7 L 20 6 L 12 6 z M 8 10 A 5 4.5 0 0 0 3 14.5 A 5 4.5 0 0 0 3.0332031 15 L 4 15 L 4.0449219 15 L 11.955078 15 L 12 15 L 12.962891 15 A 5 4.5 0 0 0 13 14.5 A 5 4.5 0 0 0 8 10 z M 8 11 A 4 3.5 0 0 1 11.955078 14 L 4.0449219 14 A 4 3.5 0 0 1 8 11 z " class="ColorScheme-Text" />  
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M237-285q54-38 115.5-56.5T480-360q66 0 127.5 18.5T723-285q35-41 52-91t17-104q0-129.67-91.23-220.84-91.23-91.16-221-91.16Q350-792 259-700.84 168-609.67 168-480q0 54 17 104t52 91Zm243-123q-60 0-102-42t-42-102q0-60 42-102t102-42q60 0 102 42t42 102q0 60-42 102t-102 42Zm.28 312Q401-96 331-126t-122.5-82.5Q156-261 126-330.96t-30-149.5Q96-560 126-629.5q30-69.5 82.5-122T330.96-834q69.96-30 149.5-30t149.04 30q69.5 30 122 82.5T834-629.28q30 69.73 30 149Q864-401 834-331t-82.5 122.5Q699-156 629.28-126q-69.73 30-149 30Zm-.28-72q52 0 100-16.5t90-48.5q-43-27-91-41t-99-14q-51 0-99.5 13.5T290-233q42 32 90 48.5T480-168Zm0-312q30 0 51-21t21-51q0-30-21-51t-51-21q-30 0-51 21t-21 51q0 30 21 51t51 21Zm0-72Zm0 319Z"/></g>
 </svg>

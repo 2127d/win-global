@@ -1,17 +1,5 @@
-<svg width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
- <defs>
-  <linearGradient id="linearGradient1090" x1="15.909" x2="15.909" y1="7.1975" y2="25.334" gradientTransform="translate(29.474 -3.3333)" gradientUnits="userSpaceOnUse">
-   <stop stop-color="#fff" offset="0"/>
-   <stop stop-color="#ececec" offset="1"/>
-  </linearGradient>
-  <linearGradient id="linearGradient2743" x1="15.956" x2="15.956" y1="18.074" y2="27.801" gradientUnits="userSpaceOnUse">
-   <stop stop-color="#ff382a" offset="0"/>
-   <stop stop-color="#ff772a" offset="1"/>
-  </linearGradient>
- </defs>
- <path d="m16 6c-3.6728 0-6.7334 2.4527-7.875 5.8035-3.4462 0.44563-6.125 3.4159-6.125 7.0537 0 3.9449 3.134 7.1429 7 7.1429h15.4c3.0928 0 5.6-2.5584 5.6-5.7143s-2.5072-5.7143-5.6-5.7143c0-4.7337-3.761-8.5714-8.4-8.5714z" fill="url(#linearGradient1090)" stroke-width="2.0203"/>
- <circle cx="16" cy="23" r="6" fill="url(#linearGradient2743)" fill-rule="evenodd" stop-color="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.0773" style="paint-order:stroke fill markers"/>
- <image x="10" y="17" width="12" height="12" image-rendering="optimizeQuality" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAA GXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAN5JREFUKM+NkUFKxEAQRX9VN4JC MkMIBCHgCDIXmAvMzmvlXG4aD+ANBnQRkJBAYwIKktSfTdCNDv3gbz7vb6qEJFZ0mqYHM9sB2Kzd h6q+ZVl2AmAAICTRtu11nudHAFv8TRzH8bmu6y8hqTHGxwsyAIBkLIriSfq+3zvnDkhgWZYXVdUd ElHVOw8gB8DEzcaTXABIik1y9mbWi8g2ZWBm0QM4mdl9ykBEXoWkDMNw672/uiTP8/xdluW7rJ+W rutunHP6zzmtqqpPAAT5m6ZplKQLIfgQgifp1u7HOQPSHHd9Z9yShwAAAABJRU5ErkJggg== "/>
- <rect x="15" y="19" width="2" height="5" rx="1" ry="1" fill="#363636"/>
- <rect x="15" y="25" width="2" height="2" rx="2" ry="2" fill="#363636"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-NeutralText" fill="currentColor"><path d="M109-120q-11 0-20-5.5T75-140q-5-9-5.5-19.5T75-180l370-640q6-10 15.5-15t19.5-5q10 0 19.5 5t15.5 15l370 640q6 10 5.5 20.5T885-140q-5 9-14 14.5t-20 5.5H109Zm69-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm0-120q17 0 28.5-11.5T520-400v-120q0-17-11.5-28.5T480-560q-17 0-28.5 11.5T440-520v120q0 17 11.5 28.5T480-360Zm0-100Z"/></g>
 </svg>

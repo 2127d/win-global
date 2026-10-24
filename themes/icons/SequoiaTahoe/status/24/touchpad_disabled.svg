@@ -1,26 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" width="24" height="24" viewBox="0 0 24 24">
-  <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#f2f2f2;
-      }
-      .ColorScheme-Background {
-        color:#eff0f1;
-      }
-      .ColorScheme-Highlight {
-        color:#3daee9;
-      }
-      .ColorScheme-ButtonText {
-        color:#f2f2f2;
-      }
-      .ColorScheme-NegativeText {
-        color:#da4453;
-      }
-      </style>
-  <g transform="translate(1,1)">
-    <g id="22-22-touchpad_disabled" ns1:label="#22-22-touchpad_disabled" transform="translate(0,-10)">
-      <path id="path17" class="ColorScheme-Text" d="m 4,13 c -0.554,0 -1,0.446 -1,1 l 0,14 c 0,0.554 0.446,1 1,1 l 14,0 c 0.554,0 1,-0.446 1,-1 l 0,-14 c 0,-0.554 -0.446,-1 -1,-1 L 4,13 Z m 0,1 14,0 0,11 -14,0 0,-11 z m 0,12 6,0 0,2 -6,0 0,-2 z m 8,0 6,0 0,2 -6,0 0,-2 z" style="fill:currentColor;fill-opacity:0.6;stroke:currentColor;stroke-width:0.70909;stroke-opacity:0.6;stroke-linecap:round;stroke-linejoin:round" />
-      <path id="path19" d="M 0 10 L 0 32 L 22 32 L 22 10 L 0 10 z " style="opacity:1;fill:none" />
-      <path id="path21" class="ColorScheme-NegativeText" d="M 8.8476562,17 8,17.847656 10.152344,20 8,22.152344 8.8476562,23 11,20.847656 13.152344,23 14,22.152344 11.847656,20 14,17.847656 13.152344,17 11,19.152344 8.8476562,17 Z" style="fill:currentColor;fill-opacity:1;stroke:none" />
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M660-359Zm0 0ZM791-57 55-792q-12-12-12-28.5T55-849q12-12 28.5-12t28.5 12l736 736q12 12 12 28t-12 28q-12 12-28.5 12T791-57ZM660-359Zm0 0Zm0 279q-92 0-156-64t-64-156v-120q0-23 4.5-43.5T457-504l144 144h-81v60q0 58 41 99t99 41q29 0 54.5-11t44.5-31l57 57q-30 30-70 47.5T660-80Zm180-160q-17 0-28.5-11.5T800-280v-80h-85l-95-95v-99q-11 3-20.5 8.5T580-534q-14 8-29.5 4.5T527-547q-9-15-4.5-32t19.5-27q26-17 56-25.5t62-8.5q92 0 156 64t64 156v140q0 17-11.5 28.5T840-240ZM700-440h99q-6-41-33.5-72T700-554v114ZM397-564ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h1l80 80h-81v480h160q17 0 28.5 11.5T360-200q0 17-11.5 28.5T320-160H160Zm179-560q-17 0-28.5-11.5T299-760q0-17 11.5-28.5T339-800h501q17 0 28.5 11.5T880-760q0 17-11.5 28.5T840-720H339Zm107 91Z"/></g>
 </svg>

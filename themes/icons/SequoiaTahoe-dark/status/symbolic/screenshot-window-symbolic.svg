@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <path d="m3 1c-1.108 0-2 0.892-2 2v10c0 1.108 0.892 2 2 2h10c1.108 0 2-0.892 2-2v-10c0-1.108-0.892-2-2-2zm0 1h10c0.55403 0 1 0.44597 1 1v10c0 0.55403-0.44597 1-1 1h-10c-0.55403 0-1-0.44597-1-1v-10c0-0.55403 0.44597-1 1-1z" fill="#dedede" stroke-linecap="round" stroke-linejoin="round" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path d="m4 5c-0.55403 0-1 0.44597-1 1v2h1v-2h2v-1zm6 0v1h2v2h1v-2c0-0.55403-0.44598-1-1-1zm-7 5v2c0 0.55402 0.44597 1 1 1h2v-1h-2v-2zm9 0v2h-2v1h2c0.55402 0 1-0.44598 1-1v-2z" fill="#dedede" stroke-linecap="round" stroke-linejoin="round" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="3.5" cy="3.5" r=".5" fill="#dedede" stroke-linecap="round" stroke-linejoin="round" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="5.5" cy="3.5" r=".5" fill="#dedede" stroke-linecap="round" stroke-linejoin="round" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <circle cx="7.5" cy="3.5" r=".5" fill="#dedede" stroke-linecap="round" stroke-linejoin="round" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M168-96q-29.7 0-50.85-21.15Q96-138.3 96-168v-336q0-29.7 21.15-50.85Q138.3-576 168-576h72v-216q0-29.7 21.15-50.85Q282.3-864 312-864h480q29.7 0 50.85 21.15Q864-821.7 864-792v336q0 29.7-21.15 50.85Q821.7-384 792-384h-72v216q0 29.7-21.15 50.85Q677.7-96 648-96H168Zm0-72h480v-264H168v264Zm552-288h72v-264H312v144h336q29.7 0 50.85 21.15Q720-533.7 720-504v48Z"/></g>
 </svg>

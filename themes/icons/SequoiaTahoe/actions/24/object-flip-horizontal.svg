@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 7 4 L 7 5 L 8 5 L 8 4 L 7 4 z M 16 4 L 16 5 L 17 5 L 17 4 L 16 4 z M 7 6 L 7 7 L 4 7 L 4 17 L 7 17 L 7 18 L 8 18 L 8 17 L 11 17 L 11 14 L 13 14 L 13 17 L 16 17 L 16 18 L 17 18 L 17 17 L 20 17 L 20 7 L 17 7 L 17 6 L 16 6 L 16 7 L 13 7 L 13 10 L 11 10 L 11 7 L 8 7 L 8 6 L 7 6 z M 5 8 L 10 8 L 10 16 L 5 16 L 5 8 z M 14 8 L 19 8 L 19 16 L 14 16 L 14 8 z M 15 9 L 15 15 L 18 15 L 18 9 L 15 9 z M 11 11 L 13 11 L 13 13 L 11 13 L 11 11 z M 7 19 L 7 20 L 8 20 L 8 19 L 7 19 z M 16 19 L 16 20 L 17 20 L 17 19 L 16 19 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M640-760q-17 0-28.5-11.5T600-800q0-17 11.5-28.5T640-840q17 0 28.5 11.5T680-800q0 17-11.5 28.5T640-760Zm160 0q-17 0-28.5-11.5T760-800q0-17 11.5-28.5T800-840q17 0 28.5 11.5T840-800q0 17-11.5 28.5T800-760Zm0 160q-17 0-28.5-11.5T760-640q0-17 11.5-28.5T800-680q17 0 28.5 11.5T840-640q0 17-11.5 28.5T800-600Zm0 160q-17 0-28.5-11.5T760-480q0-17 11.5-28.5T800-520q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440Zm0 160q-17 0-28.5-11.5T760-320q0-17 11.5-28.5T800-360q17 0 28.5 11.5T840-320q0 17-11.5 28.5T800-280ZM640-120q-17 0-28.5-11.5T600-160q0-17 11.5-28.5T640-200q17 0 28.5 11.5T680-160q0 17-11.5 28.5T640-120Zm160 0q-17 0-28.5-11.5T760-160q0-17 11.5-28.5T800-200q17 0 28.5 11.5T840-160q0 17-11.5 28.5T800-120Zm-600 0q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h120q17 0 28.5 11.5T360-800q0 17-11.5 28.5T320-760H200v560h120q17 0 28.5 11.5T360-160q0 17-11.5 28.5T320-120H200Zm240 40v-800q0-17 11.5-28.5T480-920q17 0 28.5 11.5T520-880v800q0 17-11.5 28.5T480-40q-17 0-28.5-11.5T440-80Z"/></g>
 </svg>

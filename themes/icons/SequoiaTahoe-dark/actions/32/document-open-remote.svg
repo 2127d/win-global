@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#dedede;
-      }</style>
- </defs>
- <path class="ColorScheme-Text" d="m5 4c-1.0907 0-2 0.9093-2 2v16h1v-11h10c0.5 0 0.95869 0.01379 1.4473-0.23047 0.48851-0.24426 0.7597-0.5625 1.2598-1.0625l1.707-1.707h8.5859c0.554 0 1 0.446 1 1v6 2.2695 4.7305h1v-4-3-6c0-1.108-0.892-2-2-2h-8.5859l-1.707-1.707c-0.5-0.5-0.77118-0.81824-1.2598-1.0625-0.48851-0.24426-0.94721-0.23047-1.4473-0.23047h-9zm0 1h9c1 0 1 0 2 1l1.5 1.5-1.5 1.5c-1 1-1 1-2 1h-10v-4c0-0.554 0.446-1 1-1zm9.5 16c-1.7693 0-3.2218 1.2993-3.4629 3h-8.0371v1h8.0371c0.24105 1.7007 1.6936 3 3.4629 3h0.5v-1h-0.5c-1.385 0-2.5-1.115-2.5-2.5s1.115-2.5 2.5-2.5h0.5v-1h-0.5zm2.5 0v1h0.5c1.385 0 2.5 1.115 2.5 2.5s-1.115 2.5-2.5 2.5h-0.5v1h0.5c1.7693 0 3.2218-1.2993 3.4629-3h8.0371v-1h-8.0371c-0.24105-1.7007-1.6936-3-3.4629-3h-0.5zm-2.5 2c-0.831 0-1.5 0.669-1.5 1.5s0.669 1.5 1.5 1.5h3c0.831 0 1.5-0.669 1.5-1.5s-0.669-1.5-1.5-1.5h-3zm0 1h3c0.277 0 0.5 0.223 0.5 0.5s-0.223 0.5-0.5 0.5h-3c-0.277 0-0.5-0.223-0.5-0.5s0.223-0.5 0.5-0.5z" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M260-160q-91 0-155.5-63T40-377q0-78 47-139t123-78q25-92 100-149t170-57q117 0 198.5 81.5T760-520q69 8 114.5 59.5T920-340q0 75-52.5 127.5T740-160H260Zm0-80h480q42 0 71-29t29-71q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-83 0-141.5 58.5T280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41Zm220-240Z"/></g>
 </svg>

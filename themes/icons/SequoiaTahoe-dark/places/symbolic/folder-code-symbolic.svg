@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1" viewBox="0 0 16 16">
-  <defs id="color">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      </style>
-  </defs>
- <path class="ColorScheme-Text" style="fill:currentColor;stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m9.6367 1.1953a0.5 0.5 0 0 0-0.59961 0.37109l-2.9746 12.639a0.5 0.5 0 0 0 0.37305 0.59961 0.5 0.5 0 0 0 0.59961-0.37109l2.9746-12.639a0.5 0.5 0 0 0-0.37305-0.59961zm1.8965 1.8262a0.5 0.5 0 0 0-0.36914 0.10156 0.5 0.5 0 0 0-0.08789 0.70117l3.2969 4.2363-3.2695 4.4121a0.5 0.5 0 0 0 0.10547 0.69922 0.5 0.5 0 0 0 0.69922-0.10352l3.4941-4.7168a0.50005 0.50005 0 0 0-0.0078-0.60547l-3.5293-4.5371a0.5 0.5 0 0 0-0.33203-0.1875zm-6.6953 0.085938a0.5 0.5 0 0 0-0.70117 0.087891l-3.5312 4.5371a0.50005 0.50005 0 0 0-0.007813 0.60547l3.4941 4.7168a0.5 0.5 0 0 0 0.69922 0.10352 0.5 0.5 0 0 0 0.10547-0.69922l-3.2695-4.4121 3.2988-4.2363a0.5 0.5 0 0 0-0.087891-0.70312z" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M168-264v-432 468-36Zm0 72q-29 0-50.5-21.5T96-264v-432q0-29.7 21.5-50.85Q139-768 168-768h185.64q14.35 0 27.36 5 13 5 24 16l75 75h312q29.7 0 50.85 21.15Q864-629.7 864-600v156q0 15.3-10.29 25.65Q843.42-408 828.21-408t-25.71-10.35Q792-428.7 792-444v-156H450l-96-96H168v432h204q15.3 0 25.65 10.29Q408-243.42 408-228.21t-10.35 25.71Q387.3-192 372-192H168Zm414-36 44 44q11 11 10.5 25.5T625-133q-11 11-25 11t-25-11l-70-70q-11-10.64-11-24.82T505-253l70-70q11-11 25-11t25 10.93q11 10.93 11 25.5T625-272l-43 44Zm228 0-44-44q-11-11-10.5-25.5T767-323q11-11 25-11t25 11l70 70q11 10.64 11 24.82T887-203l-70 70q-11 11-25 11t-25-10.93q-11-10.93-11-25.5T767-184l43-44Z"/></g>
 </svg>

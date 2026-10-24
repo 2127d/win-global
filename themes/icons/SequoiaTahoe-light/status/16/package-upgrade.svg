@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <g transform="translate(0 -1036.4)">
-  <rect transform="matrix(0 -1 -1 0 0 0)" x="-1052.4" y="-16" width="16" height="16" rx="3.002" ry="3" fill="#79972d" />
-  <rect transform="matrix(0,-1,-1,0,0,0)" x="-1051.4" y="-15" width="14" height="14" rx="2.002" ry="2" fill="#8fb633" />
-  <path d="m7 1048.4v-5h-2l3-3 3 3h-2v5z" fill="#fff" fill-rule="evenodd" style="stroke:#fff;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M263.72-192Q234-192 213-213.15T192-264v-36q0-15.3 10.29-25.65Q212.58-336 227.79-336t25.71 10.35Q264-315.3 264-300v36h432v-36q0-15.3 10.29-25.65Q716.58-336 731.79-336t25.71 10.35Q768-315.3 768-300v36q0 29.7-21.16 50.85Q725.68-192 695.96-192H263.72ZM444-678l-80 80q-11 11-25.5 11t-25.98-11Q302-609 302-623.5t11-25.5l142-142q5.4-5 11.7-7.5 6.3-2.5 13.5-2.5t13.5 2.5Q500-796 505-791l142 142q11 11 11 25t-10.52 25Q636-588 621.5-588T596-599l-80-79v306q0 15.3-10.29 25.65Q495.42-336 480.21-336t-25.71-10.35Q444-356.7 444-372v-306Z"/></g>
 </svg>

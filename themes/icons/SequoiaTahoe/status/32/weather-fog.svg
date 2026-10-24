@@ -1,29 +1,5 @@
-<svg width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg">
- <defs>
-  <linearGradient id="linearGradient3791" x1="51.322" x2="51.322" y1="4.8305" y2="21.717" gradientTransform="translate(-35.322 -2.8305)" gradientUnits="userSpaceOnUse">
-   <stop stop-color="#fff" stop-opacity=".75" offset="0"/>
-   <stop stop-color="#ececec" offset="1"/>
-  </linearGradient>
-  <linearGradient id="linearGradient3799" x1="37.322" x2="51.322" y1="25.83" y2="25.83" gradientTransform="translate(-35.322 -2.8305)" gradientUnits="userSpaceOnUse">
-   <stop stop-color="#fff" stop-opacity="0" offset="0"/>
-   <stop stop-color="#ececec" offset="1"/>
-  </linearGradient>
-  <linearGradient id="linearGradient3801" x1="39.322" x2="43.348" y1="29.83" y2="29.83" gradientTransform="translate(-35.322 -2.8305)" gradientUnits="userSpaceOnUse">
-   <stop stop-color="#fff" stop-opacity="0" offset="0"/>
-   <stop stop-color="#ececec" offset="1"/>
-  </linearGradient>
-  <linearGradient id="linearGradient3803" x1="45.322" x2="63.321" y1="29.83" y2="29.83" gradientTransform="translate(-35.322 -2.8305)" gradientUnits="userSpaceOnUse">
-   <stop stop-color="#fff" stop-opacity="0" offset="0"/>
-   <stop stop-color="#ececec" offset="1"/>
-  </linearGradient>
-  <linearGradient id="linearGradient3805" x1="55.322" x2="63.321" y1="25.83" y2="25.83" gradientTransform="translate(-35.322 -2.8305)" gradientUnits="userSpaceOnUse">
-   <stop stop-color="#fff" stop-opacity="0" offset="0"/>
-   <stop stop-color="#ececec" offset="1"/>
-  </linearGradient>
- </defs>
- <path d="m16 4c-3.6727 0-6.7332 2.4036-7.8748 5.6876-3.4461 0.43672-6.1248 3.349-6.1248 6.914 0 1.2409 0.35163 2.3878 0.91794 3.3984h26.695c0.23923-0.62302 0.38671-1.2928 0.38671-2 0-3.0928-2.5087-5.6016-5.6014-5.6016 0-4.639-3.7593-8.3984-8.3982-8.3984z" fill="url(#linearGradient3791)" stroke-width="2"/>
- <path d="m3.1666 22h11.666a1.1666 1 0 0 1 1.1666 1 1.1666 1 0 0 1-1.1666 1h-11.666a1.1666 1 0 0 1-1.1666-1 1.1666 1 0 0 1 1.1666-1" fill="url(#linearGradient3799)" stroke-width="1.4416"/>
- <path d="m21.142 22h5.714a1.1428 1 0 0 1 1.1428 1 1.1428 1 0 0 1-1.1428 1h-5.714a1.1428 1 0 0 1-1.1428-1 1.1428 1 0 0 1 1.1428-1" fill="url(#linearGradient3805)" stroke-width="1.4268"/>
- <path d="m4.9802 26h2.0131a1.0066 1 0 0 1 1.0066 1 1.0066 1 0 0 1-1.0066 1h-2.0131a1.0066 1 0 0 1-1.0066-1 1.0066 1 0 0 1 1.0066-1" fill="url(#linearGradient3801)" stroke-width="1.339"/>
- <path d="m11.2 26h15.6a1.2 1 0 0 1 1.2 1 1.2 1 0 0 1-1.2 1h-15.6a1.2 1 0 0 1-1.2-1 1.2 1 0 0 1 1.2-1z" fill="url(#linearGradient3803)" stroke-width="1.462"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M720-200q-17 0-28.5-11.5T680-240q0-17 11.5-28.5T720-280q17 0 28.5 11.5T760-240q0 17-11.5 28.5T720-200ZM280-80q-17 0-28.5-11.5T240-120q0-17 11.5-28.5T280-160q17 0 28.5 11.5T320-120q0 17-11.5 28.5T280-80Zm-40-120q-17 0-28.5-11.5T200-240q0-17 11.5-28.5T240-280h360q17 0 28.5 11.5T640-240q0 17-11.5 28.5T600-200H240ZM400-80q-17 0-28.5-11.5T360-120q0-17 11.5-28.5T400-160h280q17 0 28.5 11.5T720-120q0 17-11.5 28.5T680-80H400ZM300-320q-91 0-155.5-64.5T80-540q0-83 55-145t136-73q32-57 87.5-89.5T480-880q90 0 156.5 57.5T717-679q69 6 116 57t47 122q0 75-52.5 127.5T700-320H300Zm0-80h400q42 0 71-29t29-71q0-42-29-71t-71-29h-60v-40q0-66-47-113t-113-47q-48 0-87.5 26T333-704l-10 24h-25q-57 2-97.5 42.5T160-540q0 58 41 99t99 41Zm180-200Z"/></g>
 </svg>

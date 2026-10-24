@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m18.5 4c-.65424 0-1.202197.418077-1.408203 1h-13.0918v1c3.601 0 6.5 2.899 6.5 6.5 0 1.905514-.822115 3.601777-2.121094 4.787109-.245727-.180239-.548776-.287109-.878906-.287109-.831 0-1.5.669-1.5 1.5 0 .831.669 1.5 1.5 1.5.65424 0 1.202197-.418077 1.408203-1h4.091797v1h3v-3h-3v1h-3.912109c1.479147-1.367931 2.412109-3.317097 2.412109-5.5 0-2.788667-1.510668-5.207469-3.757813-6.5h9.349609c.206006.581923.753963 1 1.408203 1 .831 0 1.5-.669 1.5-1.5 0-.831-.669-1.5-1.5-1.5m0 1c.277 0 .5.223.5.5 0 .277-.223.5-.5.5-.06925 0-.135453-.013828-.195312-.039063-.179579-.075703-.304688-.253188-.304688-.460938 0-.06925.013828-.135453.039062-.195313.075704-.179578.253188-.304688.460938-.304688m-11 13c.277 0 .5.223.5.5 0 .277-.223.5-.5.5-.277 0-.5-.223-.5-.5 0-.277.223-.5.5-.5m6.5 0h1v1h-1v-1z" transform="translate(-.99999-.99999)" class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M480-720h72v-72h-72v72ZM216-408h72v-72h-72v72Zm456 240h72v-72h-72v72ZM516-755ZM252-444Zm455 240Zm-107 36v-14L317-336H216q-29.7 0-50.85-21.19Q144-378.37 144-408.12v-72.13Q144-510 165.15-531T216-552h80l112-132v-108q0-29.7 21.19-50.85Q450.37-864 480.12-864h72.13Q582-864 603-842.81q21 21.18 21 50.93v72.13Q624-690 602.85-669T552-648h-80L360-516v121l243 133q7.36-22.12 26.22-36.06Q648.08-312 672-312h72q29.7 0 50.85 21.19Q816-269.63 816-239.88v72.13Q816-138 794.81-117q-21.18 21-50.93 21h-72.13Q642-96 621-117.15T600-168Z"/></g>
 </svg>

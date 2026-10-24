@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="m 3.0000001,3.0000001 0,4 -1,0 0,1 0,9.9999999 c 0,0.554 0.446,1 1,1 L 19,19 l 1,0 0,-1 0,-9.9999999 c 0,-0.554 -0.446,-1 -1,-1 l -5,0 0,-4 z m 1,1 8.9999999,0 0,3 -2.507812,0 c -0.470484,-0.6273203 -1.2080451,-0.9975468 -1.9921881,-1 -0.786206,6.144e-4 -1.526323,0.3710349 -1.9980467,1 l -2.5019531,0 z m -1,4 1,0 2.0507812,0 4.8945307,0 2.054688,0 1,0 5,0 L 19,11 l -2,0 -5,0 c -1.108,0 -2.0000001,0.892 -2.0000001,2 0,1.108 0.8920001,2 2.0000001,2 l 5,0 2,0 0,3 -15.9999999,0 z M 13,12 c 0.552285,0 1,0.447715 1,1 0,0.552285 -0.447715,1 -1,1 -0.552285,0 -1,-0.447715 -1,-1 0,-0.552285 0.447715,-1 1,-1 z" class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M216-223v7-528 521Zm0 79q-29.7 0-50.85-21.15Q144-186.3 144-216v-528q0-29.7 21.15-50.85Q186.3-816 216-816h528q29.7 0 50.85 21.15Q816-773.7 816-744v98h-72v-98H216v528h528v-99h72v99q0 29.7-21.15 50.85Q773.7-144 744-144H216Zm288-144q-29.7 0-50.85-21.15Q432-330.3 432-360v-240q0-29.7 21.15-50.85Q474.3-672 504-672h288q29.7 0 50.85 21.15Q864-629.7 864-600v240q0 29.7-21.15 50.85Q821.7-288 792-288H504Zm288-72v-240H504v240h288Zm-144-60q25 0 42.5-17.5T708-480q0-25-17.5-42.5T648-540q-25 0-42.5 17.5T588-480q0 25 17.5 42.5T648-420Z"/></g>
 </svg>

@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32">
-    <style id="current-color-scheme" type="text/css">.ColorScheme-Highlight {
-    color:#3daee9;
-}
-.ColorScheme-Text {
-    color:#363636;
-}</style>
-    <path id="smartphone" class="ColorScheme-Text" d="m11 3c-1.108 0-2 0.892-2 2v22c0 1.108 0.892 2 2 2h10c1.108 0 2-0.892 2-2v-22c0-1.108-0.892-2-2-2h-10zm0 1h10c0.554 0 1 0.446 1 1v22c0 0.554-0.446 1-1 1h-10c-0.554 0-1-0.446-1-1v-22c0-0.554 0.446-1 1-1zm0.5 1a0.5 0.5 0 0 0-0.5 0.5 0.5 0.5 0 0 0 0.5 0.5 0.5 0.5 0 0 0 0.5-0.5 0.5 0.5 0 0 0-0.5-0.5zm2 21c-0.277 0-0.5 0.223-0.5 0.5s0.223 0.5 0.5 0.5h5c0.277 0 0.5-0.223 0.5-0.5s-0.223-0.5-0.5-0.5h-5z" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-    <path id="shield" class="ColorScheme-Highlight" d="m16 11.992-0.39258 0.49805s-0.13509 0.18595-0.62109 0.46289c-0.486 0.27694-1.2899 0.60234-2.5391 0.73438l-0.44727 0.046875v0.45117s0.017434 4.2323 3.8145 5.7422l0.18555 0.074219 0.18555-0.074219c3.7971-1.5091 3.8145-5.7422 3.8145-5.7422v-0.45117l-0.44727-0.046875c-1.2492-0.13243-2.053-0.4575-2.5391-0.73438-0.48603-0.27688-0.62109-0.46289-0.62109-0.46289l-0.39258-0.49805zm0 1.4238c0.14869 0.13887 0.17172 0.20923 0.51758 0.40625 0.50031 0.28501 1.4022 0.52865 2.4121 0.70703-0.019947 0.51852-0.23392 3.1149-2.9297 4.3398-2.696-1.2256-2.9097-3.8214-2.9297-4.3398 1.01-0.17815 1.9117-0.42191 2.4121-0.70703 0.34589-0.1971 0.36887-0.26729 0.51758-0.40625z" fill="currentColor" />
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+<!-- Sequoia rounded UI and device state artwork, Apache-2.0. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2.5" width="10" height="19" rx="2"/><path d="M7.5 5h3M8 19h2"/></g><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="17.5" y="17" width="5" height="4.5" rx=".8"/><path d="M18.5 17v-1.5a1.5 1.5 0 0 1 3 0V17"/></g></g>
 </svg>

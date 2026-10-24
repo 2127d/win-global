@@ -1,13 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <defs>
-  <style id="current-color-scheme" type="text/css">
-   .ColorScheme-Text { color:#363636; } .ColorScheme-Highlight { color:#5294e2; }
-  </style>
- </defs>
- <g transform="matrix(-.5 0 0 .5 594.48 -45.334)" opacity=".5" style="fill:currentColor" class="ColorScheme-Text">
-  <path d="m1181.6 94.668c-2.158 2e-3 -3.992 1.331-4.868 3.232l-0.061 0.13-0.139 0.01c-1.994 0.144-3.572 1.87-3.572 3.968 0 2.193 1.716 3.992 3.838 3.992h9.284c1.592 0 2.878-1.35 2.878-2.988 0-1.1921-0.7072-2.2703-1.805-2.735l-0.137-0.058-0.01-0.149c-0.135-2.993-2.487-5.4-5.404-5.402z" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
- <g transform="matrix(.875 0 0 .875 -1024.3 -79.834)" style="fill:currentColor" class="ColorScheme-Text">
-  <path d="m1181.6 94.668c-2.158 2e-3 -3.992 1.331-4.868 3.232l-0.061 0.13-0.139 0.01c-1.994 0.144-3.572 1.87-3.572 3.968 0 2.193 1.716 3.992 3.838 3.992h9.284c1.592 0 2.878-1.35 2.878-2.988 0-1.1921-0.7072-2.2703-1.805-2.735l-0.137-0.058-0.01-0.149c-0.135-2.993-2.487-5.4-5.404-5.402z" style="stroke:currentColor;stroke-width:0.54026;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor" transform="translate(480.0 -480.0) scale(0.97000000) translate(-480.0 480.0)"><path d="M240-192q-80 0-136-56T48-384q0-76 52-131.5T227-576q23-85 92.5-138.5T480-768q103 0 179 69.5T744-528q70 0 119 49t49 119q0 70-49 119t-119 49H240Zm0-72h504q40 0 68-28t28-68q0-40-28-68t-68-28h-66l-6-65q-7-74-62-124.5T480-696q-64 0-115 38.5T297-556l-14 49-51 3q-48 3-80 37.5T120-384q0 50 35 85t85 35Zm240-216Z"/></g>
 </svg>

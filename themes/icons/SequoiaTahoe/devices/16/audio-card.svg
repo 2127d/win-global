@@ -1,9 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; } .ColorScheme-Highlight { color:#5294e2; }</style>
- </defs>
- <g transform="translate(-1113,-60.993)" style="fill:currentColor" class="ColorScheme-Text">
-  <path d="m1127 61a1 1 0 0 0-1 1v1h-11.49c-0.822 0-1.5 0.678-1.5 1.5v8.994c0 0.823 0.678 1.5 1.5 1.5h11.49v2.006h1v-4h2l0.01-7.003-2.005 3e-3v-3.5s0-0.5 0.5-0.5h1.5v-1zm-12.49 3h11.49v9.994h-11.49a0.488 0.488 0 0 1-0.5-0.5v-8.994c0-0.286 0.214-0.5 0.5-0.5zm12.5 2.994h1v1h-1zm0 2h1v1h-1zm0 2h1v1h-1z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m1122.7 64.98a0.385 0.385 0 0 0-0.178 0.01l-4.09 1.124c-0.252 0.069-0.455 0.348-0.455 0.625v4.261a2.237 2.237 0 0 0-0.869 0.04c-0.803 0.196-1.288 0.774-1.084 1.29 0.203 0.517 1.019 0.777 1.822 0.58 0.685-0.168 1.155-0.62 1.13-1.086v-4.014l3-0.823v3.013a2.237 2.237 0 0 0-0.87 0.04c-0.803 0.196-1.288 0.774-1.084 1.29 0.203 0.517 1.019 0.777 1.822 0.58 0.666-0.164 1.132-0.597 1.13-1.053v-5.492c0-0.207-0.115-0.354-0.278-0.384z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M696-96H264q-31 0-51.5-21.15T192-168v-624q0-29.7 20.5-50.85Q233-864 264-864h432q29.7 0 50.85 21.15Q768-821.7 768-792v624q0 29.7-21.15 50.85Q725.7-96 696-96Zm0-72v-624H264v624h432ZM480.21-600Q510-600 531-621.21t21-51Q552-702 530.79-723t-51-21Q450-744 429-722.79t-21 51Q408-642 429.21-621t51 21ZM480-216q70 0 119-49t49-119q0-70-49-119t-119-49q-70 0-119 49t-49 119q0 70 49 119t119 49Zm0-72q-39.6 0-67.8-28.2Q384-344.4 384-384q0-39.6 28.2-67.8Q440.4-480 480-480q39.6 0 67.8 28.2Q576-423.6 576-384q0 39.6-28.2 67.8Q519.6-288 480-288ZM264-792v624-624Z"/></g>
 </svg>

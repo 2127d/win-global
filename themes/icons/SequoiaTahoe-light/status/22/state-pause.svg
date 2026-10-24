@@ -1,17 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      .ColorScheme-NeutralText {
-        color:#f67400;
-      }
-      </style>
-  </defs>
-  <g transform="translate(-421.71429,-525.79074)">
-    <path style="opacity:1;fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 11 4 A 6 6 0 0 0 5 10 A 6 6 0 0 0 5.0039062 10.128906 A 4 4 0 0 0 2 14 A 4 4 0 0 0 6 18 L 15 18 A 5 5 0 0 0 20 13 A 5 5 0 0 0 16.757812 8.3242188 A 6 6 0 0 0 11 4 z M 11 5 A 5 5 0 0 1 15.919922 9.1113281 A 4.0000019 4.0000019 0 0 1 19 13 A 4.0000019 4.0000019 0 0 1 15 17 L 6 17 A 2.9999979 2.9999979 0 0 1 3 14 A 2.9999979 2.9999979 0 0 1 6 11 A 2.9999979 2.9999979 0 0 1 6.1074219 11.005859 A 5 5 0 0 1 6 10 A 5 5 0 0 1 11 5 z " transform="translate(421.71429,525.79074)" class="ColorScheme-Text" id="path4196" />
-    <path style="fill:currentColor;fill-opacity:1;stroke:none" class="ColorScheme-NeutralText" d="m 437.71429,536.79076 c 2.216,0 4,1.784 4,4 0,2.216 -1.784,4 -4,4 -2.216,0 -4,-1.784 -4,-4 0,-2.216 1.784,-4 4,-4 z" id="rect4153-8-8" />
-    <path style="opacity:1;fill:#363636;fill-opacity:1;stroke-linecap:round;stroke:#363636;stroke-width:0.65000;stroke-opacity:1;stroke-linejoin:round" d="M 14 13 L 14 17 L 15 17 L 15 13 L 14 13 z M 17 13 L 17 17 L 18 17 L 18 13 L 17 13 z " transform="translate(421.71429,525.79074)" id="rect4521" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M600-192q-29.7 0-50.85-21.15Q528-234.3 528-264v-432q0-29.7 21.15-50.85Q570.3-768 600-768h96q29.7 0 50.85 21.15Q768-725.7 768-696v432q0 29.7-21.15 50.85Q725.7-192 696-192h-96Zm-336 0q-29.7 0-50.85-21.15Q192-234.3 192-264v-432q0-29.7 21.15-50.85Q234.3-768 264-768h96q29.7 0 50.85 21.15Q432-725.7 432-696v432q0 29.7-21.15 50.85Q389.7-192 360-192h-96Zm336-72h96v-432h-96v432Zm-336 0h96v-432h-96v432Zm0-432v432-432Zm336 0v432-432Z"/></g>
 </svg>

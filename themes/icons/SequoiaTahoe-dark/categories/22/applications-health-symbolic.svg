@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" version="1.1">
- <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#dedede;
-      }</style>
- <path class="ColorScheme-Text" d="m7.5001 4c-1.1502 0-2.3073 0.44399-3.1816 1.3184-1.7489 1.7489-1.7489 4.6144 0 6.3633l6.6816 7.0176 6.6816-7.0176c1.7486-1.7489 1.7486-4.6144 0-6.3633-1.749-1.7486-4.6143-1.7486-6.3633 0-0.13806 0.13834-0.20251 0.3251-0.32031 0.47852-0.11814-0.15393-0.17583-0.33799-0.31641-0.47852-0.87437-0.87438-2.0315-1.3184-3.1816-1.3184zm0 1c0.89578 0 1.7912 0.34197 2.4746 1.0254 0.68263 0.68237 1.0226 1.5801 1.0234 2.4746h0.0039c2.64e-4 -0.92684 0.3687-1.8186 1.0234-2.4746 1.3668-1.3666 3.5824-1.3666 4.9492 0 1.3666 1.3668 1.3666 3.5824 0 4.9492l-5.9746 6.2754-5.9746-6.2754c-1.3668-1.3668-1.3668-3.5824 0-4.9492 0.68343-0.68342 1.5788-1.0254 2.4746-1.0254z" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path class="ColorScheme-Text" d="m9.0899 7.0039-3.5195 5.8633 0.85938 0.51563 2.4805-4.1348 1.9785 4.9453 2.0488-3.0742 0.75391 1.5059h2.3086l1-1h-2.6914l-1.2461-2.4941-1.9512 2.9258z" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M432-456v69q0 12 7.5 19.5T459-360h42q13 0 20-7.5t7-19.5v-69h69q13 0 20-7.5t7-19.5v-42q0-13-7-20t-20-7h-69v-69q0-13-7-20t-20-7h-42q-12 0-19.5 7t-7.5 20v69h-69q-12 0-19.5 7t-7.5 20v42q0 12 7.5 19.5T363-456h69Zm48 356q-6 0-12-.5t-11-2.5q-131-43-210-159t-79-253v-180q0-23 12.5-41t33.5-26l240-92q13-5 26-5t26 5l240 92q21 8 33.5 26t12.5 41v180q0 137-79 253T503-103q-5 2-11 2.5t-12 .5Zm0-71q104-32 172-129t68-215v-180l-240-92-240 92v180q0 118 68 215t172 129Zm0-308Z"/></g>
 </svg>

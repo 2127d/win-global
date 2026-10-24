@@ -1,10 +1,5 @@
-<svg width="22" height="22">
-    <style type="text/css" id="current-color-scheme">.ColorScheme-Text {
-        color:#363636;
-      }</style>
-    <g id="22-22-input-mouse-battery" transform="translate(-310,-268.36219) translate(-16,-266)">
-        <rect x="326" y="534.36218" width="22" height="22" ry="0" fill="none" />
-        <path class="ColorScheme-Text" transform="translate(326,534.3622)" d="m13.5 3c-3.047 0-5.5 2.676-5.5 6v4c0 3.324 2.453 6 5.5 6s5.5-2.676 5.5-6v-4c0-3.324-2.453-6-5.5-6zm0 1c2.493 0 4.5 2.007 4.5 4.5v5c0 2.493-2.007 4.5-4.5 4.5s-4.5-2.007-4.5-4.5v-5c0-2.493 2.007-4.5 4.5-4.5zm0 2c-0.277 0-0.5 0.223-0.5 0.5v2c0 0.277 0.223 0.5 0.5 0.5s0.5-0.223 0.5-0.5v-2c0-0.277-0.223-0.5-0.5-0.5z" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-        <path class="ColorScheme-Text" d="m331 537.3622-2 5h2v3l2-5h-2z" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+<!-- Sequoia rounded UI and device state artwork, Apache-2.0. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="8.5" height="15" rx="4.2"/><path d="M6.2 8v3"/><rect x="15" y="8" width="6.5" height="12" rx="1.2"/><path d="M17.2 6h2"/></g><rect x="16.5" y="9.500" width="3.5" height="9.000" rx=".4" fill="currentColor"/></g>
 </svg>

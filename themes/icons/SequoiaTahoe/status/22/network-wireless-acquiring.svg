@@ -1,14 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" version="1.1">
- <defs>
-  <style id="current-color-scheme" type="text/css">
-   .ColorScheme-Text { color:#f2f2f2; } .ColorScheme-Highlight { color:#4285f4; }
-  </style>
- </defs>
- <g transform="translate(-1 .013)" class="ColorScheme-Text" fill="currentColor">
-  <g transform="translate(4,3.009)" paint-order="stroke fill markers">
-   <path d="m8 3c-2.84 0-5.432 1.007-7.486 2.658a0.5 0.5 0 0 0-0.096 0.072 0.5 0.5 0 0 0-0.154 0.36 0.5 0.5 0 0 0 0.5 0.5 0.5 0.5 0 0 0 0.318-0.113 10.919 10.919 0 0 1 6.918-2.477c2.628 0 5.027 0.938 6.918 2.477a0.5 0.5 0 0 0 0.318 0.113 0.5 0.5 0 0 0 0.5-0.5 0.5 0.5 0 0 0-0.154-0.36 0.5 0.5 0 0 0-0.096-0.072c-2.053-1.65-4.645-2.658-7.486-2.658zm0 3-0.045 2e-3a2 2 0 0 1 0.09 0zm-0.074 4e-3a8.817 8.817 0 0 0-3.399 0.71 2 2 0 0 1 0.432 0.9 7.87 7.87 0 0 1 1.201-0.391 2 2 0 0 1 0.365-0.575 2 2 0 0 1 1.4-0.644zm0.18 0a2 2 0 0 1 1.24 0.517l0.02 0.018a2 2 0 0 1 0.472 0.684c0.415 0.099 0.816 0.229 1.203 0.39a2 2 0 0 1 0.43-0.9 8.82 8.82 0 0 0-3.366-0.71zm-1.676 3.232a6.102 6.102 0 0 0-2.016 0.989 0.507 0.507 0 0 0-0.168 0.384 0.5 0.5 0 0 0 0.836 0.37c0.822-0.605 1.82-0.979 2.918-0.979s2.096 0.375 2.918 0.978a0.5 0.5 0 0 0 0.836-0.369 0.507 0.507 0 0 0-0.168-0.384 6.102 6.102 0 0 0-2.016-0.989 2 2 0 0 1-0.105 0.125 2 2 0 0 1-2.82 0.11 2 2 0 0 1-0.215-0.235z" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-   <circle cx="8" cy="13" r="1" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  </g>
-  <path d="m7.683 10.278a1 1 0 0 1 0.05 1.411 1 1 0 0 1-1.411 0.055 1 1 0 0 1-0.06-1.411 1 1 0 0 1 1.411-0.064m5.01 9e-3a1 1 0 0 1 0.05 1.411 1 1 0 0 1-1.411 0.055 1 1 0 0 1-0.06-1.411 1 1 0 0 1 1.411-0.064m5.01 9e-3a1 1 0 0 1 0.05 1.411 1 1 0 0 1-1.41 0.055 1 1 0 0 1-0.06-1.411 1 1 0 0 1 1.41-0.064" opacity=".35" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor" transform="translate(480.0 -480.0) scale(0.97000000) translate(-480.0 480.0)"><path d="M454-171 56-568q-11-11-16.5-25T35-622q1-15 7.5-28T61-674q86-71 197-106.5T480-816q114 0 225 36.5T904-670q11 10 17 22t7 26q1 14-3.5 26.5T909-572q-86-85-197-128.5T480-744q-102 0-197.5 32T106-619l400 396q11 11 11.5 26T507-171q-11 11-26.5 11T454-171Zm382-47-91-90q-17 10-35 15t-38 5q-60 0-102-42t-42-102q0-60 42-102t102-42q60 0 102 42t42 102q0 20-4.5 38.5T796-359l91 91q11 11 11 25t-11 25q-11 11-25.5 11T836-218ZM672-360q30 0 51-21t21-51q0-30-21-51t-51-21q-30 0-51 21t-21 51q0 30 21 51t51 21ZM480-196Z"/></g>
 </svg>

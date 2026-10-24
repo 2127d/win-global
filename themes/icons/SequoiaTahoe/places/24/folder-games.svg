@@ -1,12 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
-  <g transform="translate(1,1)">
-    <path style="fill:currentColor;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 6 6 C 4.343 6 3 8.2 3 11 L 3 14.5 A 1.5 1.5 0 0 0 5.6 15.6 L 8.1 13 A 1.5 1.5 0 0 0 11 12.5 A 1.5 1.5 0 0 0 13.9 13 L 16.4 15.6 A 1.5 1.5 0 0 0 19 14.5 L 19 11 C 19 8.2 17.6 6 16 6 L 6 6 z M 6 7 L 16 7 C 17.1 7 18 8.8 18 11 L 18 14.5 A 0.5 0.5 0 0 1 17.1 14.9 L 14.3 12 L 13 12 L 13 12.5 A 0.5 0.5 0 0 1 12 12.5 L 12 12 L 10 12 L 10 12.5 A 0.5 0.5 0 0 1 9 12.5 L 9 12 L 7.7 12 L 4.9 14.9 A 0.5 0.5 0 0 1 4 14.5 L 4 11 C 4 8.8 4.9 7 6 7 z M 14.5 7.9 A 0.6 0.6 0 0 0 13.9 8.5 A 0.6 0.6 0 0 0 14.5 9.1 A 0.6 0.6 0 0 0 15.1 8.5 A 0.6 0.6 0 0 0 14.5 7.9 z M 7 8 L 7 9 L 6 9 L 6 10 L 7 10 L 7 11 L 8 11 L 8 10 L 9 10 L 9 9 L 8 9 L 8 8 L 7 8 z M 13.5 8.9 A 0.6 0.6 0 0 0 12.9 9.5 A 0.6 0.6 0 0 0 13.5 10.1 A 0.6 0.6 0 0 0 14.1 9.5 A 0.6 0.6 0 0 0 13.5 8.9 z M 15.5 8.9 A 0.6 0.6 0 0 0 14.9 9.5 A 0.6 0.6 0 0 0 15.5 10.1 A 0.6 0.6 0 0 0 16.1 9.5 A 0.6 0.6 0 0 0 15.5 8.9 z M 14.5 9.9 A 0.6 0.6 0 0 0 13.9 10.5 A 0.6 0.6 0 0 0 14.5 11.1 A 0.6 0.6 0 0 0 15.1 10.5 A 0.6 0.6 0 0 0 14.5 9.9 z " class="ColorScheme-Text" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M182-200q-51 0-79-35.5T82-322l42-300q9-60 53.5-99T282-760h396q60 0 104.5 39t53.5 99l42 300q7 51-21 86.5T778-200q-21 0-39-7.5T706-230l-90-90H344l-90 90q-15 15-33 22.5t-39 7.5Zm16-86 114-114h336l114 114q2 2 16 6 11 0 17.5-6.5T800-304l-44-308q-4-29-26-48.5T678-680H282q-30 0-52 19.5T204-612l-44 308q-2 11 4.5 17.5T182-280q2 0 16-6Zm482-154q17 0 28.5-11.5T720-480q0-17-11.5-28.5T680-520q-17 0-28.5 11.5T640-480q0 17 11.5 28.5T680-440Zm-80-120q17 0 28.5-11.5T640-600q0-17-11.5-28.5T600-640q-17 0-28.5 11.5T560-600q0 17 11.5 28.5T600-560Zm-120 80Zm-170-30v40q0 13 8.5 21.5T340-440q13 0 21.5-8.5T370-470v-40h40q13 0 21.5-8.5T440-540q0-13-8.5-21.5T410-570h-40v-40q0-13-8.5-21.5T340-640q-13 0-21.5 8.5T310-610v40h-40q-13 0-21.5 8.5T240-540q0 13 8.5 21.5T270-510h40Z"/></g>
 </svg>

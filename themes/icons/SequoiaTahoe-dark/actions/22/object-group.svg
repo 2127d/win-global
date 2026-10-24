@@ -1,13 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#dedede;
-      }
-      .ColorScheme-Highlight {
-        color:#3daee9;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 3 3 L 3 19 L 19 19 L 19 3 L 3 3 z M 4 4 L 18 4 L 18 7 L 18 18 L 4 18 L 4 7 L 4 4 z M 7.5 5 A 2.5 2.5 0 0 0 5 7.5 A 2.5 2.5 0 0 0 7.5 10 A 2.5 2.5 0 0 0 10 7.5 A 2.5 2.5 0 0 0 7.5 5 z M 12 5 L 12 10 L 17 10 L 17 5 L 12 5 z M 6 12 L 6 17 L 9 17 L 9 12 L 6 12 z M 14.5 12 L 12 17 L 17 17 L 14.5 12 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
+<!-- Sequoia rounded UI and device state artwork, Apache-2.0. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="19" height="19" rx="2.5"/><rect x="6" y="6" width="5" height="5" rx=".8"/><circle cx="16" cy="8.5" r="2.5"/><path d="m5.5 18 3-5 3 5zm8-4h5v4h-5z"/></g></g>
 </svg>

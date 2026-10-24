@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24">
-    <g transform="translate(-713 175)">
-        <path color="#bebebe" d="M725-171c-4.423 0-8 3.576-8 8 0 4.424 3.577 8 8 8 4.424 0 8-3.576 8-8 0-4.424-3.576-8-8-8zm0 1c3.87 0 7 3.13 7 7s-3.13 7-7 7-7-3.13-7-7 3.13-7 7-7zm.875 2.063c-.989-.014-1.347 1.57-.406 1.968.749.277 1.496-.495 1.312-1.25-.002-.009.002-.022 0-.031a.88.88 0 0 0-.906-.687zm-.187 2.843a.813.813 0 0 0-.532.188l-2.093 1.5a.195.195 0 0 0-.063.219.701.701 0 0 0 .281.343c.073.045.161.068.25.031l.875-.593-.718 3.718c-.081.46-.01.75.25.97a.85.85 0 0 0 1.031.03l1.812-1.25c.066-.052.1-.13.063-.218a1.192 1.192 0 0 0-.219-.344c-.055-.057-.143-.116-.25-.094l-.75.531c-.164.095-.215.136-.187.032l.843-3.844c.077-.347.094-.55 0-.781a.683.683 0 0 0-.593-.438z" fill="#f2f2f2" opacity=".9" overflow="visible" style="text-indent:0;text-transform:none;marker:none;stroke:#f2f2f2;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-        
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M480-280q17 0 28.5-11.5T520-320v-160q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480v160q0 17 11.5 28.5T480-280Zm0-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></g>
 </svg>

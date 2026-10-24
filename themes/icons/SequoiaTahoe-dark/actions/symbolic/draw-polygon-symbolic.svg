@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M8 1 1 6.385 4 15h8l3-8.615Zm0 1.262 5.818 4.476L11.29 14H4.711L2.18 6.738Z" style="fill:#dedede;fill-opacity:1;stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" /><path d="M8 2.262 2.182 6.738 4.71 14h6.578l2.53-7.262z" style="color:#000;opacity:.35;fill:#dedede;stroke-width:0.47273;-inkscape-stroke:none;fill-opacity:1;stroke:#dedede;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" /></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M306-168h349l123-355.69L480-729 182-524l124 356Zm-1 72q-22.94 0-41.47-13Q245-122 237-144L114-500q-8-23-.63-46.08Q120.74-569.15 141-583l298-205q18.63-13 40.82-13Q502-801 521-788l298 205q20.26 13.85 27.63 36.92Q854-523 846-500L723-144q-8 22-26.53 35T655-96H305Zm175-353Z"/></g>
+</svg>

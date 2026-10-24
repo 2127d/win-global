@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 22 22">
-    <style type="text/css" id="current-color-scheme">
-        .ColorScheme-Text {
-            color:#dedede;
-        }
-    </style>
-    <path d="m14 3c-1.662 0-3 1.338-3 3s1.338 3 3 3 3-1.338 3-3-1.338-3-3-3zm-6 3c-1.6619997 0-3 1.3380003-3 3 0 1.662 1.3380003 3 3 3s3-1.338 3-3c0-1.6619997-1.3380003-3-3-3zm6 4c-0.646346 0-1.255994 0.134157-1.818359 0.361328l0.455078 0.914063c0.427816-0.160506 0.877766-0.275391 1.363281-0.275391 1.482985 0 2.758385 0.807292 3.449219 2h1.130859c-0.769461-1.767167-2.523243-3-4.580078-3zm-6 3c-2.7700166 0-5 2.229983-5 5v1h10v-1c0-2.770017-2.229983-5-5-5zm0 1c2.216017 0 4 1.783983 4 4h-8c0-2.216017 1.7839834-4 4-4zm8 0v1h1v-1h-1zm0 2v1h1v-1h-1zm0 2v1h1v-1h-1z" class="ColorScheme-Text" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M96-284q0-25.78 12.5-47.39T143-366q54-32 114.5-49T384-432q66 0 126.5 17T625-366q22 13 34.5 34.61T672-284v20q0 29.7-21.16 50.85Q629.68-192 599.96-192H167.72Q138-192 117-213.15T96-264v-20Zm696 92h-67q9-17 14-35.19 5-18.18 5-36.81v-20q0-42-19.5-78T672-421q39 8 75.5 21.5T817-366q22 13 34.5 34.67Q864-309.65 864-284v20q0 29.7-21.15 50.85Q821.7-192 792-192ZM384-480q-60 0-102-42t-42-102q0-60 42-102t102-42q60 0 102 42t42 102q0 60-42 102t-102 42Zm336-144q0 60-42 102t-102 42q-8 0-15-.5t-15-2.5q25-29 39.5-64.5T600-624q0-41-14.5-76.5T546-765q8-2 15-2.5t15-.5q60 0 102 42t42 102ZM168-264h432v-20q0-6.47-3.03-11.76-3.02-5.3-7.97-8.24-47-27-99-41.5T384-360q-54 0-106 14t-99 42q-4.95 2.83-7.98 7.91-3.02 5.09-3.02 12V-264Zm216.21-288Q414-552 435-573.21t21-51Q456-654 434.79-675t-51-21Q354-696 333-674.79t-21 51Q312-594 333.21-573t51 21ZM384-264Zm0-360Z"/></g>
 </svg>

@@ -1,7 +1,5 @@
-<svg width="32" height="32" version="1.1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }
-    .ColorScheme-NegativeText { color: #da4453; }</style>
- </defs>
- <path class="ColorScheme-NegativeText" d="m6.7324 6c-1.4883 0-2.7324 1.2441-2.7324 2.7324v14.535c0 1.4883 1.2441 2.7324 2.7324 2.7324h9.7676v-1.5h-9.7676c-0.68328 0-1.2324-0.54914-1.2324-1.2324v-10.268h21v2h1.5v-4.7676c0-1.4883-1.2441-2.7324-2.7324-2.7324h-11.744l-1.4727-1.1738c-0.26538-0.21112-0.59448-0.3261-0.93359-0.32617zm0 1.5h4.3848l1.8828 1.5h12.268c0.68328 0 1.2324 0.54914 1.2324 1.2324v1.2676h-21v-2.7676c0-0.68328 0.54914-1.2324 1.2324-1.2324zm16.268 7.5c-1.939 0-3.5 1.561-3.5 3.5v0.5c-0.831 0-1.5 0.669-1.5 1.5v4c0 0.831 0.669 1.5 1.5 1.5h7c0.831 0 1.5-0.669 1.5-1.5v-4c0-0.831-0.669-1.5-1.5-1.5v-0.5c0-1.939-1.561-3.5-3.5-3.5zm0 1.5c1.108 0 2 0.892 2 2v0.5h-4v-0.5c0-1.108 0.892-2 2-2zm-3.5 4h7v4h-7z" fill="currentColor"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-NegativeText" fill="currentColor"><path d="m480-424 56 56q11 11 28 11t28-11q11-11 11-28t-11-28l-56-56 56-56q11-11 11-28t-11-28q-11-11-28-11t-28 11l-56 56-56-56q-11-11-28-11t-28 11q-11 11-11 28t11 28l56 56-56 56q-11 11-11 28t11 28q11 11 28 11t28-11l56-56Zm0 340q-7 0-13-1t-12-3q-135-45-215-166.5T160-516v-189q0-25 14.5-45t37.5-29l240-90q14-5 28-5t28 5l240 90q23 9 37.5 29t14.5 45v189q0 140-80 261.5T505-88q-6 2-12 3t-13 1Zm0-80q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z"/></g>
 </svg>

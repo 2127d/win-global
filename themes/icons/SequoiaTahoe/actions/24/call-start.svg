@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <defs id="defs3051">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
-        color:#363636;
-      }
-      </style>
-  </defs>
- <path style="fill:currentColor;fill-opacity:1;stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" d="M 5.984375 4.0039062 C 5.6045825 4.0384326 5.328125 4.3144531 5.328125 4.3144531 L 4.6210938 5.0214844 L 4.2207031 5.421875 C 3.6301531 7.733025 4.2203364 10.275997 6.0351562 12.091797 L 11.908203 17.964844 C 13.724253 19.780894 16.266975 20.369847 18.578125 19.779297 L 18.978516 19.378906 L 19.685547 18.671875 C 19.685547 18.671875 20.392657 17.964933 19.685547 17.257812 L 16.644531 14.216797 C 15.937421 13.509687 15.230469 14.216797 15.230469 14.216797 L 14.876953 14.570312 C 14.289343 15.157924 13.343459 15.157912 12.755859 14.570312 L 9.4296875 11.244141 C 8.8420975 10.656551 8.8420775 9.7106669 9.4296875 9.1230469 L 9.7832031 8.7695312 C 9.7832031 8.7695312 10.490303 8.0625788 9.7832031 7.3554688 L 6.7421875 4.3144531 C 6.4770212 4.0492906 6.2122505 3.9831904 5.984375 4.0039062 z " class="ColorScheme-Text" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M798-120q-125 0-247-54.5T329-329Q229-429 174.5-551T120-798q0-18 12-30t30-12h162q14 0 25 9.5t13 22.5l26 140q2 16-1 27t-11 19l-97 98q20 37 47.5 71.5T387-386q31 31 65 57.5t72 48.5l94-94q9-9 23.5-13.5T670-390l138 28q14 4 23 14.5t9 23.5v162q0 18-12 30t-30 12ZM241-600l66-66-17-94h-89q5 41 14 81t26 79Zm358 358q39 17 79.5 27t81.5 13v-88l-94-19-67 67ZM241-600Zm358 358Z"/></g>
 </svg>

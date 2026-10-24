@@ -1,15 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" version="1.1">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-                color:#f2f2f2;
-            }
-            .ColorScheme-PositiveText {
-                color:#27ae60;
-            }</style>
- </defs>
- <g class="ColorScheme-Text" transform="translate(2,4)" fill="currentColor">
-  <path d="m8.834 4-3.334 5h3l-0.75 3h0.416l3.334-5h-3l0.75-3z" fill="#f2f2f2" stroke-linecap="round" stroke-linejoin="round" style="-inkscape-stroke:none;stroke:#f2f2f2;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="M 2.5918,5 C 2.26419,5 2,5.26418 2,5.5918 v 4.8164 C 2,10.73581 2.26418,11 2.5918,11 h 4.377 l 0.25,-1 H 5.5 C 4.70141,9.9998288 4.2251,9.10987 4.66797,8.4453 L 6.96487,5 Z" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m2 3c-1.108 0-2 0.892-2 2v6c0 1.108 0.892 2 2 2h13c1.108 0 2-0.892 2-2v-6c0-1.108-0.892-2-2-2zm0 1h13c0.554 0 1 0.446 1 1v6c0 0.554-0.446 1-1 1h-13c-0.554 0-1-0.446-1-1v-6c0-0.554 0.446-1 1-1zm16 2v4a2 2 0 0 0 2-2 2 2 0 0 0-2-2z" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+<!-- Sequoia rounded UI and device state artwork, Apache-2.0. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="2.2" y="7" width="15" height="10" rx="2"/></g><rect x="4.4" y="9.2" width="5.300" height="5.6" rx="0.800" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="m22 6-3.4 6h3.5l-3.2 6"/></g>
 </svg>

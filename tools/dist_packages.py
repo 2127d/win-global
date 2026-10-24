@@ -68,6 +68,8 @@ def icons():
         archive.add(ROOT / 'themes/icons/material-icons.json', arcname='material-icons.json')
         archive.add(ROOT / 'themes/icons/material-rounded', arcname='material-rounded')
         archive.add(ROOT / 'tools/tahoe_material.py', arcname='tahoe_material.py')
+        for helper in ('tahoe_catalog.py', 'tahoe_states.py', 'fetch-tahoe-material.py', 'calibrate-tahoe-material.py'):
+            archive.add(ROOT / 'tools' / helper, arcname=helper)
     checksum(output)
 
 

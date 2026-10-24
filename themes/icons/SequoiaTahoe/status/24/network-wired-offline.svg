@@ -1,13 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns2="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" id="svg8" version="1.1" width="24" height="24">
-  <metadata id="metadata14">
-    <rdf:RDF>
-      <ns2:Work rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </ns2:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs id="defs12" />
-  <path id="path4" d="M 6.3515625 4.7363281 L 5.4121094 5.6777344 L 18.955078 19.220703 L 19.894531 18.279297 L 18.488281 16.873047 A 1 1 0 0 0 18.828125 16.560547 L 21.765625 12.642578 A 1 1 0 0 0 21.794922 12.605469 A 1 1 0 0 0 22 11.998047 A 1 1 0 0 0 21.746094 11.335938 L 18.851562 7.4746094 A 1 1 0 0 0 17.998047 7 A 1 1 0 0 0 17 8.0019531 A 1 1 0 0 0 17.199219 8.5976562 L 17.195312 8.5996094 L 19.746094 12.001953 L 17.195312 15.404297 L 17.197266 15.40625 A 1 1 0 0 0 17.128906 15.513672 L 14.447266 12.832031 A 1 1 0 0 0 15 13 A 1 1 0 0 0 15 11 A 1 1 0 0 0 14.169922 12.554688 L 6.3515625 4.7363281 z M 5.5234375 7.1191406 A 1 1 0 0 0 5.1484375 7.4746094 L 2.2539062 11.335938 A 1 1 0 0 0 2 11.998047 A 1 1 0 0 0 2.2050781 12.605469 A 1 1 0 0 0 2.234375 12.642578 L 5.171875 16.560547 A 1 1 0 0 0 5.9980469 17 A 1 1 0 0 0 7 16.001953 A 1 1 0 0 0 6.8027344 15.40625 L 6.8046875 15.404297 L 4.2539062 12.001953 L 6.8046875 8.5996094 L 6.8007812 8.5976562 A 1 1 0 0 0 6.8789062 8.4746094 L 5.5234375 7.1191406 z M 9 11 A 1 1 0 0 0 9 13 A 1 1 0 0 0 9.7773438 11.373047 L 9.6269531 11.222656 A 1 1 0 0 0 9 11 z " style="opacity:0.5;vector-effect:none;fill:#f2f2f2;fill-opacity:1;stroke-width:0.70909;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;font-variant-east_asian:normal;marker:none;stroke:#f2f2f2" />
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="m625-449-71-71h46q17 0 28.5 11.5T640-480q0 10-4 18t-11 13ZM820-84q-11 11-28 11t-28-11L84-764q-11-11-11-28t11-28q11-11 28-11t28 11l680 680q11 11 11 28t-11 28ZM280-280q-83 0-141.5-58.5T80-480q0-69 42-123t108-71l74 74h-24q-50 0-85 35t-35 85q0 50 35 85t85 35h120q17 0 28.5 11.5T440-320q0 17-11.5 28.5T400-280H280Zm80-160q-17 0-28.5-11.5T320-480q0-17 11.5-28.5T360-520h25l79 80H360Zm380 112q-9-14-6.5-30t16.5-25q23-17 36.5-42t13.5-55q0-50-35-85t-85-35H560q-17 0-28.5-11.5T520-640q0-17 11.5-28.5T560-680h120q83 0 141.5 58.5T880-480q0 49-22.5 91.5T795-318q-14 9-30 6.5T740-328Z"/></g>
 </svg>

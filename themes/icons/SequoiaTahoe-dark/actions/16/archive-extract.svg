@@ -1,8 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16">
- <style id="current-color-scheme" type="text/css">.ColorScheme-Text{color:#dedede;}</style>
- <g class="ColorScheme-Text" fill="currentColor">
-  <path d="m7 2v1h1v1h1v-1h-1v-1zm1 2h-1v1h1zm0 1v1h1v-1zm0 1h-1v2h2v-1h-1z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m3 1c-1.108 0-2 0.892-2 2v10c0 1.108 0.892 2 2 2h5.7617a4.5 4.5 0 0 1-0.49805-1h-5.2637c-0.554 0-1-0.446-1-1v-10c0-0.554 0.446-1 1-1h10c0.554 0 1 0.446 1 1v5.2637a4.5 4.5 0 0 1 1 0.49609v-5.7598c0-1.108-0.892-2-2-2h-10z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m12.5 9a3.5 3.5 0 0 0-3.5 3.5 3.5 3.5 0 0 0 3.5 3.5 3.5 3.5 0 0 0 3.5-3.5 3.5 3.5 0 0 0-3.5-3.5zm0 1.0859 2.5 2.5-0.70703 0.70703-1.293-1.293v3h-1v-3l-1.293 1.293-0.70703-0.70703 2.5-2.5z" style="stroke:currentColor;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M479.79-287q15.21 0 25.71-10.27t10.5-25.44V-437l32 31q11 11 25.5 11t25.5-11q11-11 11-25.5T599-457l-94.14-93.15Q494-561 479.82-561T455-550l-94 93q-11 11-10.5 25.5T362-406q11 11 25.5 11t25.5-11l31-31v114.29q0 15.17 10.29 25.44Q464.58-287 479.79-287ZM216-624v408h528v-408H216Zm0 480q-29.7 0-50.85-21.15Q144-186.3 144-216v-474q0-14 5.25-27T165-741l54-54q11-11 23.94-16 12.94-5 27.06-5h420q14.12 0 27.06 5T741-795l54 54q10.5 11 15.75 24t5.25 27v474q0 29.7-21.15 50.85Q773.7-144 744-144H216Zm6-552h516l-48-48H270l-48 48Zm258 276Z"/></g>
 </svg>

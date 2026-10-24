@@ -1,7 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <path d="m2 9c-1.108 0-2 0.892-2 2v5h1v-5c0-0.554 0.446-1 1-1h12c0.554 0 1 0.446 1 1v5h1v-5c0-1.108-0.892-2-2-2h-12z" fill="#363636" fill-rule="evenodd" stop-color="#000000" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path d="m1.1035 10.449c-0.06473 0.12035-0.10352 0.25755-0.10352 0.4043v0.68945l5.8613 3.957c0.62269 0.42034 1.6547 0.42034 2.2773 0l5.8613-3.957v-0.68945c0-0.14675-0.038786-0.28395-0.10352-0.4043l-6.6191 4.4688c-0.16078 0.10853-0.3939 0.10853-0.55469 0l-6.6191-4.4688z" color="#000000" fill="#363636" fill-rule="evenodd" stroke-width=".96304" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <rect transform="rotate(45)" x="5.6569" y="-5.6569" width="6" height="1" rx="0" ry="0" fill="#363636" fill-rule="evenodd" stop-color="#000000" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <rect transform="matrix(-.70711 .70711 .70711 .70711 0 0)" x="-5.6569" y="5.6569" width="6" height="1" rx="0" ry="0" fill="#363636" fill-rule="evenodd" stop-color="#000000" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <rect x="7.5" y="1" width="1" height="7" fill="#363636" fill-rule="evenodd" stop-color="#000000" style="stroke:#363636;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }.ColorScheme-NegativeText { color:#da4453; }.ColorScheme-NeutralText { color:#f67400; }.ColorScheme-PositiveText { color:#27ae60; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M780-447 193-212q-18 7-33.5-3.5T144-245v-470q0-19 15.5-29.5T193-748l587 235q23 9 23 33t-23 33ZM216-299l454-181-454-181v109l216 72-216 72v109Zm0 0v-362 362Z"/></g>
 </svg>
