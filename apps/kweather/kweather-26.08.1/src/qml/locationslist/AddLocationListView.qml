@@ -49,6 +49,53 @@ Item {
                     objectName: "weatherLocationSearchField"
                     Layout.fillWidth: true
                     implicitHeight: 44
+                    rightActions: []
+                    leftPadding: LayoutMirroring.enabled ? 44 : 28
+                    rightPadding: LayoutMirroring.enabled ? 28 : 44
+
+                    ToolButton {
+                        id: clearButton
+                        objectName: "weatherClearLocationSearch"
+                        anchors.right: parent.right
+                        anchors.rightMargin: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 28
+                        height: 28
+                        padding: 6
+                        leftInset: 0
+                        rightInset: 0
+                        topInset: 0
+                        bottomInset: 0
+                        visible: search.text.length > 0
+                        hoverEnabled: true
+                        focusPolicy: Qt.TabFocus
+                        text: i18n("Clear search")
+                        Accessible.name: text
+                        onClicked: {
+                            search.clear();
+                            search.accepted();
+                            search.forceActiveFocus();
+                        }
+                        contentItem: Kirigami.Icon {
+                            source: search.LayoutMirroring.enabled ? "edit-clear-locationbar-ltr" : "edit-clear-locationbar-rtl"
+                            isMask: true
+                            color: Kirigami.Theme.textColor
+                        }
+                        background: Rectangle {
+                            radius: width / 2
+                            color: Qt.alpha(Kirigami.Theme.highlightColor, clearButton.down ? 0.24 : clearButton.hovered || clearButton.activeFocus ? 0.14 : 0)
+                            border.width: clearButton.visualFocus ? 2 : 0
+                            border.color: Kirigami.Theme.highlightColor
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: Kirigami.Units.shortDuration
+                                }
+                            }
+                        }
+                        ToolTip.visible: hovered
+                        ToolTip.text: text
+                        ToolTip.delay: Kirigami.Units.toolTipDelay
+                    }
                     background: Rectangle {
                         radius: 22
                         color: Kirigami.Theme.backgroundColor
@@ -135,12 +182,17 @@ Item {
                 model: LocationQueryModel {}
                 spacing: 0
                 ScrollBar.vertical: ScrollBar {
+                    id: resultsScrollBar
+                    objectName: "weatherSearchResultsScrollBar"
                     policy: ScrollBar.AsNeeded
                 }
                 delegate: ListDelegate {
                     id: resultRow
                     objectName: "weatherLocationResult" + index
-                    width: results.width
+                    // Reserve a separate lane even when an overlay scrollbar fades out.
+                    readonly property real scrollBarSpace: resultsScrollBar.size < 1 ? resultsScrollBar.width + 6 : 0
+                    x: results.LayoutMirroring.enabled ? scrollBarSpace : 0
+                    width: Math.max(0, results.width - scrollBarSpace)
                     background: Rectangle {
                         radius: 12
                         color: resultRow.mouseArea.pressed ? Qt.alpha(Kirigami.Theme.highlightColor, 0.16) : !root.editingSearch && (resultRow.activeFocus || (resultRow.ListView.isCurrentItem && results.activeFocus)) ? Qt.alpha(Kirigami.Theme.highlightColor, 0.10) : resultRow.hovered ? Qt.alpha(Kirigami.Theme.textColor, 0.05) : "transparent"

@@ -17,9 +17,7 @@ Kirigami.Dialog {
     Kirigami.Theme.colorSet: Kirigami.Theme.Window
     background: LocationSurface {
         radius: 24
-        // An overlay needs an opaque surface to keep the forecast below readable
-        // only outside the dialog, even when the application palette is translucent.
-        color: Qt.rgba(Kirigami.Theme.backgroundColor.r, Kirigami.Theme.backgroundColor.g, Kirigami.Theme.backgroundColor.b, 1)
+        color: Qt.alpha(Kirigami.Theme.backgroundColor, 0.88)
     }
     header: Dialogs.DialogHeader {
         dialog: root

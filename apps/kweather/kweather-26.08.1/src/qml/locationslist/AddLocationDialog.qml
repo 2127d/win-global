@@ -17,11 +17,6 @@ LocationDialog {
     // the rounded lower corners when search results overflow.
     footer: Item { implicitHeight: 0 }
 
-    background: LocationSurface {
-        radius: 24
-        color: Qt.alpha(Kirigami.Theme.backgroundColor, 0.88)
-    }
-
     onOpened: addLocationListView.focusRequested()
 
     contentItem: AddLocationListView {

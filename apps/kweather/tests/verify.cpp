@@ -72,9 +72,21 @@ static void runWelcome(QQuickWindow *window,QQuickItem *welcome) {
     check(qAbs(card->mapToScene(QPointF(card->width(),0)).x()-searchButton->mapToScene(QPointF(searchButton->width(),0)).x())<1,"shared results card extends to the search button's right edge");
     check(qAbs(card->mapToScene(QPointF()).x()-field->mapToScene(QPointF()).x())<1,"shared results card aligns with search field");
     check(card->property("radius")==eval(field,"background.radius"),"shared results card matches search field radius");
+    auto scrollBar=findInWindows("weatherSearchResultsScrollBar");check(scrollBar,"overflowing search results have a scrollbar");
+    check(firstResult->mapToScene(QPointF(firstResult->width(),0)).x()+5<=scrollBar->mapToScene(QPointF()).x(),"search result highlight leaves a gap before the scrollbar");
+    QTest::mouseMove(window,firstResult->mapToScene(QPointF(firstResult->width()/2,firstResult->height()/2)).toPoint());
+    capture(window,"search-result-hover");
     auto searchPosition=field->mapToScene(QPointF());
     eval(search,"positionViewAtEnd()");capture(window,"search-results-bottom");
     check(field->mapToScene(QPointF())==searchPosition,"search field stays fixed while results scroll");
+    auto clearButton=findInWindows("weatherClearLocationSearch");
+    check(clearButton,"clear search button is visible for entered text");
+    auto clearPosition=clearButton->mapToItem(field,QPointF());
+    check(clearPosition.x()>=8 && clearPosition.y()>=8 && clearPosition.x()+clearButton->width()<=field->width()-8 && clearPosition.y()+clearButton->height()<=field->height()-8,"clear highlight has space inside every search field edge");
+    QTest::mouseMove(window,clearButton->mapToScene(QPointF(clearButton->width()/2,clearButton->height()/2)).toPoint());
+    capture(window,"search-clear-hover");
+    click(clearButton);
+    check(field->property("text").toString().isEmpty() && field->hasActiveFocus() && !clearButton->isVisible(),"clear search empties text and restores input focus");
     click(findInWindows("weatherCloseLocationSearch"));QTest::qWait(600);
     check(!eval(welcome,"applicationWindow().isDialogOpen").toBool(),"circular search close button closes the dialog");
     check(!eval(welcome,"applicationWindow().pageStack.layer.enabled").toBool(),"closing search releases the blur layer");
@@ -104,6 +116,19 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     window->resize(1180,820);QTest::qWait(200);
     checkForecastRows(dashboard);
     capture(window,"dynamic");
+    // Exercise shader-backed dialogs directly on Wayland. The full forecast
+    // interaction suite below uses the deterministic offscreen renderer.
+    if(qEnvironmentVariable("WEATHER_RENDERED")=="1") {
+        eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(300);
+        check(eval(window,"locationsListDialogLoader.item.background.color.a < 0.9 && pageStack.layer.enabled && background.layer.enabled").toBool(),"rendered management dialog has translucency and backdrop blur");
+        capture(window,"locations");
+        click(findInWindows("weatherManageAddLocation"));QTest::qWait(400);
+        check(findInWindows("weatherLocationSearchField") && eval(window,"pageStack.layer.enabled").toBool(),"switching from management to search retains blur");
+        click(findInWindows("weatherCloseLocationSearch"));QTest::qWait(600);
+        check(!eval(window,"pageStack.layer.enabled || background.layer.enabled").toBool(),"closing location dialogs releases all blur layers");
+        qInfo("PASS: rendered location management translucency, blur, search transition and close");
+        window->close();return;
+    }
     auto temperature=find(dashboard,"weatherTemperature");check(temperature,"temperature label");
     auto before=temperature->property("text").toString();
     eval(dashboard,"settingsModel.temperatureUnits='Fahrenheit'");QTest::qWait(100);
@@ -135,6 +160,9 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     eval(window,"settingsDialogLoader.item.close()");QTest::qWait(600);
     eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(200);
     check(eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"native location dialog opens");
+    check(eval(window,"locationsListDialogLoader.item.background.color.a < 0.9").toBool(),"management dialog uses a translucent surface");
+    if(qEnvironmentVariable("WEATHER_RENDERED")=="1")
+        check(eval(window,"pageStack.layer.enabled && background.layer.enabled").toBool(),"management dialog blurs the forecast and scenery");
     auto managed=findInWindows("weatherManagedLocations");check(managed,"location management list visible");
     auto addLocation=findInWindows("weatherManageAddLocation");check(addLocation,"management add location button visible");
     addLocation->forceActiveFocus();
@@ -145,6 +173,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(200);
     click(findInWindows("weatherManagedLocation1"));QTest::qWait(600);
     check(!eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"dialogs close");
+    check(!eval(window,"pageStack.layer.enabled && background.layer.enabled").toBool(),"closing location management releases backdrop blur");
     check(eval(dashboard,"location.name==='Monterey'").toBool(),"management row selects its location");
     eval(dashboard,"switchPageIndex(1)");
     check(eval(dashboard,"location.name==='Monterey'").toBool(),"switch saved location");
