@@ -23,6 +23,11 @@ static void click(QQuickItem *item) {
     check(item && item->isVisible(),"click target visible");
     QTest::mouseClick(item->window(),Qt::LeftButton,Qt::NoModifier,item->mapToScene(QPointF(item->width()/2,item->height()/2)).toPoint());QTest::qWait(200);
 }
+static QQuickItem *findInWindows(const QString &name) {
+    for(auto w:QGuiApplication::allWindows())if(auto window=qobject_cast<QQuickWindow*>(w))
+        if(window->isVisible())if(auto item=find(window->contentItem(),name))if(item->isVisible())return item;
+    return nullptr;
+}
 static void capture(QQuickWindow *w,const QString &name) {
     QTest::qWait(600);
     check(w->grabWindow().save(qEnvironmentVariable("WEATHER_CAPTURE")+"/"+name+".png"),"screenshot");
@@ -41,6 +46,51 @@ static void checkForecastRows(QQuickItem *dashboard) {
     auto hour=find(dashboard,"weatherHour0");
     check(hour && eval(hour,"modelData.temperature")==eval(dashboard,"location.hourForecasts[0].temperature"),"hourly row follows active day and location");
     check(eval(dashboard,"selected.maxTemp===location.dayForecasts[location.selectedDay].maxTemp && selected.weatherDescription===location.dayForecasts[location.selectedDay].weatherDescription").toBool(),"selected-day details follow active forecast");
+}
+static void runWelcome(QQuickWindow *window,QQuickItem *welcome) {
+    QTest::qWait(600);
+    check(eval(welcome,"WeatherLocationListModel.count===0 && !settingsModel.firstStartup").toBool(),"first launch uses the welcome screen");
+    window->resize(680,580);capture(window,"welcome-dynamic");
+    click(find(welcome,"weatherWelcomeAddLocation"));
+    check(eval(welcome,"applicationWindow().isDialogOpen").toBool(),"welcome action opens native location search");
+    capture(window,"welcome-search");
+    if(qEnvironmentVariable("WEATHER_RENDERED")=="1")
+        check(eval(welcome,"applicationWindow().pageStack.layer.enabled").toBool(),"rendered search uses backdrop blur");
+    // Inject only a test list so overflowing result styling is deterministic and
+    // does not depend on an external geocoder or change the user's locations.
+    auto search=findInWindows("weatherLocationSearch");check(search,"location search list");
+    eval(search,"var fixture=Qt.createQmlObject('import QtQml.Models; ListModel { property bool loading: false; property bool networkError: false; function textChanged(text, delay) {} }',this); for(var i=0;i<20;++i) fixture.append({name: i===0 ? 'Wendover Airport, UT | United States' : 'Wendover test result '+i}); model=fixture");
+    eval(findInWindows("weatherLocationSearchField"),"text='Wendover';forceActiveFocus()");
+    QTest::mouseMove(window,QPoint(20,20));QTest::qWait(200);
+    auto firstResult=findInWindows("weatherLocationResult0");check(firstResult,"search fixture result visible");
+    capture(window,"search-results");
+    check(eval(firstResult,"background.color.a===0 || hovered || mouseArea.pressed || activeFocus || (ListView.isCurrentItem && ListView.view.activeFocus)").toBool(),"search rows only highlight during interaction");
+    auto card=findInWindows("weatherSearchResultsCard");
+    auto field=findInWindows("weatherLocationSearchField");
+    auto searchButton=findInWindows("weatherLocationSearchButton");
+    check(card && field && searchButton,"search card and controls are visible");
+    check(qAbs(card->mapToScene(QPointF(card->width(),0)).x()-searchButton->mapToScene(QPointF(searchButton->width(),0)).x())<1,"shared results card extends to the search button's right edge");
+    check(qAbs(card->mapToScene(QPointF()).x()-field->mapToScene(QPointF()).x())<1,"shared results card aligns with search field");
+    check(card->property("radius")==eval(field,"background.radius"),"shared results card matches search field radius");
+    auto searchPosition=field->mapToScene(QPointF());
+    eval(search,"positionViewAtEnd()");capture(window,"search-results-bottom");
+    check(field->mapToScene(QPointF())==searchPosition,"search field stays fixed while results scroll");
+    click(findInWindows("weatherCloseLocationSearch"));QTest::qWait(600);
+    check(!eval(welcome,"applicationWindow().isDialogOpen").toBool(),"circular search close button closes the dialog");
+    check(!eval(welcome,"applicationWindow().pageStack.layer.enabled").toBool(),"closing search releases the blur layer");
+    click(find(welcome,"weatherWelcomeSettings"));
+    check(eval(welcome,"applicationWindow().isDialogOpen").toBool(),"welcome settings remain accessible");
+    eval(window,"settingsDialogLoader.item.close()");QTest::qWait(600);
+    eval(welcome,"settingsModel.forecastStyle='Flat';settingsModel.save()");
+    capture(window,"welcome-flat");
+    window->resize(390,480);capture(window,"welcome-narrow");
+    auto button=find(welcome,"weatherWelcomeAddLocation");
+    auto pos=button->mapToScene(QPointF(0,0));
+    check(pos.x()>=0 && pos.y()>=0 && pos.x()+button->width()<=window->width() && pos.y()+button->height()<=window->height(),"welcome action fits the smallest window");
+    click(button);
+    check(eval(welcome,"applicationWindow().pageStack.depth>1").toBool(),"compact welcome opens location search page");
+    qInfo("PASS: first-launch welcome, wide and compact location search, settings and both welcome styles");
+    window->close();
 }
 static void run(QQuickWindow *window,QQuickItem *dashboard) {
     QTest::qWait(700);
@@ -74,12 +124,28 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     // Native settings and location management remain reachable.
     click(find(dashboard,"weatherSettings"));
     check(eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"native settings dialog opens");
-    capture(window,"settings");
+    auto motion=findInWindows("weatherAnimateScenery");
+    check(motion,"settings motion switch visible");
+    check(find(motion,"sequoiaSwitchTrack"),"settings uses the shared Sequoia switch indicator");
+    capture(motion->window(),"settings");
+    click(motion);
+    check(!eval(dashboard,"settingsModel.animateWeather").toBool(),"settings switch saves mouse changes");
+    motion->forceActiveFocus();QTest::keyClick(motion->window(),Qt::Key_Space);QTest::qWait(200);
+    check(eval(dashboard,"settingsModel.animateWeather").toBool(),"settings switch saves keyboard changes");
     eval(window,"settingsDialogLoader.item.close()");QTest::qWait(600);
     eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(200);
     check(eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"native location dialog opens");
-    eval(window,"locationsListDialogLoader.item.close()");QTest::qWait(600);
+    auto managed=findInWindows("weatherManagedLocations");check(managed,"location management list visible");
+    auto addLocation=findInWindows("weatherManageAddLocation");check(addLocation,"management add location button visible");
+    addLocation->forceActiveFocus();
+    capture(managed->window(),"locations");
+    click(addLocation);QTest::qWait(400);
+    check(findInWindows("weatherLocationSearchField"),"management add button opens location search");
+    click(findInWindows("weatherCloseLocationSearch"));QTest::qWait(600);
+    eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(200);
+    click(findInWindows("weatherManagedLocation1"));QTest::qWait(600);
     check(!eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"dialogs close");
+    check(eval(dashboard,"location.name==='Monterey'").toBool(),"management row selects its location");
     eval(dashboard,"switchPageIndex(1)");
     check(eval(dashboard,"location.name==='Monterey'").toBool(),"switch saved location");
     check(eval(find(dashboard,"weatherDay0"),"modelData.minTemp").toDouble()==29,"daily rows switch to the new location's temperatures");
@@ -94,6 +160,12 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     window->resize(390,760);capture(window,"narrow");
     checkForecastRows(dashboard);
     check(!dashboard->property("sidebar").toBool(),"responsive sidebar");
+    eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(250);
+    auto compactMotion=find(window->contentItem(),"weatherAnimateScenery");
+    check(compactMotion,"compact settings page has the Sequoia switch");
+    check(eval(compactMotion,"height >= contentItem.implicitHeight + topPadding + bottomPadding - 1").toBool(),"compact motion description fits without overlapping the next setting");
+    capture(window,"settings-narrow");
+    eval(dashboard,"applicationWindow().pageStack.pop()");QTest::qWait(250);
     click(find(dashboard,"weatherRefresh"));
     QTest::qWait(300);
     check(eval(dashboard,"hasWeather && !location.loading && location.errorMessage.length===0").toBool(),"refresh completes without discarding forecast");
@@ -104,6 +176,14 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     for(int i=0;i<50 && eval(dashboard,"location.loading").toBool();++i)QTest::qWait(100);
     check(eval(dashboard,"hasWeather && !location.loading && location.errorMessage.length>0").toBool(),"failed refresh preserves the last forecast");
     capture(window,"offline");
+    window->resize(1180,820);QTest::qWait(200);
+    eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(250);
+    click(findInWindows("weatherDeleteLocation0"));
+    check(eval(dashboard,"WeatherLocationListModel.count===1").toBool(),"management delete removes one location");
+    click(findInWindows("weatherDeleteLocation0"));
+    QTest::qWait(200);
+    auto welcome=find(window->contentItem(),"sequoiaWeatherWelcome");
+    check(welcome && welcome->isVisible(),"removing the last location returns to welcome");
     qInfo("PASS: forecasts, units, day/location selection, temperature-bar bounds, styles, palette alpha, settings, location management, reduced motion, responsive layouts and refresh");
     window->close();
 }
@@ -113,6 +193,12 @@ static void start() {
     auto timer=new QTimer(qApp);
     QObject::connect(timer,&QTimer::timeout,[timer]{
         for(auto w:QGuiApplication::allWindows())if(auto window=qobject_cast<QQuickWindow*>(w)) {
+            if(qEnvironmentVariable("WEATHER_WELCOME")=="1") {
+                if(auto welcome=find(window->contentItem(),"sequoiaWeatherWelcome")) {
+                    timer->stop();runWelcome(window,welcome);return;
+                }
+                continue;
+            }
             if(auto dashboard=find(window->contentItem(),"sequoiaWeatherDashboard")) {
                 timer->stop();run(window,dashboard);return;
             }

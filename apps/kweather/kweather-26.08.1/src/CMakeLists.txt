@@ -132,6 +132,8 @@ qt_add_qml_module(kweatherlocations
     VERSION 1.0
     QML_FILES
     "qml/locationslist/LocationsListView.qml"
+    "qml/locationslist/LocationSurface.qml"
+    "qml/locationslist/LocationDialog.qml"
     "qml/locationslist/LocationsListPage.qml"
     "qml/locationslist/LocationsListDialog.qml"
     "qml/locationslist/AddLocationDialog.qml"
@@ -140,6 +142,11 @@ qt_add_qml_module(kweatherlocations
     STATIC
 )
 
+# Use the same indicator as the system Quick style; keep a single source of truth.
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../../../../themes/application-style/quick/SwitchIndicator.qml"
+    "${CMAKE_CURRENT_BINARY_DIR}/SequoiaSwitchIndicator.qml" COPYONLY)
+set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/SequoiaSwitchIndicator.qml"
+    PROPERTIES QT_RESOURCE_ALIAS "qml/settings/SequoiaSwitchIndicator.qml")
 qt_add_qml_module(kweathersettings
     URI "org.kde.kweather.settings"
     VERSION 1.0
@@ -147,6 +154,7 @@ qt_add_qml_module(kweathersettings
     "qml/settings/SettingsPage.qml"
     "qml/settings/SettingsComponent.qml"
     "qml/settings/SettingsDialog.qml"
+    "${CMAKE_CURRENT_BINARY_DIR}/SequoiaSwitchIndicator.qml"
     "qml/settings/TemperatureUnitComboBox.qml"
     "qml/settings/SpeedUnitComboBox.qml"
     "qml/settings/PressureUnitComboBox.qml"

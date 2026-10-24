@@ -76,7 +76,7 @@ Kirigami.Page {
         anchors.fill: parent; spacing: 0
         Rectangle {
             visible: dashboard.sidebar
-            Layout.preferredWidth: 214; Layout.fillHeight: true
+            Layout.preferredWidth: 238; Layout.fillHeight: true
             color: dashboard.dynamic ? "#47121f31" : "transparent"
             ColumnLayout {
                 anchors.fill: parent; anchors.margins: 18; spacing: 10
@@ -97,12 +97,15 @@ Kirigami.Page {
                         required property var modelData
                         required property int index
                         width: cities.width; height: 88
+                        padding: 12
+                        leftInset: 0; rightInset: 0; topInset: 0; bottomInset: 0
                         onClicked: dashboard.switchPageIndex(index)
                         Accessible.name: modelData.name
                         background: Rectangle {
                             radius: 18
                             color: city.index === dashboard.currentIndex ? (dashboard.dynamic ? "#384e6588" : Qt.alpha(Kirigami.Theme.highlightColor,0.12)) : city.hovered ? Qt.alpha(dashboard.ink,0.06) : "transparent"
-                            border.color: city.visualFocus ? dashboard.accent : "transparent"; border.width: 2
+                            border.color: city.index === dashboard.currentIndex || city.visualFocus ? Kirigami.Theme.highlightColor : "transparent"
+                            border.width: city.visualFocus ? 2 : 1
                             Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
                         }
                         contentItem: ColumnLayout {

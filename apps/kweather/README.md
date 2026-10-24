@@ -12,6 +12,26 @@ pressure, UV index, sunrise, sunset and moon phase. Location search, adding,
 reordering and deleting locations, unit preferences and About use KDE's existing
 models and dialogs. Hover over an hour for its condition and wind speed.
 
+With no saved locations, a centered welcome screen presents a weather illustration,
+a short introduction and an accent-colored Add location button. It replaces the
+first-launch wizard; Settings remains accessible for appearance and units. The
+same screen returns when the last location is removed and follows Flat/Dynamic
+styling, including the system palette and transparency in Flat mode.
+
+Settings uses rounded, padded cards with soft shadows and the same animated
+switch indicator as `themes/application-style/quick/SwitchIndicator.qml`, bundled
+at build time. The switch retains native mouse, keyboard and accessibility input;
+the existing unit selectors and persistence remain unchanged.
+Location search and management use rounded dialog surfaces, plain search result
+rows inside one shared card and padded saved-location cards, accent-focused search
+fields and rounded action buttons. The results card spans the search field and
+button together, matches the field's corner radius, and scrolls independently
+beneath the fixed controls. The
+translucent search dialog blurs the underlying app with Qt Quick effects while
+keeping its own controls sharp; closing it releases the blur layers. Search has
+no header or footer separator, including when results overflow. Location
+selection, drag ordering and deletion continue to use the native models.
+
 Dynamic mode uses a layered sky with drifting clouds, sunlight, moonlight,
 stars, rain and snow. Motion stops when the window is minimized, when Flat mode
 is selected, or when animations are disabled in Settings. Global zero-duration
@@ -69,5 +89,7 @@ relocation, update fallback, edited-file protection and reversible installation.
 Locations use distinct temperature ranges to catch stale forecast rows after
 switching cities. Bar geometry is checked at wide and narrow sizes, including
 a zero-range day at the upper endpoint of the temperature scale.
+`--welcome` checks first launch without saved locations, both welcome styles,
+Settings access and the location-search action at wide and compact sizes.
 Use `--mode light|dark --material solid|transparent` to test each palette.
 The runtime does not contain the test fixtures or test hook.

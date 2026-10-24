@@ -19,6 +19,10 @@ import org.kde.kweather.components
 
 ListView {
     id: root
+    objectName: "weatherManagedLocations"
+    spacing: 12
+    topMargin: 8; bottomMargin: 8
+    clip: true
 
     signal closeRequested
 
@@ -92,7 +96,7 @@ ListView {
 
         Item {
             id: dragParent
-            width: listItem.width
+            width: root.width
             height: listItem.height
 
             property int visualIndex: DelegateModel.itemsIndex
@@ -115,7 +119,13 @@ ListView {
 
             ListDelegate {
                 id: listItem
-                width: root.width
+                objectName: "weatherManagedLocation" + index
+                width: root.width - 16
+                background: LocationSurface {
+                    hovered: listItem.hovered
+                    pressed: listItem.mouseArea.pressed || dragParent.held
+                    focused: listItem.activeFocus
+                }
 
                 leftPadding: Kirigami.Units.largeSpacing
                 rightPadding: Kirigami.Units.largeSpacing
@@ -168,6 +178,7 @@ ListView {
                     // handle for desktop users to drag
                     MouseArea {
                         id: dragHandle
+                        objectName: "weatherLocationDragHandle" + index
                         implicitWidth: Kirigami.Units.iconSizes.smallMedium
                         implicitHeight: Kirigami.Units.iconSizes.smallMedium
                         cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
@@ -190,8 +201,8 @@ ListView {
 
                     // weather icon and temperature
                     ColumnLayout {
-                        Layout.leftMargin: Kirigami.Units.largeSpacing * 2
-                        Layout.rightMargin: Kirigami.Units.largeSpacing * 2
+                        Layout.leftMargin: 12
+                        Layout.rightMargin: 12
                         spacing: Kirigami.Units.smallSpacing
                         Kirigami.Icon {
                             Layout.alignment: Qt.AlignHCenter
@@ -213,6 +224,7 @@ ListView {
                         Layout.fillWidth: true
 
                         level: 2
+                        font.pointSize: 12
                         text: model.location.name
                         elide: Text.ElideRight
                         maximumLineCount: 2
@@ -220,6 +232,11 @@ ListView {
                     }
 
                     ToolButton {
+                        id: deleteButton
+                        objectName: "weatherDeleteLocation" + index
+                        Layout.preferredWidth: 40
+                        Layout.preferredHeight: 40
+                        padding: 10
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                         Layout.leftMargin: Kirigami.Units.smallSpacing
 
@@ -227,6 +244,20 @@ ListView {
                         text: i18n("Delete")
                         onClicked: listItem.deleteItem()
                         display: AbstractButton.IconOnly
+                        contentItem: Kirigami.Icon {
+                            source: "edit-delete"
+                            isMask: true
+                            implicitWidth: 20; implicitHeight: 20
+                            color: deleteButton.hovered ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
+                        }
+                        background: Rectangle {
+                            radius: 12
+                            color: deleteButton.down ? Qt.alpha(Kirigami.Theme.negativeTextColor, 0.18)
+                                : deleteButton.hovered ? Qt.alpha(Kirigami.Theme.negativeTextColor, 0.10) : "transparent"
+                            border.width: deleteButton.visualFocus ? 2 : 0
+                            border.color: Kirigami.Theme.highlightColor
+                            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+                        }
 
                         ToolTip.delay: Kirigami.Units.toolTipDelay
                         ToolTip.timeout: 5000

@@ -10,7 +10,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 
-Kirigami.ScrollablePage {
+Kirigami.Page {
     id: root
     title: i18n("Add location")
 
@@ -18,5 +18,6 @@ Kirigami.ScrollablePage {
 
     AddLocationListView {
         id: addLocationListView
+        anchors.fill: parent
     }
 }

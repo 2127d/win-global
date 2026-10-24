@@ -8,6 +8,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Effects
 
 import org.kde.kirigami as Kirigami
 import org.kde.config as KConfig
@@ -31,6 +32,12 @@ Kirigami.AbstractApplicationWindow {
     readonly property bool atmospheric: settingsModel.forecastStyle === "Dynamic"
     color: atmospheric ? "#15283d" : systemPalette.window.a < 1 ? "transparent" : systemPalette.window
     background: Item {
+        layer.enabled: appwindow.locationSearchOpen && GraphicsInfo.api !== GraphicsInfo.Software
+        layer.effect: MultiEffect {
+            blurEnabled: true
+            blurMax: 32; blur: 1
+            autoPaddingEnabled: false
+        }
         Rectangle {
             anchors.fill: parent
             visible: !appwindow.atmospheric
@@ -46,7 +53,17 @@ Kirigami.AbstractApplicationWindow {
         }
     }
 
-    pageStack: PageStack {}
+    pageStack: PageStack {
+        // Blur only the app beneath the modal; the dialog and its text stay sharp.
+        layer.enabled: appwindow.locationSearchOpen && GraphicsInfo.api !== GraphicsInfo.Software
+        layer.effect: MultiEffect {
+            blurEnabled: true
+            blurMax: 32; blur: 1
+            autoPaddingEnabled: false
+        }
+    }
+
+    readonly property bool locationSearchOpen: addLocationDialogLoader.isOpen
 
     readonly property bool isWideScreen: width > 540
 
@@ -60,13 +77,11 @@ Kirigami.AbstractApplicationWindow {
         // initial page
         switchToPage(getPage("Forecast"), 1);
         if (settingsModel.firstStartup) {
-            setupWizardLoader.source = "SetupWizard.qml";
-            setupWizardLoader.item.open();
+            // The empty-state welcome page is the setup entry point. Appearance
+            // and units remain available from its Settings button.
+            settingsModel.firstStartup = false;
+            settingsModel.save();
         }
-    }
-
-    Loader {
-        id: setupWizardLoader
     }
 
     Kirigami.PagePool {

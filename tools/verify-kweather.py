@@ -39,12 +39,14 @@ def main():
     parser.add_argument('--mode',choices=('light','dark'),default='dark')
     parser.add_argument('--material',choices=('solid','transparent'),default='solid')
     parser.add_argument('--empty',action='store_true')
+    parser.add_argument('--welcome',action='store_true',help='Test first launch with no saved locations')
+    parser.add_argument('--rendered',action='store_true',help='Use the live Wayland renderer to check shader effects with isolated test data')
     args=parser.parse_args()
     helper=ROOT/'.staging/verify-kweather.so'; source=ROOT/'apps/kweather/tests/verify.cpp'
     flags=shlex.split(subprocess.check_output(['pkg-config','--cflags','--libs','Qt6Widgets','Qt6Quick','Qt6Test','Qt6Network'],text=True))
     if not helper.exists() or source.stat().st_mtime>helper.stat().st_mtime:
         subprocess.run(['c++','-std=c++17','-shared','-fPIC',str(source),'-o',str(helper),*flags],check=True)
-    output=ROOT/(f'preview/kweather-{args.mode}-{args.material}'+('-empty' if args.empty else ''));output.mkdir(parents=True,exist_ok=True)
+    output=ROOT/(f'preview/kweather-{args.mode}-{args.material}'+('-welcome' if args.welcome else '-empty' if args.empty else '')+('-rendered' if args.rendered else ''));output.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='sequoia-weather-test-',ignore_cleanup_errors=True) as temp:
         base=Path(temp);env=dict(os.environ)
         for kind in ('CONFIG','DATA','CACHE','STATE','RUNTIME'):
@@ -53,6 +55,8 @@ def main():
         (base/'config/kweather').mkdir()
         config='[General]\nfirstStartup=false\nforecastStyle=Dynamic\ntemperatureUnits=Celsius\n\n'
         config+=fixture(base,40.53,-112.30,'Tooele','weather-showers')+'\n'+fixture(base,36.60,-121.89,'Monterey','weather-clear-night')
+        if args.welcome:
+            config='[General]\nfirstStartup=true\nforecastStyle=Dynamic\n'
         (base/'config/kweather/kweatherrc').write_text(config)
         if args.empty:
             import shutil
@@ -61,7 +65,12 @@ def main():
         env.update(QT_QPA_PLATFORM='offscreen',QT_QPA_PLATFORMTHEME='kde',QT_STYLE_OVERRIDE='Fusion',QT_QUICK_BACKEND='software',
             QT_FORCE_STDERR_LOGGING='1',XDG_DATA_DIRS=str(Path.home()/'.local/share')+':/usr/local/share:/usr/share',WEATHER_CAPTURE=str(output),WEATHER_MATERIAL=args.material,LC_ALL='C.UTF-8')
         env.pop('LD_PRELOAD',None)
+        if args.rendered:
+            env.update(QT_QPA_PLATFORM='wayland',QT_QUICK_BACKEND='rhi',QSG_RHI_BACKEND='opengl',
+                XDG_RUNTIME_DIR=os.environ['XDG_RUNTIME_DIR'])
+        env['WEATHER_RENDERED']='1' if args.rendered else ''
         env['WEATHER_EMPTY']='1' if args.empty else ''
+        env['WEATHER_WELCOME']='1' if args.welcome else ''
         color_line=(base/'config/kdeglobals').read_text().split('[Colors:Window]',1)[1].split('BackgroundNormal=',1)[1].splitlines()[0]
         channels=color_line.split(',');env['WEATHER_ALPHA']=channels[3] if len(channels)==4 else '255'
         with (output/'verification.log').open('w') as log_file:

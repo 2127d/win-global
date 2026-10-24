@@ -20,19 +20,80 @@ ColumnLayout {
 
     spacing: 0
 
+    component SettingsCard: Item {
+        default property alias delegates: rows.data
+        Layout.fillWidth: true
+        implicitHeight: rows.implicitHeight + 18
+        Kirigami.Theme.colorSet: Kirigami.Theme.View
+        Kirigami.Theme.inherit: false
+        Kirigami.ShadowedRectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: Math.min(540, parent.width - 32)
+            height: parent.height
+            radius: 22
+            color: Kirigami.Theme.backgroundColor
+            border.width: 1
+            border.color: Qt.alpha(Kirigami.Theme.textColor, 0.13)
+            shadow.size: Kirigami.Units.largeSpacing
+            shadow.color: Qt.alpha(Kirigami.Theme.textColor, 0.10)
+            ColumnLayout {
+                id: rows
+                anchors.fill: parent; anchors.margins: 9
+                spacing: 0
+            }
+        }
+    }
+
+    component RowBackground: Rectangle {
+        required property var control
+        radius: 13
+        color: control.down ? Qt.alpha(Kirigami.Theme.textColor, 0.12)
+            : control.hovered ? Qt.alpha(Kirigami.Theme.textColor, 0.05) : "transparent"
+        border.width: control.visualFocus ? 2 : 0
+        border.color: Kirigami.Theme.highlightColor
+        Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+    }
+
     FormCard.FormHeader {
         title: i18n("General")
     }
 
-    FormCard.FormCard {
-        FormCard.FormSwitchDelegate {
+    SettingsCard {
+        SwitchDelegate {
+            id: motionSwitch
+            objectName: "weatherAnimateScenery"
+            Layout.fillWidth: true
             text: i18n("Animate weather scenery")
-            description: i18n("Subtle motion in Dynamic view. Turn off for a still sky.")
+            Accessible.description: i18n("Subtle motion in Dynamic view. Turn off for a still sky.")
+            implicitHeight: Math.max(motionLabels.implicitHeight, indicator.implicitHeight) + 28
+            Layout.minimumHeight: implicitHeight
+            leftPadding: mirrored ? indicator.width + 24 : 12
+            rightPadding: mirrored ? 12 : indicator.width + 24
+            topPadding: 14; bottomPadding: 14
+            hoverEnabled: true
             checked: settingsModel.animateWeather
             onToggled: { settingsModel.animateWeather = checked; settingsModel.save(); }
+            background: RowBackground { control: motionSwitch }
+            indicator: SequoiaSwitchIndicator {
+                control: motionSwitch
+                x: motionSwitch.mirrored ? 12 : motionSwitch.width - width - 12
+                y: (motionSwitch.height - height) / 2
+            }
+            contentItem: ColumnLayout {
+                id: motionLabels
+                spacing: 5
+                Label { text: motionSwitch.text; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                Label {
+                    text: motionSwitch.Accessible.description
+                    Layout.fillWidth: true; wrapMode: Text.WordWrap
+                    color: Kirigami.Theme.disabledTextColor
+                }
+            }
         }
         FormCard.FormComboBoxDelegate {
             id: forecastStyleDropdown
+            objectName: "weatherForecastStyleSetting"
+            background: RowBackground { control: forecastStyleDropdown }
 
             text: i18n("Forecast Style")
             currentIndex: indexOfValue(settingsModel.forecastStyle)
@@ -65,6 +126,7 @@ ColumnLayout {
 
         FormCard.FormButtonDelegate {
             id: aboutButton
+            background: RowBackground { control: aboutButton }
 
             text: i18n("About")
             onClicked: {
@@ -78,21 +140,25 @@ ColumnLayout {
         title: i18n("Units")
     }
 
-    FormCard.FormCard {
+    SettingsCard {
         TemperatureUnitComboBox {
             id: temperatureUnitsDropdown
+            objectName: "weatherTemperatureSetting"
+            background: RowBackground { control: temperatureUnitsDropdown }
         }
 
         FormCard.FormDelegateSeparator {}
 
         SpeedUnitComboBox {
             id: speedUnitsDropdown
+            background: RowBackground { control: speedUnitsDropdown }
         }
 
         FormCard.FormDelegateSeparator {}
 
         PressureUnitComboBox {
             id: pressureUnitsDropdown
+            background: RowBackground { control: pressureUnitsDropdown }
         }
 
         FormCard.FormDelegateSeparator {}
@@ -100,6 +166,7 @@ ColumnLayout {
         // Precipitation
         PrecipitationUnitComboBox {
             id: precipitationUnitsDropdown
+            background: RowBackground { control: precipitationUnitsDropdown }
         }
     }
 }
