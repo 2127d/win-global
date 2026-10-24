@@ -53,6 +53,7 @@ LocationDialog {
                     }
                 }
             }
+            Item { Layout.fillWidth: true }
         }
     }
 

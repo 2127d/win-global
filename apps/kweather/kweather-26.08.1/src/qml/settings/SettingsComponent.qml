@@ -56,6 +56,7 @@ ColumnLayout {
 
     FormCard.FormHeader {
         title: i18n("General")
+        Layout.bottomMargin: 8
     }
 
     SettingsCard {
@@ -138,6 +139,7 @@ ColumnLayout {
 
     FormCard.FormHeader {
         title: i18n("Units")
+        Layout.bottomMargin: 8
     }
 
     SettingsCard {

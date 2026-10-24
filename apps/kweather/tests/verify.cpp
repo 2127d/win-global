@@ -119,6 +119,14 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     // Exercise shader-backed dialogs directly on Wayland. The full forecast
     // interaction suite below uses the deterministic offscreen renderer.
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1") {
+        eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
+        const bool transparent=qEnvironmentVariableIntValue("WEATHER_ALPHA")<255;
+        check(eval(window,"pageStack.layer.enabled && background.layer.enabled").toBool()==transparent,"settings backdrop blur follows theme transparency");
+        check(qAbs(eval(window,"settingsDialogLoader.item.background.color.a").toDouble()*255-qEnvironmentVariableIntValue("WEATHER_ALPHA"))<=1,"settings surface uses the theme opacity");
+        capture(window,"settings");
+        click(findInWindows("weatherCloseSettings"));QTest::qWait(600);
+        check(!eval(window,"settingsDialogLoader.isOpen").toBool(),"circular settings close button closes the dialog");
+        check(!eval(window,"pageStack.layer.enabled || background.layer.enabled").toBool(),"closing settings releases backdrop blur");
         eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(300);
         check(eval(window,"locationsListDialogLoader.item.background.color.a < 0.9 && pageStack.layer.enabled && background.layer.enabled").toBool(),"rendered management dialog has translucency and backdrop blur");
         capture(window,"locations");
@@ -126,7 +134,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
         check(findInWindows("weatherLocationSearchField") && eval(window,"pageStack.layer.enabled").toBool(),"switching from management to search retains blur");
         click(findInWindows("weatherCloseLocationSearch"));QTest::qWait(600);
         check(!eval(window,"pageStack.layer.enabled || background.layer.enabled").toBool(),"closing location dialogs releases all blur layers");
-        qInfo("PASS: rendered location management translucency, blur, search transition and close");
+        qInfo("PASS: rendered theme-aware settings, location management translucency, blur, search transition and close");
         window->close();return;
     }
     auto temperature=find(dashboard,"weatherTemperature");check(temperature,"temperature label");
@@ -149,6 +157,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     // Native settings and location management remain reachable.
     click(find(dashboard,"weatherSettings"));
     check(eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"native settings dialog opens");
+    check(qAbs(eval(window,"settingsDialogLoader.item.background.color.a").toDouble()*255-qEnvironmentVariableIntValue("WEATHER_ALPHA"))<=1,"settings surface matches theme opacity");
     auto motion=findInWindows("weatherAnimateScenery");
     check(motion,"settings motion switch visible");
     check(find(motion,"sequoiaSwitchTrack"),"settings uses the shared Sequoia switch indicator");

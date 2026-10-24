@@ -32,7 +32,7 @@ Kirigami.AbstractApplicationWindow {
     readonly property bool atmospheric: settingsModel.forecastStyle === "Dynamic"
     color: atmospheric ? "#15283d" : systemPalette.window.a < 1 ? "transparent" : systemPalette.window
     background: Item {
-        layer.enabled: appwindow.locationDialogOpen && GraphicsInfo.api !== GraphicsInfo.Software
+        layer.enabled: appwindow.dialogBackdropBlur && GraphicsInfo.api !== GraphicsInfo.Software
         layer.effect: MultiEffect {
             blurEnabled: true
             blurMax: 32; blur: 1
@@ -55,7 +55,7 @@ Kirigami.AbstractApplicationWindow {
 
     pageStack: PageStack {
         // Blur only the app beneath the modal; the dialog and its text stay sharp.
-        layer.enabled: appwindow.locationDialogOpen && GraphicsInfo.api !== GraphicsInfo.Software
+        layer.enabled: appwindow.dialogBackdropBlur && GraphicsInfo.api !== GraphicsInfo.Software
         layer.effect: MultiEffect {
             blurEnabled: true
             blurMax: 32; blur: 1
@@ -64,6 +64,7 @@ Kirigami.AbstractApplicationWindow {
     }
 
     readonly property bool locationDialogOpen: addLocationDialogLoader.isOpen || locationsListDialogLoader.isOpen
+    readonly property bool dialogBackdropBlur: locationDialogOpen || (settingsDialogLoader.isOpen && systemPalette.window.a < 1)
 
     readonly property bool isWideScreen: width > 540
 
