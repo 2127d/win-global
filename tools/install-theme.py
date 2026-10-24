@@ -19,6 +19,7 @@ from installer_platform import (COMPONENTS, DISTROS, NATIVE, detected_distro,
 import widget_payload
 import shell_overrides
 import motion_install
+import modal_dimming
 from login_payload import FILES as LOGIN_FILES, stage as stage_login
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,7 +48,7 @@ _FEDORA_NATIVE_FILES = NATIVE_FILES.copy()
 LIBDIR, PLUGINDIR = native_layout()
 NATIVE_FILES = {name.replace('usr/lib64/qt6/plugins', 'usr/' + PLUGINDIR)
                .replace('usr/lib64/cmake', 'usr/' + LIBDIR + '/cmake') for name in NATIVE_FILES}
-SYSTEM_FILES = NATIVE_FILES | LOGIN_FILES
+SYSTEM_FILES = NATIVE_FILES | LOGIN_FILES | {modal_dimming.plugin_path(PLUGINDIR)}
 # Accept earlier receipts so upgrades/removal can retire the old login wallpapers.
 SYSTEM_ALLOWED_FILES = SYSTEM_FILES | _FEDORA_NATIVE_FILES | {
     f'usr/local/share/sequoia-eleven/login-screen/assets/wallpaper-{mode}.png'
@@ -109,6 +110,8 @@ def dependencies(distro=None, components=None):
 
 
 def component_for(name):
+    if name == modal_dimming.plugin_path(PLUGINDIR):
+        return 'modal-dimming'
     if name in LOGIN_FILES or name.startswith('usr/local/share/sequoia-eleven/login-screen/'):
         return 'login'
     if widget_payload.allowed(name, PLUGINDIR):
@@ -380,14 +383,18 @@ def perform(args):
         scope = lambda name: change_shell if shell_overrides.is_shell(name) else component_for(name) in args.components
         receipt.validate(force=args.force, scope=scope)
         retained_shell = current_shell - set(args.components)
-        shared = not args.keep_system and bool(set(args.components) & (NATIVE | {'widgets', 'login'}))
+        shared = not args.keep_system and bool(set(args.components) & (NATIVE | {'widgets', 'login', 'modal-dimming'}))
         shared = shared and (args.system_root / SYSTEM_STATE).exists()
         # Check both receipts before starting removal so local edits fail early.
         if shared:
             system_action('check', args)
+        if 'modal-dimming' in args.components:
+            modal_dimming.check_restore(args.prefix)
         if args.check:
             print('Removal checks passed.')
             return
+        if 'modal-dimming' in args.components:
+            modal_dimming.restore(args.prefix)
         if motion_backup:
             motion_install.restore(motion_backup)
             receipt = Receipt(args.prefix, USER_STATE, user_allowed)
@@ -427,6 +434,8 @@ def perform(args):
             for name, path in payload_files(native).items():
                 if component_for(name) not in components:
                     path.unlink()
+        if 'modal-dimming' in components:
+            modal_dimming.stage(native, PLUGINDIR)
         if 'login' in components:
             stage_login(native)
         if 'widgets' in components:
@@ -442,6 +451,10 @@ def perform(args):
             receipt.install(user, force=args.force,
                             original_overrides=original_user_files(user, stage), obsolete=obsolete,
                             scope=lambda name: user_scope(name, components))
+    if 'modal-dimming' in components and args.system_root == Path('/'):
+        live_prefix = Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share').absolute()
+        if args.prefix == live_prefix:
+            modal_dimming.activate(args.prefix)
     refresh(args.prefix)
     print('Installed. Select the installed theme components in System Settings. '
           'Close and reopen applications to load their new style. '

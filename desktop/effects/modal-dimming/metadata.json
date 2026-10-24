@@ -1,0 +1,9 @@
+{
+    "KPlugin": {
+        "Name": "Sequoia Modal Dimming",
+        "Description": "Coordinated decoration dimming for embedded dialogs and native modal parents",
+        "Category": "Focus",
+        "License": "GPL-2.0-or-later",
+        "EnabledByDefault": false
+    }
+}

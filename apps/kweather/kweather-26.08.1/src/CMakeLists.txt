@@ -37,6 +37,8 @@ target_link_libraries(kweatherLib
 )
 
 add_executable(kweather ${kweather_SRCS})
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../../desktop/effects/modal-dimming/client ${CMAKE_CURRENT_BINARY_DIR}/modal-bridge)
+target_link_libraries(kweather PRIVATE sequoia-modal-bridge)
 
 qt_add_qml_module(kweather
     URI "org.kde.kweather"

@@ -1,0 +1,7 @@
+Accepting client connections on sockets: QList("sequoia-modal-test")
+kwin_screencast: Failed to connect PipeWire context
+kf.coreaddons: The plugin "/usr/lib64/qt6/plugins/kwin/effects/plugins/desktopemerge.so" explicitly states an 'Id' in the embedded metadata. This value should be removed, the resulting pluginId will not be affected by it
+kf.iconthemes: Icon theme "SequoiaTahoe-light" not found.
+kf.svg: Could not locate metadata for theme "sequoia-eleven-light"
+kf.plasma.core: Could not locate metadata for theme "sequoia-eleven-light"
+kf.coreaddons: The plugin "/usr/lib64/qt6/plugins/kwin/effects/plugins/desktopemerge.so" explicitly states an 'Id' in the embedded metadata. This value should be removed, the resulting pluginId will not be affected by it

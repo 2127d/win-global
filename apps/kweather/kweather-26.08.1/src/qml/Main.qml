@@ -71,6 +71,12 @@ Kirigami.AbstractApplicationWindow {
 
     readonly property bool isDialogOpen: settingsDialogLoader.isOpen || addLocationDialogLoader.isOpen || locationsListDialogLoader.isOpen
 
+    // Follow the same popup fade, including exit; no dimming on compact pages.
+    readonly property real sequoiaModalAmount: 0.3 * Math.max(
+        settingsDialogLoader.isOpen ? settingsDialogLoader.item.opacity : 0,
+        addLocationDialogLoader.isOpen ? addLocationDialogLoader.item.opacity : 0,
+        locationsListDialogLoader.isOpen ? locationsListDialogLoader.item.opacity : 0)
+
     KConfig.WindowStateSaver {
         configGroupName: "MainWindow"
     }

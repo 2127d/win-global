@@ -35,6 +35,10 @@ INTRO = '''SEQUOIA ELEVEN — INSTALLER
    with the complete desktop. It saves a restorable snapshot before applying
    custom system animations, keeps panel sliding enabled and restarts Plasma.
    Remove the Animation kit in the uninstaller to restore the saved animations.
+   Modal dimming is also optional and unchecked by default. It builds a native
+   KWin effect for Plasma 6.7+, with Weather integration for embedded dialogs.
+   It is independent of the Animation kit and requires administrator permission
+   for its shared plugin. Remove it using the matching uninstaller checkbox.
 5. In System Settings > Colors & Themes > Global Theme, select Sequoia Eleven.
    Enable Desktop layout to recreate the included top bar and bottom dock.
    Leave it unchecked to preserve existing panels and desktop widgets.

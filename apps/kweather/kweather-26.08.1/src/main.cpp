@@ -31,6 +31,7 @@
 
 #include "kweathersettings.h"
 #include "version.h"
+#include "modalbridge.h"
 #include "weatherlocation.h"
 
 class AbstractHourlyWeatherForecast;
@@ -101,6 +102,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     }
 
     if (auto window = qobject_cast<QQuickWindow *>(engine.rootObjects().first())) {
+        new SequoiaModalBridge(window);
         auto updateBlur = [window] {
             KWindowEffects::enableBlurBehind(window, window->color().alpha() < 255);
         };

@@ -105,3 +105,9 @@ Use it with `--rendered` to check the theme-aware scenery blur behind these page
 card expansion, stable popup geometry, saved values, keyboard navigation and
 single-selector expansion. Combine it with `--compact` for the smallest layout.
 The runtime does not contain the test fixtures or test hook.
+
+The optional **Modal dimming** desktop effect coordinates the title bar with Weather's
+embedded popup fades. Its reusable Wayland bridge is linked from
+`desktop/effects/modal-dimming/client`; Weather works normally when the effect is
+absent. Compact Settings/About/location pages do not dim the title bar. The effect
+is installed and removed independently of the app makeover.

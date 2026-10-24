@@ -57,6 +57,16 @@ class WizardTests(unittest.TestCase):
         window.go_back()
         self.assertEqual(set(window.selection()[0]), {'icons', 'colors'})
 
+    def test_modal_dimming_is_independent_and_opt_in(self):
+        window = self.window
+        box = window.component_boxes['modal-dimming']
+        self.assertTrue(box.isEnabled())
+        self.assertFalse(box.isChecked())
+        self.assertNotIn('modal-dimming', window.selection()[0])
+        window.global_box.setChecked(False)
+        box.setChecked(True)
+        self.assertEqual(window.selection(), (['modal-dimming'], []))
+
     def test_apps_only(self):
         self.window.advance()
         self.window.global_box.setChecked(False)

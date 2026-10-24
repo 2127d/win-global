@@ -108,7 +108,7 @@ class InstallerWindow(QMainWindow):
         self.global_box.setChecked(True)
         self.global_box.toggled.connect(self.global_toggled)
         choices.addWidget(self.global_box)
-        choices.addWidget(label('Includes the theme components below. The Animation kit and app makeovers are optional.'))
+        choices.addWidget(label('Includes the theme components below. Modal dimming, the Animation kit and app makeovers are optional.'))
         theme = QGroupBox('Theme components')
         grid = QGridLayout(theme)
         for i, (key, (title, description)) in enumerate(COMPONENTS.items()):

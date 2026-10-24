@@ -119,6 +119,7 @@ static void runCompact(QQuickWindow *window,QQuickItem *dashboard) {
     };
     window->resize(390,480);QTest::qWait(500);
     eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
+    check(window->property("sequoiaModalAmount").toDouble()==0,"compact pages do not dim the decoration");
     fits(findInWindows("weatherCompactBack"));
     fits(findInWindows("weatherOpenAbout"));
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1")
@@ -236,6 +237,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1") {
         qInfo("Checking Settings and About navigation");
         eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
+        check(qAbs(window->property("sequoiaModalAmount").toDouble()-.3)<.001,"popup reports its decoration dim amount");
         const bool transparent=qEnvironmentVariableIntValue("WEATHER_ALPHA")<255;
         check(eval(window,"pageStack.layer.enabled && background.layer.enabled").toBool()==transparent,"settings backdrop blur follows theme transparency");
         check(qAbs(eval(window,"settingsDialogLoader.item.background.color.a").toDouble()*255-qEnvironmentVariableIntValue("WEATHER_ALPHA"))<=1,"settings surface uses the theme opacity");
@@ -267,6 +269,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
         click(findInWindows("weatherOpenAbout"));QTest::qWait(500);
         click(findInWindows("weatherCloseSettings"));QTest::qWait(600);
         check(!eval(window,"settingsDialogLoader.isOpen").toBool(),"circular settings close button closes the dialog");
+        check(window->property("sequoiaModalAmount").toDouble()==0,"closing popup releases decoration dimming");
         check(!eval(window,"pageStack.layer.enabled || background.layer.enabled").toBool(),"closing settings releases backdrop blur");
         eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
         check(findInWindows("weatherOpenAbout") && !findInWindows("weatherAboutBack"),"reopening settings starts at Settings");

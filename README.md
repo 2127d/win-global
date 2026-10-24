@@ -978,3 +978,17 @@ The three updated Window Title Fork QML files are backed up before replacement.
 Validation: `python3 tools/verify-desktop-menu.py` checks native menu rendering
 and interaction offscreen; add `--native` to check focus and minimization in
 a private Wayland compositor and Plasma session.
+
+### Optional modal dimming
+
+**Modal dimming** is an independent installer/uninstaller option, unchecked by
+default. The native KWin effect lives in `desktop/effects/modal-dimming/` and builds
+against the destination's Plasma 6.7+ development package. Weather reports its
+embedded popup fade so the effect can dim its decoration while keeping the popup
+bright. Native modal parents use KDE's existing dialog-parent effect when enabled,
+with a Sequoia fallback otherwise. Other embedded-popup applications need the same
+app bridge. The effect does not change desktop layouts or replace decorations.
+
+Its plugin is tracked by the normal installation receipt; its single `kwinrc` setting
+has a separate reversible snapshot. Removal preserves unrelated configuration.
+See `desktop/effects/modal-dimming/README.md` for the integration API and tests.

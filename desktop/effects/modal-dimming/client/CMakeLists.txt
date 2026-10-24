@@ -1,0 +1,7 @@
+find_package(Qt6 REQUIRED COMPONENTS Core Gui GuiPrivate DBus)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ModalWayland REQUIRED IMPORTED_TARGET wayland-client)
+add_library(sequoia-modal-bridge STATIC modalbridge.cpp modalbridge.h)
+set_target_properties(sequoia-modal-bridge PROPERTIES AUTOMOC ON)
+target_include_directories(sequoia-modal-bridge PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(sequoia-modal-bridge PRIVATE Qt6::GuiPrivate Qt6::DBus PkgConfig::ModalWayland PUBLIC Qt6::Gui)

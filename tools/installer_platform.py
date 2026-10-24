@@ -25,9 +25,10 @@ COMPONENTS = {
     'lockscreen': ('Lock screen', 'Clock, password field and media controls.'),
     'quick-style': ('Qt Quick application styling', 'Shared KDE application surfaces and switches.'),
     'login': ('Login screen', 'Requires the existing Plasma Login Manager; takes effect after reboot.'),
+    'modal-dimming': ('Modal dimming', 'Optional KWin effect for coordinated dialog and title-bar dimming. Requires Plasma 6.7 or newer; embedded popups need app integration.'),
     'animation-kit': ('Animation kit — Your palette', 'Optional system animations from Motion Lab. Saves a restorable snapshot before applying; restarts Plasma. Includes desktop widgets and Qt Quick styling.'),
 }
-OPTIONAL_COMPONENTS = {'animation-kit'}
+OPTIONAL_COMPONENTS = {'animation-kit', 'modal-dimming'}
 APPS = {'settings': ('Settings makeover', 'Requires System Settings 6.7.5.'),
         'gwenview': ('Gwenview makeover', 'Requires Gwenview 26.08.1.'),
         'kcalc': ('KCalc makeover', 'Modern keys and mode-aware resizing. Requires KCalc 26.08.1.'),
@@ -139,8 +140,13 @@ def packages_for(distro, components, apps=()):
     selected = set(resolve_components(components))
     apps = set(apps)
     packages = []
-    if selected & NATIVE or selected & {'login', 'widgets'} or apps:
+    if selected & NATIVE or selected & {'login', 'widgets', 'modal-dimming'} or apps:
         packages += BUILD[distro] + ['gettext']
+    if 'modal-dimming' in selected:
+        packages += {'fedora': ['kwin-devel', 'libepoxy-devel', 'libdrm-devel', 'vulkan-loader-devel', 'qt6-qttools'],
+                     'arch': ['kwin', 'libepoxy', 'libdrm', 'vulkan-headers', 'qt6-tools'],
+                     'ubuntu': ['kwin-dev', 'libepoxy-dev', 'libdrm-dev', 'libvulkan-dev', 'qdbus-qt6'],
+                     'debian': ['kwin-dev', 'libepoxy-dev', 'libdrm-dev', 'libvulkan-dev', 'qdbus-qt6']}[distro]
     if 'decorations' in selected:
         packages += [{'fedora': 'kdecoration-devel', 'arch': 'kdecoration',
                       'ubuntu': 'libkdecorations3-dev', 'debian': 'libkdecorations3-dev'}[distro]]
@@ -207,11 +213,11 @@ def packages_for(distro, components, apps=()):
     if 'kweather' in apps:
         packages += {
             'fedora': ['flatpak', 'qt6-qtcharts-devel', 'qt6-qtpositioning-devel', 'qt6-qtsvg-devel',
-                       'kf6-kholidays-devel', 'kf6-kirigami-addons-devel', 'kf6-qqc2-desktop-style'],
-            'arch': ['flatpak', 'qt6-charts', 'qt6-positioning', 'qt6-svg', 'kholidays', 'kirigami-addons', 'qqc2-desktop-style'],
-            'ubuntu': ['flatpak', 'qt6-charts-dev', 'qt6-positioning-dev', 'qt6-svg-dev', 'libkf6holidays-dev',
+                       'kf6-kholidays-devel', 'kf6-kirigami-addons-devel', 'kf6-qqc2-desktop-style', 'qt6-qtbase-private-devel', 'wayland-devel'],
+            'arch': ['flatpak', 'qt6-charts', 'qt6-positioning', 'qt6-svg', 'wayland', 'kholidays', 'kirigami-addons', 'qqc2-desktop-style'],
+            'ubuntu': ['flatpak', 'qt6-charts-dev', 'qt6-positioning-dev', 'qt6-svg-dev', 'qt6-base-private-dev', 'libwayland-dev', 'libkf6holidays-dev',
                        'kirigami-addons-dev', 'qml6-module-org-kde-kholidays', 'qml6-module-org-kde-desktop'],
-            'debian': ['flatpak', 'qt6-charts-dev', 'qt6-positioning-dev', 'qt6-svg-dev', 'libkf6holidays-dev',
+            'debian': ['flatpak', 'qt6-charts-dev', 'qt6-positioning-dev', 'qt6-svg-dev', 'qt6-base-private-dev', 'libwayland-dev', 'libkf6holidays-dev',
                        'kirigami-addons-dev', 'qml6-module-org-kde-kholidays', 'qml6-module-org-kde-desktop'],
         }[distro]
     return sorted(set(packages))
