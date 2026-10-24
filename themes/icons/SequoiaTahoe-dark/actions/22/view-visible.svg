@@ -1,9 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 22 22">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#dedede;
-      }</style>
- </defs>
- <path d="m10.998 5.0391c-3.7698 0.00458-7.0699 2.3668-8.0076 5.7305a1.042 0.95988 0 0 0 0 0.47852c0.94567 3.3561 4.2457 5.7106 8.0096 5.7129a1.042 0.95988 0 0 0 0.0019 0c3.7698-0.0046 7.0699-2.3668 8.0076-5.7305a1.042 0.95988 0 0 0 0-0.48047c-0.94562-3.3561-4.2457-5.7086-8.0096-5.7109a1.042 0.95988 0 0 0-2e-3 0zm2e-3 0.96094c3.2947 0.00204 6.1721 2.0544 6.9998 4.9922-0.82085 2.9444-3.6999 5.0038-6.9998 5.0078-3.2948-2e-3 -6.1721-2.0544-6.9999-4.9922 0.82085-2.9444 3.6999-5.0038 6.9998-5.0078z" class="ColorScheme-Text" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path class="ColorScheme-Text" d="m11 8a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3zm0 1a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2z" fill="currentColor" style="stroke:currentColor;stroke-width:0.65000;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M480-312q70 0 119-49t49-119q0-70-49-119t-119-49q-70 0-119 49t-49 119q0 70 49 119t119 49Zm0-72q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm0 192q-130 0-239-69.5T68-445q-5-8-7-16.77t-2-18Q59-489 61-498t7-17q64-114 173-183.5T480-768q130 0 239 69.5T892-515q5 8 7 16.77t2 18q0 9.23-2 18.23t-7 17q-64 114-173 183.5T480-192Zm0-288Zm0 216q112 0 207-58t146-158q-51-100-146-158t-207-58q-112 0-207 58T127-480q51 100 146 158t207 58Z"/></g>
 </svg>

@@ -1,3 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
- <path d="m13 10-5-5-5 5z" fill="#dedede" style="stroke:#dedede;stroke-width:0.47273;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M480-525 316-361q-11 11-25.5 11T265-361q-11-11-11-25.5t11-25.5l190-190q11-11 25-11t25 11l190 190q11 11 11 25t-11 25q-11 11-25.5 11T644-362L480-525Z"/></g>
 </svg>

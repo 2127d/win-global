@@ -45,8 +45,13 @@ namespace SequoiaEleven
 class Decoration : public KDecoration3::Decoration
 {
     Q_OBJECT
+    // Optional compositor contract: paint a black modal scrim in the decoration
+    // texture, including its alpha, exactly as an embedded Qt Quick overlay does.
+    Q_PROPERTY(qreal sequoiaModalAmount READ sequoiaModalAmount WRITE setSequoiaModalAmount)
 
 public:
+    qreal sequoiaModalAmount() const { return m_sequoiaModalAmount; }
+    void setSequoiaModalAmount(qreal amount);
     //* constructor
     explicit Decoration(QObject *parent = nullptr, const QVariantList &args = QVariantList());
 
@@ -125,6 +130,7 @@ private Q_SLOTS:
     void updateScale();
 
 private:
+    qreal m_sequoiaModalAmount = 0;
     //* return the rect in which caption will be drawn
     QPair<QRectF, Qt::Alignment> captionRect() const;
 

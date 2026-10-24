@@ -1,0 +1,3182 @@
+{
+  "actions/16/edit-find.svg": {
+    "symbol": "search",
+    "sha256": "266ea24e7ee287de63a278d5c545f9dc3fb0188b12f3bdeef17626a142e73844"
+  },
+  "actions/16/search.svg": {
+    "symbol": "search",
+    "sha256": "266ea24e7ee287de63a278d5c545f9dc3fb0188b12f3bdeef17626a142e73844"
+  },
+  "actions/16/system-search.svg": {
+    "symbol": "search",
+    "sha256": "266ea24e7ee287de63a278d5c545f9dc3fb0188b12f3bdeef17626a142e73844"
+  },
+  "actions/16/window-close.svg": {
+    "symbol": "close",
+    "sha256": "42eb6ffdc38051ab52db2c289518472854cedaa2cc3dcd98fa25a9edfa3394c1"
+  },
+  "actions/16/dialog-close.svg": {
+    "symbol": "close",
+    "sha256": "42eb6ffdc38051ab52db2c289518472854cedaa2cc3dcd98fa25a9edfa3394c1"
+  },
+  "actions/16/edit-clear-locationbar-ltr.svg": {
+    "symbol": "close",
+    "sha256": "42eb6ffdc38051ab52db2c289518472854cedaa2cc3dcd98fa25a9edfa3394c1"
+  },
+  "actions/16/edit-clear-locationbar-rtl.svg": {
+    "symbol": "close",
+    "sha256": "42eb6ffdc38051ab52db2c289518472854cedaa2cc3dcd98fa25a9edfa3394c1"
+  },
+  "actions/16/list-add.svg": {
+    "symbol": "add",
+    "sha256": "19dd058363ac8b3e3b9794c3a8b0f96dcf2accdb78e2ca0e5b675343316d8a45"
+  },
+  "actions/16/edit-add.svg": {
+    "symbol": "add",
+    "sha256": "19dd058363ac8b3e3b9794c3a8b0f96dcf2accdb78e2ca0e5b675343316d8a45"
+  },
+  "actions/16/list-remove.svg": {
+    "symbol": "remove",
+    "sha256": "f613e22e4d2e82ef86c572ea043dc9ae4975cfe6ff04809beb42fc9c2320a033"
+  },
+  "actions/16/zoom-in.svg": {
+    "symbol": "zoom_in",
+    "sha256": "835519e0397cc09466de28b8f81fe235b4d9aafc0576337f016f3b7cb1859b3a"
+  },
+  "actions/16/zoom-out.svg": {
+    "symbol": "zoom_out",
+    "sha256": "137c2a94dbb2f653bc7f7dc97f06b4c86e007583218925d1240adc30ebccae2e"
+  },
+  "actions/16/dialog-ok.svg": {
+    "symbol": "check",
+    "sha256": "4b5c36740b824dc64632bb26ab50ffa6071eb7c87dc2758764921783bdf1daa4"
+  },
+  "actions/16/dialog-ok-apply.svg": {
+    "symbol": "check",
+    "sha256": "4b5c36740b824dc64632bb26ab50ffa6071eb7c87dc2758764921783bdf1daa4"
+  },
+  "actions/16/dialog-apply.svg": {
+    "symbol": "check",
+    "sha256": "4b5c36740b824dc64632bb26ab50ffa6071eb7c87dc2758764921783bdf1daa4"
+  },
+  "actions/16/dialog-cancel.svg": {
+    "symbol": "cancel",
+    "sha256": "7de8643bc1676f13a84bd7105667fd76d0a34ae412439fbe6cef475b8dc9597b"
+  },
+  "actions/16/process-stop.svg": {
+    "symbol": "cancel",
+    "sha256": "7de8643bc1676f13a84bd7105667fd76d0a34ae412439fbe6cef475b8dc9597b"
+  },
+  "actions/16/go-previous.svg": {
+    "symbol": "arrow_back",
+    "sha256": "41aa9d551bd3eb85773cd5d5cd8c10eebc2f319617c9182a94126ee387118936"
+  },
+  "actions/16/go-left.svg": {
+    "symbol": "arrow_back",
+    "sha256": "41aa9d551bd3eb85773cd5d5cd8c10eebc2f319617c9182a94126ee387118936"
+  },
+  "actions/16/go-next.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "45ff4ea0fbf33ea2eda5ae3a5bf0db1c5036b77f824a1e1c74580b55764cd304"
+  },
+  "actions/16/go-right.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "45ff4ea0fbf33ea2eda5ae3a5bf0db1c5036b77f824a1e1c74580b55764cd304"
+  },
+  "actions/16/go-down.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "d3366462756f7c72850737145519b3771bffa853224f1ba8086e199a72990bed"
+  },
+  "actions/16/pan-down.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "d3366462756f7c72850737145519b3771bffa853224f1ba8086e199a72990bed"
+  },
+  "actions/16/go-up.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "ab016f140022f14a0288db4f727eba77db634c8dcfa20b623aaee8f4bf2519cb"
+  },
+  "actions/16/pan-up.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "ab016f140022f14a0288db4f727eba77db634c8dcfa20b623aaee8f4bf2519cb"
+  },
+  "actions/16/go-first.svg": {
+    "symbol": "first_page",
+    "sha256": "a6685ba78be32824ab210ded854b30ada1e554bc35d3c63dd8196f00635731eb"
+  },
+  "actions/16/go-last.svg": {
+    "symbol": "last_page",
+    "sha256": "b4026ae33f56e1b4bbfeec5240ec72d537492579efdc2f2dc7ddf53c6e1be3f9"
+  },
+  "actions/16/view-refresh.svg": {
+    "symbol": "refresh",
+    "sha256": "2261d7b203f9a14895e5d0775bb82175d4d9ae20e713d8c2e3310cf5804743e0"
+  },
+  "actions/16/reload.svg": {
+    "symbol": "refresh",
+    "sha256": "2261d7b203f9a14895e5d0775bb82175d4d9ae20e713d8c2e3310cf5804743e0"
+  },
+  "actions/16/configure.svg": {
+    "symbol": "settings",
+    "sha256": "9a92f373e99810b8b18a2360482d1401611fcabd23b75fd9410827942b159cfc"
+  },
+  "actions/16/settings-configure.svg": {
+    "symbol": "settings",
+    "sha256": "9a92f373e99810b8b18a2360482d1401611fcabd23b75fd9410827942b159cfc"
+  },
+  "actions/16/view-filter.svg": {
+    "symbol": "tune",
+    "sha256": "e108d6e875484cddcebc67e3a375af499c1e64fe153a5e0feb2f79d1cf40a187"
+  },
+  "actions/16/configure-toolbars.svg": {
+    "symbol": "tune",
+    "sha256": "e108d6e875484cddcebc67e3a375af499c1e64fe153a5e0feb2f79d1cf40a187"
+  },
+  "actions/16/application-menu.svg": {
+    "symbol": "menu",
+    "sha256": "ebf1d648c14836fee87c8a4301f3c9ffebe5f8e151adb036de68494b8d193a15"
+  },
+  "actions/16/open-menu.svg": {
+    "symbol": "menu",
+    "sha256": "ebf1d648c14836fee87c8a4301f3c9ffebe5f8e151adb036de68494b8d193a15"
+  },
+  "actions/16/open-menu-symbolic.svg": {
+    "symbol": "menu",
+    "sha256": "ebf1d648c14836fee87c8a4301f3c9ffebe5f8e151adb036de68494b8d193a15"
+  },
+  "actions/16/overflow-menu.svg": {
+    "symbol": "more_horiz",
+    "sha256": "cec03007520f84284e5f6373a755668f22d605b010e2be5e4138d1b55fa8be60"
+  },
+  "actions/16/edit-copy.svg": {
+    "symbol": "content_copy",
+    "sha256": "4c50c75d29f4102542606747e827ec2d2282326047269918d388753d5c92e7c4"
+  },
+  "actions/16/edit-copy-symbolic.svg": {
+    "symbol": "content_copy",
+    "sha256": "4c50c75d29f4102542606747e827ec2d2282326047269918d388753d5c92e7c4"
+  },
+  "actions/16/edit-cut.svg": {
+    "symbol": "content_cut",
+    "sha256": "1df0b6e2e5e12715b5eecd63443ba46295fd222c7340adc4b08511f56a1ea8c9"
+  },
+  "actions/16/edit-paste.svg": {
+    "symbol": "content_paste",
+    "sha256": "a1d10ddcec30cdc4a5e2ac6bd5f02d6b810abe6c034ae2cb7e18f4038a19e407"
+  },
+  "actions/16/edit-undo.svg": {
+    "symbol": "undo",
+    "sha256": "a1bf4b21a881dd2e48776cb56ef0ec753998db4d754dd1355e31e41688e606af"
+  },
+  "actions/16/edit-redo.svg": {
+    "symbol": "redo",
+    "sha256": "744bad4d8aac92b1725f68c90d516d47bb87e538db64dc7b86b8dc6f68ca3423"
+  },
+  "actions/16/edit-delete.svg": {
+    "symbol": "delete",
+    "sha256": "4c3f1e8ab99fedab1a17ec40f3b7a3f70722bbe6e1130240fdcc078b32ee6977"
+  },
+  "actions/16/user-trash.svg": {
+    "symbol": "delete",
+    "sha256": "4c3f1e8ab99fedab1a17ec40f3b7a3f70722bbe6e1130240fdcc078b32ee6977"
+  },
+  "actions/16/document-edit.svg": {
+    "symbol": "edit",
+    "sha256": "c7023e98643bd9aacaff26e0dc3dfc6195e4da75c70e2c4c37cfcb0e35d5cb8a"
+  },
+  "actions/16/edit-rename.svg": {
+    "symbol": "edit",
+    "sha256": "c7023e98643bd9aacaff26e0dc3dfc6195e4da75c70e2c4c37cfcb0e35d5cb8a"
+  },
+  "actions/16/document-new.svg": {
+    "symbol": "note_add",
+    "sha256": "d7f6e310296c8f9d187b82959c46242f6d392d9a3fb441e31497ba3d942cb445"
+  },
+  "actions/16/document-open.svg": {
+    "symbol": "folder_open",
+    "sha256": "818aa266f6db29e337be32c3017cb6fd7ebf7a77f08d67f02396c63e8a8f2def"
+  },
+  "actions/16/document-open-folder.svg": {
+    "symbol": "folder_open",
+    "sha256": "818aa266f6db29e337be32c3017cb6fd7ebf7a77f08d67f02396c63e8a8f2def"
+  },
+  "actions/16/document-save.svg": {
+    "symbol": "save",
+    "sha256": "2181ae4b259d5b7aa81dcf061c4bbf4ee615a5d68c9fd8172ff6860d6f4d3809"
+  },
+  "actions/16/document-save-as.svg": {
+    "symbol": "save_as",
+    "sha256": "49e74555a0fb057c64e55e083243eef0b08cd73aa2ce6ce1c8f2ae3c7e205688"
+  },
+  "actions/16/document-print.svg": {
+    "symbol": "print",
+    "sha256": "37a0423c0c801cb66fb60dfe6bf9d1737debf6c8fb47c967e1396697c912a73a"
+  },
+  "actions/16/edit-download.svg": {
+    "symbol": "download",
+    "sha256": "e52d7539872e28b8dea506999acbfb80acec13737cf922632ef064140d93e249"
+  },
+  "actions/16/download.svg": {
+    "symbol": "download",
+    "sha256": "e52d7539872e28b8dea506999acbfb80acec13737cf922632ef064140d93e249"
+  },
+  "actions/16/upload.svg": {
+    "symbol": "upload",
+    "sha256": "7cf34d8c770e2554dc99f30cb39057569be7634024a1db58d99b7c51a4fe043b"
+  },
+  "actions/16/document-share.svg": {
+    "symbol": "share",
+    "sha256": "23dd4a9be38cbcf9185ef15d311154074a16b01d83a70d4e01e3c08d264de6c0"
+  },
+  "actions/16/help-about.svg": {
+    "symbol": "info",
+    "sha256": "9ac331526de1c6a1a89127c6dcc380bda3ca2caceeb87f2da66f736510766e9f"
+  },
+  "actions/16/help-about-symbolic.svg": {
+    "symbol": "info",
+    "sha256": "9ac331526de1c6a1a89127c6dcc380bda3ca2caceeb87f2da66f736510766e9f"
+  },
+  "actions/16/help-hint.svg": {
+    "symbol": "info",
+    "sha256": "9ac331526de1c6a1a89127c6dcc380bda3ca2caceeb87f2da66f736510766e9f"
+  },
+  "actions/16/help-contextual.svg": {
+    "symbol": "help",
+    "sha256": "93386fc216c05e81642bf9faea2fbd9d764d02e7f980f79ed69c9a8b8cfccaa1"
+  },
+  "actions/16/help-contents.svg": {
+    "symbol": "help",
+    "sha256": "93386fc216c05e81642bf9faea2fbd9d764d02e7f980f79ed69c9a8b8cfccaa1"
+  },
+  "actions/16/go-home.svg": {
+    "symbol": "home",
+    "sha256": "29f4bc00bb98f184c9886287baec9c47a57a704132e770f7dcdcfa646be834c2"
+  },
+  "actions/16/view-fullscreen.svg": {
+    "symbol": "fullscreen",
+    "sha256": "2de2510e92f7719c748d23cd39bdfdc618de8570a7d0d35a61f417a24e1887cb"
+  },
+  "actions/16/view-restore.svg": {
+    "symbol": "fullscreen_exit",
+    "sha256": "e0588c93804d247bb5d0b67c5412c01b2e90f09b6a23c9e4241e02d545fbd945"
+  },
+  "actions/16/media-playback-start.svg": {
+    "symbol": "play_arrow",
+    "sha256": "1c221d9ae6abd2baf9803567b83e113c30592222aec9e377f4f4ffa443ed3c24"
+  },
+  "actions/16/media-playback-pause.svg": {
+    "symbol": "pause",
+    "sha256": "ed18353435017b4d53825fe3dd49334bc6fdd7fff1be63b5c0f5481efc3c6fee"
+  },
+  "actions/16/media-playback-stop.svg": {
+    "symbol": "stop",
+    "sha256": "e973acb7f285d27d1ae1720c4cff05c9cf850be5ea2bb666061abb2ea9df6e68"
+  },
+  "actions/16/media-skip-forward.svg": {
+    "symbol": "skip_next",
+    "sha256": "6ab8b6d103bff5ec55ff2147114e02fdc0e46cc8d87e89bcb6fb953e97bc6f0f"
+  },
+  "actions/16/media-skip-backward.svg": {
+    "symbol": "skip_previous",
+    "sha256": "1147104ac6706f078a935243f1956efd03667da40a77cdddddddce5a9e3c31f4"
+  },
+  "actions/16/media-seek-forward.svg": {
+    "symbol": "fast_forward",
+    "sha256": "3c9436b0ce7570f0241f7771e513ff91de08aded43206899eb16a1e21346c374"
+  },
+  "actions/16/media-seek-backward.svg": {
+    "symbol": "fast_rewind",
+    "sha256": "9470f9f0693b8522452a25a985bf4a362e53dfc044e10fee3f31c650efcd4296"
+  },
+  "actions/16/media-playlist-shuffle.svg": {
+    "symbol": "shuffle",
+    "sha256": "6b754f51b30559bf2a3da9c5df1d968cf9e94546a1eb9f1c691ff83eee2f0421"
+  },
+  "actions/16/media-playlist-repeat.svg": {
+    "symbol": "repeat",
+    "sha256": "634b8a6330356667a243eb5b7a11ca6bed05ba89ab46428683d3d0d7c099c280"
+  },
+  "actions/16/media-repeat-all.svg": {
+    "symbol": "repeat",
+    "sha256": "634b8a6330356667a243eb5b7a11ca6bed05ba89ab46428683d3d0d7c099c280"
+  },
+  "actions/16/media-repeat-single.svg": {
+    "symbol": "repeat_one",
+    "sha256": "70fc3612a5d4118e80ee065bcd424ba7b40d076904f8b1e1ee1878d3161f455c"
+  },
+  "actions/16/media-repeat-track.svg": {
+    "symbol": "repeat_one",
+    "sha256": "70fc3612a5d4118e80ee065bcd424ba7b40d076904f8b1e1ee1878d3161f455c"
+  },
+  "actions/16/view-visible.svg": {
+    "symbol": "visibility",
+    "sha256": "1583297c0c468c8cce13157b031a48ff4804025c8bc4fec13b0087fff554dd31"
+  },
+  "actions/16/password-show-on.svg": {
+    "symbol": "visibility",
+    "sha256": "1583297c0c468c8cce13157b031a48ff4804025c8bc4fec13b0087fff554dd31"
+  },
+  "actions/16/view-hidden.svg": {
+    "symbol": "visibility_off",
+    "sha256": "f2f0caca2424cde3bef392fab17842c03b536a0d05ed8b5feb01762ce985023e"
+  },
+  "actions/16/password-show-off.svg": {
+    "symbol": "visibility_off",
+    "sha256": "f2f0caca2424cde3bef392fab17842c03b536a0d05ed8b5feb01762ce985023e"
+  },
+  "actions/16/view-calendar.svg": {
+    "symbol": "calendar_month",
+    "sha256": "174ed2d966d175f9aa00a3a3f2911d1be3a62f7299a82eb84d26ffe2c603c56a"
+  },
+  "actions/16/notifications.svg": {
+    "symbol": "notifications",
+    "sha256": "93ad0fd902f7f0ee10a4eaafc333f1b018273c5f4c9be4a0415ca3834fb8cc3d"
+  },
+  "actions/16/notifications-symbolic.svg": {
+    "symbol": "notifications",
+    "sha256": "93ad0fd902f7f0ee10a4eaafc333f1b018273c5f4c9be4a0415ca3834fb8cc3d"
+  },
+  "actions/16/notifications-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "1a972aa46515b70faf9e6083750248a88eb7ad41ee675d72318562e8663b848e"
+  },
+  "actions/16/notifications-disabled-symbolic.svg": {
+    "symbol": "notifications_off",
+    "sha256": "1a972aa46515b70faf9e6083750248a88eb7ad41ee675d72318562e8663b848e"
+  },
+  "actions/16/klipper.svg": {
+    "symbol": "content_paste",
+    "sha256": "a1d10ddcec30cdc4a5e2ac6bd5f02d6b810abe6c034ae2cb7e18f4038a19e407"
+  },
+  "actions/16/audio-volume-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "027ec9ec00489844e665dc9e7bd526eb3f13026d392c81bb5e94cdc262663700"
+  },
+  "actions/16/bluetooth-active.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "actions/16/bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "actions/16/video-display.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "a9b7d19e02026b39840da1e4983d8d6cbee76b1f2c63e6a2dffe17c9c75cfa43"
+  },
+  "actions/16/input-mouse.svg": {
+    "symbol": "mouse",
+    "sha256": "fdf37f92490eef6e6656be6d43e1cbfa541314d25250452e85d60396a65334c6"
+  },
+  "actions/16/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "1c06bb51844f3ea34207f505bd524f59d80621b17f7a8ee507d3df0c94794ba2"
+  },
+  "actions/22/edit-find.svg": {
+    "symbol": "search",
+    "sha256": "6abb33857df748bbc868d3c5a79260dda49ec1257b92b5663f17bdbd2be1cb0b"
+  },
+  "actions/22/search.svg": {
+    "symbol": "search",
+    "sha256": "6abb33857df748bbc868d3c5a79260dda49ec1257b92b5663f17bdbd2be1cb0b"
+  },
+  "actions/22/system-search.svg": {
+    "symbol": "search",
+    "sha256": "6abb33857df748bbc868d3c5a79260dda49ec1257b92b5663f17bdbd2be1cb0b"
+  },
+  "actions/22/window-close.svg": {
+    "symbol": "close",
+    "sha256": "bd0cda4e6a2063b285bbec1639f3083de5bffc4b6bd7c9e4512c95017b44ec77"
+  },
+  "actions/22/dialog-close.svg": {
+    "symbol": "close",
+    "sha256": "bd0cda4e6a2063b285bbec1639f3083de5bffc4b6bd7c9e4512c95017b44ec77"
+  },
+  "actions/22/edit-clear-locationbar-ltr.svg": {
+    "symbol": "close",
+    "sha256": "bd0cda4e6a2063b285bbec1639f3083de5bffc4b6bd7c9e4512c95017b44ec77"
+  },
+  "actions/22/edit-clear-locationbar-rtl.svg": {
+    "symbol": "close",
+    "sha256": "bd0cda4e6a2063b285bbec1639f3083de5bffc4b6bd7c9e4512c95017b44ec77"
+  },
+  "actions/22/list-add.svg": {
+    "symbol": "add",
+    "sha256": "3bc90b8a89136a330f3f52f05a602d0e21a0451273a51b5d6b520dedbdd70842"
+  },
+  "actions/22/edit-add.svg": {
+    "symbol": "add",
+    "sha256": "3bc90b8a89136a330f3f52f05a602d0e21a0451273a51b5d6b520dedbdd70842"
+  },
+  "actions/22/list-remove.svg": {
+    "symbol": "remove",
+    "sha256": "7d7f2ca2d199516431787ecd9c10064d3c047e1b20f56bbdbf48cddb296ecbbc"
+  },
+  "actions/22/zoom-in.svg": {
+    "symbol": "zoom_in",
+    "sha256": "7673a5fab467236db723b9225bcdd3c9d98df9334c996be95cb3e1d31e6fe701"
+  },
+  "actions/22/zoom-in-symbolic.svg": {
+    "symbol": "zoom_in",
+    "sha256": "7673a5fab467236db723b9225bcdd3c9d98df9334c996be95cb3e1d31e6fe701"
+  },
+  "actions/22/zoom-out.svg": {
+    "symbol": "zoom_out",
+    "sha256": "26fb3acf7c9a28ad8351b98912937076b2d44479ad7c550587ec3dd5343e3de4"
+  },
+  "actions/22/zoom-out-symbolic.svg": {
+    "symbol": "zoom_out",
+    "sha256": "26fb3acf7c9a28ad8351b98912937076b2d44479ad7c550587ec3dd5343e3de4"
+  },
+  "actions/22/dialog-ok.svg": {
+    "symbol": "check",
+    "sha256": "164c5b44b6f07ce64d76e9af77d37bae115cd2e2f9e6d302d330e099c53ad463"
+  },
+  "actions/22/dialog-ok-apply.svg": {
+    "symbol": "check",
+    "sha256": "164c5b44b6f07ce64d76e9af77d37bae115cd2e2f9e6d302d330e099c53ad463"
+  },
+  "actions/22/dialog-apply.svg": {
+    "symbol": "check",
+    "sha256": "164c5b44b6f07ce64d76e9af77d37bae115cd2e2f9e6d302d330e099c53ad463"
+  },
+  "actions/22/dialog-cancel.svg": {
+    "symbol": "cancel",
+    "sha256": "85c192ba803c42c12e9a0f43bc59bf1b57e6d61159e8ccc9684436883b089df0"
+  },
+  "actions/22/process-stop.svg": {
+    "symbol": "cancel",
+    "sha256": "85c192ba803c42c12e9a0f43bc59bf1b57e6d61159e8ccc9684436883b089df0"
+  },
+  "actions/22/go-previous.svg": {
+    "symbol": "arrow_back",
+    "sha256": "2b322863ec0a58c310cbc8aa794c288e03dab54840b7e2a5046c5da09bb62530"
+  },
+  "actions/22/go-left.svg": {
+    "symbol": "arrow_back",
+    "sha256": "2b322863ec0a58c310cbc8aa794c288e03dab54840b7e2a5046c5da09bb62530"
+  },
+  "actions/22/go-next.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "a9e6f0ff7fb8ea852d6eaa5ef4613b98f20553fd6a70bb6937b4d431bb4cedce"
+  },
+  "actions/22/go-right.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "a9e6f0ff7fb8ea852d6eaa5ef4613b98f20553fd6a70bb6937b4d431bb4cedce"
+  },
+  "actions/22/go-down.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "b0aea0a6297f26b036febeec63eb8b79b97c2b92132ec345f934f6da261014c9"
+  },
+  "actions/22/pan-down.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "b0aea0a6297f26b036febeec63eb8b79b97c2b92132ec345f934f6da261014c9"
+  },
+  "actions/22/go-up.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "a4120c92392cefbd24bd076574a3a92e5314647b5605e1846c3e70ba0a30dbca"
+  },
+  "actions/22/pan-up.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "a4120c92392cefbd24bd076574a3a92e5314647b5605e1846c3e70ba0a30dbca"
+  },
+  "actions/22/go-first.svg": {
+    "symbol": "first_page",
+    "sha256": "789fc4f951aae64b7d5a42de70dd122ee34b8dc7d99f9818ec25466bf6694720"
+  },
+  "actions/22/go-last.svg": {
+    "symbol": "last_page",
+    "sha256": "45c14272e7919af3f8a8cb7d1c3bca870360388f979561fb11414fe552091a78"
+  },
+  "actions/22/view-refresh.svg": {
+    "symbol": "refresh",
+    "sha256": "e37ce88e5452139938c152ddd089e6dfe9a5432138754431ceba16452d7a5473"
+  },
+  "actions/22/view-refresh-symbolic.svg": {
+    "symbol": "refresh",
+    "sha256": "e37ce88e5452139938c152ddd089e6dfe9a5432138754431ceba16452d7a5473"
+  },
+  "actions/22/reload.svg": {
+    "symbol": "refresh",
+    "sha256": "e37ce88e5452139938c152ddd089e6dfe9a5432138754431ceba16452d7a5473"
+  },
+  "actions/22/configure.svg": {
+    "symbol": "settings",
+    "sha256": "e8bbf91cc1e298e35776766f3956ee15990794284dca347299fef0b7e0881cc7"
+  },
+  "actions/22/settings-configure.svg": {
+    "symbol": "settings",
+    "sha256": "e8bbf91cc1e298e35776766f3956ee15990794284dca347299fef0b7e0881cc7"
+  },
+  "actions/22/view-filter.svg": {
+    "symbol": "tune",
+    "sha256": "d1bb00a784831535c2c50319bca0fa7c6dd57a6299b26e5163d5a045db0f3ef9"
+  },
+  "actions/22/configure-toolbars.svg": {
+    "symbol": "tune",
+    "sha256": "d1bb00a784831535c2c50319bca0fa7c6dd57a6299b26e5163d5a045db0f3ef9"
+  },
+  "actions/22/application-menu.svg": {
+    "symbol": "menu",
+    "sha256": "ac77eba19d84a22674cefc8eb65fda718ff119ee2245776817b4fdad8cb4e17e"
+  },
+  "actions/22/open-menu.svg": {
+    "symbol": "menu",
+    "sha256": "ac77eba19d84a22674cefc8eb65fda718ff119ee2245776817b4fdad8cb4e17e"
+  },
+  "actions/22/open-menu-symbolic.svg": {
+    "symbol": "menu",
+    "sha256": "ac77eba19d84a22674cefc8eb65fda718ff119ee2245776817b4fdad8cb4e17e"
+  },
+  "actions/22/overflow-menu.svg": {
+    "symbol": "more_horiz",
+    "sha256": "26d125d0cb2913619d6cd8ea911a2ddf6ca060369a9622bd32c8a07c21bf21dc"
+  },
+  "actions/22/edit-copy.svg": {
+    "symbol": "content_copy",
+    "sha256": "1bd289830db373088b420c1534b66d55e7ad6e5a73d740618565b515a8a489c2"
+  },
+  "actions/22/edit-copy-symbolic.svg": {
+    "symbol": "content_copy",
+    "sha256": "1bd289830db373088b420c1534b66d55e7ad6e5a73d740618565b515a8a489c2"
+  },
+  "actions/22/edit-cut.svg": {
+    "symbol": "content_cut",
+    "sha256": "1afb8a5af7dba0dd428925a1287bdd45905bad53798085e958ffd5643c394c71"
+  },
+  "actions/22/edit-paste.svg": {
+    "symbol": "content_paste",
+    "sha256": "ff5315a5dd9bb33dce414f10d7439f3a481aed19bcac5b73ea0bdf71a991f940"
+  },
+  "actions/22/edit-undo.svg": {
+    "symbol": "undo",
+    "sha256": "c9fbff909d231963f1f2b6e51b9e915d9e39cd63c1d9791f1c53e308fecb43e7"
+  },
+  "actions/22/edit-undo-symbolic.svg": {
+    "symbol": "undo",
+    "sha256": "c9fbff909d231963f1f2b6e51b9e915d9e39cd63c1d9791f1c53e308fecb43e7"
+  },
+  "actions/22/edit-redo.svg": {
+    "symbol": "redo",
+    "sha256": "9d7c6107d062935690c78a226c60872e6e133eb0399bc44fb3ab8260d5ef954e"
+  },
+  "actions/22/edit-redo-symbolic.svg": {
+    "symbol": "redo",
+    "sha256": "9d7c6107d062935690c78a226c60872e6e133eb0399bc44fb3ab8260d5ef954e"
+  },
+  "actions/22/edit-delete.svg": {
+    "symbol": "delete",
+    "sha256": "f51d9052490e53930c9ae8f4fb8cd0fbcfe7094d392c24307932f7366fbaf87e"
+  },
+  "actions/22/user-trash.svg": {
+    "symbol": "delete",
+    "sha256": "f51d9052490e53930c9ae8f4fb8cd0fbcfe7094d392c24307932f7366fbaf87e"
+  },
+  "actions/22/document-edit.svg": {
+    "symbol": "edit",
+    "sha256": "59362d04eb79bff3c6941dc0e66c1ba1c9621bfa385152ec57c326dda2f47edb"
+  },
+  "actions/22/edit-rename.svg": {
+    "symbol": "edit",
+    "sha256": "59362d04eb79bff3c6941dc0e66c1ba1c9621bfa385152ec57c326dda2f47edb"
+  },
+  "actions/22/document-new.svg": {
+    "symbol": "note_add",
+    "sha256": "f5f5b0a18bea80751c33ac09e23a01de425bc03f082631d4593ed05d9477cb39"
+  },
+  "actions/22/document-open.svg": {
+    "symbol": "folder_open",
+    "sha256": "edad176e8aa0f44bca88202c301378d1d30b37c1106f3c8628397cf7ba901734"
+  },
+  "actions/22/document-open-folder.svg": {
+    "symbol": "folder_open",
+    "sha256": "edad176e8aa0f44bca88202c301378d1d30b37c1106f3c8628397cf7ba901734"
+  },
+  "actions/22/document-save.svg": {
+    "symbol": "save",
+    "sha256": "b8b377d59876163b3f9a94147a78112c8103e943368d58a97bbd837490dc6f58"
+  },
+  "actions/22/document-save-as.svg": {
+    "symbol": "save_as",
+    "sha256": "b2029e4d43ba3500f67384c0b778782a1a4754b729249520151be80f9afd5d21"
+  },
+  "actions/22/document-print.svg": {
+    "symbol": "print",
+    "sha256": "647cb85e16fc704464304d3b50e85317d929c29c59fb2ffc5cb167191450b85e"
+  },
+  "actions/22/edit-download.svg": {
+    "symbol": "download",
+    "sha256": "e9ad1dfb6de00e5091f6fd464b36564c2ab85c33659cc45665e16eb8e979de40"
+  },
+  "actions/22/download.svg": {
+    "symbol": "download",
+    "sha256": "e9ad1dfb6de00e5091f6fd464b36564c2ab85c33659cc45665e16eb8e979de40"
+  },
+  "actions/22/upload.svg": {
+    "symbol": "upload",
+    "sha256": "fee015b0f26016b1f548580873dee033e4f3068dd58cdd694560414cbd878908"
+  },
+  "actions/22/document-share.svg": {
+    "symbol": "share",
+    "sha256": "cc256e63904718a0efd10daac22a5bdd07f4055623cafe1083d1da9eb489f548"
+  },
+  "actions/22/help-about.svg": {
+    "symbol": "info",
+    "sha256": "9d809fe5660af346b9959fc0a9fef13be11d466732e8cf4a8e2d642887de81b4"
+  },
+  "actions/22/help-about-symbolic.svg": {
+    "symbol": "info",
+    "sha256": "9d809fe5660af346b9959fc0a9fef13be11d466732e8cf4a8e2d642887de81b4"
+  },
+  "actions/22/help-hint.svg": {
+    "symbol": "info",
+    "sha256": "9d809fe5660af346b9959fc0a9fef13be11d466732e8cf4a8e2d642887de81b4"
+  },
+  "actions/22/help-contextual.svg": {
+    "symbol": "help",
+    "sha256": "53e832eba6e171b8fb441d30bf0d095024dc9d1fd9ec4694e8661acb0456ecca"
+  },
+  "actions/22/help-contents.svg": {
+    "symbol": "help",
+    "sha256": "53e832eba6e171b8fb441d30bf0d095024dc9d1fd9ec4694e8661acb0456ecca"
+  },
+  "actions/22/go-home.svg": {
+    "symbol": "home",
+    "sha256": "8a4450f68f58fd8aa310ea0bd34efbabd2b11784d92ab7535bec5fac4f527d80"
+  },
+  "actions/22/view-fullscreen.svg": {
+    "symbol": "fullscreen",
+    "sha256": "d36d73d14d4d1d244d66870c34ba7f6b40e5bb13af5e837eea7a19a7a917a14b"
+  },
+  "actions/22/view-restore.svg": {
+    "symbol": "fullscreen_exit",
+    "sha256": "a9a3cb28aa556e7c9ebf77d99d302b4d284e87f7d90c380de17963ae5a88eee1"
+  },
+  "actions/22/media-playback-start.svg": {
+    "symbol": "play_arrow",
+    "sha256": "2dab302e746f44243fbf935ae8235060cb3f3fac1437992c1735987447727750"
+  },
+  "actions/22/media-playback-pause.svg": {
+    "symbol": "pause",
+    "sha256": "dc6cffbacb12339c911cfae0685eeadd332ab3f8465263cb975e6f193420a980"
+  },
+  "actions/22/media-playback-stop.svg": {
+    "symbol": "stop",
+    "sha256": "8062e59f0fc221fd58d5c42d299201f913d2f1493e0ec744e3afb2775dd013d8"
+  },
+  "actions/22/media-skip-forward.svg": {
+    "symbol": "skip_next",
+    "sha256": "0e3decd77882fdd92ff11150676d2a56561086ec788bbb40983465408aa95e51"
+  },
+  "actions/22/media-skip-backward.svg": {
+    "symbol": "skip_previous",
+    "sha256": "7993b85b85810db148ee990b23be47433bf666fcebd65ed1fee9681f7a2da0c9"
+  },
+  "actions/22/media-seek-forward.svg": {
+    "symbol": "fast_forward",
+    "sha256": "4bd6741ea103cedbce173673969c5eebcab79e89405f12fe5b4d3de774712f33"
+  },
+  "actions/22/media-seek-backward.svg": {
+    "symbol": "fast_rewind",
+    "sha256": "06e53c63db67b8cd09f4de1348599d18ee66cfa95e1c022510616a9268e01b25"
+  },
+  "actions/22/media-playlist-shuffle.svg": {
+    "symbol": "shuffle",
+    "sha256": "46c3b4348ac7fa44854064b1beee20d30012837bf11567c87c7844ee9a07f230"
+  },
+  "actions/22/media-playlist-repeat.svg": {
+    "symbol": "repeat",
+    "sha256": "96178a629ca7563c32dfc87cddf324ecea3665408bfa26abcbefab0e387d74b3"
+  },
+  "actions/22/media-repeat-all.svg": {
+    "symbol": "repeat",
+    "sha256": "96178a629ca7563c32dfc87cddf324ecea3665408bfa26abcbefab0e387d74b3"
+  },
+  "actions/22/media-repeat-single.svg": {
+    "symbol": "repeat_one",
+    "sha256": "cadbe89a5f7caf25f914098581457fabd16519413735ee3282caa2d359b7fabf"
+  },
+  "actions/22/media-repeat-track.svg": {
+    "symbol": "repeat_one",
+    "sha256": "cadbe89a5f7caf25f914098581457fabd16519413735ee3282caa2d359b7fabf"
+  },
+  "actions/22/view-visible.svg": {
+    "symbol": "visibility",
+    "sha256": "afd3bb2c34a7f74ca8605dba033cdda3f8f012afaa06a9ed2c350888dd2dd4d2"
+  },
+  "actions/22/password-show-on.svg": {
+    "symbol": "visibility",
+    "sha256": "afd3bb2c34a7f74ca8605dba033cdda3f8f012afaa06a9ed2c350888dd2dd4d2"
+  },
+  "actions/22/view-hidden.svg": {
+    "symbol": "visibility_off",
+    "sha256": "e1d07e235f156961c0ea20cbf31dda7404680a0cadf28385174cc081e9c797ce"
+  },
+  "actions/22/password-show-off.svg": {
+    "symbol": "visibility_off",
+    "sha256": "e1d07e235f156961c0ea20cbf31dda7404680a0cadf28385174cc081e9c797ce"
+  },
+  "actions/22/view-calendar.svg": {
+    "symbol": "calendar_month",
+    "sha256": "26065e31cf3973246066ce3d1cf136a9bf49902ed0d07ff6ef2b7e4125a44033"
+  },
+  "actions/22/notifications.svg": {
+    "symbol": "notifications",
+    "sha256": "8994dee9566e7197013070b3163e14f75fcf351551d7605c96f89f27eb3b6846"
+  },
+  "actions/22/notifications-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "21c52206c5a554bbedad820952da193dfb1a827d5e2185b16817eda618c111a1"
+  },
+  "actions/22/brightness-high.svg": {
+    "symbol": "light_mode",
+    "sha256": "1fc285a81b09400f5024004df42a5c1b87143320bc2df261f6e27b4e07d8a29f"
+  },
+  "actions/22/brightness-low.svg": {
+    "symbol": "brightness_4",
+    "sha256": "91b4970bcedc61f1cf5e67e22736a0f639be13cb3ddec81039d9e04806551996"
+  },
+  "actions/22/klipper.svg": {
+    "symbol": "content_paste",
+    "sha256": "ff5315a5dd9bb33dce414f10d7439f3a481aed19bcac5b73ea0bdf71a991f940"
+  },
+  "actions/22/bluetooth-active.svg": {
+    "symbol": "bluetooth",
+    "sha256": "c11b5acab998af242d8109f03fd420066656b6ac9bc990d7b9ab2c497687c2d7"
+  },
+  "actions/22/bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "c11b5acab998af242d8109f03fd420066656b6ac9bc990d7b9ab2c497687c2d7"
+  },
+  "actions/22/video-display.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "0c9ba4a667218f058b52a51d76d6005b06f798be47a7387e2aeb011bfdefab72"
+  },
+  "actions/22/input-mouse.svg": {
+    "symbol": "mouse",
+    "sha256": "24d4b3deb512e6a1286b9fa9c8e27d7ff4aa9adf5099d359d34e463e302bcd88"
+  },
+  "actions/22/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "344f82e847a4ad330fdf7ef05eb4a88fc6c7fe54a7604837b33b151d5453a51d"
+  },
+  "actions/24/edit-find.svg": {
+    "symbol": "search",
+    "sha256": "b3a20c86f133d447a089b03624bb2af9514e390133dd351dc86dbd3eca98a7b3"
+  },
+  "actions/24/search.svg": {
+    "symbol": "search",
+    "sha256": "b3a20c86f133d447a089b03624bb2af9514e390133dd351dc86dbd3eca98a7b3"
+  },
+  "actions/24/system-search.svg": {
+    "symbol": "search",
+    "sha256": "b3a20c86f133d447a089b03624bb2af9514e390133dd351dc86dbd3eca98a7b3"
+  },
+  "actions/24/window-close.svg": {
+    "symbol": "close",
+    "sha256": "9ad1a856d9605aed8d06410c0c6cfb89321e6102446f1b3373d06640c69291b3"
+  },
+  "actions/24/dialog-close.svg": {
+    "symbol": "close",
+    "sha256": "9ad1a856d9605aed8d06410c0c6cfb89321e6102446f1b3373d06640c69291b3"
+  },
+  "actions/24/edit-clear-locationbar-ltr.svg": {
+    "symbol": "close",
+    "sha256": "9ad1a856d9605aed8d06410c0c6cfb89321e6102446f1b3373d06640c69291b3"
+  },
+  "actions/24/edit-clear-locationbar-rtl.svg": {
+    "symbol": "close",
+    "sha256": "9ad1a856d9605aed8d06410c0c6cfb89321e6102446f1b3373d06640c69291b3"
+  },
+  "actions/24/list-add.svg": {
+    "symbol": "add",
+    "sha256": "b5a6f045c6797719f7dc95d6423515b461fd8045cfa42f26cf34dae2578740d7"
+  },
+  "actions/24/edit-add.svg": {
+    "symbol": "add",
+    "sha256": "b5a6f045c6797719f7dc95d6423515b461fd8045cfa42f26cf34dae2578740d7"
+  },
+  "actions/24/list-remove.svg": {
+    "symbol": "remove",
+    "sha256": "4e5ac86bf1a26617077b5d84eb1bc935d99e9401f93d0e67c2060dfbe60a36d4"
+  },
+  "actions/24/zoom-in.svg": {
+    "symbol": "zoom_in",
+    "sha256": "20e22c6c8e59dd3bd1c6a9387083673c2171b2801fe20df0f1190d1e98ede935"
+  },
+  "actions/24/zoom-in-symbolic.svg": {
+    "symbol": "zoom_in",
+    "sha256": "20e22c6c8e59dd3bd1c6a9387083673c2171b2801fe20df0f1190d1e98ede935"
+  },
+  "actions/24/zoom-out.svg": {
+    "symbol": "zoom_out",
+    "sha256": "f8de63596f792017ae00d40f43537566ed69a0b6add90ed27d48b23f36754be1"
+  },
+  "actions/24/zoom-out-symbolic.svg": {
+    "symbol": "zoom_out",
+    "sha256": "f8de63596f792017ae00d40f43537566ed69a0b6add90ed27d48b23f36754be1"
+  },
+  "actions/24/dialog-ok.svg": {
+    "symbol": "check",
+    "sha256": "89eac0450b92ab383a4fbcd3b8789320335dc507b4425c0f55e5064ae6db8d52"
+  },
+  "actions/24/dialog-ok-apply.svg": {
+    "symbol": "check",
+    "sha256": "89eac0450b92ab383a4fbcd3b8789320335dc507b4425c0f55e5064ae6db8d52"
+  },
+  "actions/24/dialog-apply.svg": {
+    "symbol": "check",
+    "sha256": "89eac0450b92ab383a4fbcd3b8789320335dc507b4425c0f55e5064ae6db8d52"
+  },
+  "actions/24/dialog-cancel.svg": {
+    "symbol": "cancel",
+    "sha256": "477a0a696eca588c2188ca9c5790c5b0a6123f8a728affe1ad4e2c7e5148b7f4"
+  },
+  "actions/24/process-stop.svg": {
+    "symbol": "cancel",
+    "sha256": "477a0a696eca588c2188ca9c5790c5b0a6123f8a728affe1ad4e2c7e5148b7f4"
+  },
+  "actions/24/go-previous.svg": {
+    "symbol": "arrow_back",
+    "sha256": "3993952f7e03653ba18152f67d3b9c9001ac9d96d3b5136fc19d58b028141fb8"
+  },
+  "actions/24/go-previous-symbolic.svg": {
+    "symbol": "arrow_back",
+    "sha256": "3993952f7e03653ba18152f67d3b9c9001ac9d96d3b5136fc19d58b028141fb8"
+  },
+  "actions/24/go-left.svg": {
+    "symbol": "arrow_back",
+    "sha256": "3993952f7e03653ba18152f67d3b9c9001ac9d96d3b5136fc19d58b028141fb8"
+  },
+  "actions/24/go-left-symbolic.svg": {
+    "symbol": "arrow_back",
+    "sha256": "3993952f7e03653ba18152f67d3b9c9001ac9d96d3b5136fc19d58b028141fb8"
+  },
+  "actions/24/go-next.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "ddab6c2fd51d3393b1c11c316737987f9b5210a3d98c34355db2bcd8ec794088"
+  },
+  "actions/24/go-next-symbolic.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "ddab6c2fd51d3393b1c11c316737987f9b5210a3d98c34355db2bcd8ec794088"
+  },
+  "actions/24/go-right.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "ddab6c2fd51d3393b1c11c316737987f9b5210a3d98c34355db2bcd8ec794088"
+  },
+  "actions/24/go-right-symbolic.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "ddab6c2fd51d3393b1c11c316737987f9b5210a3d98c34355db2bcd8ec794088"
+  },
+  "actions/24/go-down.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "9571371993a527fe0ee7a05ee2c34405a472bb201a35804cebf1bafea7802044"
+  },
+  "actions/24/go-down-symbolic.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "9571371993a527fe0ee7a05ee2c34405a472bb201a35804cebf1bafea7802044"
+  },
+  "actions/24/pan-down.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "9571371993a527fe0ee7a05ee2c34405a472bb201a35804cebf1bafea7802044"
+  },
+  "actions/24/go-up.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "3631e79c08a20d96778cf648b0017a6bfd652cf3e49a6df4c227ed1cc17ed0f4"
+  },
+  "actions/24/go-up-symbolic.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "3631e79c08a20d96778cf648b0017a6bfd652cf3e49a6df4c227ed1cc17ed0f4"
+  },
+  "actions/24/pan-up.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "3631e79c08a20d96778cf648b0017a6bfd652cf3e49a6df4c227ed1cc17ed0f4"
+  },
+  "actions/24/go-first.svg": {
+    "symbol": "first_page",
+    "sha256": "fad4680949a1c08cd0a7ccb31d6d58f9de7870f01e8915237b366f016fcd3a70"
+  },
+  "actions/24/go-last.svg": {
+    "symbol": "last_page",
+    "sha256": "48c855b5fa46482a69704690ce79261767f29e151d5c53a687729e4339bee05b"
+  },
+  "actions/24/view-refresh.svg": {
+    "symbol": "refresh",
+    "sha256": "7e3562398237024d564d98a6fdeadf682ce497fb908386d0df66943008a7154b"
+  },
+  "actions/24/view-refresh-symbolic.svg": {
+    "symbol": "refresh",
+    "sha256": "7e3562398237024d564d98a6fdeadf682ce497fb908386d0df66943008a7154b"
+  },
+  "actions/24/reload.svg": {
+    "symbol": "refresh",
+    "sha256": "7e3562398237024d564d98a6fdeadf682ce497fb908386d0df66943008a7154b"
+  },
+  "actions/24/configure.svg": {
+    "symbol": "settings",
+    "sha256": "04a2768b7fedc6bb57c10d04592ebe35b0267038a74585b3d582334d0478f837"
+  },
+  "actions/24/settings-configure.svg": {
+    "symbol": "settings",
+    "sha256": "04a2768b7fedc6bb57c10d04592ebe35b0267038a74585b3d582334d0478f837"
+  },
+  "actions/24/view-filter.svg": {
+    "symbol": "tune",
+    "sha256": "b24423499ad3d3b952312597c7f712167d3a2b5e2b7365aeaabd5e81af0cae03"
+  },
+  "actions/24/configure-toolbars.svg": {
+    "symbol": "tune",
+    "sha256": "b24423499ad3d3b952312597c7f712167d3a2b5e2b7365aeaabd5e81af0cae03"
+  },
+  "actions/24/application-menu.svg": {
+    "symbol": "menu",
+    "sha256": "f460b3bbf799235ec19348911fda31b24cd9bf37da28698f86c16822ce1dffd9"
+  },
+  "actions/24/open-menu.svg": {
+    "symbol": "menu",
+    "sha256": "f460b3bbf799235ec19348911fda31b24cd9bf37da28698f86c16822ce1dffd9"
+  },
+  "actions/24/open-menu-symbolic.svg": {
+    "symbol": "menu",
+    "sha256": "f460b3bbf799235ec19348911fda31b24cd9bf37da28698f86c16822ce1dffd9"
+  },
+  "actions/24/overflow-menu.svg": {
+    "symbol": "more_horiz",
+    "sha256": "6f329c46a9ee55f658e8538910c8ed967756973ce719259f1f4a6b406140376a"
+  },
+  "actions/24/edit-copy.svg": {
+    "symbol": "content_copy",
+    "sha256": "fe447aa1bb20b6c35edb1b4e86901d1bf5d4f0c3b3e8be9b0927b544020a67a9"
+  },
+  "actions/24/edit-cut.svg": {
+    "symbol": "content_cut",
+    "sha256": "a7460603da01a9fd921a74e2b79b9ac9d5172a4a92be81dad14086e5139c0be5"
+  },
+  "actions/24/edit-paste.svg": {
+    "symbol": "content_paste",
+    "sha256": "48144bada6e97f93ac57a1f3c77a8aaf5431364a59c86cd700b5457afb283c44"
+  },
+  "actions/24/edit-undo.svg": {
+    "symbol": "undo",
+    "sha256": "4def0bef0b1f26200d9e026cc7fb87f32e70e3ddec765f28a7311f588474f4a2"
+  },
+  "actions/24/edit-undo-symbolic.svg": {
+    "symbol": "undo",
+    "sha256": "4def0bef0b1f26200d9e026cc7fb87f32e70e3ddec765f28a7311f588474f4a2"
+  },
+  "actions/24/edit-redo.svg": {
+    "symbol": "redo",
+    "sha256": "416e879414b0e1599ad35597e775f9e2ded49bb4a4f7ddf953315af3a573612f"
+  },
+  "actions/24/edit-redo-symbolic.svg": {
+    "symbol": "redo",
+    "sha256": "416e879414b0e1599ad35597e775f9e2ded49bb4a4f7ddf953315af3a573612f"
+  },
+  "actions/24/edit-delete.svg": {
+    "symbol": "delete",
+    "sha256": "9645a1a17b9eb7b46e8de6cdb3bec5b2ad5be12c688ad728cfb40973bd38edd7"
+  },
+  "actions/24/user-trash.svg": {
+    "symbol": "delete",
+    "sha256": "9645a1a17b9eb7b46e8de6cdb3bec5b2ad5be12c688ad728cfb40973bd38edd7"
+  },
+  "actions/24/document-edit.svg": {
+    "symbol": "edit",
+    "sha256": "09e29c7e0ea413ae1cde00064b88a6304673be580cf0140b3e9b0aeae6da2e74"
+  },
+  "actions/24/edit-rename.svg": {
+    "symbol": "edit",
+    "sha256": "09e29c7e0ea413ae1cde00064b88a6304673be580cf0140b3e9b0aeae6da2e74"
+  },
+  "actions/24/document-new.svg": {
+    "symbol": "note_add",
+    "sha256": "eb2249c0f89d2da3ac6ae355ad9ae71c332254f25e866a2e8b0c572f60136b88"
+  },
+  "actions/24/document-open.svg": {
+    "symbol": "folder_open",
+    "sha256": "5b2d06a7b43d43bd42659bb8e507072da3ebadc3646e5dda12f773a944d2ffc4"
+  },
+  "actions/24/document-open-folder.svg": {
+    "symbol": "folder_open",
+    "sha256": "5b2d06a7b43d43bd42659bb8e507072da3ebadc3646e5dda12f773a944d2ffc4"
+  },
+  "actions/24/document-save.svg": {
+    "symbol": "save",
+    "sha256": "eaec5a05bc618c3e2050aa49d0cc13e40bb5ae4586843563609caa7122ccb3d7"
+  },
+  "actions/24/document-save-as.svg": {
+    "symbol": "save_as",
+    "sha256": "4e0d549f1f104e2dc7eb7057f66752ce6cbb8a13e10886de8c2847eb8638a8c3"
+  },
+  "actions/24/document-print.svg": {
+    "symbol": "print",
+    "sha256": "55929930ac35454c987752fb607c40e4c9ee76d39d6d0fcaca1b42c6042e0d81"
+  },
+  "actions/24/edit-download.svg": {
+    "symbol": "download",
+    "sha256": "8dfab739bbedb480793f3a7ac07e58337f30c35c9f6f22a1c8c353fc72383eef"
+  },
+  "actions/24/download.svg": {
+    "symbol": "download",
+    "sha256": "8dfab739bbedb480793f3a7ac07e58337f30c35c9f6f22a1c8c353fc72383eef"
+  },
+  "actions/24/upload.svg": {
+    "symbol": "upload",
+    "sha256": "56c376eb2d4362c8aa306a5aaf5ab94c840318cbfbcfd6ebcf185a5eb5fe2dc8"
+  },
+  "actions/24/document-share.svg": {
+    "symbol": "share",
+    "sha256": "4e1f73f9c6c59231be3634aed6cabe6f3afcfd3e20f33bb7ab35c14421c30a03"
+  },
+  "actions/24/help-about.svg": {
+    "symbol": "info",
+    "sha256": "5514df314a323c365e0756e0cb3a194be6c22f4b1ea9a3281bc9bc9ec3f90ebf"
+  },
+  "actions/24/help-about-symbolic.svg": {
+    "symbol": "info",
+    "sha256": "5514df314a323c365e0756e0cb3a194be6c22f4b1ea9a3281bc9bc9ec3f90ebf"
+  },
+  "actions/24/help-hint.svg": {
+    "symbol": "info",
+    "sha256": "5514df314a323c365e0756e0cb3a194be6c22f4b1ea9a3281bc9bc9ec3f90ebf"
+  },
+  "actions/24/help-contextual.svg": {
+    "symbol": "help",
+    "sha256": "626e74ad3be90735980da509493329bf96abb62879608522d54e76da80c562d5"
+  },
+  "actions/24/help-contents.svg": {
+    "symbol": "help",
+    "sha256": "626e74ad3be90735980da509493329bf96abb62879608522d54e76da80c562d5"
+  },
+  "actions/24/go-home.svg": {
+    "symbol": "home",
+    "sha256": "ae8f7625f8bf35cd577dde193e45af6039cac1a45aedf0c8cadc964ac990903e"
+  },
+  "actions/24/go-home-symbolic.svg": {
+    "symbol": "home",
+    "sha256": "ae8f7625f8bf35cd577dde193e45af6039cac1a45aedf0c8cadc964ac990903e"
+  },
+  "actions/24/view-fullscreen.svg": {
+    "symbol": "fullscreen",
+    "sha256": "3178154cc37f289b3da3c32362fee912d5067cf3a8e30c2faf5ce84e96bc9c70"
+  },
+  "actions/24/view-restore.svg": {
+    "symbol": "fullscreen_exit",
+    "sha256": "117370e5b17ebcb6495954b3595b6a6ceb8a97cc11b99d81b1f959d5c0a42aa9"
+  },
+  "actions/24/media-playback-start.svg": {
+    "symbol": "play_arrow",
+    "sha256": "86d0d82646c02f9af3c8ada898b5e8220cf4ae610bde73196079ee584afe2837"
+  },
+  "actions/24/media-playback-start-symbolic.svg": {
+    "symbol": "play_arrow",
+    "sha256": "86d0d82646c02f9af3c8ada898b5e8220cf4ae610bde73196079ee584afe2837"
+  },
+  "actions/24/media-playback-pause.svg": {
+    "symbol": "pause",
+    "sha256": "7aa2a8a2065c632a394be1adfa5ecbd847baaf1c992627b4ac7f8650d3a4d7b7"
+  },
+  "actions/24/media-playback-pause-symbolic.svg": {
+    "symbol": "pause",
+    "sha256": "7aa2a8a2065c632a394be1adfa5ecbd847baaf1c992627b4ac7f8650d3a4d7b7"
+  },
+  "actions/24/media-playback-stop.svg": {
+    "symbol": "stop",
+    "sha256": "c96ac447a787b8cc9adc961066fdebf87209ebf8afbeafb6fc4f3f81e6d54546"
+  },
+  "actions/24/media-skip-forward.svg": {
+    "symbol": "skip_next",
+    "sha256": "db37a6b3f0e1a59028fca20873f02bba8fb515f7573aef6682b6c868387c2ee1"
+  },
+  "actions/24/media-skip-forward-symbolic.svg": {
+    "symbol": "skip_next",
+    "sha256": "db37a6b3f0e1a59028fca20873f02bba8fb515f7573aef6682b6c868387c2ee1"
+  },
+  "actions/24/media-skip-backward.svg": {
+    "symbol": "skip_previous",
+    "sha256": "4923e21e96d3360cf4c95f495dc831091071a6d536deaf3f8d847f5b1da0d985"
+  },
+  "actions/24/media-skip-backward-symbolic.svg": {
+    "symbol": "skip_previous",
+    "sha256": "4923e21e96d3360cf4c95f495dc831091071a6d536deaf3f8d847f5b1da0d985"
+  },
+  "actions/24/media-seek-forward.svg": {
+    "symbol": "fast_forward",
+    "sha256": "d6aac372938c1b1ce296c0f651a5fd38af84797c6b85b82cd3a2ffa1eda999df"
+  },
+  "actions/24/media-seek-backward.svg": {
+    "symbol": "fast_rewind",
+    "sha256": "825c179e7ddafcfb39b4e53d9ca26a8e2770f110a5ce3843075a5e5d0b6f5969"
+  },
+  "actions/24/media-playlist-shuffle.svg": {
+    "symbol": "shuffle",
+    "sha256": "be5dd67eb72a7a14bd6047b4f24461c4481adb79be3530dfcfe82b10aa5d8045"
+  },
+  "actions/24/media-playlist-shuffle-symbolic.svg": {
+    "symbol": "shuffle",
+    "sha256": "be5dd67eb72a7a14bd6047b4f24461c4481adb79be3530dfcfe82b10aa5d8045"
+  },
+  "actions/24/media-playlist-repeat.svg": {
+    "symbol": "repeat",
+    "sha256": "20f970134b6338734cdf02535552911978b6276fd19bcfaa4fcab9e5b384890a"
+  },
+  "actions/24/media-playlist-repeat-symbolic.svg": {
+    "symbol": "repeat",
+    "sha256": "20f970134b6338734cdf02535552911978b6276fd19bcfaa4fcab9e5b384890a"
+  },
+  "actions/24/media-repeat-all.svg": {
+    "symbol": "repeat",
+    "sha256": "20f970134b6338734cdf02535552911978b6276fd19bcfaa4fcab9e5b384890a"
+  },
+  "actions/24/media-repeat-single.svg": {
+    "symbol": "repeat_one",
+    "sha256": "d334ff8f1768fd1293bca3d4437a4e6692a6cfac95a9e57edcd19b13d0be2bac"
+  },
+  "actions/24/media-repeat-track.svg": {
+    "symbol": "repeat_one",
+    "sha256": "d334ff8f1768fd1293bca3d4437a4e6692a6cfac95a9e57edcd19b13d0be2bac"
+  },
+  "actions/24/view-visible.svg": {
+    "symbol": "visibility",
+    "sha256": "03dfc8ae86314340c70df74702164e0d2ad938efa122ea51a495c2efe095881d"
+  },
+  "actions/24/password-show-on.svg": {
+    "symbol": "visibility",
+    "sha256": "03dfc8ae86314340c70df74702164e0d2ad938efa122ea51a495c2efe095881d"
+  },
+  "actions/24/view-hidden.svg": {
+    "symbol": "visibility_off",
+    "sha256": "ba793d43df46d1ca1953169e4734376fb1461ca0961028446e5fd8747f0eae66"
+  },
+  "actions/24/password-show-off.svg": {
+    "symbol": "visibility_off",
+    "sha256": "ba793d43df46d1ca1953169e4734376fb1461ca0961028446e5fd8747f0eae66"
+  },
+  "actions/24/view-calendar.svg": {
+    "symbol": "calendar_month",
+    "sha256": "c14a43e6b7598042c5a9b545cf4d36e8f7b74579d166652be2da0c1201657b96"
+  },
+  "actions/24/notifications.svg": {
+    "symbol": "notifications",
+    "sha256": "f915a1e21e15f99d1575f2a3a10a8c5e9aa9b1ea158e94f8c9c5af8b70899291"
+  },
+  "actions/24/notifications-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "16d33374069fa5f679f4b1b54e83c6caf89e7159199ffc370ff2ea6d7b00d54f"
+  },
+  "actions/24/brightness-high.svg": {
+    "symbol": "light_mode",
+    "sha256": "d6d2b9fd51567016d627ecc35aac94aa0208c7aeb9a1d8113cdad501d0c6f413"
+  },
+  "actions/24/brightness-low.svg": {
+    "symbol": "brightness_4",
+    "sha256": "faf02c90044ac0bf2b3d1ffcf0e7dec4f83944a38b2e74940b7af6cea1173f19"
+  },
+  "actions/24/klipper.svg": {
+    "symbol": "content_paste",
+    "sha256": "48144bada6e97f93ac57a1f3c77a8aaf5431364a59c86cd700b5457afb283c44"
+  },
+  "actions/24/audio-volume-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "1e8262f74f4c8ce057e296d9d48b73be8f4b3edaf90a94710aefc352efc2a840"
+  },
+  "actions/24/audio-volume-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "a1dfabaae487450c6a9edb96f8dfa853d60c1ddde28eb3d1d4f09cd1a120490a"
+  },
+  "actions/24/audio-volume-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "actions/24/audio-volume-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "f553d1dda2eaa086f29494e3b38868a6d0507e65fd196dd9b4c0ab39a92e1242"
+  },
+  "actions/24/bluetooth-active.svg": {
+    "symbol": "bluetooth",
+    "sha256": "f190ee5dd61b9c791398712e04afb6dc2897ef2b90c1037027e6b5b74a5c7f12"
+  },
+  "actions/24/bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "f190ee5dd61b9c791398712e04afb6dc2897ef2b90c1037027e6b5b74a5c7f12"
+  },
+  "actions/24/video-display.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "9102559eac0f654ebdd6043873d11e753415dd675a4c5fe2add4b0605ef53e31"
+  },
+  "actions/24/input-mouse.svg": {
+    "symbol": "mouse",
+    "sha256": "573e19fcd304c69624d79234509c3dc9a6475c3a73615f1e00512ca0bbd8a4e3"
+  },
+  "actions/24/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "a4f02fda8803eabeeae28ee730eb34f0559b329dfa89fad1952cdfdb4dc1fe49"
+  },
+  "actions/32/edit-find.svg": {
+    "symbol": "search",
+    "sha256": "1d76050f8e09770245e9e030ff4b2ff63b95602502380c41edff5b1c11018bea"
+  },
+  "actions/32/search.svg": {
+    "symbol": "search",
+    "sha256": "1d76050f8e09770245e9e030ff4b2ff63b95602502380c41edff5b1c11018bea"
+  },
+  "actions/32/system-search.svg": {
+    "symbol": "search",
+    "sha256": "1d76050f8e09770245e9e030ff4b2ff63b95602502380c41edff5b1c11018bea"
+  },
+  "actions/32/window-close.svg": {
+    "symbol": "close",
+    "sha256": "5df175923f3fc408fed072c6412167c09c651f035574d4ab11c962820ebbc2ad"
+  },
+  "actions/32/dialog-close.svg": {
+    "symbol": "close",
+    "sha256": "5df175923f3fc408fed072c6412167c09c651f035574d4ab11c962820ebbc2ad"
+  },
+  "actions/32/edit-clear-locationbar-ltr.svg": {
+    "symbol": "close",
+    "sha256": "5df175923f3fc408fed072c6412167c09c651f035574d4ab11c962820ebbc2ad"
+  },
+  "actions/32/edit-clear-locationbar-rtl.svg": {
+    "symbol": "close",
+    "sha256": "5df175923f3fc408fed072c6412167c09c651f035574d4ab11c962820ebbc2ad"
+  },
+  "actions/32/list-add.svg": {
+    "symbol": "add",
+    "sha256": "4037c0b09a63b4a0765fb5984129fcabb79df6f3cc3cf4b3fc35fe8fa47d1b86"
+  },
+  "actions/32/edit-add.svg": {
+    "symbol": "add",
+    "sha256": "4037c0b09a63b4a0765fb5984129fcabb79df6f3cc3cf4b3fc35fe8fa47d1b86"
+  },
+  "actions/32/list-remove.svg": {
+    "symbol": "remove",
+    "sha256": "6df560db0693d329f604515b0c02460e52b4241369dc5cb2b8060b6cecb1d3da"
+  },
+  "actions/32/zoom-in.svg": {
+    "symbol": "zoom_in",
+    "sha256": "716dc7fd447c31424070253cf0c9ecfa569e99e69c6bab107f20025922af0797"
+  },
+  "actions/32/zoom-out.svg": {
+    "symbol": "zoom_out",
+    "sha256": "809d84109f9ccd9a2c1fa2c82189ad6f7cc5c9fcb9d3db29262fae239813a9a0"
+  },
+  "actions/32/dialog-ok.svg": {
+    "symbol": "check",
+    "sha256": "1b78a47ef207d44d985bdf652856261ba0ed665cbcba6cdcbef8fd34056e2958"
+  },
+  "actions/32/dialog-ok-apply.svg": {
+    "symbol": "check",
+    "sha256": "1b78a47ef207d44d985bdf652856261ba0ed665cbcba6cdcbef8fd34056e2958"
+  },
+  "actions/32/dialog-apply.svg": {
+    "symbol": "check",
+    "sha256": "1b78a47ef207d44d985bdf652856261ba0ed665cbcba6cdcbef8fd34056e2958"
+  },
+  "actions/32/dialog-cancel.svg": {
+    "symbol": "cancel",
+    "sha256": "b432e5f539e885f35d0ef68555f267bac1eafa59df65321b30943d9a07062878"
+  },
+  "actions/32/process-stop.svg": {
+    "symbol": "cancel",
+    "sha256": "b432e5f539e885f35d0ef68555f267bac1eafa59df65321b30943d9a07062878"
+  },
+  "actions/32/go-previous.svg": {
+    "symbol": "arrow_back",
+    "sha256": "0e1792af984411831f843cb3622fc41a27b502cf29b40d41e3e2b0abfcf3716e"
+  },
+  "actions/32/go-left.svg": {
+    "symbol": "arrow_back",
+    "sha256": "0e1792af984411831f843cb3622fc41a27b502cf29b40d41e3e2b0abfcf3716e"
+  },
+  "actions/32/go-next.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "c2f57507c1933be1e87c9fe5c99dfd6ac0328415898929e15581d18f7ad5b574"
+  },
+  "actions/32/go-right.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "c2f57507c1933be1e87c9fe5c99dfd6ac0328415898929e15581d18f7ad5b574"
+  },
+  "actions/32/go-down.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "a92316bdfba574267355604c6c6d1b4be383402ae5f50207bb03916130336d38"
+  },
+  "actions/32/pan-down.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "a92316bdfba574267355604c6c6d1b4be383402ae5f50207bb03916130336d38"
+  },
+  "actions/32/go-up.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "720a888032bd7ed201c0723bab6a6d9d9c60fc09c0d68cbd0317609b0f20e15a"
+  },
+  "actions/32/pan-up.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "720a888032bd7ed201c0723bab6a6d9d9c60fc09c0d68cbd0317609b0f20e15a"
+  },
+  "actions/32/go-first.svg": {
+    "symbol": "first_page",
+    "sha256": "d4441bbe3d4c5c9334f406910ba26f5199b058745a7d3fded30b83a61318d352"
+  },
+  "actions/32/go-last.svg": {
+    "symbol": "last_page",
+    "sha256": "8d83b6174db60e0d49f80c4c1559073cafca6ab856ed51f51f49a67f1036ee52"
+  },
+  "actions/32/view-refresh.svg": {
+    "symbol": "refresh",
+    "sha256": "db872f00f96aed5226f45deea41405eb61c42b02934fcac6372c49206439a1cc"
+  },
+  "actions/32/reload.svg": {
+    "symbol": "refresh",
+    "sha256": "db872f00f96aed5226f45deea41405eb61c42b02934fcac6372c49206439a1cc"
+  },
+  "actions/32/configure.svg": {
+    "symbol": "settings",
+    "sha256": "3ccec3c57d47b628ff341f9ffb1facf8b86ce6953db5301686773f67e55549a2"
+  },
+  "actions/32/settings-configure.svg": {
+    "symbol": "settings",
+    "sha256": "3ccec3c57d47b628ff341f9ffb1facf8b86ce6953db5301686773f67e55549a2"
+  },
+  "actions/32/view-filter.svg": {
+    "symbol": "tune",
+    "sha256": "741683f24a9014064b751d6e2342c35f4a4b5a7a7435dfe4d114127b9a872200"
+  },
+  "actions/32/configure-toolbars.svg": {
+    "symbol": "tune",
+    "sha256": "741683f24a9014064b751d6e2342c35f4a4b5a7a7435dfe4d114127b9a872200"
+  },
+  "actions/32/application-menu.svg": {
+    "symbol": "menu",
+    "sha256": "a96b4241fa35aeec3eeece82dc0083e924ee28e9f24ec051681e2ace78285ffb"
+  },
+  "actions/32/open-menu.svg": {
+    "symbol": "menu",
+    "sha256": "a96b4241fa35aeec3eeece82dc0083e924ee28e9f24ec051681e2ace78285ffb"
+  },
+  "actions/32/overflow-menu.svg": {
+    "symbol": "more_horiz",
+    "sha256": "a3f9f6290d0dad52ecaaef7a505fbf4abcd0d78d60d07e6d272d2e1568255e93"
+  },
+  "actions/32/edit-copy.svg": {
+    "symbol": "content_copy",
+    "sha256": "d41ffd30ffeccdd11bbe143d1bcf66a1cf8138a8c3e38b2377f4cf306ded3050"
+  },
+  "actions/32/edit-cut.svg": {
+    "symbol": "content_cut",
+    "sha256": "c6f13709bdec26891b4095535c77410d8d139d09fea18d9bc1ce09aa15c22f6a"
+  },
+  "actions/32/edit-paste.svg": {
+    "symbol": "content_paste",
+    "sha256": "ac9e5d07fbd27db7c3c315356245202891fedff1c75a8d5316a3a47413a97a19"
+  },
+  "actions/32/edit-undo.svg": {
+    "symbol": "undo",
+    "sha256": "1dc735b22d92ff21c4c6c0768a260eb421d0f0978ff5f945f9722279ad26d510"
+  },
+  "actions/32/edit-redo.svg": {
+    "symbol": "redo",
+    "sha256": "84a55767cdf9d7c5e135ccd9e8fa830a16aac0f7cbdb5923aae10bc81c5c86d7"
+  },
+  "actions/32/edit-delete.svg": {
+    "symbol": "delete",
+    "sha256": "3725e47e30ed6643b7c066d9236857bdedc2d2e42dcb52460ad0ec0a83219d8e"
+  },
+  "actions/32/user-trash.svg": {
+    "symbol": "delete",
+    "sha256": "3725e47e30ed6643b7c066d9236857bdedc2d2e42dcb52460ad0ec0a83219d8e"
+  },
+  "actions/32/document-edit.svg": {
+    "symbol": "edit",
+    "sha256": "d53d6b4f08d3b87ca207f8d7387ea6fdb4b1e5c45f4fd6b672769915a758459e"
+  },
+  "actions/32/edit-rename.svg": {
+    "symbol": "edit",
+    "sha256": "d53d6b4f08d3b87ca207f8d7387ea6fdb4b1e5c45f4fd6b672769915a758459e"
+  },
+  "actions/32/document-new.svg": {
+    "symbol": "note_add",
+    "sha256": "2b93feb18fadc2e4f1c6128d4baafad83aea77acd87b104d02d1cd8d47d35560"
+  },
+  "actions/32/document-open.svg": {
+    "symbol": "folder_open",
+    "sha256": "8a3010c0ca0f8f70f660c0ee9bffedf91f513cb3d24b342b2f0a4749a756c3e4"
+  },
+  "actions/32/document-open-folder.svg": {
+    "symbol": "folder_open",
+    "sha256": "8a3010c0ca0f8f70f660c0ee9bffedf91f513cb3d24b342b2f0a4749a756c3e4"
+  },
+  "actions/32/document-save.svg": {
+    "symbol": "save",
+    "sha256": "6186e84718ab53bcf2284011459992c0cd627ee16695343e4234f5daf671757a"
+  },
+  "actions/32/document-save-as.svg": {
+    "symbol": "save_as",
+    "sha256": "13a7f85c2ddb9be3e50265cf42911d1775437537e6569e0923a28fbbb00e6630"
+  },
+  "actions/32/document-print.svg": {
+    "symbol": "print",
+    "sha256": "3608714148c05f4b3994ba831a5de69b19d12b2cd582d07e48d263962a51f6d5"
+  },
+  "actions/32/edit-download.svg": {
+    "symbol": "download",
+    "sha256": "65e687f6d4facb695aec3a659558b140dbf80b3b0f914683958bdb5672af0225"
+  },
+  "actions/32/download.svg": {
+    "symbol": "download",
+    "sha256": "65e687f6d4facb695aec3a659558b140dbf80b3b0f914683958bdb5672af0225"
+  },
+  "actions/32/upload.svg": {
+    "symbol": "upload",
+    "sha256": "0ab80ed3335abe58446e10d947e4984b5fd20acddb372c61bbd37a004e4d75e9"
+  },
+  "actions/32/document-share.svg": {
+    "symbol": "share",
+    "sha256": "b9e8b5704bcd14228c87dbd5e9323543665c51cbd2f9914d8775dce111c5e436"
+  },
+  "actions/32/help-about.svg": {
+    "symbol": "info",
+    "sha256": "290c93960cbf3718a2411b51735845dfa01174561c9eee11a2245e36f9c79783"
+  },
+  "actions/32/help-hint.svg": {
+    "symbol": "info",
+    "sha256": "290c93960cbf3718a2411b51735845dfa01174561c9eee11a2245e36f9c79783"
+  },
+  "actions/32/help-contextual.svg": {
+    "symbol": "help",
+    "sha256": "3046e9b6038fde09d1465d0e1b07bb4ffe547c7d0381dfe7a3c1c04d2d2ee2f0"
+  },
+  "actions/32/help-contents.svg": {
+    "symbol": "help",
+    "sha256": "3046e9b6038fde09d1465d0e1b07bb4ffe547c7d0381dfe7a3c1c04d2d2ee2f0"
+  },
+  "actions/32/go-home.svg": {
+    "symbol": "home",
+    "sha256": "98e53564d7e104ff47bb79686afee59f04ef73e524fc8a74d909900c5a9af6b2"
+  },
+  "actions/32/view-fullscreen.svg": {
+    "symbol": "fullscreen",
+    "sha256": "f077b164803ff865d78324c6566f59cf1dc411eb752fefd45073dc86110ede20"
+  },
+  "actions/32/view-restore.svg": {
+    "symbol": "fullscreen_exit",
+    "sha256": "09877e2e740d186183b3b29f4a16aef6a6ecc9df0c0f690871d78ca223880753"
+  },
+  "actions/32/media-playback-start.svg": {
+    "symbol": "play_arrow",
+    "sha256": "589f3193719799cb60e7d19af3679371fda681b8c75667bcf3972369cbd1bb9a"
+  },
+  "actions/32/media-playback-pause.svg": {
+    "symbol": "pause",
+    "sha256": "afbff523d0317bae6220d2d07c9d36cf4e2dd4e3a4d4c02b2a04fea6fcdf204f"
+  },
+  "actions/32/media-playback-stop.svg": {
+    "symbol": "stop",
+    "sha256": "24bfc3ac7ee56db58d095217aeb310076140822375147ef259fe50e1269ab2da"
+  },
+  "actions/32/media-skip-forward.svg": {
+    "symbol": "skip_next",
+    "sha256": "b68ce0c6b4f3e3772a71056b1be3cfa117d56069d2bd41d1205c080867c2e5bf"
+  },
+  "actions/32/media-skip-backward.svg": {
+    "symbol": "skip_previous",
+    "sha256": "54815dbf570dbae0abf3ddd7867522454deed6f9f010da236dd7815ebcce5c98"
+  },
+  "actions/32/media-seek-forward.svg": {
+    "symbol": "fast_forward",
+    "sha256": "d32eca49c079bd5d3f9ab187bdca94911bf5512b492c5cc9c69494a3a3f7aa45"
+  },
+  "actions/32/media-seek-backward.svg": {
+    "symbol": "fast_rewind",
+    "sha256": "993b65c0d1265f9cdb9082f0cd78d619d2defea9227106dc9b4b697cb123404d"
+  },
+  "actions/32/media-playlist-shuffle.svg": {
+    "symbol": "shuffle",
+    "sha256": "289ccf99e4b93a9664e978fca72434e74550a1f91d19967c0fbc13e06e83e486"
+  },
+  "actions/32/media-playlist-repeat.svg": {
+    "symbol": "repeat",
+    "sha256": "242280a6e4258d77e4e5aa214d3882820e908050a3ecdcc87030623d6c0e11d9"
+  },
+  "actions/32/media-repeat-all.svg": {
+    "symbol": "repeat",
+    "sha256": "242280a6e4258d77e4e5aa214d3882820e908050a3ecdcc87030623d6c0e11d9"
+  },
+  "actions/32/media-repeat-single.svg": {
+    "symbol": "repeat_one",
+    "sha256": "7d14454bdfcd2ebc4dd3732a60ffd10d800fb2f3cee2e289148c82bb48148a76"
+  },
+  "actions/32/media-repeat-track.svg": {
+    "symbol": "repeat_one",
+    "sha256": "7d14454bdfcd2ebc4dd3732a60ffd10d800fb2f3cee2e289148c82bb48148a76"
+  },
+  "actions/32/view-visible.svg": {
+    "symbol": "visibility",
+    "sha256": "e6c4e5cc41c74e4409fb9bb23675e8895ec3e717886c26afc27b545f6f3fc580"
+  },
+  "actions/32/password-show-on.svg": {
+    "symbol": "visibility",
+    "sha256": "e6c4e5cc41c74e4409fb9bb23675e8895ec3e717886c26afc27b545f6f3fc580"
+  },
+  "actions/32/view-hidden.svg": {
+    "symbol": "visibility_off",
+    "sha256": "f808a7a4afc1eed5e1dabbae52d36213c2e68b0421709c384123e52bbaaa7ea7"
+  },
+  "actions/32/password-show-off.svg": {
+    "symbol": "visibility_off",
+    "sha256": "f808a7a4afc1eed5e1dabbae52d36213c2e68b0421709c384123e52bbaaa7ea7"
+  },
+  "actions/32/view-calendar.svg": {
+    "symbol": "calendar_month",
+    "sha256": "1d18c67955b8ea95b10c93d4c7135953ff1389905e22b050c70332b3311524c4"
+  },
+  "actions/32/klipper.svg": {
+    "symbol": "content_paste",
+    "sha256": "ac9e5d07fbd27db7c3c315356245202891fedff1c75a8d5316a3a47413a97a19"
+  },
+  "actions/32/bluetooth-active.svg": {
+    "symbol": "bluetooth",
+    "sha256": "cca6c6e89a8e524e6869ddc5d11ad1b60f0c5a665ab06c90b70772ac19eed700"
+  },
+  "actions/32/bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "cca6c6e89a8e524e6869ddc5d11ad1b60f0c5a665ab06c90b70772ac19eed700"
+  },
+  "actions/32/video-display.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "e4a1c45b903da805b84d4efb723e0ff92cdc89ee54b98410875f05d0830639eb"
+  },
+  "actions/32/input-mouse.svg": {
+    "symbol": "mouse",
+    "sha256": "8ea8818a345eb85f511e75bb8deb629dedb66535e92dced710dd4272a5ad5801"
+  },
+  "actions/32/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "73be30aa2c9aa835a5f6610267f51e59585558d0628cda9d5dac216195fda24e"
+  },
+  "actions/symbolic/edit-find-symbolic.svg": {
+    "symbol": "search",
+    "sha256": "266ea24e7ee287de63a278d5c545f9dc3fb0188b12f3bdeef17626a142e73844"
+  },
+  "actions/symbolic/search-symbolic.svg": {
+    "symbol": "search",
+    "sha256": "266ea24e7ee287de63a278d5c545f9dc3fb0188b12f3bdeef17626a142e73844"
+  },
+  "actions/symbolic/system-search-symbolic.svg": {
+    "symbol": "search",
+    "sha256": "266ea24e7ee287de63a278d5c545f9dc3fb0188b12f3bdeef17626a142e73844"
+  },
+  "actions/symbolic/window-close-symbolic.svg": {
+    "symbol": "close",
+    "sha256": "42eb6ffdc38051ab52db2c289518472854cedaa2cc3dcd98fa25a9edfa3394c1"
+  },
+  "actions/symbolic/dialog-close-symbolic.svg": {
+    "symbol": "close",
+    "sha256": "42eb6ffdc38051ab52db2c289518472854cedaa2cc3dcd98fa25a9edfa3394c1"
+  },
+  "actions/symbolic/edit-clear-locationbar-ltr-symbolic.svg": {
+    "symbol": "close",
+    "sha256": "42eb6ffdc38051ab52db2c289518472854cedaa2cc3dcd98fa25a9edfa3394c1"
+  },
+  "actions/symbolic/edit-clear-locationbar-rtl-symbolic.svg": {
+    "symbol": "close",
+    "sha256": "42eb6ffdc38051ab52db2c289518472854cedaa2cc3dcd98fa25a9edfa3394c1"
+  },
+  "actions/symbolic/list-add-symbolic.svg": {
+    "symbol": "add",
+    "sha256": "19dd058363ac8b3e3b9794c3a8b0f96dcf2accdb78e2ca0e5b675343316d8a45"
+  },
+  "actions/symbolic/edit-add-symbolic.svg": {
+    "symbol": "add",
+    "sha256": "19dd058363ac8b3e3b9794c3a8b0f96dcf2accdb78e2ca0e5b675343316d8a45"
+  },
+  "actions/symbolic/list-remove-symbolic.svg": {
+    "symbol": "remove",
+    "sha256": "f613e22e4d2e82ef86c572ea043dc9ae4975cfe6ff04809beb42fc9c2320a033"
+  },
+  "actions/symbolic/zoom-in-symbolic.svg": {
+    "symbol": "zoom_in",
+    "sha256": "835519e0397cc09466de28b8f81fe235b4d9aafc0576337f016f3b7cb1859b3a"
+  },
+  "actions/symbolic/zoom-out-symbolic.svg": {
+    "symbol": "zoom_out",
+    "sha256": "137c2a94dbb2f653bc7f7dc97f06b4c86e007583218925d1240adc30ebccae2e"
+  },
+  "actions/symbolic/dialog-ok-symbolic.svg": {
+    "symbol": "check",
+    "sha256": "4b5c36740b824dc64632bb26ab50ffa6071eb7c87dc2758764921783bdf1daa4"
+  },
+  "actions/symbolic/dialog-ok-apply-symbolic.svg": {
+    "symbol": "check",
+    "sha256": "4b5c36740b824dc64632bb26ab50ffa6071eb7c87dc2758764921783bdf1daa4"
+  },
+  "actions/symbolic/dialog-apply-symbolic.svg": {
+    "symbol": "check",
+    "sha256": "4b5c36740b824dc64632bb26ab50ffa6071eb7c87dc2758764921783bdf1daa4"
+  },
+  "actions/symbolic/dialog-cancel-symbolic.svg": {
+    "symbol": "cancel",
+    "sha256": "7de8643bc1676f13a84bd7105667fd76d0a34ae412439fbe6cef475b8dc9597b"
+  },
+  "actions/symbolic/process-stop-symbolic.svg": {
+    "symbol": "cancel",
+    "sha256": "7de8643bc1676f13a84bd7105667fd76d0a34ae412439fbe6cef475b8dc9597b"
+  },
+  "actions/symbolic/go-previous-symbolic.svg": {
+    "symbol": "arrow_back",
+    "sha256": "41aa9d551bd3eb85773cd5d5cd8c10eebc2f319617c9182a94126ee387118936"
+  },
+  "actions/symbolic/go-left-symbolic.svg": {
+    "symbol": "arrow_back",
+    "sha256": "41aa9d551bd3eb85773cd5d5cd8c10eebc2f319617c9182a94126ee387118936"
+  },
+  "actions/symbolic/go-next-symbolic.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "45ff4ea0fbf33ea2eda5ae3a5bf0db1c5036b77f824a1e1c74580b55764cd304"
+  },
+  "actions/symbolic/go-right-symbolic.svg": {
+    "symbol": "arrow_forward",
+    "sha256": "45ff4ea0fbf33ea2eda5ae3a5bf0db1c5036b77f824a1e1c74580b55764cd304"
+  },
+  "actions/symbolic/go-down-symbolic.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "d3366462756f7c72850737145519b3771bffa853224f1ba8086e199a72990bed"
+  },
+  "actions/symbolic/pan-down-symbolic.svg": {
+    "symbol": "keyboard_arrow_down",
+    "sha256": "d3366462756f7c72850737145519b3771bffa853224f1ba8086e199a72990bed"
+  },
+  "actions/symbolic/go-up-symbolic.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "ab016f140022f14a0288db4f727eba77db634c8dcfa20b623aaee8f4bf2519cb"
+  },
+  "actions/symbolic/pan-up-symbolic.svg": {
+    "symbol": "keyboard_arrow_up",
+    "sha256": "ab016f140022f14a0288db4f727eba77db634c8dcfa20b623aaee8f4bf2519cb"
+  },
+  "actions/symbolic/go-first-symbolic.svg": {
+    "symbol": "first_page",
+    "sha256": "a6685ba78be32824ab210ded854b30ada1e554bc35d3c63dd8196f00635731eb"
+  },
+  "actions/symbolic/go-last-symbolic.svg": {
+    "symbol": "last_page",
+    "sha256": "b4026ae33f56e1b4bbfeec5240ec72d537492579efdc2f2dc7ddf53c6e1be3f9"
+  },
+  "actions/symbolic/view-refresh-symbolic.svg": {
+    "symbol": "refresh",
+    "sha256": "2261d7b203f9a14895e5d0775bb82175d4d9ae20e713d8c2e3310cf5804743e0"
+  },
+  "actions/symbolic/reload-symbolic.svg": {
+    "symbol": "refresh",
+    "sha256": "2261d7b203f9a14895e5d0775bb82175d4d9ae20e713d8c2e3310cf5804743e0"
+  },
+  "actions/symbolic/configure-symbolic.svg": {
+    "symbol": "settings",
+    "sha256": "9a92f373e99810b8b18a2360482d1401611fcabd23b75fd9410827942b159cfc"
+  },
+  "actions/symbolic/settings-configure-symbolic.svg": {
+    "symbol": "settings",
+    "sha256": "9a92f373e99810b8b18a2360482d1401611fcabd23b75fd9410827942b159cfc"
+  },
+  "actions/symbolic/view-filter-symbolic.svg": {
+    "symbol": "tune",
+    "sha256": "e108d6e875484cddcebc67e3a375af499c1e64fe153a5e0feb2f79d1cf40a187"
+  },
+  "actions/symbolic/configure-toolbars-symbolic.svg": {
+    "symbol": "tune",
+    "sha256": "e108d6e875484cddcebc67e3a375af499c1e64fe153a5e0feb2f79d1cf40a187"
+  },
+  "actions/symbolic/application-menu-symbolic.svg": {
+    "symbol": "menu",
+    "sha256": "ebf1d648c14836fee87c8a4301f3c9ffebe5f8e151adb036de68494b8d193a15"
+  },
+  "actions/symbolic/open-menu-symbolic.svg": {
+    "symbol": "menu",
+    "sha256": "ebf1d648c14836fee87c8a4301f3c9ffebe5f8e151adb036de68494b8d193a15"
+  },
+  "actions/symbolic/overflow-menu-symbolic.svg": {
+    "symbol": "more_horiz",
+    "sha256": "cec03007520f84284e5f6373a755668f22d605b010e2be5e4138d1b55fa8be60"
+  },
+  "actions/symbolic/edit-copy-symbolic.svg": {
+    "symbol": "content_copy",
+    "sha256": "4c50c75d29f4102542606747e827ec2d2282326047269918d388753d5c92e7c4"
+  },
+  "actions/symbolic/edit-cut-symbolic.svg": {
+    "symbol": "content_cut",
+    "sha256": "1df0b6e2e5e12715b5eecd63443ba46295fd222c7340adc4b08511f56a1ea8c9"
+  },
+  "actions/symbolic/edit-paste-symbolic.svg": {
+    "symbol": "content_paste",
+    "sha256": "a1d10ddcec30cdc4a5e2ac6bd5f02d6b810abe6c034ae2cb7e18f4038a19e407"
+  },
+  "actions/symbolic/edit-undo-symbolic.svg": {
+    "symbol": "undo",
+    "sha256": "a1bf4b21a881dd2e48776cb56ef0ec753998db4d754dd1355e31e41688e606af"
+  },
+  "actions/symbolic/edit-redo-symbolic.svg": {
+    "symbol": "redo",
+    "sha256": "744bad4d8aac92b1725f68c90d516d47bb87e538db64dc7b86b8dc6f68ca3423"
+  },
+  "actions/symbolic/edit-delete-symbolic.svg": {
+    "symbol": "delete",
+    "sha256": "4c3f1e8ab99fedab1a17ec40f3b7a3f70722bbe6e1130240fdcc078b32ee6977"
+  },
+  "actions/symbolic/user-trash-symbolic.svg": {
+    "symbol": "delete",
+    "sha256": "4c3f1e8ab99fedab1a17ec40f3b7a3f70722bbe6e1130240fdcc078b32ee6977"
+  },
+  "actions/symbolic/document-edit-symbolic.svg": {
+    "symbol": "edit",
+    "sha256": "c7023e98643bd9aacaff26e0dc3dfc6195e4da75c70e2c4c37cfcb0e35d5cb8a"
+  },
+  "actions/symbolic/edit-rename-symbolic.svg": {
+    "symbol": "edit",
+    "sha256": "c7023e98643bd9aacaff26e0dc3dfc6195e4da75c70e2c4c37cfcb0e35d5cb8a"
+  },
+  "actions/symbolic/document-new-symbolic.svg": {
+    "symbol": "note_add",
+    "sha256": "d7f6e310296c8f9d187b82959c46242f6d392d9a3fb441e31497ba3d942cb445"
+  },
+  "actions/symbolic/document-open-symbolic.svg": {
+    "symbol": "folder_open",
+    "sha256": "818aa266f6db29e337be32c3017cb6fd7ebf7a77f08d67f02396c63e8a8f2def"
+  },
+  "actions/symbolic/document-open-folder-symbolic.svg": {
+    "symbol": "folder_open",
+    "sha256": "818aa266f6db29e337be32c3017cb6fd7ebf7a77f08d67f02396c63e8a8f2def"
+  },
+  "actions/symbolic/document-save-symbolic.svg": {
+    "symbol": "save",
+    "sha256": "2181ae4b259d5b7aa81dcf061c4bbf4ee615a5d68c9fd8172ff6860d6f4d3809"
+  },
+  "actions/symbolic/document-save-as-symbolic.svg": {
+    "symbol": "save_as",
+    "sha256": "49e74555a0fb057c64e55e083243eef0b08cd73aa2ce6ce1c8f2ae3c7e205688"
+  },
+  "actions/symbolic/document-print-symbolic.svg": {
+    "symbol": "print",
+    "sha256": "37a0423c0c801cb66fb60dfe6bf9d1737debf6c8fb47c967e1396697c912a73a"
+  },
+  "actions/symbolic/edit-download-symbolic.svg": {
+    "symbol": "download",
+    "sha256": "e52d7539872e28b8dea506999acbfb80acec13737cf922632ef064140d93e249"
+  },
+  "actions/symbolic/download-symbolic.svg": {
+    "symbol": "download",
+    "sha256": "e52d7539872e28b8dea506999acbfb80acec13737cf922632ef064140d93e249"
+  },
+  "actions/symbolic/upload-symbolic.svg": {
+    "symbol": "upload",
+    "sha256": "7cf34d8c770e2554dc99f30cb39057569be7634024a1db58d99b7c51a4fe043b"
+  },
+  "actions/symbolic/document-share-symbolic.svg": {
+    "symbol": "share",
+    "sha256": "23dd4a9be38cbcf9185ef15d311154074a16b01d83a70d4e01e3c08d264de6c0"
+  },
+  "actions/symbolic/help-about-symbolic.svg": {
+    "symbol": "info",
+    "sha256": "9ac331526de1c6a1a89127c6dcc380bda3ca2caceeb87f2da66f736510766e9f"
+  },
+  "actions/symbolic/help-hint-symbolic.svg": {
+    "symbol": "info",
+    "sha256": "9ac331526de1c6a1a89127c6dcc380bda3ca2caceeb87f2da66f736510766e9f"
+  },
+  "actions/symbolic/help-contextual-symbolic.svg": {
+    "symbol": "help",
+    "sha256": "93386fc216c05e81642bf9faea2fbd9d764d02e7f980f79ed69c9a8b8cfccaa1"
+  },
+  "actions/symbolic/help-contents-symbolic.svg": {
+    "symbol": "help",
+    "sha256": "93386fc216c05e81642bf9faea2fbd9d764d02e7f980f79ed69c9a8b8cfccaa1"
+  },
+  "actions/symbolic/go-home-symbolic.svg": {
+    "symbol": "home",
+    "sha256": "29f4bc00bb98f184c9886287baec9c47a57a704132e770f7dcdcfa646be834c2"
+  },
+  "actions/symbolic/view-fullscreen-symbolic.svg": {
+    "symbol": "fullscreen",
+    "sha256": "2de2510e92f7719c748d23cd39bdfdc618de8570a7d0d35a61f417a24e1887cb"
+  },
+  "actions/symbolic/view-restore-symbolic.svg": {
+    "symbol": "fullscreen_exit",
+    "sha256": "e0588c93804d247bb5d0b67c5412c01b2e90f09b6a23c9e4241e02d545fbd945"
+  },
+  "actions/symbolic/media-playback-start-symbolic.svg": {
+    "symbol": "play_arrow",
+    "sha256": "1c221d9ae6abd2baf9803567b83e113c30592222aec9e377f4f4ffa443ed3c24"
+  },
+  "actions/symbolic/media-playback-pause-symbolic.svg": {
+    "symbol": "pause",
+    "sha256": "ed18353435017b4d53825fe3dd49334bc6fdd7fff1be63b5c0f5481efc3c6fee"
+  },
+  "actions/symbolic/media-playback-stop-symbolic.svg": {
+    "symbol": "stop",
+    "sha256": "e973acb7f285d27d1ae1720c4cff05c9cf850be5ea2bb666061abb2ea9df6e68"
+  },
+  "actions/symbolic/media-skip-forward-symbolic.svg": {
+    "symbol": "skip_next",
+    "sha256": "6ab8b6d103bff5ec55ff2147114e02fdc0e46cc8d87e89bcb6fb953e97bc6f0f"
+  },
+  "actions/symbolic/media-skip-backward-symbolic.svg": {
+    "symbol": "skip_previous",
+    "sha256": "1147104ac6706f078a935243f1956efd03667da40a77cdddddddce5a9e3c31f4"
+  },
+  "actions/symbolic/media-seek-forward-symbolic.svg": {
+    "symbol": "fast_forward",
+    "sha256": "3c9436b0ce7570f0241f7771e513ff91de08aded43206899eb16a1e21346c374"
+  },
+  "actions/symbolic/media-seek-backward-symbolic.svg": {
+    "symbol": "fast_rewind",
+    "sha256": "9470f9f0693b8522452a25a985bf4a362e53dfc044e10fee3f31c650efcd4296"
+  },
+  "actions/symbolic/media-playlist-shuffle-symbolic.svg": {
+    "symbol": "shuffle",
+    "sha256": "6b754f51b30559bf2a3da9c5df1d968cf9e94546a1eb9f1c691ff83eee2f0421"
+  },
+  "actions/symbolic/media-playlist-repeat-symbolic.svg": {
+    "symbol": "repeat",
+    "sha256": "634b8a6330356667a243eb5b7a11ca6bed05ba89ab46428683d3d0d7c099c280"
+  },
+  "actions/symbolic/media-repeat-all-symbolic.svg": {
+    "symbol": "repeat",
+    "sha256": "634b8a6330356667a243eb5b7a11ca6bed05ba89ab46428683d3d0d7c099c280"
+  },
+  "actions/symbolic/media-repeat-single-symbolic.svg": {
+    "symbol": "repeat_one",
+    "sha256": "70fc3612a5d4118e80ee065bcd424ba7b40d076904f8b1e1ee1878d3161f455c"
+  },
+  "actions/symbolic/media-repeat-track-symbolic.svg": {
+    "symbol": "repeat_one",
+    "sha256": "70fc3612a5d4118e80ee065bcd424ba7b40d076904f8b1e1ee1878d3161f455c"
+  },
+  "actions/symbolic/view-visible-symbolic.svg": {
+    "symbol": "visibility",
+    "sha256": "1583297c0c468c8cce13157b031a48ff4804025c8bc4fec13b0087fff554dd31"
+  },
+  "actions/symbolic/password-show-on-symbolic.svg": {
+    "symbol": "visibility",
+    "sha256": "1583297c0c468c8cce13157b031a48ff4804025c8bc4fec13b0087fff554dd31"
+  },
+  "actions/symbolic/view-hidden-symbolic.svg": {
+    "symbol": "visibility_off",
+    "sha256": "f2f0caca2424cde3bef392fab17842c03b536a0d05ed8b5feb01762ce985023e"
+  },
+  "actions/symbolic/password-show-off-symbolic.svg": {
+    "symbol": "visibility_off",
+    "sha256": "f2f0caca2424cde3bef392fab17842c03b536a0d05ed8b5feb01762ce985023e"
+  },
+  "actions/symbolic/view-calendar-symbolic.svg": {
+    "symbol": "calendar_month",
+    "sha256": "174ed2d966d175f9aa00a3a3f2911d1be3a62f7299a82eb84d26ffe2c603c56a"
+  },
+  "actions/symbolic/klipper-symbolic.svg": {
+    "symbol": "content_paste",
+    "sha256": "a1d10ddcec30cdc4a5e2ac6bd5f02d6b810abe6c034ae2cb7e18f4038a19e407"
+  },
+  "actions/symbolic/bluetooth-active-symbolic.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "actions/symbolic/bluetooth-symbolic.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "actions/symbolic/microphone-symbolic.svg": {
+    "symbol": "mic",
+    "sha256": "52d68ac821e9e214328e8c55e5b68ca26970c52b5b31992f5493c31d06bc127d"
+  },
+  "actions/symbolic/video-display-symbolic.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "a9b7d19e02026b39840da1e4983d8d6cbee76b1f2c63e6a2dffe17c9c75cfa43"
+  },
+  "actions/symbolic/input-mouse-symbolic.svg": {
+    "symbol": "mouse",
+    "sha256": "fdf37f92490eef6e6656be6d43e1cbfa541314d25250452e85d60396a65334c6"
+  },
+  "actions/symbolic/network-wired-symbolic.svg": {
+    "symbol": "lan",
+    "sha256": "1c06bb51844f3ea34207f505bd524f59d80621b17f7a8ee507d3df0c94794ba2"
+  },
+  "status/16/notifications.svg": {
+    "symbol": "notifications",
+    "sha256": "93ad0fd902f7f0ee10a4eaafc333f1b018273c5f4c9be4a0415ca3834fb8cc3d"
+  },
+  "status/16/notifications-symbolic.svg": {
+    "symbol": "notifications",
+    "sha256": "93ad0fd902f7f0ee10a4eaafc333f1b018273c5f4c9be4a0415ca3834fb8cc3d"
+  },
+  "status/16/notification.svg": {
+    "symbol": "notifications",
+    "sha256": "93ad0fd902f7f0ee10a4eaafc333f1b018273c5f4c9be4a0415ca3834fb8cc3d"
+  },
+  "status/16/notification-symbolic.svg": {
+    "symbol": "notifications",
+    "sha256": "93ad0fd902f7f0ee10a4eaafc333f1b018273c5f4c9be4a0415ca3834fb8cc3d"
+  },
+  "status/16/notifications-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "1a972aa46515b70faf9e6083750248a88eb7ad41ee675d72318562e8663b848e"
+  },
+  "status/16/notifications-disabled-symbolic.svg": {
+    "symbol": "notifications_off",
+    "sha256": "1a972aa46515b70faf9e6083750248a88eb7ad41ee675d72318562e8663b848e"
+  },
+  "status/16/notification-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "1a972aa46515b70faf9e6083750248a88eb7ad41ee675d72318562e8663b848e"
+  },
+  "status/16/brightness-high.svg": {
+    "symbol": "light_mode",
+    "sha256": "c0adc3793a959920a58d9b3f9b220d533ea243e6647a226fc0a046359f2e955e"
+  },
+  "status/16/display-brightness.svg": {
+    "symbol": "light_mode",
+    "sha256": "c0adc3793a959920a58d9b3f9b220d533ea243e6647a226fc0a046359f2e955e"
+  },
+  "status/16/brightness-low.svg": {
+    "symbol": "brightness_4",
+    "sha256": "7ef24033256ab1e259dc921dfb2d8a0b0374bdfca545833b177400a1a3c3bb15"
+  },
+  "status/16/klipper.svg": {
+    "symbol": "content_paste",
+    "sha256": "a1d10ddcec30cdc4a5e2ac6bd5f02d6b810abe6c034ae2cb7e18f4038a19e407"
+  },
+  "status/16/clipboard.svg": {
+    "symbol": "content_paste",
+    "sha256": "a1d10ddcec30cdc4a5e2ac6bd5f02d6b810abe6c034ae2cb7e18f4038a19e407"
+  },
+  "status/16/audio-volume-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "408b1917b022723aea13029263855ac6133b0ec0a056e3bf7aa3b368ae5a3d71"
+  },
+  "status/16/audio-volume-high-panel.svg": {
+    "symbol": "volume_up",
+    "sha256": "408b1917b022723aea13029263855ac6133b0ec0a056e3bf7aa3b368ae5a3d71"
+  },
+  "status/16/volume-level-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "408b1917b022723aea13029263855ac6133b0ec0a056e3bf7aa3b368ae5a3d71"
+  },
+  "status/16/volume-level-high-panel.svg": {
+    "symbol": "volume_up",
+    "sha256": "408b1917b022723aea13029263855ac6133b0ec0a056e3bf7aa3b368ae5a3d71"
+  },
+  "status/16/audio-volume-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "b30f4da28a032fd69764f8f467d13e9545b0746e0eb8febf955717899d825fd0"
+  },
+  "status/16/audio-volume-medium-panel.svg": {
+    "symbol": "volume_down",
+    "sha256": "b30f4da28a032fd69764f8f467d13e9545b0746e0eb8febf955717899d825fd0"
+  },
+  "status/16/volume-level-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "b30f4da28a032fd69764f8f467d13e9545b0746e0eb8febf955717899d825fd0"
+  },
+  "status/16/volume-level-medium-panel.svg": {
+    "symbol": "volume_down",
+    "sha256": "b30f4da28a032fd69764f8f467d13e9545b0746e0eb8febf955717899d825fd0"
+  },
+  "status/16/audio-volume-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d4eb6e8f13e294bbabb48f14fa2625ff77c69f7949c639df745d555f0e1f6f8e"
+  },
+  "status/16/audio-volume-low-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d4eb6e8f13e294bbabb48f14fa2625ff77c69f7949c639df745d555f0e1f6f8e"
+  },
+  "status/16/audio-volume-zero.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d4eb6e8f13e294bbabb48f14fa2625ff77c69f7949c639df745d555f0e1f6f8e"
+  },
+  "status/16/audio-volume-zero-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d4eb6e8f13e294bbabb48f14fa2625ff77c69f7949c639df745d555f0e1f6f8e"
+  },
+  "status/16/volume-level-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d4eb6e8f13e294bbabb48f14fa2625ff77c69f7949c639df745d555f0e1f6f8e"
+  },
+  "status/16/volume-level-low-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d4eb6e8f13e294bbabb48f14fa2625ff77c69f7949c639df745d555f0e1f6f8e"
+  },
+  "status/16/volume-level-none.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d4eb6e8f13e294bbabb48f14fa2625ff77c69f7949c639df745d555f0e1f6f8e"
+  },
+  "status/16/volume-level-none-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d4eb6e8f13e294bbabb48f14fa2625ff77c69f7949c639df745d555f0e1f6f8e"
+  },
+  "status/16/audio-volume-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "027ec9ec00489844e665dc9e7bd526eb3f13026d392c81bb5e94cdc262663700"
+  },
+  "status/16/audio-volume-muted-symbolic.svg": {
+    "symbol": "volume_off",
+    "sha256": "027ec9ec00489844e665dc9e7bd526eb3f13026d392c81bb5e94cdc262663700"
+  },
+  "status/16/audio-volume-muted-panel.svg": {
+    "symbol": "volume_off",
+    "sha256": "027ec9ec00489844e665dc9e7bd526eb3f13026d392c81bb5e94cdc262663700"
+  },
+  "status/16/volume-level-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "027ec9ec00489844e665dc9e7bd526eb3f13026d392c81bb5e94cdc262663700"
+  },
+  "status/16/volume-level-muted-panel.svg": {
+    "symbol": "volume_off",
+    "sha256": "027ec9ec00489844e665dc9e7bd526eb3f13026d392c81bb5e94cdc262663700"
+  },
+  "status/16/microphone-sensitivity-muted.svg": {
+    "symbol": "mic_off",
+    "sha256": "9ee674e315bccaa1a5e89ca39b1ee52ea68d4bf8c7c0730bfa2eea3efc2e1a85"
+  },
+  "status/16/bluetooth-active.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "status/16/bluetooth-connected.svg": {
+    "symbol": "bluetooth_connected",
+    "sha256": "6b9379e7747a4e22a618f6daa4e6013a3d9a7ef0382f64acb0872cbd1cbd9831"
+  },
+  "status/16/bluetooth-disabled.svg": {
+    "symbol": "bluetooth_disabled",
+    "sha256": "e8bb6fe26236b2d0f96e739b98a8019fa028869c201151d3878690a55c62105f"
+  },
+  "status/16/network-wireless-100.svg": {
+    "symbol": "wifi",
+    "sha256": "3f2d38958fc52ec752146c5e029ac5b9ce3ce91d86d9f5ca8cd828fe1641285f"
+  },
+  "status/16/network-wireless-connected-100.svg": {
+    "symbol": "wifi",
+    "sha256": "3f2d38958fc52ec752146c5e029ac5b9ce3ce91d86d9f5ca8cd828fe1641285f"
+  },
+  "status/16/network-wireless-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "7c65d73de2d4d7297c320ccce179620125b9ff0fadef18b7178229e30bd74eb1"
+  },
+  "status/16/network-wireless-connected-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "7c65d73de2d4d7297c320ccce179620125b9ff0fadef18b7178229e30bd74eb1"
+  },
+  "status/16/network-wireless-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "bbb526b4ce07f411b7b931cdff20c593e195bcf4bf572d48abe75f65678fb76c"
+  },
+  "status/16/network-wireless-connected-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "bbb526b4ce07f411b7b931cdff20c593e195bcf4bf572d48abe75f65678fb76c"
+  },
+  "status/16/network-wireless-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "ab8316655fe19f27f0e10c21906daf11a3fbab3be4165792f1976ef35f8e6cec"
+  },
+  "status/16/network-wireless-connected-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "ab8316655fe19f27f0e10c21906daf11a3fbab3be4165792f1976ef35f8e6cec"
+  },
+  "status/16/network-wireless-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "806493340cba08cd71104a024a05c2508b4222fdab9e12df0343e753169f7684"
+  },
+  "status/16/network-wireless-connected-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "806493340cba08cd71104a024a05c2508b4222fdab9e12df0343e753169f7684"
+  },
+  "status/16/network-wireless-disconnected.svg": {
+    "symbol": "wifi_off",
+    "sha256": "08d833d779722ba2a72150e8fe7763fef616562b6d516fae229a6c04ae2deca5"
+  },
+  "status/16/network-wireless-off.svg": {
+    "symbol": "wifi_off",
+    "sha256": "08d833d779722ba2a72150e8fe7763fef616562b6d516fae229a6c04ae2deca5"
+  },
+  "status/16/update-low.svg": {
+    "symbol": "cloud_download",
+    "sha256": "cafa9c815e2cdd2ebbcddc874dfb5013009e7b30970efe38b7338a49c685c672"
+  },
+  "status/16/network-vpn.svg": {
+    "symbol": "lock",
+    "sha256": "fca54f78b8378d70247af91d4cc4c5d62fde77546cf772e165affa02d695bd3e"
+  },
+  "status/16/network-vpn-active.svg": {
+    "symbol": "lock",
+    "sha256": "fca54f78b8378d70247af91d4cc4c5d62fde77546cf772e165affa02d695bd3e"
+  },
+  "status/16/input-keyboard.svg": {
+    "symbol": "keyboard",
+    "sha256": "42a08d57a2b0ec21500ad21ca8e60cf85906dc04f7d7f3acb7fe508786ad8e9c"
+  },
+  "status/16/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "1c06bb51844f3ea34207f505bd524f59d80621b17f7a8ee507d3df0c94794ba2"
+  },
+  "status/22/system-search.svg": {
+    "symbol": "search",
+    "sha256": "6abb33857df748bbc868d3c5a79260dda49ec1257b92b5663f17bdbd2be1cb0b"
+  },
+  "status/22/system-search-symbolic.svg": {
+    "symbol": "search",
+    "sha256": "6abb33857df748bbc868d3c5a79260dda49ec1257b92b5663f17bdbd2be1cb0b"
+  },
+  "status/22/notifications.svg": {
+    "symbol": "notifications",
+    "sha256": "8994dee9566e7197013070b3163e14f75fcf351551d7605c96f89f27eb3b6846"
+  },
+  "status/22/notifications-symbolic.svg": {
+    "symbol": "notifications",
+    "sha256": "8994dee9566e7197013070b3163e14f75fcf351551d7605c96f89f27eb3b6846"
+  },
+  "status/22/notification.svg": {
+    "symbol": "notifications",
+    "sha256": "8994dee9566e7197013070b3163e14f75fcf351551d7605c96f89f27eb3b6846"
+  },
+  "status/22/notification-symbolic.svg": {
+    "symbol": "notifications",
+    "sha256": "8994dee9566e7197013070b3163e14f75fcf351551d7605c96f89f27eb3b6846"
+  },
+  "status/22/notifications-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "21c52206c5a554bbedad820952da193dfb1a827d5e2185b16817eda618c111a1"
+  },
+  "status/22/notifications-disabled-symbolic.svg": {
+    "symbol": "notifications_off",
+    "sha256": "21c52206c5a554bbedad820952da193dfb1a827d5e2185b16817eda618c111a1"
+  },
+  "status/22/notification-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "21c52206c5a554bbedad820952da193dfb1a827d5e2185b16817eda618c111a1"
+  },
+  "status/22/brightness-high.svg": {
+    "symbol": "light_mode",
+    "sha256": "1fc285a81b09400f5024004df42a5c1b87143320bc2df261f6e27b4e07d8a29f"
+  },
+  "status/22/brightness-high-symbolic.svg": {
+    "symbol": "light_mode",
+    "sha256": "1fc285a81b09400f5024004df42a5c1b87143320bc2df261f6e27b4e07d8a29f"
+  },
+  "status/22/display-brightness.svg": {
+    "symbol": "light_mode",
+    "sha256": "1fc285a81b09400f5024004df42a5c1b87143320bc2df261f6e27b4e07d8a29f"
+  },
+  "status/22/display-brightness-symbolic.svg": {
+    "symbol": "light_mode",
+    "sha256": "1fc285a81b09400f5024004df42a5c1b87143320bc2df261f6e27b4e07d8a29f"
+  },
+  "status/22/brightness-low.svg": {
+    "symbol": "brightness_4",
+    "sha256": "91b4970bcedc61f1cf5e67e22736a0f639be13cb3ddec81039d9e04806551996"
+  },
+  "status/22/brightness-low-symbolic.svg": {
+    "symbol": "brightness_4",
+    "sha256": "91b4970bcedc61f1cf5e67e22736a0f639be13cb3ddec81039d9e04806551996"
+  },
+  "status/22/klipper.svg": {
+    "symbol": "content_paste",
+    "sha256": "ff5315a5dd9bb33dce414f10d7439f3a481aed19bcac5b73ea0bdf71a991f940"
+  },
+  "status/22/klipper-symbolic.svg": {
+    "symbol": "content_paste",
+    "sha256": "ff5315a5dd9bb33dce414f10d7439f3a481aed19bcac5b73ea0bdf71a991f940"
+  },
+  "status/22/clipboard.svg": {
+    "symbol": "content_paste",
+    "sha256": "ff5315a5dd9bb33dce414f10d7439f3a481aed19bcac5b73ea0bdf71a991f940"
+  },
+  "status/22/audio-volume-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "6fd8f5e79a2a24e545d660bde617c7b6459e3409740de08fccf272b5e7974839"
+  },
+  "status/22/audio-volume-high-symbolic.svg": {
+    "symbol": "volume_up",
+    "sha256": "6fd8f5e79a2a24e545d660bde617c7b6459e3409740de08fccf272b5e7974839"
+  },
+  "status/22/audio-volume-high-panel.svg": {
+    "symbol": "volume_up",
+    "sha256": "6fd8f5e79a2a24e545d660bde617c7b6459e3409740de08fccf272b5e7974839"
+  },
+  "status/22/volume-level-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "6fd8f5e79a2a24e545d660bde617c7b6459e3409740de08fccf272b5e7974839"
+  },
+  "status/22/volume-level-high-panel.svg": {
+    "symbol": "volume_up",
+    "sha256": "6fd8f5e79a2a24e545d660bde617c7b6459e3409740de08fccf272b5e7974839"
+  },
+  "status/22/audio-volume-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "6276cfe4fd1d5817be49b2c2f4038c1bdc49ea1784bfc322b1928cc824274f48"
+  },
+  "status/22/audio-volume-medium-symbolic.svg": {
+    "symbol": "volume_down",
+    "sha256": "6276cfe4fd1d5817be49b2c2f4038c1bdc49ea1784bfc322b1928cc824274f48"
+  },
+  "status/22/audio-volume-medium-panel.svg": {
+    "symbol": "volume_down",
+    "sha256": "6276cfe4fd1d5817be49b2c2f4038c1bdc49ea1784bfc322b1928cc824274f48"
+  },
+  "status/22/volume-level-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "6276cfe4fd1d5817be49b2c2f4038c1bdc49ea1784bfc322b1928cc824274f48"
+  },
+  "status/22/volume-level-medium-panel.svg": {
+    "symbol": "volume_down",
+    "sha256": "6276cfe4fd1d5817be49b2c2f4038c1bdc49ea1784bfc322b1928cc824274f48"
+  },
+  "status/22/audio-volume-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/audio-volume-low-symbolic.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/audio-volume-low-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/audio-volume-zero.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/audio-volume-zero-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/volume-level-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/volume-level-low-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/volume-level-none.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/volume-level-none-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "d5f03d8d97f24dcb52f86b4f36b778f54abfbf2af171763a16a6a96418562dd8"
+  },
+  "status/22/audio-volume-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "df051a342e5c61765f2e8218b61ec30bd68a474acf4988aedf60cfc3d451d664"
+  },
+  "status/22/audio-volume-muted-symbolic.svg": {
+    "symbol": "volume_off",
+    "sha256": "df051a342e5c61765f2e8218b61ec30bd68a474acf4988aedf60cfc3d451d664"
+  },
+  "status/22/audio-volume-muted-panel.svg": {
+    "symbol": "volume_off",
+    "sha256": "df051a342e5c61765f2e8218b61ec30bd68a474acf4988aedf60cfc3d451d664"
+  },
+  "status/22/volume-level-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "df051a342e5c61765f2e8218b61ec30bd68a474acf4988aedf60cfc3d451d664"
+  },
+  "status/22/volume-level-muted-panel.svg": {
+    "symbol": "volume_off",
+    "sha256": "df051a342e5c61765f2e8218b61ec30bd68a474acf4988aedf60cfc3d451d664"
+  },
+  "status/22/microphone-sensitivity-muted.svg": {
+    "symbol": "mic_off",
+    "sha256": "744c1d8d0ca90651834e1800f1abd08e2919d9a827d01fa9a639d869e0a0b68b"
+  },
+  "status/22/bluetooth-active.svg": {
+    "symbol": "bluetooth",
+    "sha256": "c11b5acab998af242d8109f03fd420066656b6ac9bc990d7b9ab2c497687c2d7"
+  },
+  "status/22/bluetooth-active-symbolic.svg": {
+    "symbol": "bluetooth",
+    "sha256": "c11b5acab998af242d8109f03fd420066656b6ac9bc990d7b9ab2c497687c2d7"
+  },
+  "status/22/bluetooth-connected.svg": {
+    "symbol": "bluetooth_connected",
+    "sha256": "96182eb12b8a10c4b748174c38c25b3ccecd7d3c525af1e4d45033e1f36edf11"
+  },
+  "status/22/bluetooth-disabled.svg": {
+    "symbol": "bluetooth_disabled",
+    "sha256": "e98ae40ca86095d981fedb34064db6ec0fe33bff49d66d7caf6cb9b785f7ddd0"
+  },
+  "status/22/network-wireless-100.svg": {
+    "symbol": "wifi",
+    "sha256": "8728e46e3c83fd56d773a93b0343e48c4a213cb2063446d5b9d2fceb0c3dd8bc"
+  },
+  "status/22/network-wireless-connected-100.svg": {
+    "symbol": "wifi",
+    "sha256": "8728e46e3c83fd56d773a93b0343e48c4a213cb2063446d5b9d2fceb0c3dd8bc"
+  },
+  "status/22/network-wireless-connected-100-symbolic.svg": {
+    "symbol": "wifi",
+    "sha256": "8728e46e3c83fd56d773a93b0343e48c4a213cb2063446d5b9d2fceb0c3dd8bc"
+  },
+  "status/22/network-wireless-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "3599252c088455911cb1d88eaa655c54e25f53f01ab20bcb2c2377a9d0ec6791"
+  },
+  "status/22/network-wireless-connected-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "3599252c088455911cb1d88eaa655c54e25f53f01ab20bcb2c2377a9d0ec6791"
+  },
+  "status/22/network-wireless-connected-75-symbolic.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "3599252c088455911cb1d88eaa655c54e25f53f01ab20bcb2c2377a9d0ec6791"
+  },
+  "status/22/network-wireless-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "67669f7f3bbaee47b313e7cb99419597a7eb3fb8f7d7cecf6bd5a99f2b86c72e"
+  },
+  "status/22/network-wireless-connected-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "67669f7f3bbaee47b313e7cb99419597a7eb3fb8f7d7cecf6bd5a99f2b86c72e"
+  },
+  "status/22/network-wireless-connected-25-symbolic.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "67669f7f3bbaee47b313e7cb99419597a7eb3fb8f7d7cecf6bd5a99f2b86c72e"
+  },
+  "status/22/network-wireless-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "8f1dd649a837b48a9551d0b47f2e09d1fce6fea34b4a6c9c90deb9306bd842dd"
+  },
+  "status/22/network-wireless-connected-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "8f1dd649a837b48a9551d0b47f2e09d1fce6fea34b4a6c9c90deb9306bd842dd"
+  },
+  "status/22/network-wireless-connected-50-symbolic.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "8f1dd649a837b48a9551d0b47f2e09d1fce6fea34b4a6c9c90deb9306bd842dd"
+  },
+  "status/22/network-wireless-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "a61e0ffd2f4ce88e3f838a0b61b17c1cdf4ac523be61192e2cc427c165d70222"
+  },
+  "status/22/network-wireless-connected-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "a61e0ffd2f4ce88e3f838a0b61b17c1cdf4ac523be61192e2cc427c165d70222"
+  },
+  "status/22/network-wireless-connected-00-symbolic.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "a61e0ffd2f4ce88e3f838a0b61b17c1cdf4ac523be61192e2cc427c165d70222"
+  },
+  "status/22/network-wireless-disconnected.svg": {
+    "symbol": "wifi_off",
+    "sha256": "377195ed2968baa9a3213ff400958be97164a609e17099b146c39772406e5994"
+  },
+  "status/22/network-wireless-disconnected-symbolic.svg": {
+    "symbol": "wifi_off",
+    "sha256": "377195ed2968baa9a3213ff400958be97164a609e17099b146c39772406e5994"
+  },
+  "status/22/network-wireless-off.svg": {
+    "symbol": "wifi_off",
+    "sha256": "377195ed2968baa9a3213ff400958be97164a609e17099b146c39772406e5994"
+  },
+  "status/22/update-low.svg": {
+    "symbol": "cloud_download",
+    "sha256": "aec27c243517a0a6588b54f5771082848c50f3315bf4cb374945fb7ea3942886"
+  },
+  "status/22/network-vpn.svg": {
+    "symbol": "lock",
+    "sha256": "d577aca5ccd5c7f4bd11a6dac3fcaa48257744d3e9698e37f59de1990c8f3e59"
+  },
+  "status/22/network-vpn-active.svg": {
+    "symbol": "lock",
+    "sha256": "d577aca5ccd5c7f4bd11a6dac3fcaa48257744d3e9698e37f59de1990c8f3e59"
+  },
+  "status/22/network-bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "c11b5acab998af242d8109f03fd420066656b6ac9bc990d7b9ab2c497687c2d7"
+  },
+  "status/22/network-bluetooth-symbolic.svg": {
+    "symbol": "bluetooth",
+    "sha256": "c11b5acab998af242d8109f03fd420066656b6ac9bc990d7b9ab2c497687c2d7"
+  },
+  "status/22/input-keyboard.svg": {
+    "symbol": "keyboard",
+    "sha256": "7017801d5a40a27d28e660eb0b1eb7f2bb22ad7ebe3e5150e0f325754f3c98da"
+  },
+  "status/22/input-keyboard-symbolic.svg": {
+    "symbol": "keyboard",
+    "sha256": "7017801d5a40a27d28e660eb0b1eb7f2bb22ad7ebe3e5150e0f325754f3c98da"
+  },
+  "status/22/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "344f82e847a4ad330fdf7ef05eb4a88fc6c7fe54a7604837b33b151d5453a51d"
+  },
+  "status/22/network-wired-symbolic.svg": {
+    "symbol": "lan",
+    "sha256": "344f82e847a4ad330fdf7ef05eb4a88fc6c7fe54a7604837b33b151d5453a51d"
+  },
+  "status/24/system-search.svg": {
+    "symbol": "search",
+    "sha256": "b3a20c86f133d447a089b03624bb2af9514e390133dd351dc86dbd3eca98a7b3"
+  },
+  "status/24/system-search-symbolic.svg": {
+    "symbol": "search",
+    "sha256": "b3a20c86f133d447a089b03624bb2af9514e390133dd351dc86dbd3eca98a7b3"
+  },
+  "status/24/notifications.svg": {
+    "symbol": "notifications",
+    "sha256": "f915a1e21e15f99d1575f2a3a10a8c5e9aa9b1ea158e94f8c9c5af8b70899291"
+  },
+  "status/24/notification.svg": {
+    "symbol": "notifications",
+    "sha256": "f915a1e21e15f99d1575f2a3a10a8c5e9aa9b1ea158e94f8c9c5af8b70899291"
+  },
+  "status/24/notification-symbolic.svg": {
+    "symbol": "notifications",
+    "sha256": "f915a1e21e15f99d1575f2a3a10a8c5e9aa9b1ea158e94f8c9c5af8b70899291"
+  },
+  "status/24/notifications-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "16d33374069fa5f679f4b1b54e83c6caf89e7159199ffc370ff2ea6d7b00d54f"
+  },
+  "status/24/notification-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "16d33374069fa5f679f4b1b54e83c6caf89e7159199ffc370ff2ea6d7b00d54f"
+  },
+  "status/24/notification-disabled-symbolic.svg": {
+    "symbol": "notifications_off",
+    "sha256": "16d33374069fa5f679f4b1b54e83c6caf89e7159199ffc370ff2ea6d7b00d54f"
+  },
+  "status/24/brightness-high.svg": {
+    "symbol": "light_mode",
+    "sha256": "d6d2b9fd51567016d627ecc35aac94aa0208c7aeb9a1d8113cdad501d0c6f413"
+  },
+  "status/24/brightness-high-symbolic.svg": {
+    "symbol": "light_mode",
+    "sha256": "d6d2b9fd51567016d627ecc35aac94aa0208c7aeb9a1d8113cdad501d0c6f413"
+  },
+  "status/24/display-brightness.svg": {
+    "symbol": "light_mode",
+    "sha256": "d6d2b9fd51567016d627ecc35aac94aa0208c7aeb9a1d8113cdad501d0c6f413"
+  },
+  "status/24/display-brightness-symbolic.svg": {
+    "symbol": "light_mode",
+    "sha256": "d6d2b9fd51567016d627ecc35aac94aa0208c7aeb9a1d8113cdad501d0c6f413"
+  },
+  "status/24/brightness-low.svg": {
+    "symbol": "brightness_4",
+    "sha256": "faf02c90044ac0bf2b3d1ffcf0e7dec4f83944a38b2e74940b7af6cea1173f19"
+  },
+  "status/24/brightness-low-symbolic.svg": {
+    "symbol": "brightness_4",
+    "sha256": "faf02c90044ac0bf2b3d1ffcf0e7dec4f83944a38b2e74940b7af6cea1173f19"
+  },
+  "status/24/klipper.svg": {
+    "symbol": "content_paste",
+    "sha256": "48144bada6e97f93ac57a1f3c77a8aaf5431364a59c86cd700b5457afb283c44"
+  },
+  "status/24/clipboard.svg": {
+    "symbol": "content_paste",
+    "sha256": "48144bada6e97f93ac57a1f3c77a8aaf5431364a59c86cd700b5457afb283c44"
+  },
+  "status/24/audio-volume-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "1e8262f74f4c8ce057e296d9d48b73be8f4b3edaf90a94710aefc352efc2a840"
+  },
+  "status/24/audio-volume-high-symbolic.svg": {
+    "symbol": "volume_up",
+    "sha256": "1e8262f74f4c8ce057e296d9d48b73be8f4b3edaf90a94710aefc352efc2a840"
+  },
+  "status/24/audio-volume-high-panel.svg": {
+    "symbol": "volume_up",
+    "sha256": "1e8262f74f4c8ce057e296d9d48b73be8f4b3edaf90a94710aefc352efc2a840"
+  },
+  "status/24/volume-level-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "1e8262f74f4c8ce057e296d9d48b73be8f4b3edaf90a94710aefc352efc2a840"
+  },
+  "status/24/volume-level-high-panel.svg": {
+    "symbol": "volume_up",
+    "sha256": "1e8262f74f4c8ce057e296d9d48b73be8f4b3edaf90a94710aefc352efc2a840"
+  },
+  "status/24/audio-volume-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "a1dfabaae487450c6a9edb96f8dfa853d60c1ddde28eb3d1d4f09cd1a120490a"
+  },
+  "status/24/audio-volume-medium-symbolic.svg": {
+    "symbol": "volume_down",
+    "sha256": "a1dfabaae487450c6a9edb96f8dfa853d60c1ddde28eb3d1d4f09cd1a120490a"
+  },
+  "status/24/audio-volume-medium-panel.svg": {
+    "symbol": "volume_down",
+    "sha256": "a1dfabaae487450c6a9edb96f8dfa853d60c1ddde28eb3d1d4f09cd1a120490a"
+  },
+  "status/24/volume-level-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "a1dfabaae487450c6a9edb96f8dfa853d60c1ddde28eb3d1d4f09cd1a120490a"
+  },
+  "status/24/volume-level-medium-panel.svg": {
+    "symbol": "volume_down",
+    "sha256": "a1dfabaae487450c6a9edb96f8dfa853d60c1ddde28eb3d1d4f09cd1a120490a"
+  },
+  "status/24/audio-volume-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/audio-volume-low-symbolic.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/audio-volume-low-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/audio-volume-zero.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/audio-volume-zero-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/volume-level-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/volume-level-low-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/volume-level-none.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/volume-level-none-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "6e6058b821ebc33167abfbc6838ee1ac737687f6ec09e836edf44f6764d08a01"
+  },
+  "status/24/audio-volume-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "f553d1dda2eaa086f29494e3b38868a6d0507e65fd196dd9b4c0ab39a92e1242"
+  },
+  "status/24/audio-volume-muted-symbolic.svg": {
+    "symbol": "volume_off",
+    "sha256": "f553d1dda2eaa086f29494e3b38868a6d0507e65fd196dd9b4c0ab39a92e1242"
+  },
+  "status/24/audio-volume-muted-panel.svg": {
+    "symbol": "volume_off",
+    "sha256": "f553d1dda2eaa086f29494e3b38868a6d0507e65fd196dd9b4c0ab39a92e1242"
+  },
+  "status/24/volume-level-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "f553d1dda2eaa086f29494e3b38868a6d0507e65fd196dd9b4c0ab39a92e1242"
+  },
+  "status/24/volume-level-muted-panel.svg": {
+    "symbol": "volume_off",
+    "sha256": "f553d1dda2eaa086f29494e3b38868a6d0507e65fd196dd9b4c0ab39a92e1242"
+  },
+  "status/24/microphone-sensitivity-muted.svg": {
+    "symbol": "mic_off",
+    "sha256": "c03064422992ded1686bcdda34063e380af579f011707d2d536d42541f2ea964"
+  },
+  "status/24/microphone-sensitivity-muted-symbolic.svg": {
+    "symbol": "mic_off",
+    "sha256": "c03064422992ded1686bcdda34063e380af579f011707d2d536d42541f2ea964"
+  },
+  "status/24/bluetooth-active.svg": {
+    "symbol": "bluetooth",
+    "sha256": "f190ee5dd61b9c791398712e04afb6dc2897ef2b90c1037027e6b5b74a5c7f12"
+  },
+  "status/24/bluetooth-active-symbolic.svg": {
+    "symbol": "bluetooth",
+    "sha256": "f190ee5dd61b9c791398712e04afb6dc2897ef2b90c1037027e6b5b74a5c7f12"
+  },
+  "status/24/bluetooth-connected.svg": {
+    "symbol": "bluetooth_connected",
+    "sha256": "ff249e680ad36afbbe156694b44a1f10dfcf192eaed068e7f211196d952ad0aa"
+  },
+  "status/24/bluetooth-disabled.svg": {
+    "symbol": "bluetooth_disabled",
+    "sha256": "4bc80c5da6b39f0fd24f13455c2236cd2775af08295872fadf653c3ce317d0cc"
+  },
+  "status/24/bluetooth-disabled-symbolic.svg": {
+    "symbol": "bluetooth_disabled",
+    "sha256": "4bc80c5da6b39f0fd24f13455c2236cd2775af08295872fadf653c3ce317d0cc"
+  },
+  "status/24/network-wireless-100.svg": {
+    "symbol": "wifi",
+    "sha256": "8d184a172c2c44410464b99e550c4f2c458aab928660779193f5bd53514b6c5e"
+  },
+  "status/24/network-wireless-connected-100.svg": {
+    "symbol": "wifi",
+    "sha256": "8d184a172c2c44410464b99e550c4f2c458aab928660779193f5bd53514b6c5e"
+  },
+  "status/24/network-wireless-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "09410bf287bbfa71b21c335517e961af0a3d5d0a5d6bad3fe5077b019aa6350c"
+  },
+  "status/24/network-wireless-connected-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "09410bf287bbfa71b21c335517e961af0a3d5d0a5d6bad3fe5077b019aa6350c"
+  },
+  "status/24/network-wireless-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "10448238a37101949a77233ffbfe1b22a3c6571dc3dbf9bc6c9c2ca56230ba7f"
+  },
+  "status/24/network-wireless-connected-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "10448238a37101949a77233ffbfe1b22a3c6571dc3dbf9bc6c9c2ca56230ba7f"
+  },
+  "status/24/network-wireless-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "78d3ae0ee6ae88d49ab22ff8dc31d30121e68bda9f2dfa47d0136cfaf8dd8b30"
+  },
+  "status/24/network-wireless-connected-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "78d3ae0ee6ae88d49ab22ff8dc31d30121e68bda9f2dfa47d0136cfaf8dd8b30"
+  },
+  "status/24/network-wireless-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "fa279d9aaa627b5524dd9c54c4a6d95763e5bd4e067a7dd368e9bca919be6ebb"
+  },
+  "status/24/network-wireless-connected-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "fa279d9aaa627b5524dd9c54c4a6d95763e5bd4e067a7dd368e9bca919be6ebb"
+  },
+  "status/24/network-wireless-disconnected.svg": {
+    "symbol": "wifi_off",
+    "sha256": "93924608b983e67c8bce002b59d7c0cbb14107e0acc431450304782fa18ee26b"
+  },
+  "status/24/network-wireless-off.svg": {
+    "symbol": "wifi_off",
+    "sha256": "93924608b983e67c8bce002b59d7c0cbb14107e0acc431450304782fa18ee26b"
+  },
+  "status/24/update-low.svg": {
+    "symbol": "cloud_download",
+    "sha256": "b007d71452f0167ecd2661488d5cb6d225ffaf55061d3c11fec8275d02692bd1"
+  },
+  "status/24/network-vpn.svg": {
+    "symbol": "lock",
+    "sha256": "d278cce8eb86274f1d324aaa707b4486e40e157c399680ee921c1124d66f297a"
+  },
+  "status/24/network-vpn-symbolic.svg": {
+    "symbol": "lock",
+    "sha256": "d278cce8eb86274f1d324aaa707b4486e40e157c399680ee921c1124d66f297a"
+  },
+  "status/24/network-vpn-active.svg": {
+    "symbol": "lock",
+    "sha256": "d278cce8eb86274f1d324aaa707b4486e40e157c399680ee921c1124d66f297a"
+  },
+  "status/24/network-bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "f190ee5dd61b9c791398712e04afb6dc2897ef2b90c1037027e6b5b74a5c7f12"
+  },
+  "status/24/input-keyboard.svg": {
+    "symbol": "keyboard",
+    "sha256": "f02a8998ea739fd153d74f14f7bda9b2c60b1172023609bb314f06e3f75e0e4c"
+  },
+  "status/24/input-keyboard-symbolic.svg": {
+    "symbol": "keyboard",
+    "sha256": "f02a8998ea739fd153d74f14f7bda9b2c60b1172023609bb314f06e3f75e0e4c"
+  },
+  "status/24/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "a4f02fda8803eabeeae28ee730eb34f0559b329dfa89fad1952cdfdb4dc1fe49"
+  },
+  "status/24/network-wired-symbolic.svg": {
+    "symbol": "lan",
+    "sha256": "a4f02fda8803eabeeae28ee730eb34f0559b329dfa89fad1952cdfdb4dc1fe49"
+  },
+  "status/32/notifications.svg": {
+    "symbol": "notifications",
+    "sha256": "f118856352969449a3347eb47003a49c9e90bda3a43b8f25582552ce3ab9ca20"
+  },
+  "status/32/notification.svg": {
+    "symbol": "notifications",
+    "sha256": "f118856352969449a3347eb47003a49c9e90bda3a43b8f25582552ce3ab9ca20"
+  },
+  "status/32/notifications-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "5a8e9b8c8e54ab159b8e341892efddb25b2269e74568dc02cfc89617920efdcc"
+  },
+  "status/32/notification-disabled.svg": {
+    "symbol": "notifications_off",
+    "sha256": "5a8e9b8c8e54ab159b8e341892efddb25b2269e74568dc02cfc89617920efdcc"
+  },
+  "status/32/brightness-high.svg": {
+    "symbol": "light_mode",
+    "sha256": "f430aced8508ab0f61cc865f2a8df19a134636498c670799fa56aaf31d893174"
+  },
+  "status/32/display-brightness.svg": {
+    "symbol": "light_mode",
+    "sha256": "f430aced8508ab0f61cc865f2a8df19a134636498c670799fa56aaf31d893174"
+  },
+  "status/32/brightness-low.svg": {
+    "symbol": "brightness_4",
+    "sha256": "a4b3349ba09d0608c0c228b672f29af6ddcc4c2226f4c2086b3791f6c81c2ad0"
+  },
+  "status/32/klipper.svg": {
+    "symbol": "content_paste",
+    "sha256": "ac9e5d07fbd27db7c3c315356245202891fedff1c75a8d5316a3a47413a97a19"
+  },
+  "status/32/klipper-symbolic.svg": {
+    "symbol": "content_paste",
+    "sha256": "ac9e5d07fbd27db7c3c315356245202891fedff1c75a8d5316a3a47413a97a19"
+  },
+  "status/32/clipboard.svg": {
+    "symbol": "content_paste",
+    "sha256": "ac9e5d07fbd27db7c3c315356245202891fedff1c75a8d5316a3a47413a97a19"
+  },
+  "status/32/audio-volume-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "c6025132f48b85ebcf332ce09f934f95945907399f77e6bfabbc06090a953b45"
+  },
+  "status/32/audio-volume-high-panel.svg": {
+    "symbol": "volume_up",
+    "sha256": "c6025132f48b85ebcf332ce09f934f95945907399f77e6bfabbc06090a953b45"
+  },
+  "status/32/volume-level-high.svg": {
+    "symbol": "volume_up",
+    "sha256": "c6025132f48b85ebcf332ce09f934f95945907399f77e6bfabbc06090a953b45"
+  },
+  "status/32/volume-level-high-panel.svg": {
+    "symbol": "volume_up",
+    "sha256": "c6025132f48b85ebcf332ce09f934f95945907399f77e6bfabbc06090a953b45"
+  },
+  "status/32/audio-volume-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "a9e2903c4a84e691bcd4676dde16431ca7e1feae72968b6de596cbf995c753da"
+  },
+  "status/32/audio-volume-medium-panel.svg": {
+    "symbol": "volume_down",
+    "sha256": "a9e2903c4a84e691bcd4676dde16431ca7e1feae72968b6de596cbf995c753da"
+  },
+  "status/32/volume-level-medium.svg": {
+    "symbol": "volume_down",
+    "sha256": "a9e2903c4a84e691bcd4676dde16431ca7e1feae72968b6de596cbf995c753da"
+  },
+  "status/32/volume-level-medium-panel.svg": {
+    "symbol": "volume_down",
+    "sha256": "a9e2903c4a84e691bcd4676dde16431ca7e1feae72968b6de596cbf995c753da"
+  },
+  "status/32/audio-volume-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "e5f1d1c33c322ff58a4113e9845368342ce0693fffc865078ee9c23132c5b80e"
+  },
+  "status/32/audio-volume-low-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "e5f1d1c33c322ff58a4113e9845368342ce0693fffc865078ee9c23132c5b80e"
+  },
+  "status/32/audio-volume-zero.svg": {
+    "symbol": "volume_mute",
+    "sha256": "e5f1d1c33c322ff58a4113e9845368342ce0693fffc865078ee9c23132c5b80e"
+  },
+  "status/32/audio-volume-zero-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "e5f1d1c33c322ff58a4113e9845368342ce0693fffc865078ee9c23132c5b80e"
+  },
+  "status/32/volume-level-low.svg": {
+    "symbol": "volume_mute",
+    "sha256": "e5f1d1c33c322ff58a4113e9845368342ce0693fffc865078ee9c23132c5b80e"
+  },
+  "status/32/volume-level-low-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "e5f1d1c33c322ff58a4113e9845368342ce0693fffc865078ee9c23132c5b80e"
+  },
+  "status/32/volume-level-none.svg": {
+    "symbol": "volume_mute",
+    "sha256": "e5f1d1c33c322ff58a4113e9845368342ce0693fffc865078ee9c23132c5b80e"
+  },
+  "status/32/volume-level-none-panel.svg": {
+    "symbol": "volume_mute",
+    "sha256": "e5f1d1c33c322ff58a4113e9845368342ce0693fffc865078ee9c23132c5b80e"
+  },
+  "status/32/audio-volume-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "e6f9729967bd1b07f26089f69b595541d485c285f5f5c6536e9350bd6ffd0917"
+  },
+  "status/32/audio-volume-muted-panel.svg": {
+    "symbol": "volume_off",
+    "sha256": "e6f9729967bd1b07f26089f69b595541d485c285f5f5c6536e9350bd6ffd0917"
+  },
+  "status/32/volume-level-muted.svg": {
+    "symbol": "volume_off",
+    "sha256": "e6f9729967bd1b07f26089f69b595541d485c285f5f5c6536e9350bd6ffd0917"
+  },
+  "status/32/volume-level-muted-panel.svg": {
+    "symbol": "volume_off",
+    "sha256": "e6f9729967bd1b07f26089f69b595541d485c285f5f5c6536e9350bd6ffd0917"
+  },
+  "status/32/microphone-sensitivity-muted.svg": {
+    "symbol": "mic_off",
+    "sha256": "2400170dba996dc83dde39e52d6087cdb892bf50b27d944409085c4efaa1e6bd"
+  },
+  "status/32/bluetooth-active.svg": {
+    "symbol": "bluetooth",
+    "sha256": "cca6c6e89a8e524e6869ddc5d11ad1b60f0c5a665ab06c90b70772ac19eed700"
+  },
+  "status/32/bluetooth-connected.svg": {
+    "symbol": "bluetooth_connected",
+    "sha256": "9ac777961d9eaf0356c64c40cbc19020f8bce1f2fc271c59d82b1f41104c382c"
+  },
+  "status/32/bluetooth-disabled.svg": {
+    "symbol": "bluetooth_disabled",
+    "sha256": "f90f10058086be7b3c5397f10ab6db2b6a2decba6404e65ebe5c2e36e4849323"
+  },
+  "status/32/network-wireless-100.svg": {
+    "symbol": "wifi",
+    "sha256": "26e7a5f45469e15a70b1ea044dee2648ea51aeb954bfec3c9657906d6d96c3ab"
+  },
+  "status/32/network-wireless-connected-100.svg": {
+    "symbol": "wifi",
+    "sha256": "26e7a5f45469e15a70b1ea044dee2648ea51aeb954bfec3c9657906d6d96c3ab"
+  },
+  "status/32/network-wireless-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "0ca546c183501f894a35f3e2da9b3487433992baca34e31778f8712924f7d716"
+  },
+  "status/32/network-wireless-connected-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "0ca546c183501f894a35f3e2da9b3487433992baca34e31778f8712924f7d716"
+  },
+  "status/32/network-wireless-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "c66f61e832daa9c45d99fa11b75ed7e7b2bf7b0011dda6817ca4f737eb644b85"
+  },
+  "status/32/network-wireless-connected-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "c66f61e832daa9c45d99fa11b75ed7e7b2bf7b0011dda6817ca4f737eb644b85"
+  },
+  "status/32/network-wireless-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "5bb9a432b883df91e9c79c47d1069e22e6a6c0dd79eb014b2d25457a4f2f37d6"
+  },
+  "status/32/network-wireless-connected-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "5bb9a432b883df91e9c79c47d1069e22e6a6c0dd79eb014b2d25457a4f2f37d6"
+  },
+  "status/32/network-wireless-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "2086e8b792df99e8d2aebce5c6f942e1ce4912a9cd5de456125871131c6734c2"
+  },
+  "status/32/network-wireless-connected-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "2086e8b792df99e8d2aebce5c6f942e1ce4912a9cd5de456125871131c6734c2"
+  },
+  "status/32/network-wireless-disconnected.svg": {
+    "symbol": "wifi_off",
+    "sha256": "934309346e3e64da60df6171e1ae972b5ea7c28554438743f860cb57b3a623cd"
+  },
+  "status/32/network-wireless-off.svg": {
+    "symbol": "wifi_off",
+    "sha256": "934309346e3e64da60df6171e1ae972b5ea7c28554438743f860cb57b3a623cd"
+  },
+  "status/32/update-low.svg": {
+    "symbol": "cloud_download",
+    "sha256": "4ee0be975e3b333d35a4c4b19e5dd757c536082757b9ce6168c3e01b708031b7"
+  },
+  "status/32/network-vpn.svg": {
+    "symbol": "lock",
+    "sha256": "ed1ec17b41f9a57b5704bb336d2a21b793f44eb677d6b761607ad6a6ecff6312"
+  },
+  "status/32/network-vpn-active.svg": {
+    "symbol": "lock",
+    "sha256": "ed1ec17b41f9a57b5704bb336d2a21b793f44eb677d6b761607ad6a6ecff6312"
+  },
+  "devices/16/network-wireless-connected-100.svg": {
+    "symbol": "wifi",
+    "sha256": "3f2d38958fc52ec752146c5e029ac5b9ce3ce91d86d9f5ca8cd828fe1641285f"
+  },
+  "devices/16/network-wireless-connected-75.svg": {
+    "symbol": "wifi_2_bar",
+    "sha256": "7c65d73de2d4d7297c320ccce179620125b9ff0fadef18b7178229e30bd74eb1"
+  },
+  "devices/16/network-wireless-connected-25.svg": {
+    "symbol": "network_wifi_1_bar",
+    "sha256": "bbb526b4ce07f411b7b931cdff20c593e195bcf4bf572d48abe75f65678fb76c"
+  },
+  "devices/16/network-wireless-connected-50.svg": {
+    "symbol": "wifi_1_bar",
+    "sha256": "ab8316655fe19f27f0e10c21906daf11a3fbab3be4165792f1976ef35f8e6cec"
+  },
+  "devices/16/network-wireless-connected-00.svg": {
+    "symbol": "signal_wifi_0_bar",
+    "sha256": "806493340cba08cd71104a024a05c2508b4222fdab9e12df0343e753169f7684"
+  },
+  "devices/16/network-wireless-disconnected.svg": {
+    "symbol": "wifi_off",
+    "sha256": "08d833d779722ba2a72150e8fe7763fef616562b6d516fae229a6c04ae2deca5"
+  },
+  "devices/16/network-vpn.svg": {
+    "symbol": "lock",
+    "sha256": "fca54f78b8378d70247af91d4cc4c5d62fde77546cf772e165affa02d695bd3e"
+  },
+  "devices/16/bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "devices/16/network-bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "devices/16/audio-input-microphone.svg": {
+    "symbol": "mic",
+    "sha256": "52d68ac821e9e214328e8c55e5b68ca26970c52b5b31992f5493c31d06bc127d"
+  },
+  "devices/16/microphone.svg": {
+    "symbol": "mic",
+    "sha256": "52d68ac821e9e214328e8c55e5b68ca26970c52b5b31992f5493c31d06bc127d"
+  },
+  "devices/16/audio-headphones.svg": {
+    "symbol": "headphones",
+    "sha256": "ea0a1eabf8f156686a3e7d0d7eceefa7c97d3ba8c298c8181062c9ad975db172"
+  },
+  "devices/16/audio-speakers.svg": {
+    "symbol": "speaker",
+    "sha256": "2105741b73f154839424561eee204eed6fc5fecb809c344c834746c7cc8bded5"
+  },
+  "devices/16/video-display.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "a9b7d19e02026b39840da1e4983d8d6cbee76b1f2c63e6a2dffe17c9c75cfa43"
+  },
+  "devices/16/input-keyboard.svg": {
+    "symbol": "keyboard",
+    "sha256": "42a08d57a2b0ec21500ad21ca8e60cf85906dc04f7d7f3acb7fe508786ad8e9c"
+  },
+  "devices/16/input-keyboard-symbolic.svg": {
+    "symbol": "keyboard",
+    "sha256": "42a08d57a2b0ec21500ad21ca8e60cf85906dc04f7d7f3acb7fe508786ad8e9c"
+  },
+  "devices/16/input-mouse.svg": {
+    "symbol": "mouse",
+    "sha256": "fdf37f92490eef6e6656be6d43e1cbfa541314d25250452e85d60396a65334c6"
+  },
+  "devices/16/network-wireless.svg": {
+    "symbol": "wifi",
+    "sha256": "3f2d38958fc52ec752146c5e029ac5b9ce3ce91d86d9f5ca8cd828fe1641285f"
+  },
+  "devices/16/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "1c06bb51844f3ea34207f505bd524f59d80621b17f7a8ee507d3df0c94794ba2"
+  },
+  "devices/16/drive-removable-media-usb.svg": {
+    "symbol": "usb",
+    "sha256": "35c6c8170bc90944bede02f92d173fe9476b23e76a5d2814c10c8521b6656af2"
+  },
+  "devices/16/drive-removable-media-usb-symbolic.svg": {
+    "symbol": "usb",
+    "sha256": "35c6c8170bc90944bede02f92d173fe9476b23e76a5d2814c10c8521b6656af2"
+  },
+  "devices/22/network-vpn.svg": {
+    "symbol": "lock",
+    "sha256": "d577aca5ccd5c7f4bd11a6dac3fcaa48257744d3e9698e37f59de1990c8f3e59"
+  },
+  "devices/22/bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "c11b5acab998af242d8109f03fd420066656b6ac9bc990d7b9ab2c497687c2d7"
+  },
+  "devices/22/network-bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "c11b5acab998af242d8109f03fd420066656b6ac9bc990d7b9ab2c497687c2d7"
+  },
+  "devices/22/audio-input-microphone.svg": {
+    "symbol": "mic",
+    "sha256": "a6a7a3756ac5cbdbf758197fcfc6a4a8ecaa99f9ab79307ba1ab7231fe2ee468"
+  },
+  "devices/22/microphone.svg": {
+    "symbol": "mic",
+    "sha256": "a6a7a3756ac5cbdbf758197fcfc6a4a8ecaa99f9ab79307ba1ab7231fe2ee468"
+  },
+  "devices/22/audio-headphones.svg": {
+    "symbol": "headphones",
+    "sha256": "fd683f8a9f6f6955d18208de3473f74965fe089c2bb7708ab2ab27c327b51ce8"
+  },
+  "devices/22/audio-speakers.svg": {
+    "symbol": "speaker",
+    "sha256": "17610cd429185eda782b9e3679738c744abc0b65dd042b151b799786e5658273"
+  },
+  "devices/22/video-display.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "0c9ba4a667218f058b52a51d76d6005b06f798be47a7387e2aeb011bfdefab72"
+  },
+  "devices/22/input-keyboard.svg": {
+    "symbol": "keyboard",
+    "sha256": "7017801d5a40a27d28e660eb0b1eb7f2bb22ad7ebe3e5150e0f325754f3c98da"
+  },
+  "devices/22/input-keyboard-symbolic.svg": {
+    "symbol": "keyboard",
+    "sha256": "7017801d5a40a27d28e660eb0b1eb7f2bb22ad7ebe3e5150e0f325754f3c98da"
+  },
+  "devices/22/input-mouse.svg": {
+    "symbol": "mouse",
+    "sha256": "24d4b3deb512e6a1286b9fa9c8e27d7ff4aa9adf5099d359d34e463e302bcd88"
+  },
+  "devices/22/network-wireless.svg": {
+    "symbol": "wifi",
+    "sha256": "8728e46e3c83fd56d773a93b0343e48c4a213cb2063446d5b9d2fceb0c3dd8bc"
+  },
+  "devices/22/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "344f82e847a4ad330fdf7ef05eb4a88fc6c7fe54a7604837b33b151d5453a51d"
+  },
+  "devices/22/drive-removable-media-usb.svg": {
+    "symbol": "usb",
+    "sha256": "b3465d2027fd33592966afd946f5d0a63c3bce2c74f9bd4555de98d54d24efcf"
+  },
+  "devices/22/drive-removable-media-usb-symbolic.svg": {
+    "symbol": "usb",
+    "sha256": "b3465d2027fd33592966afd946f5d0a63c3bce2c74f9bd4555de98d54d24efcf"
+  },
+  "devices/24/network-vpn.svg": {
+    "symbol": "lock",
+    "sha256": "d278cce8eb86274f1d324aaa707b4486e40e157c399680ee921c1124d66f297a"
+  },
+  "devices/24/bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "f190ee5dd61b9c791398712e04afb6dc2897ef2b90c1037027e6b5b74a5c7f12"
+  },
+  "devices/24/network-bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "f190ee5dd61b9c791398712e04afb6dc2897ef2b90c1037027e6b5b74a5c7f12"
+  },
+  "devices/24/audio-input-microphone.svg": {
+    "symbol": "mic",
+    "sha256": "066f136cf53b9612b3f2a5a2eef7cc9cc98592e7c24cabb03cae16ab8c734212"
+  },
+  "devices/24/microphone.svg": {
+    "symbol": "mic",
+    "sha256": "066f136cf53b9612b3f2a5a2eef7cc9cc98592e7c24cabb03cae16ab8c734212"
+  },
+  "devices/24/audio-headphones.svg": {
+    "symbol": "headphones",
+    "sha256": "9b05c6d4c7d2664262c4d557a090e7336a59e7ef54ea1c24b136a43650cf807a"
+  },
+  "devices/24/audio-speakers.svg": {
+    "symbol": "speaker",
+    "sha256": "19d5fe8b3c289e7bf80616f989952004e41ec9125b98bb11517434a745e6e479"
+  },
+  "devices/24/video-display.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "9102559eac0f654ebdd6043873d11e753415dd675a4c5fe2add4b0605ef53e31"
+  },
+  "devices/24/input-keyboard.svg": {
+    "symbol": "keyboard",
+    "sha256": "f02a8998ea739fd153d74f14f7bda9b2c60b1172023609bb314f06e3f75e0e4c"
+  },
+  "devices/24/input-keyboard-symbolic.svg": {
+    "symbol": "keyboard",
+    "sha256": "f02a8998ea739fd153d74f14f7bda9b2c60b1172023609bb314f06e3f75e0e4c"
+  },
+  "devices/24/input-mouse.svg": {
+    "symbol": "mouse",
+    "sha256": "573e19fcd304c69624d79234509c3dc9a6475c3a73615f1e00512ca0bbd8a4e3"
+  },
+  "devices/24/network-wireless.svg": {
+    "symbol": "wifi",
+    "sha256": "8d184a172c2c44410464b99e550c4f2c458aab928660779193f5bd53514b6c5e"
+  },
+  "devices/24/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "a4f02fda8803eabeeae28ee730eb34f0559b329dfa89fad1952cdfdb4dc1fe49"
+  },
+  "devices/24/drive-removable-media-usb.svg": {
+    "symbol": "usb",
+    "sha256": "ba3a540e3f80ad2925d2919a15a7ed6dd25780845073fd5f5b7f89d53f29eebe"
+  },
+  "devices/24/drive-removable-media-usb-symbolic.svg": {
+    "symbol": "usb",
+    "sha256": "ba3a540e3f80ad2925d2919a15a7ed6dd25780845073fd5f5b7f89d53f29eebe"
+  },
+  "devices/32/bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "cca6c6e89a8e524e6869ddc5d11ad1b60f0c5a665ab06c90b70772ac19eed700"
+  },
+  "devices/32/network-bluetooth.svg": {
+    "symbol": "bluetooth",
+    "sha256": "cca6c6e89a8e524e6869ddc5d11ad1b60f0c5a665ab06c90b70772ac19eed700"
+  },
+  "devices/32/audio-input-microphone.svg": {
+    "symbol": "mic",
+    "sha256": "f419f3013756e941d2023d4ae28b4743cdaa2814dc670bf3ab233a2fb1cc2982"
+  },
+  "devices/32/microphone.svg": {
+    "symbol": "mic",
+    "sha256": "f419f3013756e941d2023d4ae28b4743cdaa2814dc670bf3ab233a2fb1cc2982"
+  },
+  "devices/32/audio-headphones.svg": {
+    "symbol": "headphones",
+    "sha256": "d1c8437ddbaf5f86fe77e39d9ed6ccfe3c0488d10d58cd87115e69190f87f614"
+  },
+  "devices/32/audio-speakers.svg": {
+    "symbol": "speaker",
+    "sha256": "9081a0bbc6caaa2d7fe1b638b2beab6a617c5f18394943e7e0e925d5c0db104c"
+  },
+  "devices/32/video-display.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "e4a1c45b903da805b84d4efb723e0ff92cdc89ee54b98410875f05d0830639eb"
+  },
+  "devices/32/video-display-symbolic.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "e4a1c45b903da805b84d4efb723e0ff92cdc89ee54b98410875f05d0830639eb"
+  },
+  "devices/32/input-keyboard.svg": {
+    "symbol": "keyboard",
+    "sha256": "20f414eb0e145a9d166d4c93c66c9fc5dbb815084b3b605c042647bd6b6b3ee0"
+  },
+  "devices/32/input-mouse.svg": {
+    "symbol": "mouse",
+    "sha256": "8ea8818a345eb85f511e75bb8deb629dedb66535e92dced710dd4272a5ad5801"
+  },
+  "devices/32/network-wireless.svg": {
+    "symbol": "wifi",
+    "sha256": "26e7a5f45469e15a70b1ea044dee2648ea51aeb954bfec3c9657906d6d96c3ab"
+  },
+  "devices/32/network-wired.svg": {
+    "symbol": "lan",
+    "sha256": "73be30aa2c9aa835a5f6610267f51e59585558d0628cda9d5dac216195fda24e"
+  },
+  "devices/32/drive-removable-media-usb.svg": {
+    "symbol": "usb",
+    "sha256": "9f41cd52485258ad5e8a7cfc5bb90dd0eafc7b6103ff156ca0e6741e1456ac76"
+  },
+  "devices/symbolic/bluetooth-symbolic.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "devices/symbolic/network-bluetooth-symbolic.svg": {
+    "symbol": "bluetooth",
+    "sha256": "33db00f47bedde5e9a9f6506913657a16f3cb8d2d6bcb87ffcd7edb67c22b3de"
+  },
+  "devices/symbolic/audio-input-microphone-symbolic.svg": {
+    "symbol": "mic",
+    "sha256": "52d68ac821e9e214328e8c55e5b68ca26970c52b5b31992f5493c31d06bc127d"
+  },
+  "devices/symbolic/microphone-symbolic.svg": {
+    "symbol": "mic",
+    "sha256": "52d68ac821e9e214328e8c55e5b68ca26970c52b5b31992f5493c31d06bc127d"
+  },
+  "devices/symbolic/audio-headphones-symbolic.svg": {
+    "symbol": "headphones",
+    "sha256": "ea0a1eabf8f156686a3e7d0d7eceefa7c97d3ba8c298c8181062c9ad975db172"
+  },
+  "devices/symbolic/audio-speakers-symbolic.svg": {
+    "symbol": "speaker",
+    "sha256": "2105741b73f154839424561eee204eed6fc5fecb809c344c834746c7cc8bded5"
+  },
+  "devices/symbolic/video-display-symbolic.svg": {
+    "symbol": "desktop_windows",
+    "sha256": "a9b7d19e02026b39840da1e4983d8d6cbee76b1f2c63e6a2dffe17c9c75cfa43"
+  },
+  "devices/symbolic/input-keyboard-symbolic.svg": {
+    "symbol": "keyboard",
+    "sha256": "42a08d57a2b0ec21500ad21ca8e60cf85906dc04f7d7f3acb7fe508786ad8e9c"
+  },
+  "devices/symbolic/input-mouse-symbolic.svg": {
+    "symbol": "mouse",
+    "sha256": "fdf37f92490eef6e6656be6d43e1cbfa541314d25250452e85d60396a65334c6"
+  },
+  "devices/symbolic/network-wireless-symbolic.svg": {
+    "symbol": "wifi",
+    "sha256": "3f2d38958fc52ec752146c5e029ac5b9ce3ce91d86d9f5ca8cd828fe1641285f"
+  },
+  "devices/symbolic/network-wired-symbolic.svg": {
+    "symbol": "lan",
+    "sha256": "1c06bb51844f3ea34207f505bd524f59d80621b17f7a8ee507d3df0c94794ba2"
+  },
+  "devices/symbolic/drive-removable-media-usb-symbolic.svg": {
+    "symbol": "usb",
+    "sha256": "35c6c8170bc90944bede02f92d173fe9476b23e76a5d2814c10c8521b6656af2"
+  }
+}

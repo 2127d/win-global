@@ -1,15 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 24 24">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#dedede;
-      }</style>
- </defs>
- <g class="ColorScheme-Text" transform="translate(4,4)" fill="currentColor">
-  <path d="m2 3c-1.108 0-2 0.892-2 2v6c0 1.108 0.892 2 2 2h2v-1h-2c-0.554 0-1-0.446-1-1v-6c0-0.554 0.446-1 1-1h12c0.554 0 1 0.446 1 1v6c0 0.554-0.446 1-1 1h-2v1h2c1.108 0 2-0.892 2-2v-6c0-1.108-0.892-2-2-2z" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m5 0c-1.108 0-2.0366 0.8926-2 2v2h1v-2c0-0.554 0.446-1 1-1h6c0.554 0 1.0418 0.44758 1 1v2h1v-2c0-1.108-0.892-2-2-2z" color="#dedede" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <rect x="5" y="10" width="6" height="1" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <rect x="5" y="12" width="6" height="1" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <path d="m5 7c-1.108 0-2 0.892-2 2v5c0 1.108 0.892 2 2 2h6c1.108 0 2-0.892 2-2v-5c0-1.108-0.892-2-2-2zm0 1h6c0.554 0 1 0.446 1 1v5c0 0.554-0.446 1-1 1h-6c-0.554 0-1-0.446-1-1v-5c0-0.554 0.446-1 1-1z" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
-  <circle cx="13.5" cy="5.5" r=".5" style="stroke:currentColor;stroke-width:0.70909;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M320-120q-33 0-56.5-23.5T240-200v-80h-80q-33 0-56.5-23.5T80-360v-160q0-51 35-85.5t85-34.5h560q51 0 85.5 34.5T880-520v160q0 33-23.5 56.5T800-280h-80v80q0 33-23.5 56.5T640-120H320ZM160-360h80q0-33 23.5-56.5T320-440h320q33 0 56.5 23.5T720-360h80v-160q0-17-11.5-28.5T760-560H200q-17 0-28.5 11.5T160-520v160Zm480-280v-120H320v120h-80v-120q0-33 23.5-56.5T320-840h320q33 0 56.5 23.5T720-760v120h-80Zm80 180q17 0 28.5-11.5T760-500q0-17-11.5-28.5T720-540q-17 0-28.5 11.5T680-500q0 17 11.5 28.5T720-460Zm-80 260v-160H320v160h320ZM160-560h640-640Z"/></g>
 </svg>

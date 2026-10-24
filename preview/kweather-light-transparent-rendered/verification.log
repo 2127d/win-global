@@ -20,3 +20,8 @@ Returning from About
 Checking location dialogs after About
 qt.positioning.geoclue2: Already stopped
 PASS: rendered theme-aware settings, location management translucency, blur, search transition and close
+The Wayland connection broke. Did the Wayland compositor die?
+The Wayland connection broke. Did the Wayland compositor die?
+qt.qpa.wayland: Attempting wayland reconnect
+Failed to write to the pipe: Bad file descriptor.
+qt.qpa.wayland: There are no outputs - creating placeholder screen

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Vendor the installed MacTahoe family and give small monochrome icons more weight.
+"""Build Tahoe's heavier fallback glyphs and the selected Material Rounded layer.
 
-The derived SVG assets retain the upstream GPL-3.0 license (icons/*/COPYING).
+Tahoe-derived assets retain GPL-3.0; the Material layer uses Apache-2.0.
 Run with --source pointing to the directory containing MacTahoe-blue{,-light,-dark}.
 """
 import argparse
@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import shutil
 import xml.etree.ElementTree as ET
+from tahoe_material import apply as apply_material
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTEXTS = {'actions', 'status', 'devices', 'categories', 'places', 'emblems'}
@@ -182,6 +183,7 @@ def main():
             'Theme names and shared-family links are updated for independent installation.\n'
             'Reproducible transformation: tools/build-tahoe-icons.py in the parent project.\n')
     (args.output / 'bold-icons.json').write_text(json.dumps({'counts': dict(counts), 'modified': changed}, indent=2) + '\n')
+    apply_material(args.output)
     print(json.dumps(dict(counts)))
 
 

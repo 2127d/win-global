@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32">
- <defs>
-  <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
-        color:#363636;
-      }</style>
- </defs>
- <path class="ColorScheme-Text" d="m11 4v1h4v-1zm6 0v1h4v-1zm-2.0703 6v1h5.3633l-7.8398 7.8379 0.70898 0.70898 7.8379-7.8398v5.3633h1v-7.0703zm-10.93 1v4h1v-4zm23 0v4h1v-4zm-23 6v3h1v-3zm23 0v4h1v-4zm-15 10v1h3v-1zm5 0v1h4v-1z" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path class="ColorScheme-Text" d="m7 4c-1.662 0-3 1.338-3 3v2h1v-2c0-1.108 0.892-2 2-2h2v-1zm16 0v1h2c1.108 0 2 0.892 2 2v2h1v-2c0-1.662-1.338-3-3-3zm4 19v2c0 1.108-0.892 2-2 2h-2v1h2c1.662 0 3-1.338 3-3v-2z" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
- <path class="ColorScheme-Text" d="m6 21c-1.108 0-2 0.892-2 2v3c0 1.108 0.892 2 2 2h3c1.108 0 2-0.892 2-2v-3c0-1.108-0.892-2-2-2h-3zm0 1h3c0.554 0 1 0.446 1 1v3c0 0.554-0.446 1-1 1h-3c-0.554 0-1-0.446-1-1v-3c0-0.554 0.446-1 1-1z" fill="currentColor" style="stroke:currentColor;stroke-width:0.94545;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round" />
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#363636; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="M340-540h-40q-17 0-28.5-11.5T260-580q0-17 11.5-28.5T300-620h40v-40q0-17 11.5-28.5T380-700q17 0 28.5 11.5T420-660v40h40q17 0 28.5 11.5T500-580q0 17-11.5 28.5T460-540h-40v40q0 17-11.5 28.5T380-460q-17 0-28.5-11.5T340-500v-40Zm40 220q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l224 224q11 11 11 28t-11 28q-11 11-28 11t-28-11L532-372q-30 24-69 38t-83 14Zm0-80q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></g>
 </svg>

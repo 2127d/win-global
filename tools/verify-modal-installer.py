@@ -19,6 +19,7 @@ class ModalInstallerTests(unittest.TestCase):
         self.assertEqual(resolve_components(['modal-dimming']), ['modal-dimming'])
         self.assertEqual(resolve_removals(['modal-dimming']), ['modal-dimming'])
         self.assertIn('kwin-devel', packages_for('fedora', ['modal-dimming']))
+        self.assertIn('kdecoration-devel', packages_for('fedora', ['modal-dimming']))
 
     def test_plugin_receipt_restores_only_selected_file(self):
         with tempfile.TemporaryDirectory() as temporary:

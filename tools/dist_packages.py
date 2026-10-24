@@ -55,12 +55,19 @@ def assets():
         name = f'sequoia-eleven-{mode}'
         package_tree(ROOT / 'themes/plasma/desktoptheme' / name, DIST / f'{name}-2.0.0.tar.gz')
     package_tree(ROOT / 'themes/wallpapers/SequoiaEleven', DIST / 'sequoia-eleven-wallpaper-2.0.0.tar.gz')
+    icons()
+
+
+def icons():
     output = DIST / 'sequoia-tahoe-icons-2.0.0.tar.gz'
     with tarfile.open(output, 'w:gz') as archive:
         for theme in sorted((ROOT / 'themes/icons').glob('SequoiaTahoe*')):
             archive.add(theme, arcname=theme.name)
         archive.add(ROOT / 'tools/build-tahoe-icons.py', arcname='build-tahoe-icons.py')
         archive.add(ROOT / 'themes/icons/bold-icons.json', arcname='bold-icons.json')
+        archive.add(ROOT / 'themes/icons/material-icons.json', arcname='material-icons.json')
+        archive.add(ROOT / 'themes/icons/material-rounded', arcname='material-rounded')
+        archive.add(ROOT / 'tools/tahoe_material.py', arcname='tahoe_material.py')
     checksum(output)
 
 

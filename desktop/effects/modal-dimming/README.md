@@ -8,6 +8,14 @@ current overlay opacity. The effect shades only the server-side decoration, leav
 the popup, client pixels, window shadow, layout and input handling intact. Weather
 is the first integrated application. Compact auxiliary pages do not report a modal.
 
+Sequoia decorations expose a writable `sequoiaModalAmount` property. KWin forwards
+the overlay opacity to it; the decoration paints a source-over black scrim over
+its existing frame paths, including the caption and buttons. This dims both the
+color and the transparency, matching Qt Quick's overlay on light or dark backdrops.
+Other decorations retain the compositor brightness fallback. Install both updated
+decorations and the effect for the transparency correction; an already loaded
+decoration library may require a new desktop session to pick up native code changes.
+
 For separate native modal windows, KWin's modal-parent relationship is used. If KDE's
 `dialogparent` (or legacy `dimparent`) effect is loaded, it retains responsibility;
 Sequoia does not apply a second parent dim. Otherwise Sequoia animates the parent to
@@ -57,8 +65,9 @@ D-Bus owners, and effect unload clear compositor state. Without the effect, Weat
 continues to use its existing overlay. Embedded-popup reporting is currently Wayland
 only. Other applications need an equivalent integration; KWin cannot infer a modal
 item inside an arbitrary app. Client-side decorations remain the app's responsibility.
-During overview or rotated-window effects, embedded decoration dimming is omitted
-so those effects can own their composition.
+During overview or rotated-window effects, the brightness fallback is omitted
+so those effects can own their composition. A decoration's painted scrim follows
+its normal transformed rendering.
 
 ## Verification
 
@@ -67,6 +76,16 @@ Build with `-DSEQUOIA_BUILD_TESTS=ON` to include the probe, then run
 private XDG directories, and a virtual Wayland compositor. Screenshots are actual
 compositor output: individual-window screenshots bypass effects and are unsuitable
 for checking dimming. Test alternate decorations with `--decoration`.
+
+Use `--seam --scale 1.5` to check the decoration/client boundary at fractional
+window coordinates and output scaling. This fixture loads a placement helper into
+an unprivileged copy of KWin inside the private test session and checks native
+output pixels for an undimmed row. Neither the helper nor the KWin copy is installed.
+
+Use `--material --decoration org.kde.sequoiaeleven.transparent` to compare title-bar
+pixels against the app overlay at several opacities on light and dark backgrounds.
+Repeat with `org.kde.sequoiaeleven.solid`. Pass `--decoration-plugins` with a staged
+Qt plugin directory to test rebuilt decorations before installing them.
 
 `python3 tools/verify-modal-installer.py` checks independent selection, file ownership,
 reinstall/remove behavior, failed activation, and preservation of unrelated settings.

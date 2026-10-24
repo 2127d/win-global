@@ -10,6 +10,7 @@
 #include <QDBusContext>
 #include <QDBusServiceWatcher>
 #include <QVariantAnimation>
+#include <KDecoration3/Decoration>
 #include <cmath>
 
 using namespace KWin;
@@ -28,6 +29,7 @@ public:
         connect(m_watch, &QDBusServiceWatcher::serviceUnregistered, this, [this](const QString &owner) {
             for (auto it = m_embedded.begin(); it != m_embedded.end();) {
                 if (it->owner == owner) {
+                    decorationScrim(it.key(), 0);
                     it.key()->addRepaintFull();
                     it = m_embedded.erase(it);
                 } else ++it;
@@ -35,6 +37,7 @@ public:
             m_watch->removeWatchedService(owner);
         });
         connect(effects, &EffectsHandler::windowClosed, this, [this](EffectWindow *w) {
+            decorationScrim(w, 0);
             m_embedded.remove(w);
             if (auto animation = m_native.take(w)) delete animation;
             updateNative();
@@ -52,6 +55,7 @@ public:
     }
     ~ModalDimming() override
     {
+        for (auto w : m_embedded.keys()) decorationScrim(w, 0);
         if (m_registered) {
             auto bus = QDBusConnection::sessionBus();
             bus.unregisterService(QStringLiteral("org.sequoia.ModalDimming"));
@@ -72,6 +76,13 @@ public:
             return;
         }
         const qreal amount = m_embedded.value(w).amount;
+        // Cooperating decorations compose the same source-over black scrim as
+        // the app. Brightness alone leaves the backdrop visible through alpha
+        // undimmed, so translucent title bars otherwise look too light.
+        if (decorationScrim(w, amount)) {
+            effects->drawWindow(target, viewport, w, mask, region, data);
+            return;
+        }
         // Rotation and overview own their composition. Axis-aligned transforms
         // use the same device-space partition as the normal window.
         if (amount <= 0 || effects->hasActiveFullScreenEffect() || data.rotationAngle() != 0) {
@@ -79,8 +90,11 @@ public:
             return;
         }
         const auto map = [&](const RectF &rect) {
-            return viewport.mapToDeviceCoordinatesAligned(rect.translated(-w->pos())
-                .scaled(data.xScale(), data.yScale()).translated(w->pos() + data.translation().toPointF()));
+            // Match the renderer's nearest-pixel rasterization. Rounding the
+            // client outwards exempts a decoration row when its edge falls
+            // between pixels, leaving a bright seam above the dimmed client.
+            return viewport.mapToDeviceCoordinates(rect.translated(-w->pos())
+                .scaled(data.xScale(), data.yScale()).translated(w->pos() + data.translation().toPointF())).rounded();
         };
         const Region frame(map(w->frameGeometry()));
         const Region client(map(w->clientGeometry()));
@@ -115,10 +129,18 @@ public Q_SLOTS:
             m_embedded[matched] = {owner, amount};
             m_watch->addWatchedService(owner);
         }
+        decorationScrim(matched, amount);
         matched->addRepaintFull();
         return true;
     }
 private:
+    static bool decorationScrim(EffectWindow *w, qreal amount)
+    {
+        auto decoration = w->decoration();
+        if (!decoration || decoration->metaObject()->indexOfProperty("sequoiaModalAmount") < 0) return false;
+        decoration->setProperty("sequoiaModalAmount", amount);
+        return true;
+    }
     struct Embedded { QString owner; qreal amount = 0; };
     QHash<EffectWindow *, Embedded> m_embedded;
     QHash<EffectWindow *, QVariantAnimation *> m_native;

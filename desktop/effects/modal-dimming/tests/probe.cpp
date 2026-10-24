@@ -3,6 +3,7 @@
 #include <QGuiApplication>
 #include <QQmlEngine>
 #include <QQmlComponent>
+#include <QQmlContext>
 #include <QQuickWindow>
 #include <QDBusConnection>
 #include <QDBusMessage>
@@ -21,9 +22,8 @@ QImage rawCapture(bool active)
 {
     QTemporaryFile file;
     if (!file.open()) qFatal("cannot open capture file");
-    auto message = QDBusMessage::createMethodCall("org.kde.KWin.ScreenShot2", "/org/kde/KWin/ScreenShot2", "org.kde.KWin.ScreenShot2", active ? "CaptureActiveWindow" : "CaptureArea");
-    if (!active) message << 0 << 0 << uint(1280) << uint(800);
-    message << QVariantMap{{"hide-caller-windows", false}, {"include-decoration", true}, {"include-shadow", false}} << QVariant::fromValue(QDBusUnixFileDescriptor(file.handle()));
+    auto message = QDBusMessage::createMethodCall("org.kde.KWin.ScreenShot2", "/org/kde/KWin/ScreenShot2", "org.kde.KWin.ScreenShot2", active ? "CaptureActiveWindow" : "CaptureWorkspace");
+    message << QVariantMap{{"native-resolution", qEnvironmentVariableIsSet("MODAL_SEAM_TEST")}, {"hide-caller-windows", false}, {"include-decoration", true}, {"include-shadow", false}} << QVariant::fromValue(QDBusUnixFileDescriptor(file.handle()));
     const auto reply = QDBusConnection::sessionBus().call(message, QDBus::Block, 5000);
     if (reply.type() == QDBusMessage::ErrorMessage) qFatal("capture: %s", qPrintable(reply.errorMessage()));
     auto map = qdbus_cast<QVariantMap>(reply.arguments().first());
@@ -66,12 +66,21 @@ int main(int argc, char **argv)
     setbuf(stdout, nullptr);
     QGuiApplication app(argc,argv);
     QQmlEngine engine;
+    QQuickWindow backdrop;
+    if (qEnvironmentVariableIsSet("MODAL_MATERIAL_TEST")) {
+        backdrop.setFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint);
+        backdrop.resize(1280,800);
+        backdrop.setColor(QColor("#eeeeee"));
+        backdrop.show();
+        QTest::qWait(200);
+    }
+    engine.rootContext()->setContextProperty("fixtureHeight", qEnvironmentVariableIsSet("MODAL_SEAM_TEST") ? 361 : 360);
     QQmlComponent component(&engine);
     component.setData(R"(
 import QtQuick
 import QtQuick.Window
 Window {
-    width: 500; height: 360; visible: true; title: "Modal dimming test"
+    width: 500; height: fixtureHeight; visible: true; title: "Modal dimming test"
     property real sequoiaModalAmount: 0
     color: "white"
     Rectangle { anchors.fill: parent; color: "black"; opacity: sequoiaModalAmount }
@@ -85,6 +94,54 @@ Window {
     new SequoiaModalBridge(second);
     QTest::qWait(600);
     first->requestActivate(); QTest::qWait(300);
+    if (qEnvironmentVariableIsSet("MODAL_MATERIAL_TEST")) {
+        for (const auto &background : {QString("#eeeeee"), QString("#222222")}) {
+            backdrop.setColor(QColor(background));
+            first->setProperty("sequoiaModalAmount", 0);
+            QTest::qWait(200);
+            const auto before = capture("before");
+            for (const double amount : {.1, .3, .6}) {
+                first->setProperty("sequoiaModalAmount", amount); QTest::qWait(250);
+                const auto dim = capture(QString("material-%1-%2").arg(background.mid(1)).arg(amount));
+                const QColor a = before.pixelColor(125, 10), b = dim.pixelColor(125, 10);
+                printf("backdrop=%s amount=%.1f title=%d -> %d expected=%d\n", qPrintable(background), amount, a.red(), b.red(), qRound(a.red()*(1-amount)));
+                for (int channel=0;channel<3;++channel) {
+                    const int original[] = {a.red(),a.green(),a.blue()};
+                    const int actual[] = {b.red(),b.green(),b.blue()};
+                    if (qAbs(actual[channel]-qRound(original[channel]*(1-amount))) > 3)
+                        qFatal("title-bar scrim does not match source-over dimming");
+                }
+                if (dim.pixelColor(dim.width()/2,dim.height()/2).red()<245) qFatal("popup was dimmed");
+            }
+        }
+        delete first; delete second;
+        puts("PASS: decoration matches the app overlay over light and dark backdrops"); return 0;
+    }
+    if (qEnvironmentVariableIsSet("MODAL_SEAM_TEST")) {
+        const auto before=rawCapture(false);
+        int edge=-1, sample=-1;
+        for (int y=0;y<before.height() && edge<0;++y) {
+            int run=0;
+            for(int x=0;x<before.width();++x) {
+                run=before.pixelColor(x,y).red()>252 ? run+1 : 0;
+                if(run>=200) {edge=y;sample=x-100;break;}
+            }
+        }
+        if(edge<4) qFatal("cannot locate fixture client edge");
+        first->setProperty("sequoiaModalAmount",.3);QTest::qWait(400);
+        const auto after=rawCapture(false);
+        before.save(qEnvironmentVariable("MODAL_CAPTURE")+"/seam-before.png");
+        after.save(qEnvironmentVariable("MODAL_CAPTURE")+"/seam-dimmed.png");
+        bool clean=true;
+        for(int y=edge-4;y<edge+3;++y) {
+            const int a=before.pixelColor(sample,y).red(),b=after.pixelColor(sample,y).red();
+            printf("seam row %d: %d -> %d\n",y,a,b);
+            if(a>210 && b>a-25) clean=false;
+        }
+        if(!clean) qFatal("undimmed row at decoration/client boundary");
+        delete first; delete second;
+        puts("PASS: no undimmed seam at the decoration/client boundary");return 0;
+    }
     auto before=capture("before");
     first->setProperty("sequoiaModalAmount", .3); QTest::qWait(400);
     auto dim=capture("embedded");

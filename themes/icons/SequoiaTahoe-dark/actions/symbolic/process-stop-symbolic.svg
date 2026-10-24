@@ -1,12 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns2="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" id="svg6" version="1.1" width="16" height="16">
-  <metadata id="metadata12">
-    <rdf:RDF>
-      <ns2:Work rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </ns2:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs id="defs10" />
-  <path id="path2-3" d="M 8,1 C 4.14,1 1,4.14 1,8 c 0,3.86 3.14,7 7,7 3.86,0 7,-3.14 7,-7 C 15,4.14 11.86,1 8,1 Z M 5.4941406,4.9941406 a 0.5,0.5 0 0 1 0.359375,0.1523438 L 8,7.2929688 10.146484,5.1464844 a 0.5,0.5 0 0 1 0.34375,-0.1503906 0.5,0.5 0 0 1 0.363282,0.8574218 L 8.7070312,8 10.853516,10.146484 a 0.50027817,0.50027817 0 1 1 -0.707032,0.707032 L 8,8.7070312 5.8535156,10.853516 A 0.50027817,0.50027817 0 0 1 5.1464844,10.146484 L 7.2929688,8 5.1464844,5.8535156 a 0.5,0.5 0 0 1 0.3476562,-0.859375 z" style="line-height:normal;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;text-transform:none;text-orientation:mixed;shape-padding:0;opacity:1;isolation:auto;mix-blend-mode:normal;font-variation-settings:normal;vector-effect:none;fill:#dedede;fill-opacity:1;stroke-width:0.47273;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stroke:#dedede" />
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 -960 960 960">
+<!-- Google Material Symbols Rounded, Apache-2.0. Sequoia adaptation: theme color and icon-name mapping. -->
+<defs><style id="current-color-scheme" type="text/css">.ColorScheme-Text { color:#f2f2f2; }</style></defs>
+<g class="ColorScheme-Text" fill="currentColor"><path d="m480-429 116 116q11 11 25.5 10.5T647-314q11-11 11-25.5t-11-25.46L531-480.5l116-115.54q11-10.96 11-25.46T647-647q-11-11-25.5-11T596-647L480-531 364-647q-11-11-25-11t-25 11q-11 11-11 25.5t10.91 25.5L429-480 313-364q-11 11-10.5 25t11.5 25q11 11 25.5 11t25.41-10.91L480-429Zm.28 333Q401-96 331-126t-122.5-82.5Q156-261 126-330.96t-30-149.5Q96-560 126-629.5q30-69.5 82.5-122T330.96-834q69.96-30 149.5-30t149.04 30q69.5 30 122 82.5T834-629.28q30 69.73 30 149Q864-401 834-331t-82.5 122.5Q699-156 629.28-126q-69.73 30-149 30Zm-.28-72q130 0 221-91t91-221q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 130 91 221t221 91Zm0-312Z"/></g>
 </svg>

@@ -849,6 +849,15 @@ if (m_internalSettings->floatingTitlebar()){
 }
 
 //________________________________________________________________
+void Decoration::setSequoiaModalAmount(qreal amount)
+{
+    if (!qIsFinite(amount)) return;
+    amount = qBound(0.0, amount, 0.6);
+    if (m_sequoiaModalAmount == amount) return;
+    m_sequoiaModalAmount = amount;
+    update();
+}
+
 void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
 {
     // TODO: optimize based on repaintRegion
@@ -893,6 +902,27 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
         painter->setPen(c->isActive() ? c->color(ColorGroup::Active, ColorRole::TitleBar) : c->color(ColorGroup::Inactive, ColorRole::Foreground));
 
         painter->drawRect(rect().adjusted(0, 0, -1, -1));
+        painter->restore();
+    }
+
+    if (m_sequoiaModalAmount > 0) {
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+        const QColor scrim = QColor::fromRgbF(0, 0, 0, m_sequoiaModalAmount);
+        // Reuse the painted paths, preserving rounded corners and floating gaps.
+        if (!m_internalSettings->floatingTitlebar()) {
+            // KWin clips painting to the decoration parts. Using the full frame
+            // avoids an antialiased internal edge at fractional title heights.
+            painter->fillPath(*m_windowPath, scrim);
+        } else {
+            if (!hideTitleBar()) painter->fillPath(*m_titleBarPath, scrim);
+            if (!c->isShaded()) {
+                if (!hideTitleBar())
+                    painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
+                painter->fillPath(*m_windowPath, scrim);
+            }
+        }
         painter->restore();
     }
 }

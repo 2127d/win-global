@@ -147,7 +147,7 @@ def packages_for(distro, components, apps=()):
                      'arch': ['kwin', 'libepoxy', 'libdrm', 'vulkan-headers', 'qt6-tools'],
                      'ubuntu': ['kwin-dev', 'libepoxy-dev', 'libdrm-dev', 'libvulkan-dev', 'qdbus-qt6'],
                      'debian': ['kwin-dev', 'libepoxy-dev', 'libdrm-dev', 'libvulkan-dev', 'qdbus-qt6']}[distro]
-    if 'decorations' in selected:
+    if selected & {'decorations', 'modal-dimming'}:
         packages += [{'fedora': 'kdecoration-devel', 'arch': 'kdecoration',
                       'ubuntu': 'libkdecorations3-dev', 'debian': 'libkdecorations3-dev'}[distro]]
     if 'widgets' in selected:
