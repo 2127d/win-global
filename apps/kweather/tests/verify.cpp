@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QTest>
 #include <QDir>
+#include <QFile>
 #include <QNetworkProxy>
 #include <cstdlib>
 static void check(bool ok,const char *message) { if(!ok) {qCritical("FAIL: %s",message);std::_Exit(2);} }
@@ -24,8 +25,14 @@ static void click(QQuickItem *item) {
     QTest::mouseClick(item->window(),Qt::LeftButton,Qt::NoModifier,item->mapToScene(QPointF(item->width()/2,item->height()/2)).toPoint());QTest::qWait(200);
 }
 static QQuickItem *findInWindows(const QString &name) {
+    const auto visibleItem=[](auto &&self,QQuickItem *item,const QString &target)->QQuickItem* {
+        if(!item->isVisible())return nullptr;
+        if(item->objectName()==target)return item;
+        for(auto child:item->childItems())if(auto found=self(self,child,target))return found;
+        return nullptr;
+    };
     for(auto w:QGuiApplication::allWindows())if(auto window=qobject_cast<QQuickWindow*>(w))
-        if(window->isVisible())if(auto item=find(window->contentItem(),name))if(item->isVisible())return item;
+        if(window->isVisible())if(auto item=visibleItem(visibleItem,window->contentItem(),name))return item;
     return nullptr;
 }
 static void capture(QQuickWindow *w,const QString &name) {
@@ -104,8 +111,116 @@ static void runWelcome(QQuickWindow *window,QQuickItem *welcome) {
     qInfo("PASS: first-launch welcome, wide and compact location search, settings and both welcome styles");
     window->close();
 }
+static void runCompact(QQuickWindow *window,QQuickItem *dashboard) {
+    const auto fits=[window](QQuickItem *item) {
+        check(item,"compact control exists");
+        const auto p=item->mapToScene(QPointF());
+        check(p.x()>=0 && p.y()>=0 && p.x()+item->width()<=window->width()+1 && p.y()+item->height()<=window->height()+1,"compact control fits within the window");
+    };
+    window->resize(390,480);QTest::qWait(500);
+    eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
+    fits(findInWindows("weatherCompactBack"));
+    fits(findInWindows("weatherOpenAbout"));
+    if(qEnvironmentVariable("WEATHER_RENDERED")=="1")
+        check(eval(window,"background.layer.enabled && !pageStack.layer.enabled").toBool()==(qEnvironmentVariableIntValue("WEATHER_ALPHA")<255),"compact transparent theme blurs scenery while page controls stay sharp");
+    capture(window,"settings");
+    click(findInWindows("weatherOpenAbout"));QTest::qWait(300);
+    auto about=findInWindows("weatherAboutView");check(about,"compact About is reachable");
+    capture(window,"about");
+    eval(about,"contentItem.contentY=contentItem.contentHeight-contentItem.height");capture(window,"about-bottom");
+    click(findInWindows("weatherCompactBack"));QTest::qWait(600);
+    check(findInWindows("weatherAnimateScenery"),"compact About returns to Settings");
+    eval(window,"pageStack.currentItem.flickable.contentY=pageStack.currentItem.flickable.contentHeight-pageStack.currentItem.flickable.height");
+    capture(window,"settings-bottom");
+    fits(findInWindows("weatherPrecipitationSetting"));
+    click(findInWindows("weatherCompactBack"));QTest::qWait(600);
+    eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(300);
+    capture(window,"locations");
+    auto add=findInWindows("weatherManageAddLocation");check(add,"compact management has an Add Location button");
+    fits(add);
+    fits(findInWindows("weatherDeleteLocation1"));
+    check(qAbs(add->mapToScene(QPointF(add->width()/2,0)).x()-window->width()/2)<1,"compact Add Location button is centered");
+    const auto addPosition=add->mapToScene(QPointF());
+    auto locations=findInWindows("weatherManagedLocations");
+    eval(locations,"positionViewAtEnd()");capture(window,"locations-bottom");
+    fits(findInWindows("weatherDeleteLocation7"));
+    check(add->mapToScene(QPointF())==addPosition,"compact Add Location stays pinned while saved locations scroll");
+    eval(locations,"positionViewAtBeginning()");QTest::qWait(200);
+    click(add);QTest::qWait(300);
+    capture(window,"search");
+    auto search=findInWindows("weatherLocationSearch");check(search,"compact location search visible");
+    eval(search,"var fixture=Qt.createQmlObject('import QtQml.Models; ListModel { property bool loading: false; property bool networkError: false; function textChanged(text, delay) {} }',this); for(var i=0;i<20;++i) fixture.append({name:'Wendover Airport, UT | United States — result '+i}); model=fixture");
+    auto field=findInWindows("weatherLocationSearchField");check(field,"compact search field visible");
+    fits(field);
+    fits(findInWindows("weatherLocationSearchButton"));
+    eval(field,"text='Wendover';forceActiveFocus()");
+    capture(window,"search-results");
+    auto position=field->mapToScene(QPointF());
+    eval(search,"positionViewAtEnd()");capture(window,"search-bottom");
+    check(field->mapToScene(QPointF())==position,"compact search stays pinned while results scroll");
+    click(findInWindows("weatherClearLocationSearch"));
+    check(field->property("text").toString().isEmpty(),"compact clear search works");
+    window->resize(540,480);QTest::qWait(300);capture(window,"search-compact-wide");
+    fits(field);
+    window->resize(390,480);QTest::qWait(300);
+    click(findInWindows("weatherCompactBack"));QTest::qWait(600);
+    check(findInWindows("weatherManagedLocations"),"compact search returns to location management");
+    click(findInWindows("weatherManagedLocation1"));QTest::qWait(300);
+    check(eval(dashboard,"location.name==='Monterey'").toBool(),"compact management selects a saved location");
+    check(!eval(window,"background.layer.enabled || pageStack.layer.enabled").toBool(),"returning to the forecast releases compact backdrop blur");
+    qInfo("PASS: compact Settings, About, location management, search, scrolling and navigation");
+    window->close();
+}
+static void runChoices(QQuickWindow *window,QQuickItem *dashboard) {
+    const bool compact=qEnvironmentVariable("WEATHER_COMPACT")=="1";
+    window->resize(compact?390:1180,compact?480:820);QTest::qWait(400);
+    eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
+    const auto geometry=compact?QVariant():eval(window,"[settingsDialogLoader.item.x,settingsDialogLoader.item.y,settingsDialogLoader.item.width,settingsDialogLoader.item.height].join(',')");
+    const auto reveal=[](QQuickItem *item) {
+        eval(item,"parent.ensureVisible()");
+        QTest::qWait(300);
+    };
+    struct Choice { const char *name; const char *key; const char *value; int index; };
+    const Choice cases[]={{"weatherForecastStyleSetting","forecastStyle","Flat",0},{"weatherTemperatureSetting","temperatureUnits","Fahrenheit",2},{"weatherSpeedSetting","speedUnits","mph",1},{"weatherPressureSetting","pressureUnits","mmHg",1},{"weatherPrecipitationSetting","precipitationUnits","in",1}};
+    for(const auto &c:cases) {
+        auto row=findInWindows(c.name);check(row,"inline settings row exists");
+        auto toggle=findInWindows(QString(c.name)+"Toggle");check(toggle,"inline choice toggle exists");
+        const double collapsed=row->height();reveal(toggle);
+        QTest::mouseClick(window,Qt::LeftButton,Qt::NoModifier,toggle->mapToScene(QPointF(toggle->width()/2,toggle->height()/2)).toPoint());
+        for(int frame=0;frame<20;++frame) {
+            QTest::qWait(20);
+            if(!compact)check(eval(window,"[settingsDialogLoader.item.x,settingsDialogLoader.item.y,settingsDialogLoader.item.width,settingsDialogLoader.item.height].join(',')")==geometry,"popup stays steady throughout inline expansion");
+        }
+        check(row->property("expanded").toBool() && row->height()>collapsed+60,"settings choices expand their card inline");
+        if(!compact)check(eval(window,"[settingsDialogLoader.item.x,settingsDialogLoader.item.y,settingsDialogLoader.item.width,settingsDialogLoader.item.height].join(',')")==geometry,"opening a choice keeps popup geometry stable");
+        auto option=findInWindows(QString(c.name)+"Option"+QString::number(c.index));check(option,"requested choice is visible");
+        auto point=option->mapToScene(QPointF());
+        check(point.y()>=0 && point.y()+option->height()<=window->height(),"expanded choice is reachable in the window");
+        capture(window,QString("choice-")+c.key);
+        click(option);QTest::qWait(500);
+        check(eval(dashboard,QString("settingsModel.")+c.key).toString()==c.value,"choice updates the real setting");
+        check(!row->property("expanded").toBool() && row->property("currentIndex").toInt()==c.index,"selection collapses and shows the chosen value");
+    }
+    QFile config(qEnvironmentVariable("XDG_CONFIG_HOME")+"/kweather/kweatherrc");check(config.open(QIODevice::ReadOnly),"saved settings are readable");
+    const auto saved=config.readAll();
+    for(const auto &c:cases)check(saved.contains(QByteArray(c.key)+"="+c.value),"inline choice is persisted on disk");
+    auto temperature=findInWindows("weatherTemperatureSetting");
+    auto toggle=findInWindows("weatherTemperatureSettingToggle");reveal(toggle);toggle->forceActiveFocus();
+    QTest::keyClick(window,Qt::Key_Down);QTest::qWait(400);
+    QTest::keyClick(window,Qt::Key_Up);QTest::keyClick(window,Qt::Key_Return);QTest::qWait(300);
+    check(eval(dashboard,"settingsModel.temperatureUnits==='Celsius'").toBool() && !temperature->property("expanded").toBool(),"keyboard arrows and Enter select a unit");
+    QTest::keyClick(window,Qt::Key_Down);QTest::qWait(300);QTest::keyClick(window,Qt::Key_Escape);QTest::qWait(300);
+    check(!temperature->property("expanded").toBool() && findInWindows("weatherOpenAbout"),"Escape collapses choices without leaving Settings");
+    eval(temperature,"expanded=true");QTest::qWait(300);
+    auto speed=findInWindows("weatherSpeedSetting");eval(speed,"expanded=true");QTest::qWait(300);
+    check(!temperature->property("expanded").toBool() && speed->property("expanded").toBool(),"only one selector expands at a time");
+    qInfo("PASS: inline Settings choices, stable popup, compact reachability, saved values and keyboard navigation");
+    window->close();
+}
 static void run(QQuickWindow *window,QQuickItem *dashboard) {
     QTest::qWait(700);
+    if(qEnvironmentVariable("WEATHER_CHOICES")=="1") {runChoices(window,dashboard);return;}
+    if(qEnvironmentVariable("WEATHER_COMPACT")=="1") {runCompact(window,dashboard);return;}
     if(qEnvironmentVariable("WEATHER_EMPTY")=="1") {
         check(eval(dashboard,"!hasWeather && !location.loading && location.errorMessage.length>0").toBool(),"empty/offline forecast has an honest error state");
         capture(window,"unavailable");
@@ -119,14 +234,44 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     // Exercise shader-backed dialogs directly on Wayland. The full forecast
     // interaction suite below uses the deterministic offscreen renderer.
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1") {
+        qInfo("Checking Settings and About navigation");
         eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
         const bool transparent=qEnvironmentVariableIntValue("WEATHER_ALPHA")<255;
         check(eval(window,"pageStack.layer.enabled && background.layer.enabled").toBool()==transparent,"settings backdrop blur follows theme transparency");
         check(qAbs(eval(window,"settingsDialogLoader.item.background.color.a").toDouble()*255-qEnvironmentVariableIntValue("WEATHER_ALPHA"))<=1,"settings surface uses the theme opacity");
         capture(window,"settings");
+        const auto settingsGeometry=eval(window,"[settingsDialogLoader.item.x,settingsDialogLoader.item.y,settingsDialogLoader.item.width,settingsDialogLoader.item.height].join(',')");
+        const auto desktopDepth=eval(window,"pageStack.depth");
+        auto motion=findInWindows("weatherAnimateScenery");check(motion,"settings switch visible before About");
+        const auto motionBefore=motion->property("checked");
+        click(motion);
+        qInfo("Opening About");
+        click(findInWindows("weatherOpenAbout"));QTest::qWait(500);
+        auto about=findInWindows("weatherAboutView");check(about,"custom About view opens inside settings");
+        check(eval(window,"pageStack.depth")==desktopDepth,"About does not push a desktop page");
+        check(eval(window,"[settingsDialogLoader.item.x,settingsDialogLoader.item.y,settingsDialogLoader.item.width,settingsDialogLoader.item.height].join(',')")==settingsGeometry,"About retains settings popup geometry");
+        check(eval(about,"aboutData.version.length > 0 && aboutData.authors.length > 0 && aboutData.licenses.length > 0").toBool(),"About preserves real version, credits and license data");
+        check(eval(window,"pageStack.layer.enabled").toBool()==transparent,"About retains theme-aware backdrop blur");
+        capture(window,"about");
+        auto license=findInWindows("weatherAboutLicense");check(license,"application license is available");
+        eval(about,QString("contentItem.contentY += %1").arg(license->mapToItem(about,QPointF()).y()-80));QTest::qWait(200);
+        click(license);
+        check(license->property("checked").toBool(),"license text expands inside About");
+        capture(window,"about-license");
+        click(license);
+        eval(about,"contentItem.contentY=contentItem.contentHeight-contentItem.height");capture(window,"about-details");
+        qInfo("Returning from About");
+        click(findInWindows("weatherAboutBack"));QTest::qWait(500);
+        check(findInWindows("weatherOpenAbout") && motion->property("checked")!=motionBefore,"Back restores Settings and preserves edits");
+        click(motion);
+        click(findInWindows("weatherOpenAbout"));QTest::qWait(500);
         click(findInWindows("weatherCloseSettings"));QTest::qWait(600);
         check(!eval(window,"settingsDialogLoader.isOpen").toBool(),"circular settings close button closes the dialog");
         check(!eval(window,"pageStack.layer.enabled || background.layer.enabled").toBool(),"closing settings releases backdrop blur");
+        eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
+        check(findInWindows("weatherOpenAbout") && !findInWindows("weatherAboutBack"),"reopening settings starts at Settings");
+        click(findInWindows("weatherCloseSettings"));QTest::qWait(600);
+        qInfo("Checking location dialogs after About");
         eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(300);
         check(eval(window,"locationsListDialogLoader.item.background.color.a < 0.9 && pageStack.layer.enabled && background.layer.enabled").toBool(),"rendered management dialog has translucency and backdrop blur");
         capture(window,"locations");
@@ -203,6 +348,10 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     check(compactMotion,"compact settings page has the Sequoia switch");
     check(eval(compactMotion,"height >= contentItem.implicitHeight + topPadding + bottomPadding - 1").toBool(),"compact motion description fits without overlapping the next setting");
     capture(window,"settings-narrow");
+    click(findInWindows("weatherOpenAbout"));QTest::qWait(300);
+    check(findInWindows("weatherAboutView"),"compact settings opens the same custom About content");
+    capture(window,"about-narrow");
+    eval(dashboard,"applicationWindow().pageStack.pop()");QTest::qWait(250);
     eval(dashboard,"applicationWindow().pageStack.pop()");QTest::qWait(250);
     click(find(dashboard,"weatherRefresh"));
     QTest::qWait(300);

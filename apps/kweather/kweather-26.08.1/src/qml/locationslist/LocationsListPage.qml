@@ -11,18 +11,26 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 
-Kirigami.ScrollablePage {
+Kirigami.Page {
     title: i18n("Locations")
+    readonly property bool sequoiaAuxiliaryPage: true
+    background: Item {}
+    padding: 8
 
     property int currentIndex: 0
 
-    actions: [
-        Kirigami.Action {
-            icon.name: "list-add"
-            text: i18n("Add Location")
-            onTriggered: applicationWindow().openAddLocation()
+    footer: Control {
+        padding: 12
+        background: null
+        contentItem: RowLayout {
+            Item { Layout.fillWidth: true }
+            AddLocationButton { onClicked: applicationWindow().openAddLocation() }
+            Item { Layout.fillWidth: true }
         }
-    ]
+    }
 
-    LocationsListView {}
+    LocationsListView {
+        anchors.fill: parent
+        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
+    }
 }

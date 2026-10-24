@@ -23,6 +23,7 @@ ListView {
     spacing: 12
     topMargin: 8; bottomMargin: 8
     clip: true
+    readonly property real scrollBarSpace: root.ScrollBar.vertical && root.ScrollBar.vertical.size < 1 ? root.ScrollBar.vertical.width + 6 : 0
 
     signal closeRequested
 
@@ -120,7 +121,7 @@ ListView {
             ListDelegate {
                 id: listItem
                 objectName: "weatherManagedLocation" + index
-                width: root.width - 16
+                width: root.width - 16 - root.scrollBarSpace
                 background: LocationSurface {
                     hovered: listItem.hovered
                     pressed: listItem.mouseArea.pressed || dragParent.held
@@ -133,9 +134,9 @@ ListView {
                 bottomPadding: Kirigami.Units.largeSpacing
 
                 onClicked: {
+                    applicationWindow().getPage("Forecast").switchPageIndex(index);
                     root.closeRequested();
                     applicationWindow().switchToPage(applicationWindow().getPage("Forecast"), 0);
-                    applicationWindow().getPage("Forecast").switchPageIndex(index);
                 }
 
                 function deleteItem() {
@@ -154,6 +155,7 @@ ListView {
 
                 // remove anchors when dragging
                 anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenterOffset: root.LayoutMirroring.enabled ? root.scrollBarSpace / 2 : -root.scrollBarSpace / 2
                 anchors.verticalCenter: parent.verticalCenter
                 states: [
                     State {

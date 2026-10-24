@@ -11,7 +11,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 
-def fixture(base, lat, lon, name, icon):
+def fixture(base, lat, lon, name, icon, location_index=None):
     offset = 20 if name == 'Monterey' else 0
     today=datetime.now(timezone.utc).replace(hour=0,minute=0,second=0,microsecond=0)
     days=[]
@@ -31,7 +31,9 @@ def fixture(base, lat, lon, name, icon):
     target=base/'cache/kweather/cache'/f'{lat:.2f}'/f'{lon:.2f}'/'cache.json'
     target.parent.mkdir(parents=True,exist_ok=True)
     target.write_text(json.dumps(dict(createdTime=datetime.now(timezone.utc).isoformat(),lat=lat,lon=lon,timezone='UTC',day=days)))
-    return f'[WeatherLocations][{name}]\nindex={0 if name=="Tooele" else 1}\nlatitude={lat}\nlongitude={lon}\nlocationName={name}\ntimezone=UTC\n'
+    if location_index is None:
+        location_index=0 if name=='Tooele' else 1
+    return f'[WeatherLocations][{name}]\nindex={location_index}\nlatitude={lat}\nlongitude={lon}\nlocationName={name}\ntimezone=UTC\n'
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
@@ -40,13 +42,15 @@ def main():
     parser.add_argument('--material',choices=('solid','transparent'),default='solid')
     parser.add_argument('--empty',action='store_true')
     parser.add_argument('--welcome',action='store_true',help='Test first launch with no saved locations')
+    parser.add_argument('--compact',action='store_true',help='Check all auxiliary pages at the smallest supported window size')
+    parser.add_argument('--choices',action='store_true',help='Check inline Settings choices, keyboard access and saved values')
     parser.add_argument('--rendered',action='store_true',help='Use the live Wayland renderer to check shader effects with isolated test data')
     args=parser.parse_args()
     helper=ROOT/'.staging/verify-kweather.so'; source=ROOT/'apps/kweather/tests/verify.cpp'
     flags=shlex.split(subprocess.check_output(['pkg-config','--cflags','--libs','Qt6Widgets','Qt6Quick','Qt6Test','Qt6Network'],text=True))
     if not helper.exists() or source.stat().st_mtime>helper.stat().st_mtime:
         subprocess.run(['c++','-std=c++17','-shared','-fPIC',str(source),'-o',str(helper),*flags],check=True)
-    output=ROOT/(f'preview/kweather-{args.mode}-{args.material}'+('-welcome' if args.welcome else '-empty' if args.empty else '')+('-rendered' if args.rendered else ''));output.mkdir(parents=True,exist_ok=True)
+    output=ROOT/(f'preview/kweather-{args.mode}-{args.material}'+('-welcome' if args.welcome else '-empty' if args.empty else '-compact' if args.compact else '')+('-choices' if args.choices else '')+('-rendered' if args.rendered else ''));output.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='sequoia-weather-test-',ignore_cleanup_errors=True) as temp:
         base=Path(temp);env=dict(os.environ)
         for kind in ('CONFIG','DATA','CACHE','STATE','RUNTIME'):
@@ -55,6 +59,9 @@ def main():
         (base/'config/kweather').mkdir()
         config='[General]\nfirstStartup=false\nforecastStyle=Dynamic\ntemperatureUnits=Celsius\n\n'
         config+=fixture(base,40.53,-112.30,'Tooele','weather-showers')+'\n'+fixture(base,36.60,-121.89,'Monterey','weather-clear-night')
+        if args.compact:
+            for index in range(2,8):
+                config+='\n'+fixture(base,40+index,-110,'Test location '+str(index),'weather-clear',index)
         if args.welcome:
             config='[General]\nfirstStartup=true\nforecastStyle=Dynamic\n'
         (base/'config/kweather/kweatherrc').write_text(config)
@@ -71,6 +78,8 @@ def main():
         env['WEATHER_RENDERED']='1' if args.rendered else ''
         env['WEATHER_EMPTY']='1' if args.empty else ''
         env['WEATHER_WELCOME']='1' if args.welcome else ''
+        env['WEATHER_COMPACT']='1' if args.compact else ''
+        env['WEATHER_CHOICES']='1' if args.choices else ''
         color_line=(base/'config/kdeglobals').read_text().split('[Colors:Window]',1)[1].split('BackgroundNormal=',1)[1].splitlines()[0]
         channels=color_line.split(',');env['WEATHER_ALPHA']=channels[3] if len(channels)==4 else '255'
         with (output/'verification.log').open('w') as log_file:

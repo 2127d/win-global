@@ -202,7 +202,7 @@ def _build(destination):
         # scrollbars) without painting a second island inside the drawer.
         t = replace(t, '    id: controlRoot', '''    id: controlRoot
 
-    readonly property bool sequoiaNavigationPage: /^(CategoriesPage|SubCategoryPage)_/.test(parent.toString())
+    readonly property bool sequoiaNavigationPage: /^(CategoriesPage|SubCategoryPage)_/.test(parent?.toString() ?? "")
     readonly property bool sequoiaInsetContent: background?.visible || sequoiaNavigationPage
         || parent?.parent?.objectName === "DiscoverDrawer"''')
         t = t.replace('controlRoot.background?.visible', 'controlRoot.sequoiaInsetContent')

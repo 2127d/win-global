@@ -4,19 +4,16 @@
 import QtQuick
 import QtQuick.Controls
 import org.kde.kirigami as Kirigami
-import org.kde.kirigamiaddons.formcard as FormCard
 
-FormCard.FormComboBoxDelegate {
+InlineChoice {
     id: root
 
     text: i18n("Temperature Units")
-    currentIndex: indexOfValue(settingsModel.temperatureUnits)
+    selectedValue: settingsModel.temperatureUnits
     textRole: "name"
     valueRole: "value"
-    displayMode: FormCard.FormComboBoxDelegate.Dialog
 
-    onActivated: settingsModel.save()
-    onCurrentValueChanged: settingsModel.temperatureUnits = currentValue
+    onActivated: index => { settingsModel.temperatureUnits = model.get(index).value; settingsModel.save(); }
 
     model: ListModel {
         // we can't use i18n with ListElement
@@ -33,8 +30,6 @@ FormCard.FormComboBoxDelegate {
                 "name": i18n("Fahrenheit"),
                 "value": "Fahrenheit"
             });
-            // indexOfValue doesn't bind to model changes unfortunately, set currentIndex manually here
-            root.currentIndex = root.indexOfValue(settingsModel.temperatureUnits);
         }
     }
 

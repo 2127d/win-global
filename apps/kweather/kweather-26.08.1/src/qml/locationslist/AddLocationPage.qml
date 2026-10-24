@@ -12,7 +12,10 @@ import org.kde.kirigami as Kirigami
 
 Kirigami.Page {
     id: root
-    title: i18n("Add location")
+    title: i18n("Add Location")
+    readonly property bool sequoiaAuxiliaryPage: true
+    background: Item {}
+    padding: 8
 
     Component.onCompleted: addLocationListView.focusRequested()
 

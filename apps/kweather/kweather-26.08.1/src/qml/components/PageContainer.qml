@@ -13,6 +13,12 @@ Item {
     property Kirigami.Page page
     property bool showBackButton
     property bool destroyPage
+    SystemPalette { id: systemPalette }
+    Rectangle {
+        anchors.fill: parent
+        visible: root.page?.sequoiaAuxiliaryPage ?? false
+        color: systemPalette.window
+    }
 
     Component.onDestruction: {
         if (page && destroyPage) {
@@ -42,7 +48,7 @@ Item {
             //       so setting `titleDelegate` to null on the page will have to do.
             visible: root.page ? root.page.titleDelegate : false
 
-            titleDelegate: root.page ? root.page.titleDelegate : null
+            title: root.page ? root.page.title : ""
             actions: root.page ? root.page.actions : []
             showBackButton: root.showBackButton
         }

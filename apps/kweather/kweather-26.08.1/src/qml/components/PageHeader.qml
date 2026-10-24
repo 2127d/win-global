@@ -1,76 +1,62 @@
 // Copyright 2025 Devin Lin <devin@kde.org>
 // SPDX-License-Identifier: GPL-2.0-or-later
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
-
 import org.kde.kirigami as Kirigami
 
-ToolBar {
+Control {
     id: root
-
-    property Component titleDelegate
-
+    property string title
     property list<T.Action> actions
-
     property bool showBackButton: false
-
-    position: ToolBar.Header
     Layout.fillWidth: true
+    implicitHeight: 56
+    leftPadding: 14
+    rightPadding: 14
+    topPadding: 12
+    bottomPadding: 12
+    background: null
 
-    leftPadding: parent.SafeArea.margins.left
-    rightPadding: parent.SafeArea.margins.right
-    topPadding: parent.SafeArea.margins.top
-
-    onTitleDelegateChanged: {
-        if (!titleDelegate) {
-            return;
-        }
-        let item = titleDelegate.createObject(root);
-        titleDelegateContainer.contentItem = item;
-        item.parent = titleDelegateContainer;
-    }
-
-    RowLayout {
-        anchors.fill: parent
-        spacing: 0
-
+    contentItem: RowLayout {
+        spacing: 12
         ToolButton {
             id: backButton
-            visible: showBackButton
-            icon.name: (LayoutMirroring.enabled ? "go-previous-symbolic-rtl" : "go-previous-symbolic")
+            objectName: "weatherCompactBack"
+            visible: root.showBackButton
+            enabled: !applicationWindow().pageStack.busy
+            Layout.preferredWidth: 32; Layout.preferredHeight: 32
+            padding: 8
             text: i18n("Navigate Back")
-            display: AbstractButton.IconOnly
+            Accessible.name: text
             onClicked: applicationWindow().pageStack.pop()
-
-            ToolTip {
-                visible: backButton.hovered
-                text: backButton.text
-                delay: Kirigami.Units.toolTipDelay
-                timeout: 5000
-                y: backButton.height
+            contentItem: Kirigami.Icon {
+                source: root.mirrored ? "go-next-symbolic" : "go-previous-symbolic"
+                isMask: true
             }
+            background: Rectangle {
+                radius: width / 2
+                color: Qt.alpha(Kirigami.Theme.textColor, backButton.down ? 0.16 : backButton.hovered ? 0.10 : 0.05)
+                border.width: backButton.visualFocus ? 2 : 1
+                border.color: backButton.visualFocus ? Kirigami.Theme.highlightColor : Qt.alpha(Kirigami.Theme.textColor, 0.18)
+                Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+            }
+            ToolTip.visible: hovered
+            ToolTip.text: text
+            ToolTip.delay: Kirigami.Units.toolTipDelay
         }
-
-        Item {
-            Layout.minimumHeight: backButton.height // Keep RowLayout height to be at least button height
-            implicitWidth: 0
-        }
-
-        Control {
-            id: titleDelegateContainer
-            padding: 0
-            Layout.leftMargin: Kirigami.Units.largeSpacing
-        }
-
-        Kirigami.ActionToolBar {
+        Label {
+            text: root.title
+            font.pixelSize: 18
+            font.bold: true
             Layout.fillWidth: true
-            Layout.leftMargin: Kirigami.Units.largeSpacing
-            alignment: Qt.AlignRight
-            Layout.fillHeight: true
+            elide: Text.ElideRight
+        }
+        Kirigami.ActionToolBar {
+            visible: root.actions.length > 0
             actions: root.actions
+            alignment: Qt.AlignRight
         }
     }
 }

@@ -92,4 +92,16 @@ a zero-range day at the upper endpoint of the temperature scale.
 `--welcome` checks first launch without saved locations, both welcome styles,
 Settings access and the location-search action at wide and compact sizes.
 Use `--mode light|dark --material solid|transparent` to test each palette.
+`--rendered` checks Settings and About on the live Wayland renderer with isolated
+data. About shares Settings' theme-aware popup surface and blur, uses a sliding
+fade transition with KDE's animation duration, and preserves Settings on return.
+It displays upstream version, attribution, licenses and library data from KDE's
+AboutData APIs. Compact windows use the same About content in the page stack.
+`--compact` checks Settings, About, Manage Locations and Add Location at 390×480,
+including real Back and Add buttons, long search results, scrolling to the last
+setting, selecting a saved location, and resizing up to the compact breakpoint.
+Use it with `--rendered` to check the theme-aware scenery blur behind these pages.
+`--choices` exercises inline Forecast Style and unit selectors, including animated
+card expansion, stable popup geometry, saved values, keyboard navigation and
+single-selector expansion. Combine it with `--compact` for the smallest layout.
 The runtime does not contain the test fixtures or test hook.

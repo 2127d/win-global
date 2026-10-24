@@ -15,13 +15,23 @@ ColumnLayout {
     id: root
 
     property var dialog: null // dialog component if this is within a dialog
+    property var viewport: null
+    property var activeChoice: null
+    readonly property real collapsedHeight: generalHeader.implicitHeight + unitsHeader.implicitHeight + 16 + generalCard.collapsedHeight + unitsCard.collapsedHeight
+    function openChoice(choice) {
+        if (activeChoice && activeChoice !== choice) activeChoice.expanded = false;
+        activeChoice = choice;
+    }
 
     signal closeRequested()
+    signal aboutRequested()
+    function focusAbout() { aboutButton.forceActiveFocus(); }
 
     spacing: 0
 
     component SettingsCard: Item {
         default property alias delegates: rows.data
+        readonly property real collapsedHeight: rows.children.reduce((height, child) => height + (child.collapsedHeight ?? child.implicitHeight), 18)
         Layout.fillWidth: true
         implicitHeight: rows.implicitHeight + 18
         Kirigami.Theme.colorSet: Kirigami.Theme.View
@@ -55,11 +65,13 @@ ColumnLayout {
     }
 
     FormCard.FormHeader {
+        id: generalHeader
         title: i18n("General")
         Layout.bottomMargin: 8
     }
 
     SettingsCard {
+        id: generalCard
         SwitchDelegate {
             id: motionSwitch
             objectName: "weatherAnimateScenery"
@@ -91,19 +103,18 @@ ColumnLayout {
                 }
             }
         }
-        FormCard.FormComboBoxDelegate {
+        InlineChoice {
             id: forecastStyleDropdown
+            viewport: root.viewport
             objectName: "weatherForecastStyleSetting"
-            background: RowBackground { control: forecastStyleDropdown }
+            onExpandedChanged: if (expanded) root.openChoice(forecastStyleDropdown)
 
             text: i18n("Forecast Style")
-            currentIndex: indexOfValue(settingsModel.forecastStyle)
+            selectedValue: settingsModel.forecastStyle
             textRole: "name"
             valueRole: "value"
-            displayMode: FormCard.FormComboBoxDelegate.Dialog
 
-            onActivated: settingsModel.save()
-            onCurrentValueChanged: settingsModel.forecastStyle = currentValue
+            onActivated: index => { settingsModel.forecastStyle = model.get(index).value; settingsModel.save(); }
 
             model: ListModel {
                 // we can't use i18n with ListElement
@@ -116,8 +127,6 @@ ColumnLayout {
                         "name": i18n("Dynamic"),
                         "value": "Dynamic"
                     });
-                    // indexOfValue doesn't bind to model changes unfortunately, set currentIndex manually here
-                    forecastStyleDropdown.currentIndex = forecastStyleDropdown.indexOfValue(settingsModel.forecastStyle);
                 }
             }
 
@@ -127,40 +136,45 @@ ColumnLayout {
 
         FormCard.FormButtonDelegate {
             id: aboutButton
+            objectName: "weatherOpenAbout"
             background: RowBackground { control: aboutButton }
 
             text: i18n("About")
-            onClicked: {
-                applicationWindow().pageStack.push(Qt.createComponent("org.kde.kirigamiaddons.formcard", "AboutPage"));
-                root.closeRequested();
-            }
+            onClicked: root.aboutRequested()
         }
     }
 
     FormCard.FormHeader {
+        id: unitsHeader
         title: i18n("Units")
         Layout.bottomMargin: 8
     }
 
     SettingsCard {
+        id: unitsCard
         TemperatureUnitComboBox {
             id: temperatureUnitsDropdown
+            viewport: root.viewport
             objectName: "weatherTemperatureSetting"
-            background: RowBackground { control: temperatureUnitsDropdown }
+            onExpandedChanged: if (expanded) root.openChoice(temperatureUnitsDropdown)
         }
 
         FormCard.FormDelegateSeparator {}
 
         SpeedUnitComboBox {
             id: speedUnitsDropdown
-            background: RowBackground { control: speedUnitsDropdown }
+            viewport: root.viewport
+            objectName: "weatherSpeedSetting"
+            onExpandedChanged: if (expanded) root.openChoice(speedUnitsDropdown)
         }
 
         FormCard.FormDelegateSeparator {}
 
         PressureUnitComboBox {
             id: pressureUnitsDropdown
-            background: RowBackground { control: pressureUnitsDropdown }
+            viewport: root.viewport
+            objectName: "weatherPressureSetting"
+            onExpandedChanged: if (expanded) root.openChoice(pressureUnitsDropdown)
         }
 
         FormCard.FormDelegateSeparator {}
@@ -168,7 +182,9 @@ ColumnLayout {
         // Precipitation
         PrecipitationUnitComboBox {
             id: precipitationUnitsDropdown
-            background: RowBackground { control: precipitationUnitsDropdown }
+            viewport: root.viewport
+            objectName: "weatherPrecipitationSetting"
+            onExpandedChanged: if (expanded) root.openChoice(precipitationUnitsDropdown)
         }
     }
 }
