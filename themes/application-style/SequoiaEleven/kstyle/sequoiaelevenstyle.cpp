@@ -83,6 +83,26 @@
 namespace SequoiaElevenPrivate
 {
 
+// The navigator paints its own frame, while breadcrumb buttons paint in child
+// widgets. Use the same path for the surface and the child hover clipping.
+static const QWidget *dolphinUrlNavigator(const QWidget *widget)
+{
+    for (auto parent = widget; parent; parent = parent->parentWidget()) {
+        if (parent->inherits("DolphinUrlNavigator")) return parent;
+    }
+    return nullptr;
+}
+
+static QPainterPath dolphinNavigatorPath(const QRect &rect)
+{
+    const QRectF frame = QRectF(rect).adjusted(1, 1, -1, -1);
+    const qreal radius = qMax(qreal(0), qMin(qreal(SequoiaEleven::StyleConfigData::cornerRadius() - 1),
+                                           qMin(frame.width(), frame.height()) / 2));
+    QPainterPath path;
+    path.addRoundedRect(frame, radius, radius);
+    return path;
+}
+
 // Only session tabs: Konsole's settings and dock widgets also contain tab bars.
 static bool isKonsoleSessionTabBar(const QWidget *widget)
 {
@@ -1423,6 +1443,15 @@ void Style::drawPrimitive(PrimitiveElement element, const QStyleOption *option, 
     }
 
     painter->save();
+
+    if (_isDolphin && qobject_cast<const QAbstractButton *>(widget)) {
+        if (const auto navigator = SequoiaElevenPrivate::dolphinUrlNavigator(widget)) {
+            auto clip = SequoiaElevenPrivate::dolphinNavigatorPath(navigator->rect());
+            const auto offset = widget->mapTo(navigator, QPoint(0, 0));
+            clip.translate(-offset.x(), -offset.y());
+            painter->setClipPath(clip, Qt::IntersectClip);
+        }
+    }
 
     // call function if implemented
     if (!(fcn && fcn(*this, option, painter, widget))) {
@@ -4187,46 +4216,26 @@ bool Style::drawFrameLineEditPrimitive(const QStyleOption *option, QPainter *pai
     bool isVisible = false;
     const auto isControl = isQtQuickControl(option, widget);
 
-    if (_isDolphin && !isControl && widget && widget->inherits("DolphinUrlNavigator")
-        && StyleConfigData::disableDolphinUrlNavigatorBackground() && StyleConfigData::toolBarOpacity() >= 100
-        && background.alpha() != 0) {
-        // with an opaque toolbar the url navigator should blend into it: fill the bar
-        // flat with the window (toolbar) color and skip renderLineEdit entirely.
-        // a transparent fill lets the line edit's box shadow/outline show through,
-        // painting a dark band and halo around the bar (seen with KIO 6, where
-        // KUrlNavigator paints PE_FrameLineEdit itself in breadcrumb mode)
-        painter->fillRect(rect, palette.color(QPalette::Window));
-        return true;
-    }
-
-    if (_isDolphin && !isControl) {
-        // take precautions only change this on the Dolphin location bar
-        if (widget->inherits("DolphinUrlNavigator")) {
-            // check if the Dolphin URL location bar is visible
-
-            // only change the alpha channel if the  Dolphin URL location bar is hidden
-            // otherwise the rectangle doesn't render rounded eges
-
-            if (widget->findChild<QComboBox *>()) {
-                isVisible = widget->findChild<QComboBox *>()->isVisible();
-
-                if (!isVisible) {
-                    // breadcrumb view not editable location
-                    if (StyleConfigData::toolBarOpacity() < 100) {
-                        background.setAlphaF(StyleConfigData::toolBarOpacity() / 100);
-                    } else if (StyleConfigData::disableDolphinUrlNavigatorBackground()) {
-                        background.setAlphaF(0);
-                    }
-                    // URL location path
-                    QLineEdit *dolphinLineEdit = widget->findChild<QLineEdit *>();
-                    // change the background to make it opaque aswell
-                    if (dolphinLineEdit) {
-                        QPalette pal(dolphinLineEdit->palette());
-                        pal.setColor(QPalette::Window, background);
-                        dolphinLineEdit->setPalette(pal);
-                    }
-                }
-            }
+    if (_isDolphin && !isControl && widget && widget->inherits("DolphinUrlNavigator")) {
+        const auto comboBox = widget->findChild<QComboBox *>();
+        isVisible = comboBox && comboBox->isVisible();
+        if (!isVisible) {
+            // Breadcrumb mode needs its own quiet surface. A rectangular fill
+            // loses the corners; the generic line-edit renderer adds a shadow
+            // and halo. Leave the corners transparent to the toolbar beneath.
+            background = StyleConfigData::disableDolphinUrlNavigatorBackground()
+                ? KColorUtils::mix(palette.color(QPalette::Window), palette.color(QPalette::WindowText), 0.045)
+                : palette.color(QPalette::Base);
+            background.setAlphaF(background.alphaF() * qBound(0, StyleConfigData::toolBarOpacity(), 100) / 100.0);
+            const bool enabled = option->state & State_Enabled;
+            const bool focused = enabled && (option->state & State_HasFocus);
+            QColor border = focused ? palette.color(QPalette::Highlight) : palette.color(QPalette::WindowText);
+            if (!focused) border.setAlphaF(enabled ? 0.12 : 0.06);
+            painter->setRenderHint(QPainter::Antialiasing);
+            painter->setPen(QPen(border, focused ? 1.5 : 1.0));
+            painter->setBrush(background);
+            painter->drawPath(SequoiaElevenPrivate::dolphinNavigatorPath(rect));
+            return true;
         }
     }
 
@@ -4259,8 +4268,8 @@ bool Style::drawFrameLineEditPrimitive(const QStyleOption *option, QPainter *pai
         // render
         if (isVisible) {
             QLineEdit* dolphinLineEdit = widget->findChild<QLineEdit *>();
-            if (dolphinLineEdit->isVisible()) {
-                _helper->renderLineEdit(painter, rect.adjusted(0, -2, 0, 2), background, outline, hasFocus, mouseOver, enabled, windowActive, mode, opacity);
+            if (dolphinLineEdit && dolphinLineEdit->isVisible()) {
+                _helper->renderLineEdit(painter, rect, background, outline, hasFocus, mouseOver, enabled, windowActive, mode, opacity);
             }
         } else {
             _helper->renderLineEdit(painter, rect, background, outline, hasFocus, mouseOver, enabled, windowActive, mode, opacity);

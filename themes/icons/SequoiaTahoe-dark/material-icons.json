@@ -19349,11 +19349,6 @@
     "role": "Text",
     "sha256": "0caa2370668dedcebb1b604790632fb8102af3138ab4fafea2bc8e3fe6c9d2d8"
   },
-  "actions/32/user-desktop.svg": {
-    "symbol": "desktop_windows",
-    "role": "Text",
-    "sha256": "5d8e43d72af87e2de922c01a06584dd0563ebe7e08abc2a187760f20af79ef02"
-  },
   "actions/32/user-desktop-symbolic.svg": {
     "symbol": "desktop_windows",
     "role": "Text",
@@ -19363,11 +19358,6 @@
     "symbol": "keyboard",
     "role": "Text",
     "sha256": "672c17ffe2f9dc0411659915cbffbdfbeda6a31f36a5813b27f93527a4789880"
-  },
-  "actions/32/folder-documents.svg": {
-    "symbol": "description",
-    "role": "Text",
-    "sha256": "50e4a9a52ae96ede9a4e782fde978cc4462029ce9545f320cc92d7ff5f5c9ea3"
   },
   "actions/32/folder-documents-symbolic.svg": {
     "symbol": "description",
@@ -25789,350 +25779,35 @@
     "role": "Text",
     "sha256": "e0c9ebc6377d864a463951d82c92e85a21d6ab8090ba0ad2663ebca921acb689"
   },
-  "status/symbolic/network-mobile-20-5g-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_5g_locked",
+  "status/symbolic/network-mobile-100-edge-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_edge_locked",
     "role": "Text",
-    "sha256": "88e69222c6027ed0039d6d151cc36ef31d84b938b4b0985f63533fbb6e06da77"
+    "sha256": "b10d48c4661824c875374b1ce3cd268b369a0c40d0b7843e5f44673729a02225"
   },
-  "status/symbolic/network-mobile-0-edge-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_edge_normal",
+  "status/symbolic/audio-input-microphone-medium-symbolic.svg": {
+    "symbol": "sequoia_mic_medium",
     "role": "Text",
-    "sha256": "e700676a12ab0b2ee93515ae2744e4909059270f221f503ec392a8b738b0133c"
+    "sha256": "0f0ea4353d5a3fa6f1723db5be6fe8846ca066df33bcf843317efc2244ef37f6"
   },
-  "status/symbolic/network-cellular-signal-good-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_none_normal",
+  "status/symbolic/microphone-sensitivity-medium-symbolic.svg": {
+    "symbol": "sequoia_mic_medium",
     "role": "Text",
-    "sha256": "bfe3b676130dae231105a82ecac5c2459f2c9d8eca73425205a31a9b9c545be5"
-  },
-  "status/symbolic/network-mobile-80-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_none_normal",
-    "role": "Text",
-    "sha256": "bfe3b676130dae231105a82ecac5c2459f2c9d8eca73425205a31a9b9c545be5"
-  },
-  "status/symbolic/network-mobile-60-edge-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_edge_locked",
-    "role": "Text",
-    "sha256": "d6fe93a7e5a25ba0438b36b9b0d723fc1651ee5d36fde5d3b7b1552449225fe2"
-  },
-  "status/symbolic/network-wireless-60-locked-symbolic.svg": {
-    "symbol": "sequoia_wifi_60_locked",
-    "role": "Text",
-    "sha256": "26d7d6781ecb82a46ca908e2eae91fd358768c0698efd37698b6b435dd6a62a9"
-  },
-  "status/symbolic/network-wireless-secure-signal-ok-symbolic.svg": {
-    "symbol": "sequoia_wifi_60_locked",
-    "role": "Text",
-    "sha256": "26d7d6781ecb82a46ca908e2eae91fd358768c0698efd37698b6b435dd6a62a9"
-  },
-  "status/symbolic/network-wireless-signal-ok-secure-symbolic.svg": {
-    "symbol": "sequoia_wifi_60_locked",
-    "role": "Text",
-    "sha256": "26d7d6781ecb82a46ca908e2eae91fd358768c0698efd37698b6b435dd6a62a9"
-  },
-  "status/symbolic/network-wireless-20-limited-symbolic.svg": {
-    "symbol": "sequoia_wifi_20_limited",
-    "role": "Text",
-    "sha256": "8238b7520d3713f6b5692dfe7453e8b6bd805bad4a23c7c28c2eadbc5f721fbb"
-  },
-  "status/symbolic/network-cellular-secure-signal-weak-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_none_locked",
-    "role": "Text",
-    "sha256": "12a80c81db75c3fb9dcd70f5d4c583cdf309b7ef67b29c057b47f42dbdb281eb"
-  },
-  "status/symbolic/network-mobile-20-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_none_locked",
-    "role": "Text",
-    "sha256": "12a80c81db75c3fb9dcd70f5d4c583cdf309b7ef67b29c057b47f42dbdb281eb"
-  },
-  "status/symbolic/network-mobile-0-gprs-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_gprs_normal",
-    "role": "Text",
-    "sha256": "975f12b1fce6dd83ba03a3a663da43786679f0225ce6c7123dafb2b440a4dabb"
-  },
-  "status/symbolic/gpm-mouse-080-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_80",
-    "role": "Text",
-    "sha256": "a62f0641a0a3da503266f2f17febd7c1ce002f1b3e07e5194bb379968ecd310e"
-  },
-  "status/symbolic/mouse-battery-good-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_80",
-    "role": "Text",
-    "sha256": "a62f0641a0a3da503266f2f17febd7c1ce002f1b3e07e5194bb379968ecd310e"
-  },
-  "status/symbolic/xfpm-mouse-080-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_80",
-    "role": "Text",
-    "sha256": "a62f0641a0a3da503266f2f17febd7c1ce002f1b3e07e5194bb379968ecd310e"
-  },
-  "status/symbolic/gpm-mouse-000-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_0",
-    "role": "Text",
-    "sha256": "9d641931a4c2c1eb0ea9fde8300cd0d3494fb5a412e5ba7ec213752f4034af8b"
-  },
-  "status/symbolic/xfpm-mouse-000-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_0",
-    "role": "Text",
-    "sha256": "9d641931a4c2c1eb0ea9fde8300cd0d3494fb5a412e5ba7ec213752f4034af8b"
-  },
-  "status/symbolic/gsm-3g-low-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_umts_normal",
-    "role": "Text",
-    "sha256": "52d9fdac4bcb2764aa75cc93657887389497c3b0c311408e499e495af9be3196"
-  },
-  "status/symbolic/network-mobile-20-umts-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_umts_normal",
-    "role": "Text",
-    "sha256": "52d9fdac4bcb2764aa75cc93657887389497c3b0c311408e499e495af9be3196"
-  },
-  "status/symbolic/network-mobile-60-gprs-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_gprs_normal",
-    "role": "Text",
-    "sha256": "0f03dee3a8b0f7a0b0c67275b630b4e7253b52601ed396239f2fa754eaf9c74f"
-  },
-  "status/symbolic/network-wireless-100-locked-symbolic.svg": {
-    "symbol": "sequoia_wifi_100_locked",
-    "role": "Text",
-    "sha256": "8c2f95c012bbf28a51288c63baf972a573ae3ef24e4111269b4522fea166de27"
-  },
-  "status/symbolic/network-wireless-secure-signal-excellent-symbolic.svg": {
-    "symbol": "sequoia_wifi_100_locked",
-    "role": "Text",
-    "sha256": "8c2f95c012bbf28a51288c63baf972a573ae3ef24e4111269b4522fea166de27"
-  },
-  "status/symbolic/network-wireless-signal-excellent-secure-symbolic.svg": {
-    "symbol": "sequoia_wifi_100_locked",
-    "role": "Text",
-    "sha256": "8c2f95c012bbf28a51288c63baf972a573ae3ef24e4111269b4522fea166de27"
-  },
-  "status/symbolic/nm-signal-100-secure-symbolic.svg": {
-    "symbol": "sequoia_wifi_100_locked",
-    "role": "Text",
-    "sha256": "8c2f95c012bbf28a51288c63baf972a573ae3ef24e4111269b4522fea166de27"
-  },
-  "status/symbolic/xfpm-phone-030-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_30",
-    "role": "Text",
-    "sha256": "26b99378ff005a2b52c38ee16926c473b40cf27764eed66a4765c08de95a92eb"
-  },
-  "status/symbolic/gpm-keyboard-060-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_60",
-    "role": "Text",
-    "sha256": "7eb0c0cc523a411db8aaa1ee882ab78793b7414712ed0f25f6b7765df1ae269c"
-  },
-  "status/symbolic/xfpm-keyboard-060-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_60",
-    "role": "Text",
-    "sha256": "7eb0c0cc523a411db8aaa1ee882ab78793b7414712ed0f25f6b7765df1ae269c"
-  },
-  "status/symbolic/gsm-3g-low-secure-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_umts_locked",
-    "role": "Text",
-    "sha256": "3d86c8e6e6f36309ee825601be1e95a509fbbe6c9eb70c88ba689d22b35be206"
-  },
-  "status/symbolic/network-mobile-20-umts-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_umts_locked",
-    "role": "Text",
-    "sha256": "3d86c8e6e6f36309ee825601be1e95a509fbbe6c9eb70c88ba689d22b35be206"
-  },
-  "status/symbolic/gpm-phone-020-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_20",
-    "role": "Text",
-    "sha256": "24785259b42bd0b33ebea39f599b93991084b4b581c566cadfa1038c14ff4bb2"
-  },
-  "status/symbolic/phone-battery-low-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_20",
-    "role": "Text",
-    "sha256": "24785259b42bd0b33ebea39f599b93991084b4b581c566cadfa1038c14ff4bb2"
-  },
-  "status/symbolic/xfpm-phone-020-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_20",
-    "role": "Text",
-    "sha256": "24785259b42bd0b33ebea39f599b93991084b4b581c566cadfa1038c14ff4bb2"
-  },
-  "status/symbolic/battery-090-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_90_charging",
-    "role": "Text",
-    "sha256": "ecace65af379a5b414eca2f6b6faeabf851f144f3833a28fb203dd60c4de168d"
-  },
-  "status/symbolic/battery-level-90-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_90_charging",
-    "role": "Text",
-    "sha256": "ecace65af379a5b414eca2f6b6faeabf851f144f3833a28fb203dd60c4de168d"
-  },
-  "status/symbolic/battery-100-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_100_charging",
-    "role": "Text",
-    "sha256": "9552617fdebdef561915578951c5987b792a7cb4c41739c6f48d2d94bbedce1a"
-  },
-  "status/symbolic/battery-full-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_100_charging",
-    "role": "Text",
-    "sha256": "9552617fdebdef561915578951c5987b792a7cb4c41739c6f48d2d94bbedce1a"
-  },
-  "status/symbolic/network-wireless-40-locked-symbolic.svg": {
-    "symbol": "sequoia_wifi_40_locked",
-    "role": "Text",
-    "sha256": "00ae2e7a4055305c9d7a5ec850f36bf87e4776ef09eeceb5d01645192cfbd843"
-  },
-  "status/symbolic/network-wireless-secure-signal-low-symbolic.svg": {
-    "symbol": "sequoia_wifi_40_locked",
-    "role": "Text",
-    "sha256": "00ae2e7a4055305c9d7a5ec850f36bf87e4776ef09eeceb5d01645192cfbd843"
-  },
-  "status/symbolic/keyboard-battery-medium-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_50",
-    "role": "Text",
-    "sha256": "6b5e4e10a1133bb178ec582aaffd90b446746da559ec7b04ff17eee704024b11"
-  },
-  "status/symbolic/network-mobile-80-edge-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_edge_locked",
-    "role": "Text",
-    "sha256": "a02a53c7e0ef47588113045cf9662a8c4c73f7538ece712f2008fd14d2061748"
-  },
-  "status/symbolic/network-mobile-60-hsupa-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_hsupa_normal",
-    "role": "Text",
-    "sha256": "6d94605cee10ea2190c2513abf45b157c30e900b23d52fe2d08efa545bac1649"
-  },
-  "status/symbolic/network-wireless-40-symbolic.svg": {
-    "symbol": "sequoia_wifi_40_normal",
-    "role": "Text",
-    "sha256": "b5d6025ab14487d00dbc7266d97d5f1efea06fd5f301bfb8a53d00059c536f61"
-  },
-  "status/symbolic/network-wireless-connected-40-symbolic.svg": {
-    "symbol": "sequoia_wifi_40_normal",
-    "role": "Text",
-    "sha256": "b5d6025ab14487d00dbc7266d97d5f1efea06fd5f301bfb8a53d00059c536f61"
-  },
-  "status/symbolic/network-wireless-signal-low-symbolic.svg": {
-    "symbol": "sequoia_wifi_40_normal",
-    "role": "Text",
-    "sha256": "b5d6025ab14487d00dbc7266d97d5f1efea06fd5f301bfb8a53d00059c536f61"
+    "sha256": "0f0ea4353d5a3fa6f1723db5be6fe8846ca066df33bcf843317efc2244ef37f6"
   },
   "status/symbolic/network-mobile-20-edge-symbolic.svg": {
     "symbol": "sequoia_cellular_20_edge_normal",
     "role": "Text",
     "sha256": "b163a1a757897279e3d50032bd2861ad1597894e4a812dbb7fe660578bbedbf0"
   },
-  "status/symbolic/network-mobile-20-gprs-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_gprs_normal",
+  "status/symbolic/gsm-3g-none-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_umts_normal",
     "role": "Text",
-    "sha256": "d88612a3d95a7040d6171254ca0152a5e85925f91c2b546783f82a2b4d3c0e39"
+    "sha256": "9d8936d3ed1c79cb5a42fb3303dacefc344cff58e702cc7db11480d5d2dbfc2e"
   },
-  "status/symbolic/battery-070-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_70_charging",
+  "status/symbolic/network-mobile-0-umts-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_umts_normal",
     "role": "Text",
-    "sha256": "6b894b07aefc0a305b860debdcc315de6826d3bb82c0ac48ed76058c9fbe6f1a"
-  },
-  "status/symbolic/battery-level-70-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_70_charging",
-    "role": "Text",
-    "sha256": "6b894b07aefc0a305b860debdcc315de6826d3bb82c0ac48ed76058c9fbe6f1a"
-  },
-  "status/symbolic/battery-missing-symbolic.svg": {
-    "symbol": "sequoia_battery_missing",
-    "role": "Text",
-    "sha256": "d7094ce0cd19ea7c26d7c7e511ca0204e380ad42c0eb0080bff9649487ea2880"
-  },
-  "status/symbolic/network-cellular-secure-signal-excellent-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_none_locked",
-    "role": "Text",
-    "sha256": "f0a5dcde07e4bd7dcd5dd69223143af103582195a710884f3f0268517070a892"
-  },
-  "status/symbolic/network-mobile-100-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_none_locked",
-    "role": "Text",
-    "sha256": "f0a5dcde07e4bd7dcd5dd69223143af103582195a710884f3f0268517070a892"
-  },
-  "status/symbolic/battery-020-symbolic.svg": {
-    "symbol": "sequoia_battery_20_normal",
-    "role": "Text",
-    "sha256": "de55e4f9c3b708d2ef0c8156179ccd84e19d01bc7d5ac282f939d33f7fb640d7"
-  },
-  "status/symbolic/battery-level-20-symbolic.svg": {
-    "symbol": "sequoia_battery_20_normal",
-    "role": "Text",
-    "sha256": "de55e4f9c3b708d2ef0c8156179ccd84e19d01bc7d5ac282f939d33f7fb640d7"
-  },
-  "status/symbolic/battery-low-symbolic.svg": {
-    "symbol": "sequoia_battery_20_normal",
-    "role": "NeutralText",
-    "sha256": "a54d4b90a0ff3df7fcc79940524cde02461a56997368d78ac08e7dbd5b319569"
-  },
-  "status/symbolic/battery-010-symbolic.svg": {
-    "symbol": "sequoia_battery_10_normal",
-    "role": "Text",
-    "sha256": "a16800c6a4e227a763c1a645195dc0717f52c57407771fc5d59b50c9decd9559"
-  },
-  "status/symbolic/battery-caution-symbolic.svg": {
-    "symbol": "sequoia_battery_10_normal",
-    "role": "NeutralText",
-    "sha256": "bd0596668320c3d5adb1c1d67de289ce90e9368302833f200916a04a616a59de"
-  },
-  "status/symbolic/battery-level-10-symbolic.svg": {
-    "symbol": "sequoia_battery_10_normal",
-    "role": "Text",
-    "sha256": "a16800c6a4e227a763c1a645195dc0717f52c57407771fc5d59b50c9decd9559"
-  },
-  "status/symbolic/network-mobile-80-hspa-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_hspa_normal",
-    "role": "Text",
-    "sha256": "7e4c14e3ef365b1232b713b25e0d99edb5ca6063ad1a77dd24b3e2b46afacc5f"
-  },
-  "status/symbolic/battery-000-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_0_charging",
-    "role": "Text",
-    "sha256": "3fa51aadc8d89a1f67596be817a3d6304431a2757babbc84ae1b0128bc99aede"
-  },
-  "status/symbolic/battery-empty-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_0_charging",
-    "role": "Text",
-    "sha256": "3fa51aadc8d89a1f67596be817a3d6304431a2757babbc84ae1b0128bc99aede"
-  },
-  "status/symbolic/battery-level-0-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_0_charging",
-    "role": "Text",
-    "sha256": "3fa51aadc8d89a1f67596be817a3d6304431a2757babbc84ae1b0128bc99aede"
-  },
-  "status/symbolic/network-mobile-60-hsdpa-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_hsdpa_normal",
-    "role": "Text",
-    "sha256": "52f18717ad1a1f2c95ee36ec4eca5f78b4d8ca2ed2d2e59c79e6745e71f4fe3c"
-  },
-  "status/symbolic/network-wireless-60-symbolic.svg": {
-    "symbol": "sequoia_wifi_60_normal",
-    "role": "Text",
-    "sha256": "a82a1c809b08ebec8f6fbf65b5c8dd03bb3849740cd3e0d7e2d0bcc881305b71"
-  },
-  "status/symbolic/network-wireless-connected-60-symbolic.svg": {
-    "symbol": "sequoia_wifi_60_normal",
-    "role": "Text",
-    "sha256": "a82a1c809b08ebec8f6fbf65b5c8dd03bb3849740cd3e0d7e2d0bcc881305b71"
-  },
-  "status/symbolic/network-wireless-signal-ok-symbolic.svg": {
-    "symbol": "sequoia_wifi_60_normal",
-    "role": "Text",
-    "sha256": "a82a1c809b08ebec8f6fbf65b5c8dd03bb3849740cd3e0d7e2d0bcc881305b71"
-  },
-  "status/symbolic/network-wireless-40-limited-symbolic.svg": {
-    "symbol": "sequoia_wifi_40_limited",
-    "role": "Text",
-    "sha256": "dd0d93ea97413eda0b1e8fe86d0f1ce2d362a4f9b6c4e0f5e30a697bb3a40c61"
-  },
-  "status/symbolic/smartphone-disconnected-symbolic.svg": {
-    "symbol": "sequoia_connection_smartphone_disconnected",
-    "role": "Text",
-    "sha256": "f8e7b65bdde7096e2d8ba9596443a259e47774acae41cbcbe177f9f1f0f0f096"
-  },
-  "status/symbolic/smartphonedisconnected-symbolic.svg": {
-    "symbol": "sequoia_connection_smartphone_disconnected",
-    "role": "Text",
-    "sha256": "f8e7b65bdde7096e2d8ba9596443a259e47774acae41cbcbe177f9f1f0f0f096"
-  },
-  "status/symbolic/network-mobile-100-5g-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_5g_locked",
-    "role": "Text",
-    "sha256": "a6054d4b39e093de0f3836a1bde098aa55b7052240f1ef9c523f7d40919906e0"
+    "sha256": "9d8936d3ed1c79cb5a42fb3303dacefc344cff58e702cc7db11480d5d2dbfc2e"
   },
   "status/symbolic/network-wireless-0-locked-symbolic.svg": {
     "symbol": "sequoia_wifi_0_locked",
@@ -26159,446 +25834,6 @@
     "role": "Text",
     "sha256": "3cd4fb8bcef32a74787d40c7067a4f834a9237164307d24c166d10166dc93d59"
   },
-  "status/symbolic/network-mobile-0-hspa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_hspa_locked",
-    "role": "Text",
-    "sha256": "651ee8c1fb57a6b041efb117b42a89a5828d698e57a6f5989fbe1919e9a41916"
-  },
-  "status/symbolic/gsm-3g-full-secure-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_umts_locked",
-    "role": "Text",
-    "sha256": "670d2267d98aa8989c3711b2be780e8f9d48eedf2d0be99c5815d5f8cddea2ad"
-  },
-  "status/symbolic/network-mobile-100-umts-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_umts_locked",
-    "role": "Text",
-    "sha256": "670d2267d98aa8989c3711b2be780e8f9d48eedf2d0be99c5815d5f8cddea2ad"
-  },
-  "status/symbolic/xfpm-keyboard-030-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_30",
-    "role": "Text",
-    "sha256": "9a9a562f219a7ab024b38c74b1ffef064488a5eb3ba1d19bbbd658cb53d27082"
-  },
-  "status/symbolic/gsm-3g-high-secure-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_umts_locked",
-    "role": "Text",
-    "sha256": "8764fb91fd091114beec8bce596b0fba4ae9df92ff1040afd5db09d665eda639"
-  },
-  "status/symbolic/network-mobile-80-umts-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_umts_locked",
-    "role": "Text",
-    "sha256": "8764fb91fd091114beec8bce596b0fba4ae9df92ff1040afd5db09d665eda639"
-  },
-  "status/symbolic/gsm-3g-none-secure-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_umts_locked",
-    "role": "Text",
-    "sha256": "525c8340f9b5a1f30a9aa8430d5e71b7d1946901fd4fcaabbdab3951ceba2030"
-  },
-  "status/symbolic/network-mobile-0-umts-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_umts_locked",
-    "role": "Text",
-    "sha256": "525c8340f9b5a1f30a9aa8430d5e71b7d1946901fd4fcaabbdab3951ceba2030"
-  },
-  "status/symbolic/battery-050-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_50_charging",
-    "role": "Text",
-    "sha256": "7c46934f5e7a3d98955d853846df8fb116edf301e027027471ea79d3f0666bdf"
-  },
-  "status/symbolic/battery-level-50-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_50_charging",
-    "role": "Text",
-    "sha256": "7c46934f5e7a3d98955d853846df8fb116edf301e027027471ea79d3f0666bdf"
-  },
-  "status/symbolic/battery-medium-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_50_charging",
-    "role": "Text",
-    "sha256": "7c46934f5e7a3d98955d853846df8fb116edf301e027027471ea79d3f0666bdf"
-  },
-  "status/symbolic/network-mobile-100-hsupa-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_hsupa_normal",
-    "role": "Text",
-    "sha256": "f9c0a4c92f3b39ba5ccc8ea268a568c2901c5714874a6a25b0c1e192199b1d4e"
-  },
-  "status/symbolic/network-mobile-0-5g-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_5g_locked",
-    "role": "Text",
-    "sha256": "cecfd386ec5c073fd16ce392d54fab956354e73f45cf2b68f6c2eece992d2405"
-  },
-  "status/symbolic/tablet-trusted-symbolic.svg": {
-    "symbol": "sequoia_connection_tablet_trusted",
-    "role": "Text",
-    "sha256": "227bc50ba1865b5ef30efd47ba9a2d9d1e369c0ba4a04ca63b8f654353b25d99"
-  },
-  "status/symbolic/network-mobile-80-hsdpa-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_hsdpa_normal",
-    "role": "Text",
-    "sha256": "6cd4f7bf5ad2ee8ef0922499b80ba6673aa559be5a1f227b0983c68d355e60ec"
-  },
-  "status/symbolic/network-cellular-signal-ok-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_none_normal",
-    "role": "Text",
-    "sha256": "4d150c2d925f6767d95bfa75fc17220e49bf245b20238b5f7abf923dd2422354"
-  },
-  "status/symbolic/network-mobile-60-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_none_normal",
-    "role": "Text",
-    "sha256": "4d150c2d925f6767d95bfa75fc17220e49bf245b20238b5f7abf923dd2422354"
-  },
-  "status/symbolic/network-cellular-signal-weak-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_none_normal",
-    "role": "Text",
-    "sha256": "f8c7907311bbb814f17ff169d24c9a9beabddb24fd14d7b5c15a27420dcc6c20"
-  },
-  "status/symbolic/network-mobile-20-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_none_normal",
-    "role": "Text",
-    "sha256": "f8c7907311bbb814f17ff169d24c9a9beabddb24fd14d7b5c15a27420dcc6c20"
-  },
-  "status/symbolic/network-mobile-100-edge-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_edge_normal",
-    "role": "Text",
-    "sha256": "a5262c88de48ce9b6e3e60740bc1dfe23a5bd8c4dd5ad80deedc786f0a85a586"
-  },
-  "status/symbolic/network-mobile-0-hsdpa-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_hsdpa_normal",
-    "role": "Text",
-    "sha256": "7faa855650b7aa5f7e96e27564dc79743e497b620adf45bede8b7530f50b11ac"
-  },
-  "status/symbolic/gpm-keyboard-100-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_100",
-    "role": "Text",
-    "sha256": "d819cb79b6ee236540a08f21f7c952e483d84a7380b85e11dc8ea658d513f22b"
-  },
-  "status/symbolic/input-keyboard-battery-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_100",
-    "role": "Text",
-    "sha256": "d819cb79b6ee236540a08f21f7c952e483d84a7380b85e11dc8ea658d513f22b"
-  },
-  "status/symbolic/keyboard-battery-full-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_100",
-    "role": "Text",
-    "sha256": "d819cb79b6ee236540a08f21f7c952e483d84a7380b85e11dc8ea658d513f22b"
-  },
-  "status/symbolic/xfpm-keyboard-100-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_100",
-    "role": "Text",
-    "sha256": "d819cb79b6ee236540a08f21f7c952e483d84a7380b85e11dc8ea658d513f22b"
-  },
-  "status/symbolic/battery-030-symbolic.svg": {
-    "symbol": "sequoia_battery_30_normal",
-    "role": "Text",
-    "sha256": "0ba7893f077c6e5cc9c58e7b7a2669bd060e623a0ae8ddf4b9229091ff53d97a"
-  },
-  "status/symbolic/battery-level-30-symbolic.svg": {
-    "symbol": "sequoia_battery_30_normal",
-    "role": "Text",
-    "sha256": "0ba7893f077c6e5cc9c58e7b7a2669bd060e623a0ae8ddf4b9229091ff53d97a"
-  },
-  "status/symbolic/network-wireless-80-limited-symbolic.svg": {
-    "symbol": "sequoia_wifi_80_limited",
-    "role": "Text",
-    "sha256": "683fc2436f5b53c22bd1bd079f1262a99fb8caab391cf6da3fadffdbff572c36"
-  },
-  "status/symbolic/network-mobile-40-umts-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_umts_locked",
-    "role": "Text",
-    "sha256": "11007598d20282affb27faca9b702e536cd6eb7d84623159fa5952c928283727"
-  },
-  "status/symbolic/network-mobile-100-5g-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_5g_normal",
-    "role": "Text",
-    "sha256": "48b803d4d2728ad88181b7f23f9fbb6996fb123052a9e9a800c69972369fec87"
-  },
-  "status/symbolic/network-mobile-80-hsupa-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_hsupa_normal",
-    "role": "Text",
-    "sha256": "f90b3045c294180388b85ecee034b656bdf63e81c785be33e8b6808bfdfbea96"
-  },
-  "status/symbolic/network-mobile-40-edge-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_edge_normal",
-    "role": "Text",
-    "sha256": "fb93a916f7f9837b1bfbbb20e0edc670cf0c70bea9e0e058931439a13da14bab"
-  },
-  "status/symbolic/battery-000-symbolic.svg": {
-    "symbol": "sequoia_battery_0_normal",
-    "role": "Text",
-    "sha256": "3b6f35f09766a5978008f2a0db871616c48329d4c72750d9800d55bff6e38b8b"
-  },
-  "status/symbolic/battery-empty-symbolic.svg": {
-    "symbol": "sequoia_battery_0_normal",
-    "role": "NegativeText",
-    "sha256": "10de53569242445c85da288f6b33a16e0374f88dac0aeaba7bc6756b014627c8"
-  },
-  "status/symbolic/battery-level-0-symbolic.svg": {
-    "symbol": "sequoia_battery_0_normal",
-    "role": "Text",
-    "sha256": "3b6f35f09766a5978008f2a0db871616c48329d4c72750d9800d55bff6e38b8b"
-  },
-  "status/symbolic/battery-060-symbolic.svg": {
-    "symbol": "sequoia_battery_60_normal",
-    "role": "Text",
-    "sha256": "55f4eb02ef8259cb701f0d6b4d63d7df3c1c01c680d7c02b003ab741ec81557b"
-  },
-  "status/symbolic/battery-level-60-symbolic.svg": {
-    "symbol": "sequoia_battery_60_normal",
-    "role": "Text",
-    "sha256": "55f4eb02ef8259cb701f0d6b4d63d7df3c1c01c680d7c02b003ab741ec81557b"
-  },
-  "status/symbolic/gpm-phone-080-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_80",
-    "role": "Text",
-    "sha256": "8002fc23b2331d4874256c78c8e487870f81af4ac93f438126156bb088248c44"
-  },
-  "status/symbolic/phone-battery-good-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_80",
-    "role": "Text",
-    "sha256": "8002fc23b2331d4874256c78c8e487870f81af4ac93f438126156bb088248c44"
-  },
-  "status/symbolic/xfpm-phone-080-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_80",
-    "role": "Text",
-    "sha256": "8002fc23b2331d4874256c78c8e487870f81af4ac93f438126156bb088248c44"
-  },
-  "status/symbolic/laptop-connected-symbolic.svg": {
-    "symbol": "sequoia_connection_laptop_connected",
-    "role": "Text",
-    "sha256": "792f1afdfa79a9c5c3f8bcb4678abbdfcee5fec562c499b7473cb4544a6e9a7d"
-  },
-  "status/symbolic/battery-050-symbolic.svg": {
-    "symbol": "sequoia_battery_50_normal",
-    "role": "Text",
-    "sha256": "d5f0f0900907b9e121d1382fbaf7069b8f7114c4270ef619367e46fcd0ffe0ec"
-  },
-  "status/symbolic/battery-level-50-symbolic.svg": {
-    "symbol": "sequoia_battery_50_normal",
-    "role": "Text",
-    "sha256": "d5f0f0900907b9e121d1382fbaf7069b8f7114c4270ef619367e46fcd0ffe0ec"
-  },
-  "status/symbolic/battery-medium-symbolic.svg": {
-    "symbol": "sequoia_battery_50_normal",
-    "role": "Text",
-    "sha256": "d5f0f0900907b9e121d1382fbaf7069b8f7114c4270ef619367e46fcd0ffe0ec"
-  },
-  "status/symbolic/battery-060-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_60_charging",
-    "role": "Text",
-    "sha256": "6e599c5afb2171072804f1d001ecf5819ea915570a7e42692a4d04f82b141cc9"
-  },
-  "status/symbolic/battery-level-60-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_60_charging",
-    "role": "Text",
-    "sha256": "6e599c5afb2171072804f1d001ecf5819ea915570a7e42692a4d04f82b141cc9"
-  },
-  "status/symbolic/battery-040-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_40_charging",
-    "role": "Text",
-    "sha256": "eee7c3a0e20d38f7e725ba4b2650104814df7d5718031161531a417cae773c3a"
-  },
-  "status/symbolic/battery-level-40-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_40_charging",
-    "role": "Text",
-    "sha256": "eee7c3a0e20d38f7e725ba4b2650104814df7d5718031161531a417cae773c3a"
-  },
-  "status/symbolic/network-mobile-40-umts-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_umts_normal",
-    "role": "Text",
-    "sha256": "87abf8c678cd93e7b79403956386d972c32963f1d6d36cac66a634031d6d04a1"
-  },
-  "status/symbolic/network-mobile-40-gprs-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_gprs_normal",
-    "role": "Text",
-    "sha256": "eda4d2d37dd8f70355622c3e2e7e5ea9b6a0613da6bf4f494fc1d6c188db83d1"
-  },
-  "status/symbolic/gpm-mouse-100-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_100",
-    "role": "Text",
-    "sha256": "a79554d44476e28905b8a730b3af071875e28449813616d32a94e946d353923a"
-  },
-  "status/symbolic/input-mouse-battery-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_100",
-    "role": "Text",
-    "sha256": "a79554d44476e28905b8a730b3af071875e28449813616d32a94e946d353923a"
-  },
-  "status/symbolic/mouse-battery-full-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_100",
-    "role": "Text",
-    "sha256": "a79554d44476e28905b8a730b3af071875e28449813616d32a94e946d353923a"
-  },
-  "status/symbolic/xfpm-mouse-100-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_100",
-    "role": "Text",
-    "sha256": "a79554d44476e28905b8a730b3af071875e28449813616d32a94e946d353923a"
-  },
-  "status/symbolic/network-mobile-0-hsupa-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_hsupa_normal",
-    "role": "Text",
-    "sha256": "2c1daa971355659e70f73b489b9eb0f65c793e727096e3b7b56a7a74e60cc1c2"
-  },
-  "status/symbolic/gpm-keyboard-020-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_20",
-    "role": "Text",
-    "sha256": "3abd0bac510b9dcf420c62de98d7ae74d46a70e067f5b8315a0561ef690b15f9"
-  },
-  "status/symbolic/keyboard-battery-low-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_20",
-    "role": "Text",
-    "sha256": "3abd0bac510b9dcf420c62de98d7ae74d46a70e067f5b8315a0561ef690b15f9"
-  },
-  "status/symbolic/xfpm-keyboard-020-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_20",
-    "role": "Text",
-    "sha256": "3abd0bac510b9dcf420c62de98d7ae74d46a70e067f5b8315a0561ef690b15f9"
-  },
-  "status/symbolic/network-mobile-60-umts-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_umts_locked",
-    "role": "Text",
-    "sha256": "094161f8a7b054cb5d9727440c4ac6d46cb9fd7f7dd353a33572e17cf41c8173"
-  },
-  "status/symbolic/network-mobile-40-lte-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_lte_normal",
-    "role": "Text",
-    "sha256": "5d314d90fdadf4dd6e753170420504c80a04194ff08bb357363aff7947e0fc2f"
-  },
-  "status/symbolic/smartphone-trusted-symbolic.svg": {
-    "symbol": "sequoia_connection_smartphone_trusted",
-    "role": "Text",
-    "sha256": "1cd6a71d94df264384dd2c6ee33a744acb89f407f878213b749aa8464dfff7b4"
-  },
-  "status/symbolic/smartphonetrusted-symbolic.svg": {
-    "symbol": "sequoia_connection_smartphone_trusted",
-    "role": "Text",
-    "sha256": "1cd6a71d94df264384dd2c6ee33a744acb89f407f878213b749aa8464dfff7b4"
-  },
-  "status/symbolic/network-wireless-80-symbolic.svg": {
-    "symbol": "sequoia_wifi_80_normal",
-    "role": "Text",
-    "sha256": "546fa899bbf0f0536f912663a4d54f371b3fc5b91ca9d2a0df190c11f9511eff"
-  },
-  "status/symbolic/network-wireless-connected-80-symbolic.svg": {
-    "symbol": "sequoia_wifi_80_normal",
-    "role": "Text",
-    "sha256": "546fa899bbf0f0536f912663a4d54f371b3fc5b91ca9d2a0df190c11f9511eff"
-  },
-  "status/symbolic/network-wireless-signal-good-symbolic.svg": {
-    "symbol": "sequoia_wifi_80_normal",
-    "role": "Text",
-    "sha256": "546fa899bbf0f0536f912663a4d54f371b3fc5b91ca9d2a0df190c11f9511eff"
-  },
-  "status/symbolic/battery-080-symbolic.svg": {
-    "symbol": "sequoia_battery_80_normal",
-    "role": "Text",
-    "sha256": "5f8830f49faaab1c5a8d733a982160e072f1cb51ded620914832855b22b29187"
-  },
-  "status/symbolic/battery-good-symbolic.svg": {
-    "symbol": "sequoia_battery_80_normal",
-    "role": "Text",
-    "sha256": "5f8830f49faaab1c5a8d733a982160e072f1cb51ded620914832855b22b29187"
-  },
-  "status/symbolic/battery-level-80-symbolic.svg": {
-    "symbol": "sequoia_battery_80_normal",
-    "role": "Text",
-    "sha256": "5f8830f49faaab1c5a8d733a982160e072f1cb51ded620914832855b22b29187"
-  },
-  "status/symbolic/battery-030-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_30_charging",
-    "role": "Text",
-    "sha256": "174cf2ef461c94118fd1f79a8ca4d046cd111472ec73bd846a5d573f55def043"
-  },
-  "status/symbolic/battery-level-30-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_30_charging",
-    "role": "Text",
-    "sha256": "174cf2ef461c94118fd1f79a8ca4d046cd111472ec73bd846a5d573f55def043"
-  },
-  "status/symbolic/network-mobile-0-hsupa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_hsupa_locked",
-    "role": "Text",
-    "sha256": "a04e1f5230d267b199656742fb458ea2eae8f8331de461d61b8aa0ebe2f22b66"
-  },
-  "status/symbolic/nm-signal-25-secure-symbolic.svg": {
-    "symbol": "sequoia_wifi_25_locked",
-    "role": "Text",
-    "sha256": "dfe8f0e66e80f2a9c9423fa598b119a11752874fe4bc5cef1e5fcda95ded115a"
-  },
-  "status/symbolic/network-mobile-20-hsupa-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_hsupa_normal",
-    "role": "Text",
-    "sha256": "27abba976f6dd8847e2b56581f64b9bbb8871f8e9bdd9e49a31ef4f84f901038"
-  },
-  "status/symbolic/network-mobile-40-hspa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_hspa_locked",
-    "role": "Text",
-    "sha256": "c8cbf88e5b183eacc72bc035ca51e87656c963b2604439863e6e3db7817e57e7"
-  },
-  "status/symbolic/network-mobile-40-hsdpa-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_hsdpa_normal",
-    "role": "Text",
-    "sha256": "5cc47b93c1ba73d6cd6321339815992c919e1cc84efef6bfac5b777f476af656"
-  },
-  "status/symbolic/network-mobile-40-edge-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_edge_locked",
-    "role": "Text",
-    "sha256": "fd2d4a0aa52a13893880d52b90a347c2dd4959d0053bd8e3df7a44458ba35392"
-  },
-  "status/symbolic/tablet-connected-symbolic.svg": {
-    "symbol": "sequoia_connection_tablet_connected",
-    "role": "Text",
-    "sha256": "4360cf5e6e0e783044355f456e87840ec46e8a1c3978e29d405e0e8252036a50"
-  },
-  "status/symbolic/network-mobile-0-hsdpa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_hsdpa_locked",
-    "role": "Text",
-    "sha256": "6a0c6a15d7b408c9112d68da7f6c90dc1b3192331031666e5692ee45434bba6d"
-  },
-  "status/symbolic/network-mobile-60-5g-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_5g_locked",
-    "role": "Text",
-    "sha256": "b515498f95023c560791a00ff712533661334202efec8acb6b3377d50bd77a89"
-  },
-  "status/symbolic/network-mobile-60-lte-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_lte_normal",
-    "role": "Text",
-    "sha256": "aa7c5a5a76404df5736a8b88f22f98d76721331d692673fa86634e29cc073243"
-  },
-  "status/symbolic/battery-010-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_10_charging",
-    "role": "Text",
-    "sha256": "772918ea0ccf9140045069495c719d18f3ddaff72e55aa9cb40ea51e16eba89e"
-  },
-  "status/symbolic/battery-caution-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_10_charging",
-    "role": "Text",
-    "sha256": "772918ea0ccf9140045069495c719d18f3ddaff72e55aa9cb40ea51e16eba89e"
-  },
-  "status/symbolic/battery-level-10-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_10_charging",
-    "role": "Text",
-    "sha256": "772918ea0ccf9140045069495c719d18f3ddaff72e55aa9cb40ea51e16eba89e"
-  },
-  "status/symbolic/nm-signal-50-secure-symbolic.svg": {
-    "symbol": "sequoia_wifi_50_locked",
-    "role": "Text",
-    "sha256": "3a775640e049152002e3661eb8aef8c75a08751633be13e875a43f61dc902094"
-  },
-  "status/symbolic/gpm-phone-000-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_0",
-    "role": "Text",
-    "sha256": "9b4fe939d5214349fe2cd28066b8a9d52372061667a904c1f96b3c0bf6f07ff1"
-  },
-  "status/symbolic/xfpm-phone-000-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_0",
-    "role": "Text",
-    "sha256": "9b4fe939d5214349fe2cd28066b8a9d52372061667a904c1f96b3c0bf6f07ff1"
-  },
-  "status/symbolic/battery-040-symbolic.svg": {
-    "symbol": "sequoia_battery_40_normal",
-    "role": "Text",
-    "sha256": "20e7f89633180b43432aa4b9c82efb288115c4f1195b41d930541f5998143f0f"
-  },
-  "status/symbolic/battery-level-40-symbolic.svg": {
-    "symbol": "sequoia_battery_40_normal",
-    "role": "Text",
-    "sha256": "20e7f89633180b43432aa4b9c82efb288115c4f1195b41d930541f5998143f0f"
-  },
   "status/symbolic/gpm-mouse-020-symbolic.svg": {
     "symbol": "sequoia_peripheral_mouse_20",
     "role": "Text",
@@ -26613,36 +25848,6 @@
     "symbol": "sequoia_peripheral_mouse_20",
     "role": "Text",
     "sha256": "b064f5b9872d4f38d5c600422aa6e375ea955414b5bc805feec2afc428613e97"
-  },
-  "status/symbolic/network-cellular-secure-signal-none-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_none_locked",
-    "role": "Text",
-    "sha256": "d9e80d1c3c680b04a4b514ba496fe6b42248966119a06ab829b7be45d8908990"
-  },
-  "status/symbolic/network-mobile-0-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_none_locked",
-    "role": "Text",
-    "sha256": "d9e80d1c3c680b04a4b514ba496fe6b42248966119a06ab829b7be45d8908990"
-  },
-  "status/symbolic/xfpm-mouse-030-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_30",
-    "role": "Text",
-    "sha256": "eaebf566993f997069faa4280358beed22c29a983f59332ec62859faa799af62"
-  },
-  "status/symbolic/network-mobile-80-gprs-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_gprs_normal",
-    "role": "Text",
-    "sha256": "2a029e8c39164c29a95396ad8b5b4374f200feb4ba4f7a47712758ae6bf4cf7f"
-  },
-  "status/symbolic/network-mobile-0-lte-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_lte_normal",
-    "role": "Text",
-    "sha256": "93b6fc1014fa7631379887d58763a5ef3c8dd1713747461be3fbb38b5f8d3d6f"
-  },
-  "status/symbolic/network-mobile-20-edge-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_edge_locked",
-    "role": "Text",
-    "sha256": "dcbc45089be8c79c8ba9f5aa8faf2776fc478480db432b444b4c8807a50e68c2"
   },
   "status/symbolic/gpm-phone-100-symbolic.svg": {
     "symbol": "sequoia_peripheral_phone_100",
@@ -26664,405 +25869,25 @@
     "role": "Text",
     "sha256": "e2aefabf90034552c751f42cfc130aa7596c960d7b261b8bccd42a1e9862094b"
   },
-  "status/symbolic/network-mobile-40-hsdpa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_hsdpa_locked",
+  "status/symbolic/network-mobile-0-edge-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_edge_locked",
     "role": "Text",
-    "sha256": "9de5aae18e10abdb440962dd2b8f21798b3902b95572f9e94dd196d1f4bc276a"
+    "sha256": "a5fd556a05caffd371a639e303069a80f8f20e20a66034b0bdff8a39b2f1e558"
   },
-  "status/symbolic/network-mobile-20-lte-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_lte_locked",
+  "status/symbolic/network-wireless-60-locked-symbolic.svg": {
+    "symbol": "sequoia_wifi_60_locked",
     "role": "Text",
-    "sha256": "1e1566bbdd2a1aa90fe82dc4ecfdd5dae882ddadd7087bf4f8212234f3bd3026"
+    "sha256": "26d7d6781ecb82a46ca908e2eae91fd358768c0698efd37698b6b435dd6a62a9"
   },
-  "status/symbolic/network-cellular-signal-low-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_none_normal",
+  "status/symbolic/network-wireless-secure-signal-ok-symbolic.svg": {
+    "symbol": "sequoia_wifi_60_locked",
     "role": "Text",
-    "sha256": "19abaabe5166be29b82413f21e804a544f7c79458e1e692f9c156071579352f9"
+    "sha256": "26d7d6781ecb82a46ca908e2eae91fd358768c0698efd37698b6b435dd6a62a9"
   },
-  "status/symbolic/network-mobile-40-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_none_normal",
+  "status/symbolic/network-wireless-signal-ok-secure-symbolic.svg": {
+    "symbol": "sequoia_wifi_60_locked",
     "role": "Text",
-    "sha256": "19abaabe5166be29b82413f21e804a544f7c79458e1e692f9c156071579352f9"
-  },
-  "status/symbolic/network-wireless-0-limited-symbolic.svg": {
-    "symbol": "sequoia_wifi_0_limited",
-    "role": "Text",
-    "sha256": "7fdfec5240b3fc17b4c9d27fa49d763008dca1a05a07c1027507cfacec16662e"
-  },
-  "status/symbolic/network-mobile-80-5g-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_5g_locked",
-    "role": "Text",
-    "sha256": "7ba67120aad820980b492faf610d537eb4cbbadcc8d778a23ed36bdac0929b1f"
-  },
-  "status/symbolic/network-cellular-signal-excellent-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_none_normal",
-    "role": "Text",
-    "sha256": "b94a0e3170cff73d5698f0eeff6f367c0dd5f32622781eb6f4baf5c23097a62a"
-  },
-  "status/symbolic/network-mobile-100-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_none_normal",
-    "role": "Text",
-    "sha256": "b94a0e3170cff73d5698f0eeff6f367c0dd5f32622781eb6f4baf5c23097a62a"
-  },
-  "status/symbolic/battery-020-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_20_charging",
-    "role": "Text",
-    "sha256": "877d63f87b8b14f475252f9fd29a043aab1e498a45fc14cc9e8280a2fd6172e5"
-  },
-  "status/symbolic/battery-level-20-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_20_charging",
-    "role": "Text",
-    "sha256": "877d63f87b8b14f475252f9fd29a043aab1e498a45fc14cc9e8280a2fd6172e5"
-  },
-  "status/symbolic/battery-low-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_20_charging",
-    "role": "Text",
-    "sha256": "877d63f87b8b14f475252f9fd29a043aab1e498a45fc14cc9e8280a2fd6172e5"
-  },
-  "status/symbolic/network-wireless-80-locked-symbolic.svg": {
-    "symbol": "sequoia_wifi_80_locked",
-    "role": "Text",
-    "sha256": "fcfbf1c5da8459489e2fb9bf0ca586af4758de4acc66cbb04c727239cf953b70"
-  },
-  "status/symbolic/network-wireless-secure-signal-good-symbolic.svg": {
-    "symbol": "sequoia_wifi_80_locked",
-    "role": "Text",
-    "sha256": "fcfbf1c5da8459489e2fb9bf0ca586af4758de4acc66cbb04c727239cf953b70"
-  },
-  "status/symbolic/network-wireless-signal-good-secure-symbolic.svg": {
-    "symbol": "sequoia_wifi_80_locked",
-    "role": "Text",
-    "sha256": "fcfbf1c5da8459489e2fb9bf0ca586af4758de4acc66cbb04c727239cf953b70"
-  },
-  "status/symbolic/network-wireless-20-symbolic.svg": {
-    "symbol": "sequoia_wifi_20_normal",
-    "role": "Text",
-    "sha256": "d39dd87ff530f97ec39d701d1cf49e36359f54a7499b0b5953df88839faeba40"
-  },
-  "status/symbolic/network-wireless-connected-20-symbolic.svg": {
-    "symbol": "sequoia_wifi_20_normal",
-    "role": "Text",
-    "sha256": "d39dd87ff530f97ec39d701d1cf49e36359f54a7499b0b5953df88839faeba40"
-  },
-  "status/symbolic/network-wireless-signal-weak-symbolic.svg": {
-    "symbol": "sequoia_wifi_20_normal",
-    "role": "Text",
-    "sha256": "d39dd87ff530f97ec39d701d1cf49e36359f54a7499b0b5953df88839faeba40"
-  },
-  "status/symbolic/network-mobile-100-lte-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_lte_locked",
-    "role": "Text",
-    "sha256": "9ef0f44d814d8f5431900f4a7d1ed5dd9018b2f072fe38560a0f70a4a5485d31"
-  },
-  "status/symbolic/battery-090-symbolic.svg": {
-    "symbol": "sequoia_battery_90_normal",
-    "role": "Text",
-    "sha256": "1151a71dad3777ae32971103f448520d312ad3c569ce4daec5fb052219ade0f9"
-  },
-  "status/symbolic/battery-level-90-symbolic.svg": {
-    "symbol": "sequoia_battery_90_normal",
-    "role": "Text",
-    "sha256": "1151a71dad3777ae32971103f448520d312ad3c569ce4daec5fb052219ade0f9"
-  },
-  "status/symbolic/battery-full-charged-symbolic.svg": {
-    "symbol": "sequoia_battery_100_charged",
-    "role": "Text",
-    "sha256": "bcaa3c0bae470707260793ca1555c15911bdff37547c76f66a7550a551d0743f"
-  },
-  "status/symbolic/battery-level-100-charged-symbolic.svg": {
-    "symbol": "sequoia_battery_100_charged",
-    "role": "Text",
-    "sha256": "bcaa3c0bae470707260793ca1555c15911bdff37547c76f66a7550a551d0743f"
-  },
-  "status/symbolic/network-wireless-60-limited-symbolic.svg": {
-    "symbol": "sequoia_wifi_60_limited",
-    "role": "Text",
-    "sha256": "bda5b0e2ba5ec2a8ddf54819c8c671f061298524018a8c88fb2c84eed600f164"
-  },
-  "status/symbolic/network-mobile-40-hspa-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_hspa_normal",
-    "role": "Text",
-    "sha256": "6eca70adbfeb7a6777b1ec4c73c5521d645c9294724e2e8fdb1675b472f47315"
-  },
-  "status/symbolic/gpm-phone-060-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_60",
-    "role": "Text",
-    "sha256": "7f2e08f4532cc4f6847fa5a7cf74c06b2457bcfe17e1ecc001a746fc7500f995"
-  },
-  "status/symbolic/xfpm-phone-060-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_60",
-    "role": "Text",
-    "sha256": "7f2e08f4532cc4f6847fa5a7cf74c06b2457bcfe17e1ecc001a746fc7500f995"
-  },
-  "status/symbolic/network-mobile-40-lte-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_lte_locked",
-    "role": "Text",
-    "sha256": "518cb44e8e80c45c0c67ff9ab48a8117853cf06547aff6e2e8349a3c9bba22d9"
-  },
-  "status/symbolic/gsm-3g-full-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_umts_normal",
-    "role": "Text",
-    "sha256": "9645f74481a6a712715629d3418dac960dc79a485a35fb96018ac495ca257990"
-  },
-  "status/symbolic/network-mobile-100-umts-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_umts_normal",
-    "role": "Text",
-    "sha256": "9645f74481a6a712715629d3418dac960dc79a485a35fb96018ac495ca257990"
-  },
-  "status/symbolic/network-mobile-0-gprs-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_gprs_locked",
-    "role": "Text",
-    "sha256": "108c5324f64f932c13890184c3d4e1b83d7a7fb32495672e6b0b1048a82b0d76"
-  },
-  "status/symbolic/network-mobile-20-hspa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_hspa_locked",
-    "role": "Text",
-    "sha256": "e0659bd746817b6780a861fb56dbef9acebb71238bb15965f6bcc46b071d7033"
-  },
-  "status/symbolic/network-mobile-20-hsupa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_hsupa_locked",
-    "role": "Text",
-    "sha256": "e8d45985313b6de260d97eb5322df17e8dea2dcd8bfa07076f76cf50daecd73a"
-  },
-  "status/symbolic/gpm-keyboard-040-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_40",
-    "role": "Text",
-    "sha256": "685a310564340934f318b5e8b1da76b87c6fedf2899f5fb9cb4feaca56a0a51f"
-  },
-  "status/symbolic/xfpm-keyboard-040-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_40",
-    "role": "Text",
-    "sha256": "685a310564340934f318b5e8b1da76b87c6fedf2899f5fb9cb4feaca56a0a51f"
-  },
-  "status/symbolic/network-cellular-secure-signal-ok-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_none_locked",
-    "role": "Text",
-    "sha256": "f1317b41bee686673cd61b9b30fe809f9c77995824cf2935bf461d4528b43642"
-  },
-  "status/symbolic/network-mobile-60-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_none_locked",
-    "role": "Text",
-    "sha256": "f1317b41bee686673cd61b9b30fe809f9c77995824cf2935bf461d4528b43642"
-  },
-  "status/symbolic/gpm-mouse-040-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_40",
-    "role": "Text",
-    "sha256": "194ae8ea9018b1885eeb13a88f56b5eca568fb36ade47ff10f874e9c2df44ee4"
-  },
-  "status/symbolic/xfpm-mouse-040-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_40",
-    "role": "Text",
-    "sha256": "194ae8ea9018b1885eeb13a88f56b5eca568fb36ade47ff10f874e9c2df44ee4"
-  },
-  "status/symbolic/network-cellular-secure-signal-good-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_none_locked",
-    "role": "Text",
-    "sha256": "f6ab94fe7d187d31034b4465ae0a55985a087cc0a2f7ba5d8e4afa61a682d25e"
-  },
-  "status/symbolic/network-mobile-80-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_none_locked",
-    "role": "Text",
-    "sha256": "f6ab94fe7d187d31034b4465ae0a55985a087cc0a2f7ba5d8e4afa61a682d25e"
-  },
-  "status/symbolic/phone-battery-medium-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_50",
-    "role": "Text",
-    "sha256": "e4f7ccd4d25723d62dd7d4599deeb29e610e6d081a6bb75d28585e6d91dde18b"
-  },
-  "status/symbolic/smartphone-connected-symbolic.svg": {
-    "symbol": "sequoia_connection_smartphone_connected",
-    "role": "Text",
-    "sha256": "f89972e6a822b4244907c8840b205ea1670f395fea38dbd29e3d8369e1783508"
-  },
-  "status/symbolic/smartphoneconnected-symbolic.svg": {
-    "symbol": "sequoia_connection_smartphone_connected",
-    "role": "Text",
-    "sha256": "f89972e6a822b4244907c8840b205ea1670f395fea38dbd29e3d8369e1783508"
-  },
-  "status/symbolic/network-mobile-20-hspa-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_hspa_normal",
-    "role": "Text",
-    "sha256": "782c149f858d25ff88b9e86e6693b0982285dc449b941d59e226739bf370e3f8"
-  },
-  "status/symbolic/gpm-keyboard-000-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_0",
-    "role": "Text",
-    "sha256": "245272cdca7bdfd1eb56be6688ad9c67788ac29ec75d0dd86a19dbe9c5722a64"
-  },
-  "status/symbolic/xfpm-keyboard-000-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_0",
-    "role": "Text",
-    "sha256": "245272cdca7bdfd1eb56be6688ad9c67788ac29ec75d0dd86a19dbe9c5722a64"
-  },
-  "status/symbolic/network-mobile-40-hsupa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_hsupa_locked",
-    "role": "Text",
-    "sha256": "d11b635b027f9f175ea51597e0be260d12756243bd318d93b2e139ad57eb9445"
-  },
-  "status/symbolic/network-mobile-40-5g-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_5g_locked",
-    "role": "Text",
-    "sha256": "21c5a6c9c49458d522c4be9557b4025a908a83d76aea76a9e3541d542290db69"
-  },
-  "status/symbolic/audio-input-microphone-medium-symbolic.svg": {
-    "symbol": "sequoia_mic_medium",
-    "role": "Text",
-    "sha256": "0f0ea4353d5a3fa6f1723db5be6fe8846ca066df33bcf843317efc2244ef37f6"
-  },
-  "status/symbolic/microphone-sensitivity-medium-symbolic.svg": {
-    "symbol": "sequoia_mic_medium",
-    "role": "Text",
-    "sha256": "0f0ea4353d5a3fa6f1723db5be6fe8846ca066df33bcf843317efc2244ef37f6"
-  },
-  "status/symbolic/gpm-phone-040-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_40",
-    "role": "Text",
-    "sha256": "641fff02c88d5769de3962440f8c85fb60080c75054d2b7169226b69d3739916"
-  },
-  "status/symbolic/xfpm-phone-040-symbolic.svg": {
-    "symbol": "sequoia_peripheral_phone_40",
-    "role": "Text",
-    "sha256": "641fff02c88d5769de3962440f8c85fb60080c75054d2b7169226b69d3739916"
-  },
-  "status/symbolic/network-mobile-80-edge-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_edge_normal",
-    "role": "Text",
-    "sha256": "87b4978eede4407aaebcefe136e0092fb8f9be6bf28b7a978e0ccc4b05a2dc00"
-  },
-  "status/symbolic/network-cellular-signal-none-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_none_normal",
-    "role": "Text",
-    "sha256": "c071bfd515b85958a1599ac91e92fb747b12ad769fb6d63da4613b3d362357d7"
-  },
-  "status/symbolic/network-mobile-0-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_none_normal",
-    "role": "Text",
-    "sha256": "c071bfd515b85958a1599ac91e92fb747b12ad769fb6d63da4613b3d362357d7"
-  },
-  "status/symbolic/network-mobile-20-5g-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_5g_normal",
-    "role": "Text",
-    "sha256": "42926843b525ade4c025dbef2f63dd39a1ff9d85c4b397953d1323d396c831e7"
-  },
-  "status/symbolic/audio-input-microphone-low-symbolic.svg": {
-    "symbol": "sequoia_mic_low",
-    "role": "Text",
-    "sha256": "19a8941aa143bf7a18918ce69bdb0b89b99715a09c327eb01a51d2d9f55a9533"
-  },
-  "status/symbolic/microphone-sensitivity-low-symbolic.svg": {
-    "symbol": "sequoia_mic_low",
-    "role": "Text",
-    "sha256": "19a8941aa143bf7a18918ce69bdb0b89b99715a09c327eb01a51d2d9f55a9533"
-  },
-  "status/symbolic/tablet-disconnected-symbolic.svg": {
-    "symbol": "sequoia_connection_tablet_disconnected",
-    "role": "Text",
-    "sha256": "49c3cce386c1f00d7c202b4c07fcf80506280a68b74b477001c8bf8bb4403087"
-  },
-  "status/symbolic/gpm-keyboard-080-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_80",
-    "role": "Text",
-    "sha256": "2ed387a5aa1649a2e0d909527c020dead929ba845e8a1baa2bca1fadcaf48de9"
-  },
-  "status/symbolic/keyboard-battery-good-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_80",
-    "role": "Text",
-    "sha256": "2ed387a5aa1649a2e0d909527c020dead929ba845e8a1baa2bca1fadcaf48de9"
-  },
-  "status/symbolic/xfpm-keyboard-080-symbolic.svg": {
-    "symbol": "sequoia_peripheral_keyboard_80",
-    "role": "Text",
-    "sha256": "2ed387a5aa1649a2e0d909527c020dead929ba845e8a1baa2bca1fadcaf48de9"
-  },
-  "status/symbolic/network-mobile-80-hspa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_hspa_locked",
-    "role": "Text",
-    "sha256": "402bb13662857deae6bf113ba53d04a2e694c31f3953e0ad85fa77519c4c51fb"
-  },
-  "status/symbolic/gpm-mouse-060-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_60",
-    "role": "Text",
-    "sha256": "35d7bdd62d89c678d533e337ba1b153cb86f7c2171e7d38a362aa43d56e1e793"
-  },
-  "status/symbolic/xfpm-mouse-060-symbolic.svg": {
-    "symbol": "sequoia_peripheral_mouse_60",
-    "role": "Text",
-    "sha256": "35d7bdd62d89c678d533e337ba1b153cb86f7c2171e7d38a362aa43d56e1e793"
-  },
-  "status/symbolic/network-mobile-100-gprs-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_gprs_normal",
-    "role": "Text",
-    "sha256": "05380bf7f60064b51b6ef936c7e3e0d72210b2a2ef251f2303a9e9a5bfd2184e"
-  },
-  "status/symbolic/network-mobile-80-hsupa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_hsupa_locked",
-    "role": "Text",
-    "sha256": "15820db534420f56323a1262b96acd78966f6774a48bd86f6372c464342ceb6f"
-  },
-  "status/symbolic/network-mobile-60-5g-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_5g_normal",
-    "role": "Text",
-    "sha256": "f8fab8b0ef782ec3e91b71d59411f84afea36436ddc6ac7f69c9d3733c86d3dc"
-  },
-  "status/symbolic/battery-080-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_80_charging",
-    "role": "Text",
-    "sha256": "47860251667f1b6c084c72803e68640708d99bb53e558a8ff53ce038d9d2ad8a"
-  },
-  "status/symbolic/battery-good-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_80_charging",
-    "role": "Text",
-    "sha256": "47860251667f1b6c084c72803e68640708d99bb53e558a8ff53ce038d9d2ad8a"
-  },
-  "status/symbolic/battery-level-80-charging-symbolic.svg": {
-    "symbol": "sequoia_battery_80_charging",
-    "role": "Text",
-    "sha256": "47860251667f1b6c084c72803e68640708d99bb53e558a8ff53ce038d9d2ad8a"
-  },
-  "status/symbolic/network-mobile-100-gprs-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_gprs_locked",
-    "role": "Text",
-    "sha256": "221253342072228e94f29d0d40000db5276512fea0b3233b24af9e52ad1d38aa"
-  },
-  "status/symbolic/network-mobile-60-lte-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_lte_locked",
-    "role": "Text",
-    "sha256": "76eb69746f8051c7a9f6a3eaed87ce63b3d9583ec70832c38159430f6400cc9a"
-  },
-  "status/symbolic/network-wireless-20-locked-symbolic.svg": {
-    "symbol": "sequoia_wifi_20_locked",
-    "role": "Text",
-    "sha256": "b3d3ab9be49400ae3caefbaea21d6607bf89e9ce5f487d6039f493eeb34f76d6"
-  },
-  "status/symbolic/network-wireless-signal-weak-secure-symbolic.svg": {
-    "symbol": "sequoia_wifi_20_locked",
-    "role": "Text",
-    "sha256": "b3d3ab9be49400ae3caefbaea21d6607bf89e9ce5f487d6039f493eeb34f76d6"
-  },
-  "status/symbolic/network-mobile-80-lte-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_lte_locked",
-    "role": "Text",
-    "sha256": "75c8d9418e4743423fa92a84b13f044cf95fb83402c1a0b12105e3b2ef8482ca"
-  },
-  "status/symbolic/network-cellular-secure-signal-low-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_none_locked",
-    "role": "Text",
-    "sha256": "5494d2adf46b56103d2b3d557532cbabf0ed1fd8679a7ccdebd37f60e8651b30"
-  },
-  "status/symbolic/network-mobile-40-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_none_locked",
-    "role": "Text",
-    "sha256": "5494d2adf46b56103d2b3d557532cbabf0ed1fd8679a7ccdebd37f60e8651b30"
-  },
-  "status/symbolic/gsm-3g-none-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_umts_normal",
-    "role": "Text",
-    "sha256": "9d8936d3ed1c79cb5a42fb3303dacefc344cff58e702cc7db11480d5d2dbfc2e"
-  },
-  "status/symbolic/network-mobile-0-umts-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_umts_normal",
-    "role": "Text",
-    "sha256": "9d8936d3ed1c79cb5a42fb3303dacefc344cff58e702cc7db11480d5d2dbfc2e"
+    "sha256": "26d7d6781ecb82a46ca908e2eae91fd358768c0698efd37698b6b435dd6a62a9"
   },
   "status/symbolic/battery-100-symbolic.svg": {
     "symbol": "sequoia_battery_100_normal",
@@ -27079,145 +25904,640 @@
     "role": "Text",
     "sha256": "bffdb4e12bfcbecbf53d065b36581da337c6f0b7adafba396522a4c5e357d896"
   },
-  "status/symbolic/network-mobile-20-lte-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_lte_normal",
+  "status/symbolic/network-mobile-80-edge-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_edge_normal",
     "role": "Text",
-    "sha256": "588e2764bfc449d8e1575d42dd96f272bac3109195ff3e50a483cb6e26dd9ac8"
+    "sha256": "87b4978eede4407aaebcefe136e0092fb8f9be6bf28b7a978e0ccc4b05a2dc00"
   },
-  "status/symbolic/gsm-3g-high-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_umts_normal",
+  "status/symbolic/network-wireless-20-symbolic.svg": {
+    "symbol": "sequoia_wifi_20_normal",
     "role": "Text",
-    "sha256": "4fab60f6f586613d2166f9235e913daa398fbf4fcef0547835337a2449415cce"
+    "sha256": "d39dd87ff530f97ec39d701d1cf49e36359f54a7499b0b5953df88839faeba40"
   },
-  "status/symbolic/network-mobile-80-umts-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_umts_normal",
+  "status/symbolic/network-wireless-connected-20-symbolic.svg": {
+    "symbol": "sequoia_wifi_20_normal",
     "role": "Text",
-    "sha256": "4fab60f6f586613d2166f9235e913daa398fbf4fcef0547835337a2449415cce"
+    "sha256": "d39dd87ff530f97ec39d701d1cf49e36359f54a7499b0b5953df88839faeba40"
   },
-  "status/symbolic/network-mobile-80-gprs-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_gprs_locked",
+  "status/symbolic/network-wireless-signal-weak-symbolic.svg": {
+    "symbol": "sequoia_wifi_20_normal",
     "role": "Text",
-    "sha256": "8f6e3782eae3e94d482da014f23ad7d58965f32c7e45a0be14cf3531887c606e"
+    "sha256": "d39dd87ff530f97ec39d701d1cf49e36359f54a7499b0b5953df88839faeba40"
   },
-  "status/symbolic/network-mobile-100-hsupa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_hsupa_locked",
+  "status/symbolic/smartphone-connected-symbolic.svg": {
+    "symbol": "sequoia_connection_smartphone_connected",
     "role": "Text",
-    "sha256": "691c5b17ac556df4808f51cea6247603c9cfc95f7840f3175ce14b8d755c5c86"
+    "sha256": "f89972e6a822b4244907c8840b205ea1670f395fea38dbd29e3d8369e1783508"
   },
-  "status/symbolic/network-mobile-40-gprs-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_gprs_locked",
+  "status/symbolic/smartphoneconnected-symbolic.svg": {
+    "symbol": "sequoia_connection_smartphone_connected",
     "role": "Text",
-    "sha256": "40311eafe233401207da157382729ac930cebcc374dc64bf116b1cada5909a32"
+    "sha256": "f89972e6a822b4244907c8840b205ea1670f395fea38dbd29e3d8369e1783508"
   },
-  "status/symbolic/network-mobile-60-gprs-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_gprs_locked",
+  "status/symbolic/gpm-keyboard-100-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_100",
     "role": "Text",
-    "sha256": "34741fa68f4e1e1a42d6448bb018c9d2f263a3cde2f9c89e7a9e80efbdf43dd0"
+    "sha256": "d819cb79b6ee236540a08f21f7c952e483d84a7380b85e11dc8ea658d513f22b"
   },
-  "status/symbolic/network-mobile-60-edge-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_edge_normal",
+  "status/symbolic/input-keyboard-battery-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_100",
     "role": "Text",
-    "sha256": "705a2e604972fac1dd972657fe8f14bf369c51c5bb307f57e6230422e44bc1fe"
+    "sha256": "d819cb79b6ee236540a08f21f7c952e483d84a7380b85e11dc8ea658d513f22b"
   },
-  "status/symbolic/network-mobile-20-hsdpa-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_hsdpa_normal",
+  "status/symbolic/keyboard-battery-full-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_100",
     "role": "Text",
-    "sha256": "a8e32c8fe45309dd00f68d7d9a8aac4a85c0407f12c8f9c7ef92b9eb9713b7aa"
+    "sha256": "d819cb79b6ee236540a08f21f7c952e483d84a7380b85e11dc8ea658d513f22b"
   },
-  "status/symbolic/gsm-3g-medium-secure-symbolic.svg": {
-    "symbol": "sequoia_cellular_50_umts_locked",
+  "status/symbolic/xfpm-keyboard-100-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_100",
     "role": "Text",
-    "sha256": "85b75d7146a71f69d186a48a3c904bf4ac84ade3720774c8f53342f54bbd3112"
+    "sha256": "d819cb79b6ee236540a08f21f7c952e483d84a7380b85e11dc8ea658d513f22b"
   },
-  "status/symbolic/network-mobile-60-hspa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_hspa_locked",
+  "status/symbolic/network-mobile-40-edge-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_edge_normal",
     "role": "Text",
-    "sha256": "e71d0e81d5ea4da01125c0807818417e67e21a303087def63b8706d8d79460cd"
+    "sha256": "fb93a916f7f9837b1bfbbb20e0edc670cf0c70bea9e0e058931439a13da14bab"
   },
-  "status/symbolic/battery-070-symbolic.svg": {
-    "symbol": "sequoia_battery_70_normal",
+  "status/symbolic/network-mobile-100-gprs-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_gprs_normal",
     "role": "Text",
-    "sha256": "d43e22658dc6117911dd1550ecc8031f58a2b4372a7aa3ab409a92c6d43aeb4f"
+    "sha256": "05380bf7f60064b51b6ef936c7e3e0d72210b2a2ef251f2303a9e9a5bfd2184e"
   },
-  "status/symbolic/battery-level-70-symbolic.svg": {
-    "symbol": "sequoia_battery_70_normal",
+  "status/symbolic/gpm-mouse-100-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_100",
     "role": "Text",
-    "sha256": "d43e22658dc6117911dd1550ecc8031f58a2b4372a7aa3ab409a92c6d43aeb4f"
+    "sha256": "a79554d44476e28905b8a730b3af071875e28449813616d32a94e946d353923a"
   },
-  "status/symbolic/network-mobile-60-hspa-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_hspa_normal",
+  "status/symbolic/input-mouse-battery-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_100",
     "role": "Text",
-    "sha256": "ae68ce6f8f3476b203dfd73cb64829c85b0f15a493ee0feb3dbe7b4985047ac4"
+    "sha256": "a79554d44476e28905b8a730b3af071875e28449813616d32a94e946d353923a"
   },
-  "status/symbolic/network-mobile-0-5g-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_5g_normal",
+  "status/symbolic/mouse-battery-full-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_100",
     "role": "Text",
-    "sha256": "e2524f71d4578f577ae497ec9e0ed03bcf0293386c5990bab704eb285ce9c082"
+    "sha256": "a79554d44476e28905b8a730b3af071875e28449813616d32a94e946d353923a"
   },
-  "status/symbolic/network-mobile-100-hsdpa-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_hsdpa_normal",
+  "status/symbolic/xfpm-mouse-100-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_100",
     "role": "Text",
-    "sha256": "70643d956f25c624349e2c87b17572a66c82c7f57d4962605c999ecb35730a81"
+    "sha256": "a79554d44476e28905b8a730b3af071875e28449813616d32a94e946d353923a"
   },
-  "status/symbolic/network-mobile-80-5g-symbolic.svg": {
-    "symbol": "sequoia_cellular_80_5g_normal",
+  "status/symbolic/gsm-3g-full-secure-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_umts_locked",
     "role": "Text",
-    "sha256": "f864e17287339871b0ce7931cf0f59cb787de5974f9fbc260e6f83807a86f1b7"
+    "sha256": "670d2267d98aa8989c3711b2be780e8f9d48eedf2d0be99c5815d5f8cddea2ad"
   },
-  "status/symbolic/network-mobile-40-5g-symbolic.svg": {
-    "symbol": "sequoia_cellular_40_5g_normal",
+  "status/symbolic/network-mobile-100-umts-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_umts_locked",
     "role": "Text",
-    "sha256": "27bd72766ab7624def9f72fa033cce64f71ed5e49d9cc7e8adf6a804fd94fcfc"
+    "sha256": "670d2267d98aa8989c3711b2be780e8f9d48eedf2d0be99c5815d5f8cddea2ad"
+  },
+  "status/symbolic/battery-030-symbolic.svg": {
+    "symbol": "sequoia_battery_30_normal",
+    "role": "Text",
+    "sha256": "0ba7893f077c6e5cc9c58e7b7a2669bd060e623a0ae8ddf4b9229091ff53d97a"
+  },
+  "status/symbolic/battery-level-30-symbolic.svg": {
+    "symbol": "sequoia_battery_30_normal",
+    "role": "Text",
+    "sha256": "0ba7893f077c6e5cc9c58e7b7a2669bd060e623a0ae8ddf4b9229091ff53d97a"
+  },
+  "status/symbolic/battery-060-symbolic.svg": {
+    "symbol": "sequoia_battery_60_normal",
+    "role": "Text",
+    "sha256": "55f4eb02ef8259cb701f0d6b4d63d7df3c1c01c680d7c02b003ab741ec81557b"
+  },
+  "status/symbolic/battery-level-60-symbolic.svg": {
+    "symbol": "sequoia_battery_60_normal",
+    "role": "Text",
+    "sha256": "55f4eb02ef8259cb701f0d6b4d63d7df3c1c01c680d7c02b003ab741ec81557b"
+  },
+  "status/symbolic/network-mobile-0-hsdpa-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_hsdpa_normal",
+    "role": "Text",
+    "sha256": "7faa855650b7aa5f7e96e27564dc79743e497b620adf45bede8b7530f50b11ac"
+  },
+  "status/symbolic/gsm-3g-full-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_umts_normal",
+    "role": "Text",
+    "sha256": "9645f74481a6a712715629d3418dac960dc79a485a35fb96018ac495ca257990"
+  },
+  "status/symbolic/network-mobile-100-umts-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_umts_normal",
+    "role": "Text",
+    "sha256": "9645f74481a6a712715629d3418dac960dc79a485a35fb96018ac495ca257990"
+  },
+  "status/symbolic/battery-090-symbolic.svg": {
+    "symbol": "sequoia_battery_90_normal",
+    "role": "Text",
+    "sha256": "1151a71dad3777ae32971103f448520d312ad3c569ce4daec5fb052219ade0f9"
+  },
+  "status/symbolic/battery-level-90-symbolic.svg": {
+    "symbol": "sequoia_battery_90_normal",
+    "role": "Text",
+    "sha256": "1151a71dad3777ae32971103f448520d312ad3c569ce4daec5fb052219ade0f9"
+  },
+  "status/symbolic/gpm-keyboard-000-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_0",
+    "role": "Text",
+    "sha256": "245272cdca7bdfd1eb56be6688ad9c67788ac29ec75d0dd86a19dbe9c5722a64"
+  },
+  "status/symbolic/xfpm-keyboard-000-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_0",
+    "role": "Text",
+    "sha256": "245272cdca7bdfd1eb56be6688ad9c67788ac29ec75d0dd86a19dbe9c5722a64"
+  },
+  "status/symbolic/network-mobile-60-5g-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_5g_normal",
+    "role": "Text",
+    "sha256": "f8fab8b0ef782ec3e91b71d59411f84afea36436ddc6ac7f69c9d3733c86d3dc"
+  },
+  "status/symbolic/xfpm-mouse-030-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_30",
+    "role": "Text",
+    "sha256": "eaebf566993f997069faa4280358beed22c29a983f59332ec62859faa799af62"
   },
   "status/symbolic/network-mobile-100-hspa-locked-symbolic.svg": {
     "symbol": "sequoia_cellular_100_hspa_locked",
     "role": "Text",
     "sha256": "b1dd2673d8bce20d626e6a70e9cfa821b5246fb859bbe4d6ef25ad06c37aa590"
   },
-  "status/symbolic/network-mobile-0-edge-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_edge_locked",
+  "status/symbolic/network-mobile-40-gprs-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_gprs_normal",
     "role": "Text",
-    "sha256": "a5fd556a05caffd371a639e303069a80f8f20e20a66034b0bdff8a39b2f1e558"
+    "sha256": "eda4d2d37dd8f70355622c3e2e7e5ea9b6a0613da6bf4f494fc1d6c188db83d1"
   },
-  "status/symbolic/network-mobile-0-lte-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_lte_locked",
+  "status/symbolic/gpm-phone-020-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_20",
     "role": "Text",
-    "sha256": "17dc5b6690b827898a3b1c8f1858b3a99f4469665af900e48684eb726cb5bce6"
+    "sha256": "24785259b42bd0b33ebea39f599b93991084b4b581c566cadfa1038c14ff4bb2"
   },
-  "status/symbolic/network-mobile-100-hsdpa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_hsdpa_locked",
+  "status/symbolic/phone-battery-low-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_20",
     "role": "Text",
-    "sha256": "197d792ba1defa2858215993bfcab4391a1accd813d973c4d42c61a21ba6ffae"
+    "sha256": "24785259b42bd0b33ebea39f599b93991084b4b581c566cadfa1038c14ff4bb2"
   },
-  "status/symbolic/network-mobile-60-hsupa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_hsupa_locked",
+  "status/symbolic/xfpm-phone-020-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_20",
     "role": "Text",
-    "sha256": "d0cfc5996e382748bcf66c20adf7c18629ebfe6d4e952604a0c453caff0b890f"
+    "sha256": "24785259b42bd0b33ebea39f599b93991084b4b581c566cadfa1038c14ff4bb2"
   },
-  "status/symbolic/network-mobile-20-hsdpa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_hsdpa_locked",
+  "status/symbolic/gpm-phone-080-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_80",
     "role": "Text",
-    "sha256": "4139a7ca70c11464631ecf94bd3e65ce9c032464ba3d2821bccca0decf0a2b5c"
+    "sha256": "8002fc23b2331d4874256c78c8e487870f81af4ac93f438126156bb088248c44"
   },
-  "status/symbolic/network-mobile-20-gprs-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_20_gprs_locked",
+  "status/symbolic/phone-battery-good-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_80",
     "role": "Text",
-    "sha256": "f9e2926c26f2551fdbe2631a11c1a4413d882297e9e9792d1462a046f260bdac"
+    "sha256": "8002fc23b2331d4874256c78c8e487870f81af4ac93f438126156bb088248c44"
+  },
+  "status/symbolic/xfpm-phone-080-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_80",
+    "role": "Text",
+    "sha256": "8002fc23b2331d4874256c78c8e487870f81af4ac93f438126156bb088248c44"
+  },
+  "status/symbolic/network-cellular-secure-signal-ok-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_none_locked",
+    "role": "Text",
+    "sha256": "f1317b41bee686673cd61b9b30fe809f9c77995824cf2935bf461d4528b43642"
+  },
+  "status/symbolic/network-mobile-60-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_none_locked",
+    "role": "Text",
+    "sha256": "f1317b41bee686673cd61b9b30fe809f9c77995824cf2935bf461d4528b43642"
+  },
+  "status/symbolic/network-mobile-80-5g-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_5g_locked",
+    "role": "Text",
+    "sha256": "7ba67120aad820980b492faf610d537eb4cbbadcc8d778a23ed36bdac0929b1f"
   },
   "status/symbolic/mouse-battery-medium-symbolic.svg": {
     "symbol": "sequoia_peripheral_mouse_50",
     "role": "Text",
     "sha256": "b91218dc09ba6a503b9a1002b0d476506c2ffc0939c7ef90298e5d7d7d13428b"
   },
+  "status/symbolic/network-wireless-20-locked-symbolic.svg": {
+    "symbol": "sequoia_wifi_20_locked",
+    "role": "Text",
+    "sha256": "b3d3ab9be49400ae3caefbaea21d6607bf89e9ce5f487d6039f493eeb34f76d6"
+  },
+  "status/symbolic/network-wireless-signal-weak-secure-symbolic.svg": {
+    "symbol": "sequoia_wifi_20_locked",
+    "role": "Text",
+    "sha256": "b3d3ab9be49400ae3caefbaea21d6607bf89e9ce5f487d6039f493eeb34f76d6"
+  },
+  "status/symbolic/network-mobile-60-gprs-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_gprs_normal",
+    "role": "Text",
+    "sha256": "0f03dee3a8b0f7a0b0c67275b630b4e7253b52601ed396239f2fa754eaf9c74f"
+  },
+  "status/symbolic/gsm-3g-low-secure-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_umts_locked",
+    "role": "Text",
+    "sha256": "3d86c8e6e6f36309ee825601be1e95a509fbbe6c9eb70c88ba689d22b35be206"
+  },
+  "status/symbolic/network-mobile-20-umts-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_umts_locked",
+    "role": "Text",
+    "sha256": "3d86c8e6e6f36309ee825601be1e95a509fbbe6c9eb70c88ba689d22b35be206"
+  },
+  "status/symbolic/network-wireless-0-limited-symbolic.svg": {
+    "symbol": "sequoia_wifi_0_limited",
+    "role": "Text",
+    "sha256": "7fdfec5240b3fc17b4c9d27fa49d763008dca1a05a07c1027507cfacec16662e"
+  },
+  "status/symbolic/gpm-mouse-060-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_60",
+    "role": "Text",
+    "sha256": "35d7bdd62d89c678d533e337ba1b153cb86f7c2171e7d38a362aa43d56e1e793"
+  },
+  "status/symbolic/xfpm-mouse-060-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_60",
+    "role": "Text",
+    "sha256": "35d7bdd62d89c678d533e337ba1b153cb86f7c2171e7d38a362aa43d56e1e793"
+  },
+  "status/symbolic/battery-070-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_70_charging",
+    "role": "Text",
+    "sha256": "6b894b07aefc0a305b860debdcc315de6826d3bb82c0ac48ed76058c9fbe6f1a"
+  },
+  "status/symbolic/battery-level-70-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_70_charging",
+    "role": "Text",
+    "sha256": "6b894b07aefc0a305b860debdcc315de6826d3bb82c0ac48ed76058c9fbe6f1a"
+  },
+  "status/symbolic/network-mobile-20-edge-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_edge_locked",
+    "role": "Text",
+    "sha256": "dcbc45089be8c79c8ba9f5aa8faf2776fc478480db432b444b4c8807a50e68c2"
+  },
+  "status/symbolic/network-mobile-80-hsdpa-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_hsdpa_normal",
+    "role": "Text",
+    "sha256": "6cd4f7bf5ad2ee8ef0922499b80ba6673aa559be5a1f227b0983c68d355e60ec"
+  },
+  "status/symbolic/smartphone-trusted-symbolic.svg": {
+    "symbol": "sequoia_connection_smartphone_trusted",
+    "role": "Text",
+    "sha256": "1cd6a71d94df264384dd2c6ee33a744acb89f407f878213b749aa8464dfff7b4"
+  },
+  "status/symbolic/smartphonetrusted-symbolic.svg": {
+    "symbol": "sequoia_connection_smartphone_trusted",
+    "role": "Text",
+    "sha256": "1cd6a71d94df264384dd2c6ee33a744acb89f407f878213b749aa8464dfff7b4"
+  },
+  "status/symbolic/smartphone-disconnected-symbolic.svg": {
+    "symbol": "sequoia_connection_smartphone_disconnected",
+    "role": "Text",
+    "sha256": "f8e7b65bdde7096e2d8ba9596443a259e47774acae41cbcbe177f9f1f0f0f096"
+  },
+  "status/symbolic/smartphonedisconnected-symbolic.svg": {
+    "symbol": "sequoia_connection_smartphone_disconnected",
+    "role": "Text",
+    "sha256": "f8e7b65bdde7096e2d8ba9596443a259e47774acae41cbcbe177f9f1f0f0f096"
+  },
+  "status/symbolic/network-mobile-100-5g-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_5g_locked",
+    "role": "Text",
+    "sha256": "a6054d4b39e093de0f3836a1bde098aa55b7052240f1ef9c523f7d40919906e0"
+  },
+  "status/symbolic/battery-010-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_10_charging",
+    "role": "Text",
+    "sha256": "772918ea0ccf9140045069495c719d18f3ddaff72e55aa9cb40ea51e16eba89e"
+  },
+  "status/symbolic/battery-caution-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_10_charging",
+    "role": "Text",
+    "sha256": "772918ea0ccf9140045069495c719d18f3ddaff72e55aa9cb40ea51e16eba89e"
+  },
+  "status/symbolic/battery-level-10-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_10_charging",
+    "role": "Text",
+    "sha256": "772918ea0ccf9140045069495c719d18f3ddaff72e55aa9cb40ea51e16eba89e"
+  },
+  "status/symbolic/xfpm-phone-030-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_30",
+    "role": "Text",
+    "sha256": "26b99378ff005a2b52c38ee16926c473b40cf27764eed66a4765c08de95a92eb"
+  },
+  "status/symbolic/network-mobile-20-lte-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_lte_locked",
+    "role": "Text",
+    "sha256": "1e1566bbdd2a1aa90fe82dc4ecfdd5dae882ddadd7087bf4f8212234f3bd3026"
+  },
+  "status/symbolic/gsm-3g-medium-secure-symbolic.svg": {
+    "symbol": "sequoia_cellular_50_umts_locked",
+    "role": "Text",
+    "sha256": "85b75d7146a71f69d186a48a3c904bf4ac84ade3720774c8f53342f54bbd3112"
+  },
+  "status/symbolic/network-wireless-40-limited-symbolic.svg": {
+    "symbol": "sequoia_wifi_40_limited",
+    "role": "Text",
+    "sha256": "dd0d93ea97413eda0b1e8fe86d0f1ce2d362a4f9b6c4e0f5e30a697bb3a40c61"
+  },
+  "status/symbolic/network-wireless-100-locked-symbolic.svg": {
+    "symbol": "sequoia_wifi_100_locked",
+    "role": "Text",
+    "sha256": "8c2f95c012bbf28a51288c63baf972a573ae3ef24e4111269b4522fea166de27"
+  },
+  "status/symbolic/network-wireless-secure-signal-excellent-symbolic.svg": {
+    "symbol": "sequoia_wifi_100_locked",
+    "role": "Text",
+    "sha256": "8c2f95c012bbf28a51288c63baf972a573ae3ef24e4111269b4522fea166de27"
+  },
+  "status/symbolic/network-wireless-signal-excellent-secure-symbolic.svg": {
+    "symbol": "sequoia_wifi_100_locked",
+    "role": "Text",
+    "sha256": "8c2f95c012bbf28a51288c63baf972a573ae3ef24e4111269b4522fea166de27"
+  },
+  "status/symbolic/nm-signal-100-secure-symbolic.svg": {
+    "symbol": "sequoia_wifi_100_locked",
+    "role": "Text",
+    "sha256": "8c2f95c012bbf28a51288c63baf972a573ae3ef24e4111269b4522fea166de27"
+  },
+  "status/symbolic/network-cellular-secure-signal-good-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_none_locked",
+    "role": "Text",
+    "sha256": "f6ab94fe7d187d31034b4465ae0a55985a087cc0a2f7ba5d8e4afa61a682d25e"
+  },
+  "status/symbolic/network-mobile-80-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_none_locked",
+    "role": "Text",
+    "sha256": "f6ab94fe7d187d31034b4465ae0a55985a087cc0a2f7ba5d8e4afa61a682d25e"
+  },
+  "status/symbolic/battery-010-symbolic.svg": {
+    "symbol": "sequoia_battery_10_normal",
+    "role": "Text",
+    "sha256": "a16800c6a4e227a763c1a645195dc0717f52c57407771fc5d59b50c9decd9559"
+  },
+  "status/symbolic/battery-caution-symbolic.svg": {
+    "symbol": "sequoia_battery_10_normal",
+    "role": "NeutralText",
+    "sha256": "bd0596668320c3d5adb1c1d67de289ce90e9368302833f200916a04a616a59de"
+  },
+  "status/symbolic/battery-level-10-symbolic.svg": {
+    "symbol": "sequoia_battery_10_normal",
+    "role": "Text",
+    "sha256": "a16800c6a4e227a763c1a645195dc0717f52c57407771fc5d59b50c9decd9559"
+  },
   "status/symbolic/network-mobile-80-lte-symbolic.svg": {
     "symbol": "sequoia_cellular_80_lte_normal",
     "role": "Text",
     "sha256": "d7def13054cfff49739f43863f6b9c8e6a82e3eabaf540a6118445af978de82b"
   },
-  "status/symbolic/nm-signal-75-secure-symbolic.svg": {
-    "symbol": "sequoia_wifi_75_locked",
+  "status/symbolic/network-wireless-80-locked-symbolic.svg": {
+    "symbol": "sequoia_wifi_80_locked",
     "role": "Text",
-    "sha256": "c0b72233293c1c4f3356ac5ed9ac2489224a7c153511f672b700d3d24c068256"
+    "sha256": "fcfbf1c5da8459489e2fb9bf0ca586af4758de4acc66cbb04c727239cf953b70"
+  },
+  "status/symbolic/network-wireless-secure-signal-good-symbolic.svg": {
+    "symbol": "sequoia_wifi_80_locked",
+    "role": "Text",
+    "sha256": "fcfbf1c5da8459489e2fb9bf0ca586af4758de4acc66cbb04c727239cf953b70"
+  },
+  "status/symbolic/network-wireless-signal-good-secure-symbolic.svg": {
+    "symbol": "sequoia_wifi_80_locked",
+    "role": "Text",
+    "sha256": "fcfbf1c5da8459489e2fb9bf0ca586af4758de4acc66cbb04c727239cf953b70"
+  },
+  "status/symbolic/gpm-mouse-080-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_80",
+    "role": "Text",
+    "sha256": "a62f0641a0a3da503266f2f17febd7c1ce002f1b3e07e5194bb379968ecd310e"
+  },
+  "status/symbolic/mouse-battery-good-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_80",
+    "role": "Text",
+    "sha256": "a62f0641a0a3da503266f2f17febd7c1ce002f1b3e07e5194bb379968ecd310e"
+  },
+  "status/symbolic/xfpm-mouse-080-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_80",
+    "role": "Text",
+    "sha256": "a62f0641a0a3da503266f2f17febd7c1ce002f1b3e07e5194bb379968ecd310e"
+  },
+  "status/symbolic/network-mobile-40-gprs-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_gprs_locked",
+    "role": "Text",
+    "sha256": "40311eafe233401207da157382729ac930cebcc374dc64bf116b1cada5909a32"
+  },
+  "status/symbolic/gpm-keyboard-060-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_60",
+    "role": "Text",
+    "sha256": "7eb0c0cc523a411db8aaa1ee882ab78793b7414712ed0f25f6b7765df1ae269c"
+  },
+  "status/symbolic/xfpm-keyboard-060-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_60",
+    "role": "Text",
+    "sha256": "7eb0c0cc523a411db8aaa1ee882ab78793b7414712ed0f25f6b7765df1ae269c"
+  },
+  "status/symbolic/gpm-keyboard-020-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_20",
+    "role": "Text",
+    "sha256": "3abd0bac510b9dcf420c62de98d7ae74d46a70e067f5b8315a0561ef690b15f9"
+  },
+  "status/symbolic/keyboard-battery-low-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_20",
+    "role": "Text",
+    "sha256": "3abd0bac510b9dcf420c62de98d7ae74d46a70e067f5b8315a0561ef690b15f9"
+  },
+  "status/symbolic/xfpm-keyboard-020-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_20",
+    "role": "Text",
+    "sha256": "3abd0bac510b9dcf420c62de98d7ae74d46a70e067f5b8315a0561ef690b15f9"
+  },
+  "status/symbolic/battery-050-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_50_charging",
+    "role": "Text",
+    "sha256": "7c46934f5e7a3d98955d853846df8fb116edf301e027027471ea79d3f0666bdf"
+  },
+  "status/symbolic/battery-level-50-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_50_charging",
+    "role": "Text",
+    "sha256": "7c46934f5e7a3d98955d853846df8fb116edf301e027027471ea79d3f0666bdf"
+  },
+  "status/symbolic/battery-medium-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_50_charging",
+    "role": "Text",
+    "sha256": "7c46934f5e7a3d98955d853846df8fb116edf301e027027471ea79d3f0666bdf"
+  },
+  "status/symbolic/network-cellular-signal-low-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_none_normal",
+    "role": "Text",
+    "sha256": "19abaabe5166be29b82413f21e804a544f7c79458e1e692f9c156071579352f9"
+  },
+  "status/symbolic/network-mobile-40-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_none_normal",
+    "role": "Text",
+    "sha256": "19abaabe5166be29b82413f21e804a544f7c79458e1e692f9c156071579352f9"
+  },
+  "status/symbolic/network-mobile-60-hsdpa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_hsdpa_locked",
+    "role": "Text",
+    "sha256": "85ab83b5a814394dcb772be5805594eb1dc8ffbaede8f2117c8b6aa972858e88"
+  },
+  "status/symbolic/network-mobile-0-hsupa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_hsupa_locked",
+    "role": "Text",
+    "sha256": "a04e1f5230d267b199656742fb458ea2eae8f8331de461d61b8aa0ebe2f22b66"
+  },
+  "status/symbolic/network-cellular-secure-signal-weak-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_none_locked",
+    "role": "Text",
+    "sha256": "12a80c81db75c3fb9dcd70f5d4c583cdf309b7ef67b29c057b47f42dbdb281eb"
+  },
+  "status/symbolic/network-mobile-20-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_none_locked",
+    "role": "Text",
+    "sha256": "12a80c81db75c3fb9dcd70f5d4c583cdf309b7ef67b29c057b47f42dbdb281eb"
+  },
+  "status/symbolic/network-cellular-signal-good-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_none_normal",
+    "role": "Text",
+    "sha256": "bfe3b676130dae231105a82ecac5c2459f2c9d8eca73425205a31a9b9c545be5"
+  },
+  "status/symbolic/network-mobile-80-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_none_normal",
+    "role": "Text",
+    "sha256": "bfe3b676130dae231105a82ecac5c2459f2c9d8eca73425205a31a9b9c545be5"
+  },
+  "status/symbolic/network-mobile-40-5g-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_5g_locked",
+    "role": "Text",
+    "sha256": "21c5a6c9c49458d522c4be9557b4025a908a83d76aea76a9e3541d542290db69"
+  },
+  "status/symbolic/battery-030-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_30_charging",
+    "role": "Text",
+    "sha256": "174cf2ef461c94118fd1f79a8ca4d046cd111472ec73bd846a5d573f55def043"
+  },
+  "status/symbolic/battery-level-30-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_30_charging",
+    "role": "Text",
+    "sha256": "174cf2ef461c94118fd1f79a8ca4d046cd111472ec73bd846a5d573f55def043"
+  },
+  "status/symbolic/phone-battery-medium-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_50",
+    "role": "Text",
+    "sha256": "e4f7ccd4d25723d62dd7d4599deeb29e610e6d081a6bb75d28585e6d91dde18b"
+  },
+  "status/symbolic/battery-090-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_90_charging",
+    "role": "Text",
+    "sha256": "ecace65af379a5b414eca2f6b6faeabf851f144f3833a28fb203dd60c4de168d"
+  },
+  "status/symbolic/battery-level-90-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_90_charging",
+    "role": "Text",
+    "sha256": "ecace65af379a5b414eca2f6b6faeabf851f144f3833a28fb203dd60c4de168d"
+  },
+  "status/symbolic/network-mobile-60-gprs-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_gprs_locked",
+    "role": "Text",
+    "sha256": "34741fa68f4e1e1a42d6448bb018c9d2f263a3cde2f9c89e7a9e80efbdf43dd0"
+  },
+  "status/symbolic/network-wireless-80-symbolic.svg": {
+    "symbol": "sequoia_wifi_80_normal",
+    "role": "Text",
+    "sha256": "546fa899bbf0f0536f912663a4d54f371b3fc5b91ca9d2a0df190c11f9511eff"
+  },
+  "status/symbolic/network-wireless-connected-80-symbolic.svg": {
+    "symbol": "sequoia_wifi_80_normal",
+    "role": "Text",
+    "sha256": "546fa899bbf0f0536f912663a4d54f371b3fc5b91ca9d2a0df190c11f9511eff"
+  },
+  "status/symbolic/network-wireless-signal-good-symbolic.svg": {
+    "symbol": "sequoia_wifi_80_normal",
+    "role": "Text",
+    "sha256": "546fa899bbf0f0536f912663a4d54f371b3fc5b91ca9d2a0df190c11f9511eff"
+  },
+  "status/symbolic/network-cellular-secure-signal-low-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_none_locked",
+    "role": "Text",
+    "sha256": "5494d2adf46b56103d2b3d557532cbabf0ed1fd8679a7ccdebd37f60e8651b30"
+  },
+  "status/symbolic/network-mobile-40-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_none_locked",
+    "role": "Text",
+    "sha256": "5494d2adf46b56103d2b3d557532cbabf0ed1fd8679a7ccdebd37f60e8651b30"
+  },
+  "status/symbolic/network-mobile-0-5g-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_5g_normal",
+    "role": "Text",
+    "sha256": "e2524f71d4578f577ae497ec9e0ed03bcf0293386c5990bab704eb285ce9c082"
+  },
+  "status/symbolic/network-mobile-20-gprs-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_gprs_normal",
+    "role": "Text",
+    "sha256": "d88612a3d95a7040d6171254ca0152a5e85925f91c2b546783f82a2b4d3c0e39"
+  },
+  "status/symbolic/network-mobile-80-hsupa-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_hsupa_normal",
+    "role": "Text",
+    "sha256": "f90b3045c294180388b85ecee034b656bdf63e81c785be33e8b6808bfdfbea96"
+  },
+  "status/symbolic/network-mobile-60-edge-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_edge_normal",
+    "role": "Text",
+    "sha256": "705a2e604972fac1dd972657fe8f14bf369c51c5bb307f57e6230422e44bc1fe"
+  },
+  "status/symbolic/battery-000-symbolic.svg": {
+    "symbol": "sequoia_battery_0_normal",
+    "role": "Text",
+    "sha256": "3b6f35f09766a5978008f2a0db871616c48329d4c72750d9800d55bff6e38b8b"
+  },
+  "status/symbolic/battery-empty-symbolic.svg": {
+    "symbol": "sequoia_battery_0_normal",
+    "role": "NegativeText",
+    "sha256": "10de53569242445c85da288f6b33a16e0374f88dac0aeaba7bc6756b014627c8"
+  },
+  "status/symbolic/battery-level-0-symbolic.svg": {
+    "symbol": "sequoia_battery_0_normal",
+    "role": "Text",
+    "sha256": "3b6f35f09766a5978008f2a0db871616c48329d4c72750d9800d55bff6e38b8b"
+  },
+  "status/symbolic/network-mobile-0-gprs-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_gprs_locked",
+    "role": "Text",
+    "sha256": "108c5324f64f932c13890184c3d4e1b83d7a7fb32495672e6b0b1048a82b0d76"
+  },
+  "status/symbolic/keyboard-battery-medium-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_50",
+    "role": "Text",
+    "sha256": "6b5e4e10a1133bb178ec582aaffd90b446746da559ec7b04ff17eee704024b11"
+  },
+  "status/symbolic/network-mobile-60-umts-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_umts_normal",
+    "role": "Text",
+    "sha256": "d519d5cca826e82c77d97a64597a2bf290d683cebe871d675f617f173b901fbc"
+  },
+  "status/symbolic/network-mobile-20-hspa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_hspa_locked",
+    "role": "Text",
+    "sha256": "e0659bd746817b6780a861fb56dbef9acebb71238bb15965f6bcc46b071d7033"
+  },
+  "status/symbolic/network-mobile-0-hspa-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_hspa_normal",
+    "role": "Text",
+    "sha256": "cb89679d1f6bf54a1a7d3e7c45f6661322bf555ddd24fb3e01f86609883db925"
+  },
+  "status/symbolic/network-mobile-60-umts-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_umts_locked",
+    "role": "Text",
+    "sha256": "094161f8a7b054cb5d9727440c4ac6d46cb9fd7f7dd353a33572e17cf41c8173"
+  },
+  "status/symbolic/gpm-mouse-040-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_40",
+    "role": "Text",
+    "sha256": "194ae8ea9018b1885eeb13a88f56b5eca568fb36ade47ff10f874e9c2df44ee4"
+  },
+  "status/symbolic/xfpm-mouse-040-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_40",
+    "role": "Text",
+    "sha256": "194ae8ea9018b1885eeb13a88f56b5eca568fb36ade47ff10f874e9c2df44ee4"
   },
   "status/symbolic/laptop-disconnected-symbolic.svg": {
     "symbol": "sequoia_connection_laptop_disconnected",
@@ -27229,50 +26549,720 @@
     "role": "Text",
     "sha256": "f6c28d29269dc5d4c50e5ff88a11ed50a8493eebb93445d4aa562ecb287d702d"
   },
-  "status/symbolic/network-mobile-100-edge-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_100_edge_locked",
+  "status/symbolic/battery-020-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_20_charging",
     "role": "Text",
-    "sha256": "b10d48c4661824c875374b1ce3cd268b369a0c40d0b7843e5f44673729a02225"
+    "sha256": "877d63f87b8b14f475252f9fd29a043aab1e498a45fc14cc9e8280a2fd6172e5"
+  },
+  "status/symbolic/battery-level-20-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_20_charging",
+    "role": "Text",
+    "sha256": "877d63f87b8b14f475252f9fd29a043aab1e498a45fc14cc9e8280a2fd6172e5"
+  },
+  "status/symbolic/battery-low-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_20_charging",
+    "role": "Text",
+    "sha256": "877d63f87b8b14f475252f9fd29a043aab1e498a45fc14cc9e8280a2fd6172e5"
+  },
+  "status/symbolic/network-mobile-0-lte-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_lte_normal",
+    "role": "Text",
+    "sha256": "93b6fc1014fa7631379887d58763a5ef3c8dd1713747461be3fbb38b5f8d3d6f"
+  },
+  "status/symbolic/battery-050-symbolic.svg": {
+    "symbol": "sequoia_battery_50_normal",
+    "role": "Text",
+    "sha256": "d5f0f0900907b9e121d1382fbaf7069b8f7114c4270ef619367e46fcd0ffe0ec"
+  },
+  "status/symbolic/battery-level-50-symbolic.svg": {
+    "symbol": "sequoia_battery_50_normal",
+    "role": "Text",
+    "sha256": "d5f0f0900907b9e121d1382fbaf7069b8f7114c4270ef619367e46fcd0ffe0ec"
+  },
+  "status/symbolic/battery-medium-symbolic.svg": {
+    "symbol": "sequoia_battery_50_normal",
+    "role": "Text",
+    "sha256": "d5f0f0900907b9e121d1382fbaf7069b8f7114c4270ef619367e46fcd0ffe0ec"
+  },
+  "status/symbolic/network-mobile-100-5g-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_5g_normal",
+    "role": "Text",
+    "sha256": "48b803d4d2728ad88181b7f23f9fbb6996fb123052a9e9a800c69972369fec87"
+  },
+  "status/symbolic/gpm-phone-040-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_40",
+    "role": "Text",
+    "sha256": "641fff02c88d5769de3962440f8c85fb60080c75054d2b7169226b69d3739916"
+  },
+  "status/symbolic/xfpm-phone-040-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_40",
+    "role": "Text",
+    "sha256": "641fff02c88d5769de3962440f8c85fb60080c75054d2b7169226b69d3739916"
+  },
+  "status/symbolic/network-mobile-20-hspa-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_hspa_normal",
+    "role": "Text",
+    "sha256": "782c149f858d25ff88b9e86e6693b0982285dc449b941d59e226739bf370e3f8"
+  },
+  "status/symbolic/network-mobile-40-hsdpa-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_hsdpa_normal",
+    "role": "Text",
+    "sha256": "5cc47b93c1ba73d6cd6321339815992c919e1cc84efef6bfac5b777f476af656"
+  },
+  "status/symbolic/network-cellular-signal-none-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_none_normal",
+    "role": "Text",
+    "sha256": "c071bfd515b85958a1599ac91e92fb747b12ad769fb6d63da4613b3d362357d7"
+  },
+  "status/symbolic/network-mobile-0-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_none_normal",
+    "role": "Text",
+    "sha256": "c071bfd515b85958a1599ac91e92fb747b12ad769fb6d63da4613b3d362357d7"
+  },
+  "status/symbolic/network-mobile-60-lte-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_lte_normal",
+    "role": "Text",
+    "sha256": "aa7c5a5a76404df5736a8b88f22f98d76721331d692673fa86634e29cc073243"
+  },
+  "status/symbolic/battery-070-symbolic.svg": {
+    "symbol": "sequoia_battery_70_normal",
+    "role": "Text",
+    "sha256": "d43e22658dc6117911dd1550ecc8031f58a2b4372a7aa3ab409a92c6d43aeb4f"
+  },
+  "status/symbolic/battery-level-70-symbolic.svg": {
+    "symbol": "sequoia_battery_70_normal",
+    "role": "Text",
+    "sha256": "d43e22658dc6117911dd1550ecc8031f58a2b4372a7aa3ab409a92c6d43aeb4f"
+  },
+  "status/symbolic/network-mobile-60-hsupa-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_hsupa_normal",
+    "role": "Text",
+    "sha256": "6d94605cee10ea2190c2513abf45b157c30e900b23d52fe2d08efa545bac1649"
+  },
+  "status/symbolic/network-mobile-0-5g-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_5g_locked",
+    "role": "Text",
+    "sha256": "cecfd386ec5c073fd16ce392d54fab956354e73f45cf2b68f6c2eece992d2405"
+  },
+  "status/symbolic/network-wireless-40-symbolic.svg": {
+    "symbol": "sequoia_wifi_40_normal",
+    "role": "Text",
+    "sha256": "b5d6025ab14487d00dbc7266d97d5f1efea06fd5f301bfb8a53d00059c536f61"
+  },
+  "status/symbolic/network-wireless-connected-40-symbolic.svg": {
+    "symbol": "sequoia_wifi_40_normal",
+    "role": "Text",
+    "sha256": "b5d6025ab14487d00dbc7266d97d5f1efea06fd5f301bfb8a53d00059c536f61"
+  },
+  "status/symbolic/network-wireless-signal-low-symbolic.svg": {
+    "symbol": "sequoia_wifi_40_normal",
+    "role": "Text",
+    "sha256": "b5d6025ab14487d00dbc7266d97d5f1efea06fd5f301bfb8a53d00059c536f61"
+  },
+  "status/symbolic/network-mobile-20-hsupa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_hsupa_locked",
+    "role": "Text",
+    "sha256": "e8d45985313b6de260d97eb5322df17e8dea2dcd8bfa07076f76cf50daecd73a"
+  },
+  "status/symbolic/network-mobile-0-lte-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_lte_locked",
+    "role": "Text",
+    "sha256": "17dc5b6690b827898a3b1c8f1858b3a99f4469665af900e48684eb726cb5bce6"
+  },
+  "status/symbolic/network-mobile-80-hsupa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_hsupa_locked",
+    "role": "Text",
+    "sha256": "15820db534420f56323a1262b96acd78966f6774a48bd86f6372c464342ceb6f"
+  },
+  "status/symbolic/network-mobile-100-hsdpa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_hsdpa_locked",
+    "role": "Text",
+    "sha256": "197d792ba1defa2858215993bfcab4391a1accd813d973c4d42c61a21ba6ffae"
+  },
+  "status/symbolic/network-wireless-40-locked-symbolic.svg": {
+    "symbol": "sequoia_wifi_40_locked",
+    "role": "Text",
+    "sha256": "00ae2e7a4055305c9d7a5ec850f36bf87e4776ef09eeceb5d01645192cfbd843"
+  },
+  "status/symbolic/network-wireless-secure-signal-low-symbolic.svg": {
+    "symbol": "sequoia_wifi_40_locked",
+    "role": "Text",
+    "sha256": "00ae2e7a4055305c9d7a5ec850f36bf87e4776ef09eeceb5d01645192cfbd843"
+  },
+  "status/symbolic/network-mobile-40-edge-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_edge_locked",
+    "role": "Text",
+    "sha256": "fd2d4a0aa52a13893880d52b90a347c2dd4959d0053bd8e3df7a44458ba35392"
+  },
+  "status/symbolic/nm-signal-75-secure-symbolic.svg": {
+    "symbol": "sequoia_wifi_75_locked",
+    "role": "Text",
+    "sha256": "c0b72233293c1c4f3356ac5ed9ac2489224a7c153511f672b700d3d24c068256"
+  },
+  "status/symbolic/gpm-keyboard-080-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_80",
+    "role": "Text",
+    "sha256": "2ed387a5aa1649a2e0d909527c020dead929ba845e8a1baa2bca1fadcaf48de9"
+  },
+  "status/symbolic/keyboard-battery-good-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_80",
+    "role": "Text",
+    "sha256": "2ed387a5aa1649a2e0d909527c020dead929ba845e8a1baa2bca1fadcaf48de9"
+  },
+  "status/symbolic/xfpm-keyboard-080-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_80",
+    "role": "Text",
+    "sha256": "2ed387a5aa1649a2e0d909527c020dead929ba845e8a1baa2bca1fadcaf48de9"
+  },
+  "status/symbolic/xfpm-keyboard-030-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_30",
+    "role": "Text",
+    "sha256": "9a9a562f219a7ab024b38c74b1ffef064488a5eb3ba1d19bbbd658cb53d27082"
+  },
+  "status/symbolic/network-mobile-20-lte-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_lte_normal",
+    "role": "Text",
+    "sha256": "588e2764bfc449d8e1575d42dd96f272bac3109195ff3e50a483cb6e26dd9ac8"
   },
   "status/symbolic/network-mobile-100-hspa-symbolic.svg": {
     "symbol": "sequoia_cellular_100_hspa_normal",
     "role": "Text",
     "sha256": "2193adc17b484b4a856ceb94d2445f49e918448a649031d44d0830206f840dd7"
   },
-  "status/symbolic/network-mobile-60-umts-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_umts_normal",
+  "status/symbolic/battery-080-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_80_charging",
     "role": "Text",
-    "sha256": "d519d5cca826e82c77d97a64597a2bf290d683cebe871d675f617f173b901fbc"
+    "sha256": "47860251667f1b6c084c72803e68640708d99bb53e558a8ff53ce038d9d2ad8a"
   },
-  "status/symbolic/network-mobile-60-hsdpa-locked-symbolic.svg": {
-    "symbol": "sequoia_cellular_60_hsdpa_locked",
+  "status/symbolic/battery-good-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_80_charging",
     "role": "Text",
-    "sha256": "85ab83b5a814394dcb772be5805594eb1dc8ffbaede8f2117c8b6aa972858e88"
+    "sha256": "47860251667f1b6c084c72803e68640708d99bb53e558a8ff53ce038d9d2ad8a"
   },
-  "status/symbolic/gsm-3g-medium-symbolic.svg": {
-    "symbol": "sequoia_cellular_50_umts_normal",
+  "status/symbolic/battery-level-80-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_80_charging",
     "role": "Text",
-    "sha256": "6f3630085ee99bbfc0ce561c7e4d70c411ae84e14b5f2f3d9f024e8f73135c95"
+    "sha256": "47860251667f1b6c084c72803e68640708d99bb53e558a8ff53ce038d9d2ad8a"
   },
-  "status/symbolic/network-mobile-0-hspa-symbolic.svg": {
-    "symbol": "sequoia_cellular_0_hspa_normal",
+  "status/symbolic/audio-input-microphone-low-symbolic.svg": {
+    "symbol": "sequoia_mic_low",
     "role": "Text",
-    "sha256": "cb89679d1f6bf54a1a7d3e7c45f6661322bf555ddd24fb3e01f86609883db925"
+    "sha256": "19a8941aa143bf7a18918ce69bdb0b89b99715a09c327eb01a51d2d9f55a9533"
+  },
+  "status/symbolic/microphone-sensitivity-low-symbolic.svg": {
+    "symbol": "sequoia_mic_low",
+    "role": "Text",
+    "sha256": "19a8941aa143bf7a18918ce69bdb0b89b99715a09c327eb01a51d2d9f55a9533"
+  },
+  "status/symbolic/network-cellular-secure-signal-none-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_none_locked",
+    "role": "Text",
+    "sha256": "d9e80d1c3c680b04a4b514ba496fe6b42248966119a06ab829b7be45d8908990"
+  },
+  "status/symbolic/network-mobile-0-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_none_locked",
+    "role": "Text",
+    "sha256": "d9e80d1c3c680b04a4b514ba496fe6b42248966119a06ab829b7be45d8908990"
+  },
+  "status/symbolic/network-wireless-20-limited-symbolic.svg": {
+    "symbol": "sequoia_wifi_20_limited",
+    "role": "Text",
+    "sha256": "8238b7520d3713f6b5692dfe7453e8b6bd805bad4a23c7c28c2eadbc5f721fbb"
   },
   "status/symbolic/network-mobile-80-hsdpa-locked-symbolic.svg": {
     "symbol": "sequoia_cellular_80_hsdpa_locked",
     "role": "Text",
     "sha256": "b651969c7c573f2e2ddbac27262de085dc7420cfead3966d8da99715cece78ec"
   },
+  "status/symbolic/network-cellular-signal-ok-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_none_normal",
+    "role": "Text",
+    "sha256": "4d150c2d925f6767d95bfa75fc17220e49bf245b20238b5f7abf923dd2422354"
+  },
+  "status/symbolic/network-mobile-60-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_none_normal",
+    "role": "Text",
+    "sha256": "4d150c2d925f6767d95bfa75fc17220e49bf245b20238b5f7abf923dd2422354"
+  },
+  "status/symbolic/network-mobile-100-gprs-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_gprs_locked",
+    "role": "Text",
+    "sha256": "221253342072228e94f29d0d40000db5276512fea0b3233b24af9e52ad1d38aa"
+  },
+  "status/symbolic/network-mobile-60-5g-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_5g_locked",
+    "role": "Text",
+    "sha256": "b515498f95023c560791a00ff712533661334202efec8acb6b3377d50bd77a89"
+  },
+  "status/symbolic/network-mobile-80-hspa-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_hspa_normal",
+    "role": "Text",
+    "sha256": "7e4c14e3ef365b1232b713b25e0d99edb5ca6063ad1a77dd24b3e2b46afacc5f"
+  },
+  "status/symbolic/gpm-phone-000-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_0",
+    "role": "Text",
+    "sha256": "9b4fe939d5214349fe2cd28066b8a9d52372061667a904c1f96b3c0bf6f07ff1"
+  },
+  "status/symbolic/xfpm-phone-000-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_0",
+    "role": "Text",
+    "sha256": "9b4fe939d5214349fe2cd28066b8a9d52372061667a904c1f96b3c0bf6f07ff1"
+  },
+  "status/symbolic/network-cellular-signal-weak-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_none_normal",
+    "role": "Text",
+    "sha256": "f8c7907311bbb814f17ff169d24c9a9beabddb24fd14d7b5c15a27420dcc6c20"
+  },
+  "status/symbolic/network-mobile-20-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_none_normal",
+    "role": "Text",
+    "sha256": "f8c7907311bbb814f17ff169d24c9a9beabddb24fd14d7b5c15a27420dcc6c20"
+  },
+  "status/symbolic/battery-080-symbolic.svg": {
+    "symbol": "sequoia_battery_80_normal",
+    "role": "Text",
+    "sha256": "5f8830f49faaab1c5a8d733a982160e072f1cb51ded620914832855b22b29187"
+  },
+  "status/symbolic/battery-good-symbolic.svg": {
+    "symbol": "sequoia_battery_80_normal",
+    "role": "Text",
+    "sha256": "5f8830f49faaab1c5a8d733a982160e072f1cb51ded620914832855b22b29187"
+  },
+  "status/symbolic/battery-level-80-symbolic.svg": {
+    "symbol": "sequoia_battery_80_normal",
+    "role": "Text",
+    "sha256": "5f8830f49faaab1c5a8d733a982160e072f1cb51ded620914832855b22b29187"
+  },
+  "status/symbolic/network-mobile-60-lte-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_lte_locked",
+    "role": "Text",
+    "sha256": "76eb69746f8051c7a9f6a3eaed87ce63b3d9583ec70832c38159430f6400cc9a"
+  },
+  "status/symbolic/network-wireless-80-limited-symbolic.svg": {
+    "symbol": "sequoia_wifi_80_limited",
+    "role": "Text",
+    "sha256": "683fc2436f5b53c22bd1bd079f1262a99fb8caab391cf6da3fadffdbff572c36"
+  },
+  "status/symbolic/network-mobile-100-lte-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_lte_locked",
+    "role": "Text",
+    "sha256": "9ef0f44d814d8f5431900f4a7d1ed5dd9018b2f072fe38560a0f70a4a5485d31"
+  },
+  "status/symbolic/network-mobile-60-hsupa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_hsupa_locked",
+    "role": "Text",
+    "sha256": "d0cfc5996e382748bcf66c20adf7c18629ebfe6d4e952604a0c453caff0b890f"
+  },
+  "status/symbolic/battery-100-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_100_charging",
+    "role": "Text",
+    "sha256": "9552617fdebdef561915578951c5987b792a7cb4c41739c6f48d2d94bbedce1a"
+  },
+  "status/symbolic/battery-full-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_100_charging",
+    "role": "Text",
+    "sha256": "9552617fdebdef561915578951c5987b792a7cb4c41739c6f48d2d94bbedce1a"
+  },
+  "status/symbolic/gsm-3g-high-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_umts_normal",
+    "role": "Text",
+    "sha256": "4fab60f6f586613d2166f9235e913daa398fbf4fcef0547835337a2449415cce"
+  },
+  "status/symbolic/network-mobile-80-umts-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_umts_normal",
+    "role": "Text",
+    "sha256": "4fab60f6f586613d2166f9235e913daa398fbf4fcef0547835337a2449415cce"
+  },
+  "status/symbolic/network-wireless-60-symbolic.svg": {
+    "symbol": "sequoia_wifi_60_normal",
+    "role": "Text",
+    "sha256": "a82a1c809b08ebec8f6fbf65b5c8dd03bb3849740cd3e0d7e2d0bcc881305b71"
+  },
+  "status/symbolic/network-wireless-connected-60-symbolic.svg": {
+    "symbol": "sequoia_wifi_60_normal",
+    "role": "Text",
+    "sha256": "a82a1c809b08ebec8f6fbf65b5c8dd03bb3849740cd3e0d7e2d0bcc881305b71"
+  },
+  "status/symbolic/network-wireless-signal-ok-symbolic.svg": {
+    "symbol": "sequoia_wifi_60_normal",
+    "role": "Text",
+    "sha256": "a82a1c809b08ebec8f6fbf65b5c8dd03bb3849740cd3e0d7e2d0bcc881305b71"
+  },
+  "status/symbolic/network-mobile-0-edge-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_edge_normal",
+    "role": "Text",
+    "sha256": "e700676a12ab0b2ee93515ae2744e4909059270f221f503ec392a8b738b0133c"
+  },
+  "status/symbolic/network-mobile-60-hspa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_hspa_locked",
+    "role": "Text",
+    "sha256": "e71d0e81d5ea4da01125c0807818417e67e21a303087def63b8706d8d79460cd"
+  },
+  "status/symbolic/gsm-3g-low-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_umts_normal",
+    "role": "Text",
+    "sha256": "52d9fdac4bcb2764aa75cc93657887389497c3b0c311408e499e495af9be3196"
+  },
+  "status/symbolic/network-mobile-20-umts-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_umts_normal",
+    "role": "Text",
+    "sha256": "52d9fdac4bcb2764aa75cc93657887389497c3b0c311408e499e495af9be3196"
+  },
+  "status/symbolic/network-mobile-20-hsupa-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_hsupa_normal",
+    "role": "Text",
+    "sha256": "27abba976f6dd8847e2b56581f64b9bbb8871f8e9bdd9e49a31ef4f84f901038"
+  },
+  "status/symbolic/battery-060-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_60_charging",
+    "role": "Text",
+    "sha256": "6e599c5afb2171072804f1d001ecf5819ea915570a7e42692a4d04f82b141cc9"
+  },
+  "status/symbolic/battery-level-60-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_60_charging",
+    "role": "Text",
+    "sha256": "6e599c5afb2171072804f1d001ecf5819ea915570a7e42692a4d04f82b141cc9"
+  },
+  "status/symbolic/network-mobile-40-5g-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_5g_normal",
+    "role": "Text",
+    "sha256": "27bd72766ab7624def9f72fa033cce64f71ed5e49d9cc7e8adf6a804fd94fcfc"
+  },
+  "status/symbolic/network-mobile-40-hsupa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_hsupa_locked",
+    "role": "Text",
+    "sha256": "d11b635b027f9f175ea51597e0be260d12756243bd318d93b2e139ad57eb9445"
+  },
+  "status/symbolic/network-mobile-80-hspa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_hspa_locked",
+    "role": "Text",
+    "sha256": "402bb13662857deae6bf113ba53d04a2e694c31f3953e0ad85fa77519c4c51fb"
+  },
+  "status/symbolic/battery-full-charged-symbolic.svg": {
+    "symbol": "sequoia_battery_100_charged",
+    "role": "Text",
+    "sha256": "bcaa3c0bae470707260793ca1555c15911bdff37547c76f66a7550a551d0743f"
+  },
+  "status/symbolic/battery-level-100-charged-symbolic.svg": {
+    "symbol": "sequoia_battery_100_charged",
+    "role": "Text",
+    "sha256": "bcaa3c0bae470707260793ca1555c15911bdff37547c76f66a7550a551d0743f"
+  },
+  "status/symbolic/network-mobile-80-edge-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_edge_locked",
+    "role": "Text",
+    "sha256": "a02a53c7e0ef47588113045cf9662a8c4c73f7538ece712f2008fd14d2061748"
+  },
   "status/symbolic/laptop-trusted-symbolic.svg": {
     "symbol": "sequoia_connection_laptop_trusted",
     "role": "Text",
     "sha256": "be7ebda78a6a0cf49c20c25bf067a478f9d61beec2a418beceb2e5236fec09ce"
   },
+  "status/symbolic/gsm-3g-high-secure-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_umts_locked",
+    "role": "Text",
+    "sha256": "8764fb91fd091114beec8bce596b0fba4ae9df92ff1040afd5db09d665eda639"
+  },
+  "status/symbolic/network-mobile-80-umts-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_umts_locked",
+    "role": "Text",
+    "sha256": "8764fb91fd091114beec8bce596b0fba4ae9df92ff1040afd5db09d665eda639"
+  },
+  "status/symbolic/gpm-phone-060-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_60",
+    "role": "Text",
+    "sha256": "7f2e08f4532cc4f6847fa5a7cf74c06b2457bcfe17e1ecc001a746fc7500f995"
+  },
+  "status/symbolic/xfpm-phone-060-symbolic.svg": {
+    "symbol": "sequoia_peripheral_phone_60",
+    "role": "Text",
+    "sha256": "7f2e08f4532cc4f6847fa5a7cf74c06b2457bcfe17e1ecc001a746fc7500f995"
+  },
+  "status/symbolic/gpm-mouse-000-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_0",
+    "role": "Text",
+    "sha256": "9d641931a4c2c1eb0ea9fde8300cd0d3494fb5a412e5ba7ec213752f4034af8b"
+  },
+  "status/symbolic/xfpm-mouse-000-symbolic.svg": {
+    "symbol": "sequoia_peripheral_mouse_0",
+    "role": "Text",
+    "sha256": "9d641931a4c2c1eb0ea9fde8300cd0d3494fb5a412e5ba7ec213752f4034af8b"
+  },
+  "status/symbolic/network-cellular-secure-signal-excellent-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_none_locked",
+    "role": "Text",
+    "sha256": "f0a5dcde07e4bd7dcd5dd69223143af103582195a710884f3f0268517070a892"
+  },
+  "status/symbolic/network-mobile-100-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_none_locked",
+    "role": "Text",
+    "sha256": "f0a5dcde07e4bd7dcd5dd69223143af103582195a710884f3f0268517070a892"
+  },
+  "status/symbolic/nm-signal-50-secure-symbolic.svg": {
+    "symbol": "sequoia_wifi_50_locked",
+    "role": "Text",
+    "sha256": "3a775640e049152002e3661eb8aef8c75a08751633be13e875a43f61dc902094"
+  },
+  "status/symbolic/network-mobile-20-hsdpa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_hsdpa_locked",
+    "role": "Text",
+    "sha256": "4139a7ca70c11464631ecf94bd3e65ce9c032464ba3d2821bccca0decf0a2b5c"
+  },
+  "status/symbolic/battery-000-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_0_charging",
+    "role": "Text",
+    "sha256": "3fa51aadc8d89a1f67596be817a3d6304431a2757babbc84ae1b0128bc99aede"
+  },
+  "status/symbolic/battery-empty-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_0_charging",
+    "role": "Text",
+    "sha256": "3fa51aadc8d89a1f67596be817a3d6304431a2757babbc84ae1b0128bc99aede"
+  },
+  "status/symbolic/battery-level-0-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_0_charging",
+    "role": "Text",
+    "sha256": "3fa51aadc8d89a1f67596be817a3d6304431a2757babbc84ae1b0128bc99aede"
+  },
+  "status/symbolic/laptop-connected-symbolic.svg": {
+    "symbol": "sequoia_connection_laptop_connected",
+    "role": "Text",
+    "sha256": "792f1afdfa79a9c5c3f8bcb4678abbdfcee5fec562c499b7473cb4544a6e9a7d"
+  },
+  "status/symbolic/network-mobile-0-gprs-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_gprs_normal",
+    "role": "Text",
+    "sha256": "975f12b1fce6dd83ba03a3a663da43786679f0225ce6c7123dafb2b440a4dabb"
+  },
+  "status/symbolic/network-mobile-80-gprs-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_gprs_normal",
+    "role": "Text",
+    "sha256": "2a029e8c39164c29a95396ad8b5b4374f200feb4ba4f7a47712758ae6bf4cf7f"
+  },
+  "status/symbolic/battery-040-symbolic.svg": {
+    "symbol": "sequoia_battery_40_normal",
+    "role": "Text",
+    "sha256": "20e7f89633180b43432aa4b9c82efb288115c4f1195b41d930541f5998143f0f"
+  },
+  "status/symbolic/battery-level-40-symbolic.svg": {
+    "symbol": "sequoia_battery_40_normal",
+    "role": "Text",
+    "sha256": "20e7f89633180b43432aa4b9c82efb288115c4f1195b41d930541f5998143f0f"
+  },
+  "status/symbolic/network-mobile-20-hsdpa-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_hsdpa_normal",
+    "role": "Text",
+    "sha256": "a8e32c8fe45309dd00f68d7d9a8aac4a85c0407f12c8f9c7ef92b9eb9713b7aa"
+  },
+  "status/symbolic/network-wireless-60-limited-symbolic.svg": {
+    "symbol": "sequoia_wifi_60_limited",
+    "role": "Text",
+    "sha256": "bda5b0e2ba5ec2a8ddf54819c8c671f061298524018a8c88fb2c84eed600f164"
+  },
+  "status/symbolic/battery-020-symbolic.svg": {
+    "symbol": "sequoia_battery_20_normal",
+    "role": "Text",
+    "sha256": "de55e4f9c3b708d2ef0c8156179ccd84e19d01bc7d5ac282f939d33f7fb640d7"
+  },
+  "status/symbolic/battery-level-20-symbolic.svg": {
+    "symbol": "sequoia_battery_20_normal",
+    "role": "Text",
+    "sha256": "de55e4f9c3b708d2ef0c8156179ccd84e19d01bc7d5ac282f939d33f7fb640d7"
+  },
+  "status/symbolic/battery-low-symbolic.svg": {
+    "symbol": "sequoia_battery_20_normal",
+    "role": "NeutralText",
+    "sha256": "a54d4b90a0ff3df7fcc79940524cde02461a56997368d78ac08e7dbd5b319569"
+  },
   "status/symbolic/network-mobile-100-lte-symbolic.svg": {
     "symbol": "sequoia_cellular_100_lte_normal",
     "role": "Text",
     "sha256": "2ccfdbe3634ff777c39caa146ba78194324ef21bf0482b6d2d6f15c9c2d7e35b"
+  },
+  "status/symbolic/battery-040-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_40_charging",
+    "role": "Text",
+    "sha256": "eee7c3a0e20d38f7e725ba4b2650104814df7d5718031161531a417cae773c3a"
+  },
+  "status/symbolic/battery-level-40-charging-symbolic.svg": {
+    "symbol": "sequoia_battery_40_charging",
+    "role": "Text",
+    "sha256": "eee7c3a0e20d38f7e725ba4b2650104814df7d5718031161531a417cae773c3a"
+  },
+  "status/symbolic/gsm-3g-none-secure-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_umts_locked",
+    "role": "Text",
+    "sha256": "525c8340f9b5a1f30a9aa8430d5e71b7d1946901fd4fcaabbdab3951ceba2030"
+  },
+  "status/symbolic/network-mobile-0-umts-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_umts_locked",
+    "role": "Text",
+    "sha256": "525c8340f9b5a1f30a9aa8430d5e71b7d1946901fd4fcaabbdab3951ceba2030"
+  },
+  "status/symbolic/network-mobile-80-gprs-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_gprs_locked",
+    "role": "Text",
+    "sha256": "8f6e3782eae3e94d482da014f23ad7d58965f32c7e45a0be14cf3531887c606e"
+  },
+  "status/symbolic/network-mobile-80-5g-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_5g_normal",
+    "role": "Text",
+    "sha256": "f864e17287339871b0ce7931cf0f59cb787de5974f9fbc260e6f83807a86f1b7"
+  },
+  "status/symbolic/network-mobile-40-lte-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_lte_normal",
+    "role": "Text",
+    "sha256": "5d314d90fdadf4dd6e753170420504c80a04194ff08bb357363aff7947e0fc2f"
+  },
+  "status/symbolic/nm-signal-25-secure-symbolic.svg": {
+    "symbol": "sequoia_wifi_25_locked",
+    "role": "Text",
+    "sha256": "dfe8f0e66e80f2a9c9423fa598b119a11752874fe4bc5cef1e5fcda95ded115a"
+  },
+  "status/symbolic/network-mobile-80-lte-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_80_lte_locked",
+    "role": "Text",
+    "sha256": "75c8d9418e4743423fa92a84b13f044cf95fb83402c1a0b12105e3b2ef8482ca"
+  },
+  "status/symbolic/network-mobile-60-edge-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_edge_locked",
+    "role": "Text",
+    "sha256": "d6fe93a7e5a25ba0438b36b9b0d723fc1651ee5d36fde5d3b7b1552449225fe2"
+  },
+  "status/symbolic/network-mobile-40-hspa-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_hspa_normal",
+    "role": "Text",
+    "sha256": "6eca70adbfeb7a6777b1ec4c73c5521d645c9294724e2e8fdb1675b472f47315"
+  },
+  "status/symbolic/network-mobile-100-hsupa-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_hsupa_normal",
+    "role": "Text",
+    "sha256": "f9c0a4c92f3b39ba5ccc8ea268a568c2901c5714874a6a25b0c1e192199b1d4e"
+  },
+  "status/symbolic/network-mobile-40-umts-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_umts_locked",
+    "role": "Text",
+    "sha256": "11007598d20282affb27faca9b702e536cd6eb7d84623159fa5952c928283727"
+  },
+  "status/symbolic/network-mobile-40-hsdpa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_hsdpa_locked",
+    "role": "Text",
+    "sha256": "9de5aae18e10abdb440962dd2b8f21798b3902b95572f9e94dd196d1f4bc276a"
+  },
+  "status/symbolic/network-mobile-60-hsdpa-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_hsdpa_normal",
+    "role": "Text",
+    "sha256": "52f18717ad1a1f2c95ee36ec4eca5f78b4d8ca2ed2d2e59c79e6745e71f4fe3c"
+  },
+  "status/symbolic/gsm-3g-medium-symbolic.svg": {
+    "symbol": "sequoia_cellular_50_umts_normal",
+    "role": "Text",
+    "sha256": "6f3630085ee99bbfc0ce561c7e4d70c411ae84e14b5f2f3d9f024e8f73135c95"
+  },
+  "status/symbolic/network-mobile-20-5g-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_5g_locked",
+    "role": "Text",
+    "sha256": "88e69222c6027ed0039d6d151cc36ef31d84b938b4b0985f63533fbb6e06da77"
+  },
+  "status/symbolic/network-mobile-40-umts-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_umts_normal",
+    "role": "Text",
+    "sha256": "87abf8c678cd93e7b79403956386d972c32963f1d6d36cac66a634031d6d04a1"
+  },
+  "status/symbolic/network-mobile-100-edge-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_edge_normal",
+    "role": "Text",
+    "sha256": "a5262c88de48ce9b6e3e60740bc1dfe23a5bd8c4dd5ad80deedc786f0a85a586"
+  },
+  "status/symbolic/network-mobile-100-hsdpa-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_hsdpa_normal",
+    "role": "Text",
+    "sha256": "70643d956f25c624349e2c87b17572a66c82c7f57d4962605c999ecb35730a81"
+  },
+  "status/symbolic/gpm-keyboard-040-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_40",
+    "role": "Text",
+    "sha256": "685a310564340934f318b5e8b1da76b87c6fedf2899f5fb9cb4feaca56a0a51f"
+  },
+  "status/symbolic/xfpm-keyboard-040-symbolic.svg": {
+    "symbol": "sequoia_peripheral_keyboard_40",
+    "role": "Text",
+    "sha256": "685a310564340934f318b5e8b1da76b87c6fedf2899f5fb9cb4feaca56a0a51f"
+  },
+  "status/symbolic/network-mobile-20-gprs-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_gprs_locked",
+    "role": "Text",
+    "sha256": "f9e2926c26f2551fdbe2631a11c1a4413d882297e9e9792d1462a046f260bdac"
+  },
+  "status/symbolic/network-mobile-40-lte-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_lte_locked",
+    "role": "Text",
+    "sha256": "518cb44e8e80c45c0c67ff9ab48a8117853cf06547aff6e2e8349a3c9bba22d9"
+  },
+  "status/symbolic/network-cellular-signal-excellent-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_none_normal",
+    "role": "Text",
+    "sha256": "b94a0e3170cff73d5698f0eeff6f367c0dd5f32622781eb6f4baf5c23097a62a"
+  },
+  "status/symbolic/network-mobile-100-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_none_normal",
+    "role": "Text",
+    "sha256": "b94a0e3170cff73d5698f0eeff6f367c0dd5f32622781eb6f4baf5c23097a62a"
+  },
+  "status/symbolic/tablet-disconnected-symbolic.svg": {
+    "symbol": "sequoia_connection_tablet_disconnected",
+    "role": "Text",
+    "sha256": "49c3cce386c1f00d7c202b4c07fcf80506280a68b74b477001c8bf8bb4403087"
+  },
+  "status/symbolic/tablet-trusted-symbolic.svg": {
+    "symbol": "sequoia_connection_tablet_trusted",
+    "role": "Text",
+    "sha256": "227bc50ba1865b5ef30efd47ba9a2d9d1e369c0ba4a04ca63b8f654353b25d99"
+  },
+  "status/symbolic/network-mobile-60-hspa-symbolic.svg": {
+    "symbol": "sequoia_cellular_60_hspa_normal",
+    "role": "Text",
+    "sha256": "ae68ce6f8f3476b203dfd73cb64829c85b0f15a493ee0feb3dbe7b4985047ac4"
+  },
+  "status/symbolic/network-mobile-0-hspa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_hspa_locked",
+    "role": "Text",
+    "sha256": "651ee8c1fb57a6b041efb117b42a89a5828d698e57a6f5989fbe1919e9a41916"
+  },
+  "status/symbolic/tablet-connected-symbolic.svg": {
+    "symbol": "sequoia_connection_tablet_connected",
+    "role": "Text",
+    "sha256": "4360cf5e6e0e783044355f456e87840ec46e8a1c3978e29d405e0e8252036a50"
+  },
+  "status/symbolic/network-mobile-20-5g-symbolic.svg": {
+    "symbol": "sequoia_cellular_20_5g_normal",
+    "role": "Text",
+    "sha256": "42926843b525ade4c025dbef2f63dd39a1ff9d85c4b397953d1323d396c831e7"
+  },
+  "status/symbolic/network-mobile-100-hsupa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_100_hsupa_locked",
+    "role": "Text",
+    "sha256": "691c5b17ac556df4808f51cea6247603c9cfc95f7840f3175ce14b8d755c5c86"
+  },
+  "status/symbolic/battery-missing-symbolic.svg": {
+    "symbol": "sequoia_battery_missing",
+    "role": "Text",
+    "sha256": "d7094ce0cd19ea7c26d7c7e511ca0204e380ad42c0eb0080bff9649487ea2880"
+  },
+  "status/symbolic/network-mobile-40-hspa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_40_hspa_locked",
+    "role": "Text",
+    "sha256": "c8cbf88e5b183eacc72bc035ca51e87656c963b2604439863e6e3db7817e57e7"
+  },
+  "status/symbolic/network-mobile-0-hsdpa-locked-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_hsdpa_locked",
+    "role": "Text",
+    "sha256": "6a0c6a15d7b408c9112d68da7f6c90dc1b3192331031666e5692ee45434bba6d"
+  },
+  "status/symbolic/network-mobile-0-hsupa-symbolic.svg": {
+    "symbol": "sequoia_cellular_0_hsupa_normal",
+    "role": "Text",
+    "sha256": "2c1daa971355659e70f73b489b9eb0f65c793e727096e3b7b56a7a74e60cc1c2"
   },
   "status/symbolic/network-wireless-symbolic.svg": {
     "symbol": "wifi",
@@ -27919,15 +27909,15 @@
     "role": "Text",
     "sha256": "ea2b46109df56d69d17bd6878d815a4f92eb7c4c88e1ffc2204be2b2d3f9f783"
   },
-  "devices/22/input-mouse-battery.svg": {
-    "symbol": "sequoia_peripheral_mouse_100",
-    "role": "Text",
-    "sha256": "46e59e756e5b4e9177109324f9d134664b32d06c101f28bfb695b8a289f71fb8"
-  },
   "devices/22/phone-battery.svg": {
     "symbol": "sequoia_peripheral_phone_100",
     "role": "Text",
     "sha256": "c8d130c179c370fcf8f5f49185602c560e774827e846c41494b29857622591ff"
+  },
+  "devices/22/input-mouse-battery.svg": {
+    "symbol": "sequoia_peripheral_mouse_100",
+    "role": "Text",
+    "sha256": "46e59e756e5b4e9177109324f9d134664b32d06c101f28bfb695b8a289f71fb8"
   },
   "devices/22/bluetooth-symbolic.svg": {
     "symbol": "bluetooth",
@@ -30559,6 +30549,11 @@
     "role": "Text",
     "sha256": "3ab3f7c68da15b480fa9ea8aefece5d410515cea7427f2f47413235816c0c59a"
   },
+  "places/16/user-desktop.svg": {
+    "symbol": "desktop_windows",
+    "role": "Text",
+    "sha256": "d0dfa1ee2f670242650148c0ed7f0a7b7d2575d6fa55e3746650d00aef8ee140"
+  },
   "places/16/folder-saved-search.svg": {
     "symbol": "search",
     "role": "Text",
@@ -30914,6 +30909,11 @@
     "role": "Text",
     "sha256": "daff7d8bce57c740e68b8be7f38aec903864e74dd0dce097f4ec63cd87bbe1d0"
   },
+  "places/22/user-desktop.svg": {
+    "symbol": "desktop_windows",
+    "role": "Text",
+    "sha256": "3571041aa0b7ea94a11549de0e86c3a955c74e19971335d9e2ec9de30974dad9"
+  },
   "places/22/folder-saved-search.svg": {
     "symbol": "search",
     "role": "Text",
@@ -31243,6 +31243,11 @@
     "symbol": "sports_esports",
     "role": "Text",
     "sha256": "a524d82b280af4fb1b931669a63979658631954987e1c7290825112211292c28"
+  },
+  "places/24/user-desktop.svg": {
+    "symbol": "desktop_windows",
+    "role": "Text",
+    "sha256": "a036550122a3f1746cb42df8546d58a794a8c9d48f26b2c3671a9040f3d807f6"
   },
   "places/24/folder-saved-search.svg": {
     "symbol": "search",

@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
-from PySide6.QtCore import QRectF
+from PySide6.QtCore import QRectF, QSize
 from PySide6.QtGui import QGuiApplication, QIcon, QImage, QPainter
 from PySide6.QtSvg import QSvgRenderer
 
@@ -91,6 +91,20 @@ for name in ('SequoiaTahoe', 'SequoiaTahoe-light', 'SequoiaTahoe-dark'):
             assert QIcon.fromTheme(identity).pixmap(size,size).toImage()==expected.pixmap(size,size).toImage(),('application identity shadowed',name,identity,size)
     for identity in ('view-app-grid','preferences-system','user-trash','user-trash-full'):
         assert identity in material['protected_identities'][name]
+    # A scalable Actions glyph must not override large Documents/Desktop
+    # folders. Preserve separate compact artwork, including at high DPI.
+    for place in ('folder-documents', 'user-desktop'):
+        for size in (16,22,24,32,48,64,128):
+            folder = str(size) if size < 32 else 'scalable'
+            source = ROOT/'themes/icons'/name/'places'/folder/(place+'.svg')
+            if size < 32:
+                action = ROOT/'themes/icons'/name/'actions'/folder/(place+'.svg')
+                if action.exists(): source = action
+            for scale in (1.0,2.0):
+                actual = QIcon.fromTheme(place).pixmap(QSize(size,size),scale).toImage()
+                expected = QIcon(str(source)).pixmap(QSize(size,size),scale).toImage()
+                assert actual == expected, ('place size variant shadowed',name,place,size,scale)
+        assert QIcon.hasThemeIcon(place+'-symbolic'), (name,place)
 assert not any(Path(p).parts[1]=='apps' for p in material['generated']), 'Material artwork must never overwrite the Apps context'
 print(f"PASS: {material['glyphs']} rounded glyphs / {len(material['generated'])} assets; checksums, unclipped 16/22/24/32px renders and native Qt theme lookups")
 

@@ -20,6 +20,10 @@ SOFT_CONTROLS = {'content_paste':'clipboard','content_copy':'copy','file_copy':'
 # Power management requests this explicit symbolic name. Supply real small-size
 # controls so Qt does not fall through to an old Apps-context symbolic variant.
 REQUIRED_SYMBOLIC_CONTROLS = {'speedometer'}
+# Keep compact place glyphs at 16/22/24px. The actions/32 directory scales
+# through 256px and precedes Places in lookup, so bare names there would
+# shadow the large folder artwork. Explicit symbolic controls remain available.
+SIZE_AWARE_PLACES = {'folder-documents', 'user-desktop'}
 # Explicit semantic mappings; other icons and their aliases remain upstream.
 GROUPS = {
     'actions': {
@@ -260,14 +264,21 @@ def apply(output):
                     # Qt searches multiple contexts; update existing duplicate
                     # names too, so an older actions icon cannot shadow status.
                     if name in own_names or (directory / (name + '.svg')).exists() or (directory / (name + '-symbolic.svg')).exists():
-                        targets = [symbolic_name(name)] if folder == 'symbolic' or name in identities else list(dict.fromkeys([name, symbolic_name(name)]))
+                        large_place = folder == '32' and name in SIZE_AWARE_PLACES
+                        if large_place:
+                            (directory / (name + '.svg')).unlink(missing_ok=True)
+                        targets = [symbolic_name(name)] if folder == 'symbolic' or name in identities or large_place else list(dict.fromkeys([name, symbolic_name(name)]))
                         for target in targets:
                             path = directory / (target + '.svg')
                             # Also supply standard names absent from the upstream
                             # size directory, so Qt won't fall back to old artwork.
-                            if target.endswith('-symbolic') and folder != 'symbolic' and not path.exists() and name not in identities and name not in REQUIRED_SYMBOLIC_CONTROLS:
+                            if target.endswith('-symbolic') and folder != 'symbolic' and not path.exists() and name not in identities and name not in REQUIRED_SYMBOLIC_CONTROLS and not large_place:
                                 continue
-                            if context not in {'actions','status','devices'} and (not path.exists() or not outline_asset(path)):
+                            # Desktop's compact Places aliases point to an app
+                            # icon upstream. Materialize a separate glyph here:
+                            # cached lookup can prefer Places over Actions.
+                            compact_desktop = context == 'places' and name == 'user-desktop' and folder in {'16','22','24'}
+                            if context not in {'actions','status','devices'} and not compact_desktop and (not path.exists() or not outline_asset(path)):
                                 continue
                             if path.is_symlink(): path.unlink()
                             role = role_for(name.replace('-symbolic',''))
