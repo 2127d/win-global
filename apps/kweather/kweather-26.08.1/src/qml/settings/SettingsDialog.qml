@@ -7,7 +7,8 @@ import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
 
 import org.kde.kirigami as Kirigami
-import org.kde.kirigami.dialogs as Dialogs
+import org.kde.kweather
+import org.kde.kweather.components
 
 // The StackView owns scrolling, so this shell needs no additional scroll container.
 Controls.Dialog {
@@ -33,12 +34,8 @@ Controls.Dialog {
     exit: Transition {
         NumberAnimation { property: "opacity"; from: 1; to: 0; duration: Kirigami.Units.longDuration; easing.type: Easing.InOutQuad }
     }
-    Controls.Overlay.modal: Rectangle {
-        color: Qt.rgba(0, 0, 0, 0.3)
-        Behavior on opacity {
-            NumberAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.InOutQuad }
-        }
-    }
+    // Main owns the single visual scrim; Popup still handles modal input.
+    Controls.Overlay.modal: Item {}
     background: Kirigami.ShadowedRectangle {
         radius: 24
         color: systemPalette.window
@@ -47,71 +44,44 @@ Controls.Dialog {
         shadow.size: Kirigami.Units.largeSpacing
         shadow.color: Qt.alpha(Kirigami.Theme.textColor, 0.10)
     }
-    header: Dialogs.DialogHeader {
-        dialog: root
+    header: Controls.Control {
+        padding: 12
         background: null
-        leftPadding: padding + 2
-        contentItem: RowLayout {
-            spacing: Kirigami.Units.smallSpacing
-            Controls.ToolButton {
-                id: backButton
-                objectName: "weatherAboutBack"
-                visible: pages.depth > 1
-                enabled: !pages.busy
-                Layout.preferredWidth: 32; Layout.preferredHeight: 32
-                padding: 8
-                text: i18n("Back to Settings")
-                Accessible.name: text
-                onClicked: pages.pop()
-                contentItem: Kirigami.Icon {
-                    source: root.mirrored ? "go-next-symbolic" : "go-previous-symbolic"
-                    isMask: true
-                }
-                background: Rectangle {
-                    radius: width / 2
-                    color: Qt.alpha(Kirigami.Theme.textColor, backButton.down ? 0.16 : backButton.hovered ? 0.10 : 0.05)
-                    border.width: backButton.visualFocus ? 2 : 1
-                    border.color: backButton.visualFocus ? Kirigami.Theme.highlightColor : Qt.alpha(Kirigami.Theme.textColor, 0.18)
-                    Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
-                }
-                Controls.ToolTip.visible: hovered
-                Controls.ToolTip.text: text
-            }
+        contentItem: Item {
+            implicitHeight: 32
             Controls.Label {
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignVCenter
-                Layout.leftMargin: backButton.visible && !root.mirrored ? 8 : 0
-                Layout.rightMargin: backButton.visible && root.mirrored ? 8 : 0
+                objectName: "weatherSettingsDialogTitle"
+                anchors.fill: parent
+                anchors.leftMargin: 44; anchors.rightMargin: 44
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
                 text: root.title
                 textFormat: Text.PlainText
                 font.pixelSize: 18
                 font.weight: Font.Bold
                 elide: Text.ElideRight
             }
-            Controls.ToolButton {
-                id: closeButton
+            TrafficLightClose {
                 objectName: "weatherCloseSettings"
-                Layout.preferredWidth: 32; Layout.preferredHeight: 32
-                padding: 8
-                text: i18n("Close")
-                Accessible.name: text
-                visible: root.showCloseButton
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                visible: root.showCloseButton && pages.depth === 1
                 onClicked: root.reject()
-                contentItem: Kirigami.Icon {
-                    source: "window-close-symbolic"
-                    isMask: true
-                    color: Kirigami.Theme.textColor
-                }
-                background: Rectangle {
-                    radius: width / 2
-                    color: Qt.alpha(Kirigami.Theme.textColor, closeButton.down ? 0.16 : closeButton.hovered ? 0.10 : 0.05)
-                    border.width: closeButton.visualFocus ? 2 : 1
-                    border.color: closeButton.visualFocus ? Kirigami.Theme.highlightColor : Qt.alpha(Kirigami.Theme.textColor, 0.18)
-                    Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
-                }
-                Controls.ToolTip.visible: hovered
-                Controls.ToolTip.text: text
-                Controls.ToolTip.delay: Kirigami.Units.toolTipDelay
+            }
+            WeatherAction {
+                id: backButton
+                objectName: "weatherAboutBack"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                width: 38; height: 38
+                topInset: 0; bottomInset: 0; leftInset: 0; rightInset: 0
+                visible: pages.depth > 1
+                enabled: !pages.busy
+                floating: true
+                iconOnly: true
+                text: i18n("Back to Settings")
+                symbol: root.mirrored ? "go-next-symbolic" : "go-previous-symbolic"
+                onClicked: pages.pop()
             }
         }
     }

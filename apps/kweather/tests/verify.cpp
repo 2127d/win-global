@@ -9,6 +9,10 @@
 #include <QDir>
 #include <QFile>
 #include <QNetworkProxy>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QCryptographicHash>
+#include <QIcon>
 #include <cstdlib>
 static void check(bool ok,const char *message) { if(!ok) {qCritical("FAIL: %s",message);std::_Exit(2);} }
 static QVariant eval(QObject *object,const QString &code) {
@@ -35,6 +39,53 @@ static QQuickItem *findInWindows(const QString &name) {
         if(window->isVisible())if(auto item=visibleItem(visibleItem,window->contentItem(),name))return item;
     return nullptr;
 }
+static void checkDesktopHeader(const QString &closeName,const QString &titleName) {
+    auto close=findInWindows(closeName);auto title=findInWindows(titleName);
+    check(close && title,"desktop title and traffic-light close button are visible");
+    check(qAbs(title->x()+title->width()/2-title->parentItem()->width()/2)<.1 && eval(title,"horizontalAlignment===Text.AlignHCenter").toBool(),"desktop title is centered independently of the close control");
+    check(close->x()<title->x(),"traffic-light close control is on the left");
+    QTest::mouseMove(close->window(),QPoint(5,5));QTest::qWait(30);
+    check(!close->property("crossVisible").toBool(),"traffic light hides its cross at rest");
+    QTest::mouseMove(close->window(),close->mapToScene(QPointF(close->width()/2,close->height()/2)).toPoint());QTest::qWait(30);
+    check(close->property("crossVisible").toBool(),"traffic light reveals its cross on hover");
+    QTest::mouseMove(close->window(),QPoint(5,5));QTest::qWait(30);
+}
+static void checkActionResources() {
+    QFile manifest(":/sequoia-weather/action-icons.json");
+    check(manifest.open(QIODevice::ReadOnly),"bundled action icon manifest");
+    const auto hashes=QJsonDocument::fromJson(manifest.readAll()).object()["sha256"].toObject();
+    check(hashes.size()>=20,"complete rounded action icon bundle");
+    for(auto it=hashes.begin();it!=hashes.end();++it) {
+        const QString path=":/sequoia-weather/actions/"+it.key();
+        QFile svg(path);check(svg.open(QIODevice::ReadOnly),"action SVG resource exists");
+        check(QCryptographicHash::hash(svg.readAll(),QCryptographicHash::Sha256).toHex()==it.value().toString().toLatin1(),"action SVG matches reviewed artwork");
+        check(!QIcon(path).pixmap(24,24).isNull(),"action SVG renders without the desktop icon theme");
+    }
+}
+static void checkStylePill(QQuickItem *dashboard) {
+    auto pill=find(dashboard,"weatherStylePill");check(pill,"style pill exists");
+    for(const auto name:{"weatherRefresh","weatherSettings"}) {
+        auto button=find(dashboard,name);check(button,"floating toolbar action exists");
+        check(button->property("floating").toBool() && eval(button,"background.radius===background.height/2 && width===height").toBool(),"toolbar actions use round floating surfaces");
+    }
+    for(const auto name:{"weatherSidebarIcon","weatherDayIcon0","weatherHourIcon0"}) {
+        if(!dashboard->property("hasWeather").toBool() && QString(name)!="weatherSidebarIcon")continue;
+        auto icon=find(dashboard,name);check(icon,"foreground weather symbol exists");
+        check(icon->property("isMask").toBool() && icon->property("color").value<QColor>()==dashboard->property("ink").value<QColor>(),"small weather symbols follow the active mode's foreground color");
+    }
+    check(find(find(dashboard,"weatherHero"),"weatherCardShadow"),"weather cards have a dedicated background shadow");
+    check(qAbs(pill->property("radius").toDouble()-pill->height()/2)<.01,"style selector has full capsule radius");
+    for(const auto name:{"weatherFlatStyle","weatherDynamicStyle"}) {
+        auto button=find(dashboard,name);
+        check(eval(button,"background.radius===background.height/2").toBool(),"style segments have full capsule radius");
+        check(button->x()>=0 && button->x()+button->width()<=pill->width(),"style segment fits capsule");
+    }
+    check(find(dashboard,"weatherFlatStyle")->property("checked").toBool()!=find(dashboard,"weatherDynamicStyle")->property("checked").toBool(),"exactly one style is selected");
+    QTest::qWait(pill->property("slideDuration").toInt()+40);
+    auto selection=find(dashboard,"weatherStyleSelection");check(selection,"shared sliding selection exists");
+    auto active=find(dashboard,dashboard->property("dynamic").toBool()?"weatherDynamicStyle":"weatherFlatStyle");
+    check(qAbs(selection->mapToScene(QPointF()).x()-active->mapToScene(QPointF()).x())<.1 && qAbs(selection->width()-active->width())<.1,"sliding selection settles on the active button");
+}
 static void capture(QQuickWindow *w,const QString &name) {
     QTest::qWait(600);
     check(w->grabWindow().save(qEnvironmentVariable("WEATHER_CAPTURE")+"/"+name+".png"),"screenshot");
@@ -56,6 +107,7 @@ static void checkForecastRows(QQuickItem *dashboard) {
 }
 static void runWelcome(QQuickWindow *window,QQuickItem *welcome) {
     QTest::qWait(600);
+    checkActionResources();
     check(eval(welcome,"WeatherLocationListModel.count===0 && !settingsModel.firstStartup").toBool(),"first launch uses the welcome screen");
     window->resize(680,580);capture(window,"welcome-dynamic");
     click(find(welcome,"weatherWelcomeAddLocation"));
@@ -76,6 +128,9 @@ static void runWelcome(QQuickWindow *window,QQuickItem *welcome) {
     auto field=findInWindows("weatherLocationSearchField");
     auto searchButton=findInWindows("weatherLocationSearchButton");
     check(card && field && searchButton,"search card and controls are visible");
+    check(find(field,"weatherSearchFieldIcon")->property("source").toString()=="qrc:/sequoia-weather/actions/search.svg","search field uses the bundled rounded glyph");
+    searchButton->forceActiveFocus();QTest::keyClick(window,Qt::Key_F,Qt::ControlModifier);QTest::qWait(100);
+    check(field->hasActiveFocus(),"custom search field preserves Ctrl+F");
     check(qAbs(card->mapToScene(QPointF(card->width(),0)).x()-searchButton->mapToScene(QPointF(searchButton->width(),0)).x())<1,"shared results card extends to the search button's right edge");
     check(qAbs(card->mapToScene(QPointF()).x()-field->mapToScene(QPointF()).x())<1,"shared results card aligns with search field");
     check(card->property("radius")==eval(field,"background.radius"),"shared results card matches search field radius");
@@ -123,7 +178,7 @@ static void runCompact(QQuickWindow *window,QQuickItem *dashboard) {
     fits(findInWindows("weatherCompactBack"));
     fits(findInWindows("weatherOpenAbout"));
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1")
-        check(eval(window,"background.layer.enabled && !pageStack.layer.enabled").toBool()==(qEnvironmentVariableIntValue("WEATHER_ALPHA")<255),"compact transparent theme blurs scenery while page controls stay sharp");
+        check(eval(window,"background.scenery.layer.enabled && !pageStack.layer.enabled").toBool()==(qEnvironmentVariableIntValue("WEATHER_ALPHA")<255),"compact transparent theme blurs scenery while page controls stay sharp");
     capture(window,"settings");
     click(findInWindows("weatherOpenAbout"));QTest::qWait(300);
     auto about=findInWindows("weatherAboutView");check(about,"compact About is reachable");
@@ -168,7 +223,7 @@ static void runCompact(QQuickWindow *window,QQuickItem *dashboard) {
     check(findInWindows("weatherManagedLocations"),"compact search returns to location management");
     click(findInWindows("weatherManagedLocation1"));QTest::qWait(300);
     check(eval(dashboard,"location.name==='Monterey'").toBool(),"compact management selects a saved location");
-    check(!eval(window,"background.layer.enabled || pageStack.layer.enabled").toBool(),"returning to the forecast releases compact backdrop blur");
+    check(!eval(window,"background.scenery.layer.enabled || pageStack.layer.enabled").toBool(),"returning to the forecast releases compact backdrop blur");
     qInfo("PASS: compact Settings, About, location management, search, scrolling and navigation");
     window->close();
 }
@@ -218,8 +273,72 @@ static void runChoices(QQuickWindow *window,QQuickItem *dashboard) {
     qInfo("PASS: inline Settings choices, stable popup, compact reachability, saved values and keyboard navigation");
     window->close();
 }
+static void runCompositing(QQuickWindow *window,QQuickItem *dashboard) {
+    window->resize(1180,820);
+    const int alpha=qEnvironmentVariableIntValue("WEATHER_ALPHA");
+    eval(dashboard,"settingsModel.forecastStyle='Flat'");QTest::qWait(500);
+    auto before=window->grabWindow();
+    eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(500);
+    auto after=window->grabWindow();
+    before.save(qEnvironmentVariable("WEATHER_CAPTURE")+"/flat-edge-before.png");
+    after.save(qEnvironmentVariable("WEATHER_CAPTURE")+"/flat-edge-modal.png");
+    for(int y:{0,1,2,4,8,12}) {
+        const auto a=before.pixelColor(before.width()*2/3,y),b=after.pixelColor(after.width()*2/3,y);
+        const qreal expectedAlpha=.3+.7*a.alphaF();
+        qInfo()<<"edge"<<y<<a<<b<<"expected alpha"<<expectedAlpha;
+        check(qAbs(b.alphaF()-expectedAlpha)<.012,"modal edge has exactly one 30-percent scrim, without losing background alpha");
+        for(auto channel:{&QColor::redF,&QColor::greenF,&QColor::blueF})
+            check(qAbs((b.*channel)()-(a.*channel)()*a.alphaF()*.7/expectedAlpha)<.02,"modal edge matches source-over dimming without extra darkening");
+    }
+    eval(window,"settingsDialogLoader.item.close()");QTest::qWait(400);
+    for(int cycle=0;cycle<6;++cycle) {
+        eval(dashboard,"settingsModel.forecastStyle='Dynamic'");QTest::qWait(40);
+        check(window->color().alpha()==(alpha<255?0:255),"native window alpha is stable during style switching");
+        eval(dashboard,"settingsModel.forecastStyle='Flat'");QTest::qWait(cycle%2?350:40);
+        window->resize(1180+(cycle%2)*20,820);
+    }
+    QTest::qWait(500);auto flat=window->grabWindow();
+    for(int y:{0,1,2,4,8,12}) {
+        const auto pixel=flat.pixelColor(flat.width()*2/3,y),reference=before.pixelColor(before.width()*2/3,y);
+        check(qAbs(pixel.alpha()-alpha)<=2,"flat top edge has no stale opacity after rapid style switches and resize");
+        check(qAbs(pixel.red()-reference.red())<=2 && qAbs(pixel.green()-reference.green())<=2 && qAbs(pixel.blue()-reference.blue())<=2,"flat top edge has no stale scenery color after switching");
+    }
+    capture(window,"flat-after-switching");
+    eval(dashboard,"settingsModel.forecastStyle='Dynamic';applicationWindow().openSettings()");QTest::qWait(350);
+    eval(dashboard,"settingsModel.forecastStyle='Flat'");QTest::qWait(400);
+    auto switchedModal=window->grabWindow();
+    check(qAbs(switchedModal.pixelColor(switchedModal.width()*2/3,1).alphaF()-(.3+.7*alpha/255.))<.012,"switching to Flat with Settings open retains the correct edge alpha");
+    capture(window,"flat-modal-after-switching");
+    eval(window,"settingsDialogLoader.item.close()");QTest::qWait(350);
+    eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(350);
+    eval(window,"locationsListDialogLoader.item.close();openAddLocation()");
+    for(int i=0;i<8;++i) {
+        QTest::qWait(25);
+        const qreal amount=window->property("sequoiaModalAmount").toDouble();
+        auto frame=window->grabWindow();auto pixel=frame.pixelColor(frame.width()*2/3,1);
+        const qreal expectedAlpha=amount+(1-amount)*alpha/255.;
+        check(qAbs(pixel.alphaF()-expectedAlpha)<.025,"dialog handoff uses the same single scrim reported to the decoration");
+    }
+    eval(window,"addLocationDialogLoader.item.close()");QTest::qWait(400);
+    check(window->property("sequoiaModalAmount").toDouble()==0,"closing all dialogs clears dimming");
+    qInfo("PASS: single modal scrim, edge alpha/color, stable native material, rapid switching, resize and dialog handoff");
+    window->close();
+}
 static void run(QQuickWindow *window,QQuickItem *dashboard) {
     QTest::qWait(700);
+    if(qEnvironmentVariable("WEATHER_COMPOSITING")=="1") {runCompositing(window,dashboard);return;}
+    checkActionResources();checkStylePill(dashboard);
+    auto pill=find(dashboard,"weatherStylePill");
+    auto selection=find(dashboard,"weatherStyleSelection");
+    const qreal startX=selection->x();
+    eval(dashboard,"settingsModel.forecastStyle='Flat'");
+    if(pill->property("slideDuration").toInt()>0) {
+        check(qAbs(selection->x()-startX)<.1,"selection starts moving from its previous position");
+        QTest::qWait(pill->property("slideDuration").toInt()/2);
+        check(selection->x()<startX && selection->x()>4,"selection passes through an intermediate position");
+    }
+    // Reverse an unfinished slide, as with rapid user switching.
+    eval(dashboard,"settingsModel.forecastStyle='Dynamic'");checkStylePill(dashboard);
     if(qEnvironmentVariable("WEATHER_CHOICES")=="1") {runChoices(window,dashboard);return;}
     if(qEnvironmentVariable("WEATHER_COMPACT")=="1") {runCompact(window,dashboard);return;}
     if(qEnvironmentVariable("WEATHER_EMPTY")=="1") {
@@ -235,12 +354,15 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     // Exercise shader-backed dialogs directly on Wayland. The full forecast
     // interaction suite below uses the deterministic offscreen renderer.
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1") {
+        eval(dashboard,"settingsModel.forecastStyle='Flat'");checkStylePill(dashboard);capture(window,"flat-pill");
+        eval(dashboard,"settingsModel.forecastStyle='Dynamic'");checkStylePill(dashboard);
         qInfo("Checking Settings and About navigation");
         eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
         check(qAbs(window->property("sequoiaModalAmount").toDouble()-.3)<.001,"popup reports its decoration dim amount");
         const bool transparent=qEnvironmentVariableIntValue("WEATHER_ALPHA")<255;
-        check(eval(window,"pageStack.layer.enabled && background.layer.enabled").toBool()==transparent,"settings backdrop blur follows theme transparency");
+        check(eval(window,"pageStack.layer.enabled && background.scenery.layer.enabled").toBool()==transparent,"settings backdrop blur follows theme transparency");
         check(qAbs(eval(window,"settingsDialogLoader.item.background.color.a").toDouble()*255-qEnvironmentVariableIntValue("WEATHER_ALPHA"))<=1,"settings surface uses the theme opacity");
+        checkDesktopHeader("weatherCloseSettings","weatherSettingsDialogTitle");
         capture(window,"settings");
         const auto settingsGeometry=eval(window,"[settingsDialogLoader.item.x,settingsDialogLoader.item.y,settingsDialogLoader.item.width,settingsDialogLoader.item.height].join(',')");
         const auto desktopDepth=eval(window,"pageStack.depth");
@@ -254,6 +376,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
         check(eval(window,"[settingsDialogLoader.item.x,settingsDialogLoader.item.y,settingsDialogLoader.item.width,settingsDialogLoader.item.height].join(',')")==settingsGeometry,"About retains settings popup geometry");
         check(eval(about,"aboutData.version.length > 0 && aboutData.authors.length > 0 && aboutData.licenses.length > 0").toBool(),"About preserves real version, credits and license data");
         check(eval(window,"pageStack.layer.enabled").toBool()==transparent,"About retains theme-aware backdrop blur");
+        check(!findInWindows("weatherCloseSettings"),"desktop About has no close control");
         capture(window,"about");
         auto license=findInWindows("weatherAboutLicense");check(license,"application license is available");
         eval(about,QString("contentItem.contentY += %1").arg(license->mapToItem(about,QPointF()).y()-80));QTest::qWait(200);
@@ -267,21 +390,26 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
         check(findInWindows("weatherOpenAbout") && motion->property("checked")!=motionBefore,"Back restores Settings and preserves edits");
         click(motion);
         click(findInWindows("weatherOpenAbout"));QTest::qWait(500);
+        check(!findInWindows("weatherCloseSettings"),"About closes through the Settings traffic light after going back");
+        click(findInWindows("weatherAboutBack"));QTest::qWait(400);
         click(findInWindows("weatherCloseSettings"));QTest::qWait(600);
         check(!eval(window,"settingsDialogLoader.isOpen").toBool(),"circular settings close button closes the dialog");
         check(window->property("sequoiaModalAmount").toDouble()==0,"closing popup releases decoration dimming");
-        check(!eval(window,"pageStack.layer.enabled || background.layer.enabled").toBool(),"closing settings releases backdrop blur");
+        check(!eval(window,"pageStack.layer.enabled || background.scenery.layer.enabled").toBool(),"closing settings releases backdrop blur");
         eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
         check(findInWindows("weatherOpenAbout") && !findInWindows("weatherAboutBack"),"reopening settings starts at Settings");
         click(findInWindows("weatherCloseSettings"));QTest::qWait(600);
         qInfo("Checking location dialogs after About");
         eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(300);
-        check(eval(window,"locationsListDialogLoader.item.background.color.a < 0.9 && pageStack.layer.enabled && background.layer.enabled").toBool(),"rendered management dialog has translucency and backdrop blur");
+        check(eval(window,"locationsListDialogLoader.item.background.color.a < 0.9 && pageStack.layer.enabled && background.scenery.layer.enabled").toBool(),"rendered management dialog has translucency and backdrop blur");
+        checkDesktopHeader("weatherCloseLocations","weatherLocationDialogTitle");
         capture(window,"locations");
         click(findInWindows("weatherManageAddLocation"));QTest::qWait(400);
         check(findInWindows("weatherLocationSearchField") && eval(window,"pageStack.layer.enabled").toBool(),"switching from management to search retains blur");
+        checkDesktopHeader("weatherCloseLocationSearch","weatherLocationDialogTitle");
+        capture(window,"location-search");
         click(findInWindows("weatherCloseLocationSearch"));QTest::qWait(600);
-        check(!eval(window,"pageStack.layer.enabled || background.layer.enabled").toBool(),"closing location dialogs releases all blur layers");
+        check(!eval(window,"pageStack.layer.enabled || background.scenery.layer.enabled").toBool(),"closing location dialogs releases all blur layers");
         qInfo("PASS: rendered theme-aware settings, location management translucency, blur, search transition and close");
         window->close();return;
     }
@@ -299,6 +427,13 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     eval(scroll,"contentItem.contentY=0");QTest::qWait(200);
     click(find(dashboard,"weatherFlatStyle"));
     check(!dashboard->property("dynamic").toBool(),"flat style switch");
+    checkStylePill(dashboard);
+    click(find(dashboard,"weatherFlatStyle"));
+    check(find(dashboard,"weatherFlatStyle")->property("checked").toBool(),"selected style stays selected when clicked again");
+    auto dynamicButton=find(dashboard,"weatherDynamicStyle");dynamicButton->forceActiveFocus();
+    QTest::keyClick(window,Qt::Key_Space);QTest::qWait(200);
+    check(dashboard->property("dynamic").toBool(),"style selector supports keyboard activation");
+    checkStylePill(dashboard);click(find(dashboard,"weatherFlatStyle"));
     capture(window,"flat");
     check(window->color().alpha()==(qEnvironmentVariableIntValue("WEATHER_ALPHA")<255?0:255),"flat window uses transparent clear color only for the transparent palette");
     check(qAbs(window->grabWindow().pixelColor(5,100).alpha()-qEnvironmentVariableIntValue("WEATHER_ALPHA"))<=1,"rendered flat margin preserves palette transparency");
@@ -319,7 +454,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     check(eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"native location dialog opens");
     check(eval(window,"locationsListDialogLoader.item.background.color.a < 0.9").toBool(),"management dialog uses a translucent surface");
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1")
-        check(eval(window,"pageStack.layer.enabled && background.layer.enabled").toBool(),"management dialog blurs the forecast and scenery");
+        check(eval(window,"pageStack.layer.enabled && background.scenery.layer.enabled").toBool(),"management dialog blurs the forecast and scenery");
     auto managed=findInWindows("weatherManagedLocations");check(managed,"location management list visible");
     auto addLocation=findInWindows("weatherManageAddLocation");check(addLocation,"management add location button visible");
     addLocation->forceActiveFocus();
@@ -330,7 +465,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     eval(dashboard,"applicationWindow().openLocationsList()");QTest::qWait(200);
     click(findInWindows("weatherManagedLocation1"));QTest::qWait(600);
     check(!eval(dashboard,"applicationWindow().isDialogOpen").toBool(),"dialogs close");
-    check(!eval(window,"pageStack.layer.enabled && background.layer.enabled").toBool(),"closing location management releases backdrop blur");
+    check(!eval(window,"pageStack.layer.enabled && background.scenery.layer.enabled").toBool(),"closing location management releases backdrop blur");
     check(eval(dashboard,"location.name==='Monterey'").toBool(),"management row selects its location");
     eval(dashboard,"switchPageIndex(1)");
     check(eval(dashboard,"location.name==='Monterey'").toBool(),"switch saved location");

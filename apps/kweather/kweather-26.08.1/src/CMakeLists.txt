@@ -37,6 +37,11 @@ target_link_libraries(kweatherLib
 )
 
 add_executable(kweather ${kweather_SRCS})
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+execute_process(COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/../../action-icons.py"
+    "${CMAKE_CURRENT_BINARY_DIR}/weather-actions" COMMAND_ERROR_IS_FATAL ANY)
+qt_add_resources(WEATHER_ACTION_RESOURCES "${CMAKE_CURRENT_BINARY_DIR}/weather-actions/weather-actions.qrc")
+target_sources(kweather PRIVATE ${WEATHER_ACTION_RESOURCES})
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../../desktop/effects/modal-dimming/client ${CMAKE_CURRENT_BINARY_DIR}/modal-bridge)
 target_link_libraries(kweather PRIVATE sequoia-modal-bridge)
 
@@ -125,6 +130,7 @@ qt_add_qml_module(kweathercomponents
     "qml/components/ListDelegate.qml"
     "qml/components/PageContainer.qml"
     "qml/components/PageHeader.qml"
+    "qml/components/TrafficLightClose.qml"
     "qml/components/PageStack.qml"
     STATIC
 )

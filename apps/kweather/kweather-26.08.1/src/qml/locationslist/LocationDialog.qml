@@ -3,11 +3,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
-import org.kde.kirigami.dialogs as Dialogs
+import org.kde.kweather.components
 
 Kirigami.Dialog {
     id: root
     property string closeButtonObjectName: "weatherCloseLocations"
+    // Keep modal input blocking, with the shared visual scrim in Main.
+    Overlay.modal: Item {}
     standardButtons: Kirigami.Dialog.NoButton
     parent: applicationWindow().overlay
     preferredHeight: 440
@@ -19,46 +21,29 @@ Kirigami.Dialog {
         radius: 24
         color: Qt.alpha(Kirigami.Theme.backgroundColor, 0.88)
     }
-    header: Dialogs.DialogHeader {
-        dialog: root
+    header: Control {
+        padding: 12
         background: null
-        leftPadding: padding + 2
-        contentItem: RowLayout {
-            spacing: Kirigami.Units.smallSpacing
+        contentItem: Item {
+            implicitHeight: 32
             Label {
                 objectName: "weatherLocationDialogTitle"
-                Layout.fillWidth: true
+                anchors.fill: parent
+                anchors.leftMargin: 44; anchors.rightMargin: 44
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
                 text: root.title
                 textFormat: Text.PlainText
                 font.pixelSize: 18
                 font.weight: Font.Bold
                 elide: Text.ElideRight
             }
-            ToolButton {
-                id: closeButton
+            TrafficLightClose {
                 objectName: root.closeButtonObjectName
-                Layout.preferredWidth: 32; Layout.preferredHeight: 32
-                padding: 8
-                text: i18n("Close")
-                Accessible.name: text
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
                 onClicked: root.reject()
-                contentItem: Kirigami.Icon {
-                    source: "window-close-symbolic"
-                    isMask: true
-                    color: Kirigami.Theme.textColor
-                }
-                background: Rectangle {
-                    radius: width / 2
-                    color: Qt.alpha(Kirigami.Theme.textColor, closeButton.down ? 0.16 : closeButton.hovered ? 0.10 : 0.05)
-                    border.width: closeButton.visualFocus ? 2 : 1
-                    border.color: closeButton.visualFocus ? Kirigami.Theme.highlightColor : Qt.alpha(Kirigami.Theme.textColor, 0.18)
-                    Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
-                }
-                ToolTip.visible: hovered
-                ToolTip.text: text
-                ToolTip.delay: Kirigami.Units.toolTipDelay
             }
         }
     }
-
 }

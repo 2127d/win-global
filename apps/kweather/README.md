@@ -22,6 +22,10 @@ Settings uses rounded, padded cards with soft shadows and the same animated
 switch indicator as `themes/application-style/quick/SwitchIndicator.qml`, bundled
 at build time. The switch retains native mouse, keyboard and accessibility input;
 the existing unit selectors and persistence remain unchanged.
+Desktop Settings, Add Location and Locations dialogs have centered titles and a
+red traffic-light close control on the left; its cross appears on hover or keyboard
+focus. Desktop About keeps only its back button, returning to Settings to close.
+Compact pages retain their existing headers and back navigation.
 Location search and management use rounded dialog surfaces, plain search result
 rows inside one shared card and padded saved-location cards, accent-focused search
 fields and rounded action buttons. The results card spans the search field and
@@ -43,6 +47,20 @@ Transparent. The same dashboard adapts to narrow windows, where locations move
 into the native location picker. Both styles can be switched without losing the
 selected location or day. New loading and error feedback retains available data
 when a refresh fails; absent data is shown as unavailable rather than zero.
+
+Action controls use a private bundle of the Sequoia Tahoe Material Symbols Rounded
+artwork, including Settings, About, search, clear, close, back, add, reorder and
+delete. The build generates these resources from the shared icon sources, with
+their Apache license and checksums; it never substitutes application identities or
+weather illustrations. Explicit resource URLs keep controls consistent across icon
+themes. The Flat/Dynamic selector uses a raised pill surface with a soft shadow and one
+selection capsule that slides and resizes with cubic easing. Its motion follows
+KDE animation duration (including disabled animations), supports rapid reversal,
+and retains keyboard activation and mutually exclusive selection. Refresh and
+Settings use matching circular floating surfaces; forecast cards have soft shadows
+behind their rounded backgrounds. Small forecast icons use white foreground ink
+in Dynamic mode and system text color in Flat mode, keeping both light and dark
+themes legible. The large current-weather illustration retains its colors.
 
 ## Build and install
 
@@ -92,6 +110,7 @@ a zero-range day at the upper endpoint of the temperature scale.
 `--welcome` checks first launch without saved locations, both welcome styles,
 Settings access and the location-search action at wide and compact sizes.
 Use `--mode light|dark --material solid|transparent` to test each palette.
+Use `--icon-theme SequoiaTahoe-light` to check the installed Tahoe weather symbols.
 `--rendered` checks Settings and About on the live Wayland renderer with isolated
 data. About shares Settings' theme-aware popup surface and blur, uses a sliding
 fade transition with KDE's animation duration, and preserves Settings on return.
@@ -111,3 +130,11 @@ embedded popup fades. Its reusable Wayland bridge is linked from
 `desktop/effects/modal-dimming/client`; Weather works normally when the effect is
 absent. Compact Settings/About/location pages do not dim the title bar. The effect
 is installed and removed independently of the app makeover.
+
+Modal composition uses one shared scrim whose exact opacity is also reported to
+the decoration, including overlapping dialog transitions. The flat palette plane
+is never blurred; only the scenery and foreground content are sampled for blur.
+Scenery extends beyond the viewport so blur sampling cannot thin the window edge.
+The native window alpha/blur contract stays fixed across Flat/Dynamic switches and
+changes only with the selected theme material. `--rendered --compositing` checks
+edge color and alpha, rapid style switching, resizing and dialog handoffs.

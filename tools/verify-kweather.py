@@ -40,6 +40,8 @@ def main():
     parser.add_argument('--binary',type=Path,default=ROOT/'.staging/kweather-build/bin/kweather')
     parser.add_argument('--mode',choices=('light','dark'),default='dark')
     parser.add_argument('--material',choices=('solid','transparent'),default='solid')
+    parser.add_argument('--icon-theme',default='breeze',help='Icon theme used only by the isolated test session')
+    parser.add_argument('--compositing',action='store_true',help='Stress material switching and check modal scrim pixels at the client edges')
     parser.add_argument('--empty',action='store_true')
     parser.add_argument('--welcome',action='store_true',help='Test first launch with no saved locations')
     parser.add_argument('--compact',action='store_true',help='Check all auxiliary pages at the smallest supported window size')
@@ -50,7 +52,7 @@ def main():
     flags=shlex.split(subprocess.check_output(['pkg-config','--cflags','--libs','Qt6Widgets','Qt6Quick','Qt6Test','Qt6Network'],text=True))
     if not helper.exists() or source.stat().st_mtime>helper.stat().st_mtime:
         subprocess.run(['c++','-std=c++17','-shared','-fPIC',str(source),'-o',str(helper),*flags],check=True)
-    output=ROOT/(f'preview/kweather-{args.mode}-{args.material}'+('-welcome' if args.welcome else '-empty' if args.empty else '-compact' if args.compact else '')+('-choices' if args.choices else '')+('-rendered' if args.rendered else ''));output.mkdir(parents=True,exist_ok=True)
+    output=ROOT/(f'preview/kweather-{args.mode}-{args.material}'+('-welcome' if args.welcome else '-empty' if args.empty else '-compact' if args.compact else '')+('-choices' if args.choices else '')+('-rendered' if args.rendered else '')+('-compositing' if args.compositing else '')+('-icons-'+args.icon_theme if args.icon_theme!='breeze' else ''));output.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='sequoia-weather-test-',ignore_cleanup_errors=True) as temp:
         base=Path(temp);env=dict(os.environ)
         for kind in ('CONFIG','DATA','CACHE','STATE','RUNTIME'):
@@ -68,13 +70,14 @@ def main():
         if args.empty:
             import shutil
             shutil.rmtree(base/'cache/kweather/cache')
-        (base/'config/kdeglobals').write_text((ROOT/f'themes/color-schemes/SequoiaEleven{args.mode.title()}{args.material.title()}.colors').read_text()+'\n[Icons]\nTheme=breeze\n')
+        (base/'config/kdeglobals').write_text((ROOT/f'themes/color-schemes/SequoiaEleven{args.mode.title()}{args.material.title()}.colors').read_text()+'\n[Icons]\nTheme='+args.icon_theme+'\n')
         env.update(QT_QPA_PLATFORM='offscreen',QT_QPA_PLATFORMTHEME='kde',QT_STYLE_OVERRIDE='Fusion',QT_QUICK_BACKEND='software',
             QT_FORCE_STDERR_LOGGING='1',XDG_DATA_DIRS=str(Path.home()/'.local/share')+':/usr/local/share:/usr/share',WEATHER_CAPTURE=str(output),WEATHER_MATERIAL=args.material,LC_ALL='C.UTF-8')
         env.pop('LD_PRELOAD',None)
         if args.rendered:
             env.update(QT_QPA_PLATFORM='wayland',QT_QUICK_BACKEND='rhi',QSG_RHI_BACKEND='opengl',
                 XDG_RUNTIME_DIR=os.environ['XDG_RUNTIME_DIR'])
+        env['WEATHER_COMPOSITING']='1' if args.compositing else ''
         env['WEATHER_RENDERED']='1' if args.rendered else ''
         env['WEATHER_EMPTY']='1' if args.empty else ''
         env['WEATHER_WELCOME']='1' if args.welcome else ''
@@ -87,6 +90,6 @@ def main():
         log=(output/'verification.log').read_text()
         print('Exit:',result.returncode);print(log[-7000:])
         assert result.returncode==0 and 'PASS:' in log and 'FAIL:' not in log
-        assert not any(s in log for s in ('ReferenceError:', 'TypeError:', 'Binding loop detected', 'Cannot assign', 'Unable to assign', 'is not a type'))
+        assert not any(s in log for s in ('ReferenceError:', 'TypeError:', 'Binding loop detected', 'Cannot assign', 'Unable to assign', 'is not a type', 'Unknown Weather action icon:', 'Cannot open:', 'Error decoding:'))
 
 if __name__=='__main__':main()

@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
+import QtQuick.Effects
 import org.kde.kirigami as Kirigami
 import org.kde.kholidays
 import org.kde.kweather
@@ -34,6 +35,7 @@ Kirigami.Page {
     readonly property var current: location ? location.currentHourForecast : null
     readonly property bool hasWeather: current !== null && current !== undefined && days.length > 0
     readonly property var selected: days.length ? days[Math.max(0, Math.min(location.selectedDay, days.length-1))] : null
+    readonly property color toolbarSurface: dynamic ? "#344f65" : Kirigami.Theme.backgroundColor
     readonly property color ink: dynamic ? "#f1f6fc" : Kirigami.Theme.textColor
     readonly property color muted: dynamic ? "#bdd0df" : Kirigami.Theme.disabledTextColor
     readonly property color accent: dynamic ? "#9bdbf0" : Kirigami.Theme.highlightColor
@@ -53,6 +55,8 @@ Kirigami.Page {
     component Caption: Label { color: dashboard.muted; font.pixelSize: 12 }
     component Action: WeatherAction { atmospheric: dashboard.dynamic }
     component Surface: WeatherSurface { atmospheric: dashboard.dynamic }
+    // Small forecast symbols use foreground ink; the large weather illustration keeps its colors.
+    component ConditionIcon: Kirigami.Icon { color: dashboard.ink; isMask: true }
     component Metric: Surface {
         id: metric
         property string title
@@ -82,7 +86,7 @@ Kirigami.Page {
                 anchors.fill: parent; anchors.margins: 18; spacing: 10
                 RowLayout {
                     Layout.topMargin: 12; Layout.bottomMargin: 24
-                    Kirigami.Icon { source: "weather-few-clouds"; implicitWidth: 25; implicitHeight: 25 }
+                    ConditionIcon { objectName: "weatherSidebarIcon"; source: "weather-few-clouds"; implicitWidth: 25; implicitHeight: 25 }
                     Heading { text: i18n("Weather"); font.pixelSize: 21 }
                 }
                 Caption { text: i18n("YOUR LOCATIONS"); font.letterSpacing: 1.2; font.pixelSize: 10; Layout.leftMargin: 10; Layout.bottomMargin: 2 }
@@ -136,16 +140,55 @@ Kirigami.Page {
                 }
                 Action { visible: !dashboard.sidebar; text: i18n("Locations"); symbol: "find-location"; iconOnly: true; onClicked: applicationWindow().openLocationsList() }
                 Rectangle {
-                    implicitWidth: styleRow.implicitWidth + 6; implicitHeight: 42; radius: 14
-                    color: Qt.alpha(dashboard.ink,0.05)
+                    id: stylePill
+                    objectName: "weatherStylePill"
+                    implicitWidth: styleRow.implicitWidth + 8; implicitHeight: 46; radius: height / 2
+                    readonly property Item activeButton: dashboard.dynamic ? dynamicStyle : flatStyle
+                    readonly property int slideDuration: Kirigami.Units.longDuration
+                    property bool ready: false
+                    Component.onCompleted: Qt.callLater(function() { stylePill.ready = true; })
+                    color: dashboard.toolbarSurface
+                    border.width: 1
+                    border.color: Qt.alpha(dashboard.ink, 0.13)
+                    layer.enabled: GraphicsInfo.api !== GraphicsInfo.Software
+                    layer.effect: MultiEffect {
+                        shadowEnabled: true
+                        shadowColor: "#000000"
+                        shadowOpacity: 0.24
+                        shadowBlur: 0.65
+                        shadowVerticalOffset: 4
+                        blurMax: 16
+                    }
+                    Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+                    Rectangle {
+                        id: styleSelection
+                        objectName: "weatherStyleSelection"
+                        x: styleRow.x + stylePill.activeButton.x
+                        y: styleRow.y
+                        width: stylePill.activeButton.width
+                        height: stylePill.activeButton.height
+                        radius: height / 2
+                        color: dashboard.dynamic ? "#527993" : Qt.tint(Kirigami.Theme.backgroundColor, Qt.alpha(Kirigami.Theme.highlightColor, 0.19))
+                        border.width: 1
+                        border.color: Qt.alpha(dashboard.ink, 0.10)
+                        Behavior on x {
+                            enabled: stylePill.ready && stylePill.slideDuration > 0
+                            NumberAnimation { duration: stylePill.slideDuration; easing.type: Easing.InOutCubic }
+                        }
+                        Behavior on width {
+                            enabled: stylePill.ready && stylePill.slideDuration > 0
+                            NumberAnimation { duration: stylePill.slideDuration; easing.type: Easing.InOutCubic }
+                        }
+                        Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+                    }
                     RowLayout {
                         id: styleRow; anchors.centerIn: parent; spacing: 2
-                        Action { objectName: "weatherFlatStyle"; text: i18n("Flat"); selected: !dashboard.dynamic; onClicked: { settingsModel.forecastStyle="Flat";settingsModel.save(); } }
-                        Action { objectName: "weatherDynamicStyle"; text: i18n("Dynamic"); selected: dashboard.dynamic; onClicked: { settingsModel.forecastStyle="Dynamic";settingsModel.save(); } }
+                        Action { id: flatStyle; objectName: "weatherFlatStyle"; text: i18n("Flat"); pill: true; checkable: true; autoExclusive: true; checked: !dashboard.dynamic; onClicked: { settingsModel.forecastStyle="Flat";settingsModel.save(); } }
+                        Action { id: dynamicStyle; objectName: "weatherDynamicStyle"; text: i18n("Dynamic"); pill: true; checkable: true; autoExclusive: true; checked: dashboard.dynamic; onClicked: { settingsModel.forecastStyle="Dynamic";settingsModel.save(); } }
                     }
                 }
-                Action { objectName: "weatherRefresh"; text: i18n("Refresh"); symbol: "view-refresh"; iconOnly: true; enabled: !!dashboard.location && !dashboard.location.loading; onClicked: dashboard.location.update() }
-                Action { objectName: "weatherSettings"; text: i18n("Settings"); symbol: "settings-configure"; iconOnly: true; onClicked: applicationWindow().openSettings() }
+                Action { objectName: "weatherRefresh"; floating: true; implicitHeight: stylePill.height; floatingSurface: dashboard.toolbarSurface; topInset: 0; bottomInset: 0; leftInset: 0; rightInset: 0; Layout.alignment: Qt.AlignCenter; text: i18n("Refresh"); symbol: "view-refresh"; iconOnly: true; enabled: !!dashboard.location && !dashboard.location.loading; onClicked: dashboard.location.update() }
+                Action { objectName: "weatherSettings"; floating: true; implicitHeight: stylePill.height; floatingSurface: dashboard.toolbarSurface; topInset: 0; bottomInset: 0; leftInset: 0; rightInset: 0; Layout.alignment: Qt.AlignCenter; text: i18n("Settings"); symbol: "settings-configure"; iconOnly: true; onClicked: applicationWindow().openSettings() }
             }
             ScrollView {
                 id: forecastScroll
@@ -174,6 +217,7 @@ Kirigami.Page {
                     Surface {
                         id: hero
                         objectName: "weatherHero"
+                        Layout.topMargin: 8
                         Layout.leftMargin: parent.inset; Layout.rightMargin: parent.inset; Layout.fillWidth: true
                         implicitHeight: 270
                         color: dashboard.dynamic ? "#3617253a" : flatSurface
@@ -233,7 +277,7 @@ Kirigami.Page {
                                     ColumnLayout {
                                         anchors.fill: parent; spacing: 7
                                         Caption { text: Formatter.formatHourlyCardDelegateTime(modelData.date,dashboard.location.timeZone); Layout.alignment: Qt.AlignHCenter }
-                                        Kirigami.Icon { source: modelData.weatherIcon; implicitWidth: 29; implicitHeight: 29; Layout.alignment: Qt.AlignHCenter }
+                                        ConditionIcon { objectName: "weatherHourIcon" + index; source: modelData.weatherIcon; implicitWidth: 29; implicitHeight: 29; Layout.alignment: Qt.AlignHCenter }
                                         Heading { text: dashboard.temp(modelData.temperature); Layout.alignment: Qt.AlignHCenter; font.pixelSize: 17 }
                                         Caption { text: Formatter.formatPrecipitation(modelData.precipitationAmount,settingsModel.precipitationUnits); color: dashboard.accent; Layout.alignment: Qt.AlignHCenter; font.pixelSize: 11 }
                                     }
@@ -278,7 +322,7 @@ Kirigami.Page {
                                         contentItem: RowLayout {
                                             spacing: 12
                                             Label { text: day.index===0 ? i18n("Today") : Qt.formatDate(day.modelData.date,"ddd"); color: dashboard.ink; Layout.preferredWidth: 46; font.weight: day.index===dashboard.location?.selectedDay ? Font.DemiBold : Font.Normal }
-                                            Kirigami.Icon { source: day.modelData.weatherIcon; implicitWidth: 24; implicitHeight: 24 }
+                                            ConditionIcon { objectName: "weatherDayIcon" + day.index; source: day.modelData.weatherIcon; implicitWidth: 24; implicitHeight: 24 }
                                             Caption { text: dashboard.temp(day.modelData.minTemp); Layout.preferredWidth: 34; horizontalAlignment: Text.AlignRight }
                                             Rectangle {
                                                 id: temperatureTrack

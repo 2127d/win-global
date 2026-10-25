@@ -48,7 +48,8 @@ Link `client/` as a CMake subdirectory and create a `SequoiaModalBridge` owned b
 app's `QWindow`. Expose a notifying `sequoiaModalAmount` real property on that window:
 zero when no embedded modal is showing, otherwise the black overlay's opacity
 (including fades; multiple overlapping modal layers should report their effective
-combined opacity). Weather uses a maximum because its dialogs replace one another.
+combined opacity). Weather paints a single shared scrim, using the capped sum of dialog fade progress
+so replacement transitions do not create a second dim layer.
 The allowed range is 0–0.6. The app owns blur and input blocking.
 
 The session-bus API is `org.sequoia.ModalDimming`, object

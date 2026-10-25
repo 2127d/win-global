@@ -6,6 +6,7 @@
  */
 
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtCharts
@@ -31,7 +32,7 @@ ListView {
 
     // left right mouse controls
     Button {
-        icon.name: "arrow-left"
+        icon.source: ActionIcons.source('arrow-left')
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         visible: !Kirigami.Settings.isMobile && hoverMouseArea.hovered && (root.currentIndex > 0 || !root.atXBeginning)
@@ -47,7 +48,7 @@ ListView {
     }
 
     Button {
-        icon.name: "arrow-right"
+        icon.source: ActionIcons.source('arrow-right')
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         visible: !Kirigami.Settings.isMobile && hoverMouseArea.hovered && (root.currentIndex < root.count - 1 || !root.atXEnd)

@@ -5,6 +5,7 @@
  */
 
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 
@@ -49,7 +50,7 @@ RowLayout {
         Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
         Kirigami.Theme.inherit: false
 
-        icon.name: "find-location"
+        icon.source: ActionIcons.source('find-location')
         icon.height: header.iconLength
         icon.width: header.iconLength
         icon.color: "white"
@@ -69,7 +70,7 @@ RowLayout {
         Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
         Kirigami.Theme.inherit: false
 
-        icon.name: "settings-configure"
+        icon.source: ActionIcons.source('settings-configure')
         icon.height: header.iconLength
         icon.width: header.iconLength
         icon.color: "white"
@@ -89,7 +90,7 @@ RowLayout {
         Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
         Kirigami.Theme.inherit: false
 
-        icon.name: "view-refresh"
+        icon.source: ActionIcons.source('view-refresh')
         icon.height: header.iconLength
         icon.width: header.iconLength
         icon.color: "white"

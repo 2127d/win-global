@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
@@ -54,7 +55,7 @@ Basic.ScrollView {
             id: actionContent
             spacing: 10
             Kirigami.Icon {
-                source: actionButton.icon.name
+                source: actionButton.icon.source
                 visible: source.toString().length > 0
                 Layout.preferredWidth: 18; Layout.preferredHeight: 18
                 isMask: true
@@ -83,7 +84,7 @@ Basic.ScrollView {
             objectName: "weatherAboutLicense"
             text: entry.licenseName
             checkable: true
-            icon.name: checked ? "go-up-symbolic" : "go-down-symbolic"
+            icon.source: checked ? ActionIcons.source('go-up-symbolic') : ActionIcons.source('go-down-symbolic')
             onToggled: licenseBody.visible = checked
         }
         TextArea {
@@ -113,13 +114,13 @@ Basic.ScrollView {
                 ActionButton {
                     visible: !!modelData.webAddress
                     text: i18n("Website")
-                    icon.name: "globe-symbolic"
+                    icon.source: ActionIcons.source('globe-symbolic')
                     onClicked: Qt.openUrlExternally(modelData.webAddress)
                 }
                 ActionButton {
                     visible: !!modelData.emailAddress
                     text: modelData.emailAddress || ""
-                    icon.name: "mail-sent-symbolic"
+                    icon.source: ActionIcons.source('mail-sent-symbolic')
                     onClicked: Qt.openUrlExternally("mailto:" + modelData.emailAddress)
                 }
             }
@@ -184,20 +185,20 @@ Basic.ScrollView {
                 spacing: 8
                 ActionButton {
                     visible: root.aboutData.homepage.length > 0
-                    text: i18n("Homepage"); icon.name: "globe-symbolic"
+                    text: i18n("Homepage"); icon.source: ActionIcons.source('globe-symbolic')
                     onClicked: Qt.openUrlExternally(root.aboutData.homepage)
                 }
                 ActionButton {
-                    text: i18n("Report a bug"); icon.name: "tools-report-bug-symbolic"
+                    text: i18n("Report a bug"); icon.source: ActionIcons.source('tools-report-bug-symbolic')
                     visible: root.aboutData.bugAddress.length > 0
                     onClicked: Qt.openUrlExternally(root.aboutData.bugAddress)
                 }
                 ActionButton {
-                    text: i18n("Get involved"); icon.name: "applications-development-symbolic"
+                    text: i18n("Get involved"); icon.source: ActionIcons.source('applications-development-symbolic')
                     onClicked: Qt.openUrlExternally("https://community.kde.org/Get_Involved")
                 }
                 ActionButton {
-                    text: i18n("Support KDE"); icon.name: "donate-symbolic"
+                    text: i18n("Support KDE"); icon.source: ActionIcons.source('donate-symbolic')
                     onClicked: Qt.openUrlExternally("https://kde.org/donate/?app=" + encodeURIComponent(root.aboutData.componentName))
                 }
             }
@@ -236,7 +237,7 @@ Basic.ScrollView {
             contentItem: ColumnLayout {
                 spacing: 12
                 ActionButton {
-                    text: i18n("Copy system information"); icon.name: "edit-copy-symbolic"
+                    text: i18n("Copy system information"); icon.source: ActionIcons.source('edit-copy-symbolic')
                     onClicked: {
                         FormCard.AboutComponent.copyToClipboard();
                         text = i18n("Copied");
@@ -257,7 +258,7 @@ Basic.ScrollView {
                         }
                         ActionButton {
                             visible: !!modelData.webAddress
-                            text: i18n("Website"); icon.name: "globe-symbolic"
+                            text: i18n("Website"); icon.source: ActionIcons.source('globe-symbolic')
                             onClicked: Qt.openUrlExternally(modelData.webAddress)
                         }
                     }

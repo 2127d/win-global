@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
@@ -80,7 +81,7 @@ Item {
                 color: Kirigami.Theme.disabledTextColor
             }
             Kirigami.Icon {
-                source: "go-down-symbolic"
+                source: ActionIcons.source('go-down-symbolic')
                 isMask: true
                 Layout.preferredWidth: 16; Layout.preferredHeight: 16
                 rotation: root.expanded ? 180 : 0
@@ -140,7 +141,7 @@ Item {
                         spacing: 10
                         Label { text: option.text; Layout.fillWidth: true; wrapMode: Text.WordWrap }
                         Kirigami.Icon {
-                            source: "dialog-ok-apply"
+                            source: ActionIcons.source('dialog-ok-apply')
                             isMask: true
                             Layout.preferredWidth: 18; Layout.preferredHeight: 18
                             opacity: option.highlighted ? 1 : 0

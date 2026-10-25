@@ -16,7 +16,7 @@ REVISION = '10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7'
 OPTICAL_SCALES = json.loads((SOURCE/'optical-sizes.json').read_text()) if (SOURCE/'optical-sizes.json').exists() else {}
 # Preserve semantic mappings while giving box-shaped controls Sequoia corners.
 SOFT_CONTROLS = {'content_paste':'clipboard','content_copy':'copy','file_copy':'filecopy',
-                 'note_add':'newdocument','description':'document','save':'save','crop_square':'window'}
+                 'note_add':'newdocument','description':'document','save':'save','crop_square':'window','minimize':'minimize'}
 # Power management requests this explicit symbolic name. Supply real small-size
 # controls so Qt does not fall through to an old Apps-context symbolic variant.
 REQUIRED_SYMBOLIC_CONTROLS = {'speedometer'}

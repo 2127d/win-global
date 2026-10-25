@@ -1,6 +1,7 @@
 // Copyright 2025 Devin Lin <devin@kde.org>
 // SPDX-License-Identifier: GPL-2.0-or-later
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Templates as T
@@ -32,7 +33,7 @@ Control {
             Accessible.name: text
             onClicked: applicationWindow().pageStack.pop()
             contentItem: Kirigami.Icon {
-                source: root.mirrored ? "go-next-symbolic" : "go-previous-symbolic"
+                source: root.mirrored ? ActionIcons.source('go-next-symbolic') : ActionIcons.source('go-previous-symbolic')
                 isMask: true
             }
             background: Rectangle {

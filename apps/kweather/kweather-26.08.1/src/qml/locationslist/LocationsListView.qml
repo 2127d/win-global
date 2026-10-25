@@ -7,6 +7,7 @@
  */
 
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQml.Models
@@ -81,12 +82,12 @@ ListView {
         anchors.right: parent.right
         anchors.margins: Kirigami.Units.largeSpacing
 
-        icon.name: "globe"
+        icon.source: ActionIcons.source('globe')
         text: i18n("Add a location")
         visible: root.count == 0
 
         helpfulAction: Kirigami.Action {
-            icon.name: "list-add"
+            icon.source: ActionIcons.source('list-add')
             text: i18n("Add Location")
             onTriggered: applicationWindow().openAddLocation()
         }
@@ -196,7 +197,7 @@ ListView {
 
                         Kirigami.Icon {
                             anchors.fill: parent
-                            source: "handle-sort"
+                            source: ActionIcons.source('handle-sort')
                             opacity: dragHandle.pressed || (!Kirigami.Settings.tabletMode && dragHandle.hovered) ? 1 : 0.6
                         }
                     }
@@ -242,12 +243,12 @@ ListView {
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                         Layout.leftMargin: Kirigami.Units.smallSpacing
 
-                        icon.name: "delete"
+                        icon.source: ActionIcons.source('delete')
                         text: i18n("Delete")
                         onClicked: listItem.deleteItem()
                         display: AbstractButton.IconOnly
                         contentItem: Kirigami.Icon {
-                            source: "edit-delete"
+                            source: ActionIcons.source('edit-delete')
                             isMask: true
                             implicitWidth: 20; implicitHeight: 20
                             color: deleteButton.hovered ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor

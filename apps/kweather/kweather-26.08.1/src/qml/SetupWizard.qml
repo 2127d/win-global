@@ -6,6 +6,7 @@
  */
 
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
@@ -309,7 +310,7 @@ Popup {
                 Layout.topMargin: Kirigami.Units.gridUnit
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 text: i18n("Get Started")
-                icon.name: "go-next-symbolic"
+                icon.source: ActionIcons.source('go-next-symbolic')
                 onClicked: root.requestNextPage();
             }
         }
@@ -410,7 +411,7 @@ Popup {
                         rightPadding: Kirigami.Units.gridUnit
 
                         text: i18n("Back")
-                        icon.name: "arrow-left"
+                        icon.source: ActionIcons.source('arrow-left')
 
                         onClicked: root.requestPreviousPage()
                     }
@@ -429,7 +430,7 @@ Popup {
 
                         visible: !root.onFinalPage
                         text: i18n("Next")
-                        icon.name: "arrow-right"
+                        icon.source: ActionIcons.source('arrow-right')
 
                         onClicked: root.requestNextPage();
                     }
@@ -494,7 +495,7 @@ Popup {
                                             implicitWidth: Kirigami.Units.iconSizes.smallMedium
                                             implicitHeight: Kirigami.Units.iconSizes.smallMedium
                                             visible: settingsModel.forecastStyle === "Dynamic"
-                                            source: 'checkmark'
+                                            source: ActionIcons.source('checkmark')
                                         }
                                     }
                                 }
@@ -530,7 +531,7 @@ Popup {
                                             implicitWidth: Kirigami.Units.iconSizes.smallMedium
                                             implicitHeight: Kirigami.Units.iconSizes.smallMedium
                                             visible: settingsModel.forecastStyle === "Flat"
-                                            source: 'checkmark'
+                                            source: ActionIcons.source('checkmark')
                                         }
                                     }
                                 }

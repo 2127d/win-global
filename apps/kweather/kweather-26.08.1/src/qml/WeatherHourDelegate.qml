@@ -6,6 +6,7 @@
  */
 
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Shapes
@@ -97,7 +98,7 @@ Rectangle {
         // wind
         RowLayout {
             Kirigami.Icon {
-                source: "arrow-right"
+                source: ActionIcons.source('arrow-right')
                 Layout.preferredHeight: Kirigami.Units.iconSizes.small
                 Layout.preferredWidth: Kirigami.Units.iconSizes.small
                 color: settingsModel && settingsModel.forecastStyle === "Dynamic" ? weatherLocation.iconColor : Kirigami.Theme.textColor

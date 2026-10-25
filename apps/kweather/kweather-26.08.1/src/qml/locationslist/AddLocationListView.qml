@@ -6,6 +6,7 @@
  */
 
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
@@ -44,15 +45,32 @@ Item {
             contentItem: RowLayout {
                 spacing: Kirigami.Units.smallSpacing
 
-                Kirigami.SearchField {
+                Kirigami.ActionTextField {
                     id: search
                     objectName: "weatherLocationSearchField"
                     Layout.fillWidth: true
                     implicitHeight: 44
+                    // Own the leading glyph instead of inheriting SearchField's theme lookup.
+                    focusSequences: [StandardKey.Find]
+                    Accessible.name: i18n("Search for a location")
+                    Accessible.searchEdit: true
+                    inputMethodHints: Qt.ImhNoPredictiveText
+                    EnterKey.type: Qt.EnterKeySearch
                     rightActions: []
                     leftPadding: LayoutMirroring.enabled ? 44 : 28
                     rightPadding: LayoutMirroring.enabled ? 28 : 44
 
+                    Kirigami.Icon {
+                        objectName: "weatherSearchFieldIcon"
+                        anchors.left: parent.left
+                        anchors.leftMargin: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 16
+                        height: 16
+                        source: ActionIcons.source('search')
+                        isMask: true
+                        color: search.placeholderTextColor
+                    }
                     ToolButton {
                         id: clearButton
                         objectName: "weatherClearLocationSearch"
@@ -77,7 +95,7 @@ Item {
                             search.forceActiveFocus();
                         }
                         contentItem: Kirigami.Icon {
-                            source: search.LayoutMirroring.enabled ? "edit-clear-locationbar-ltr" : "edit-clear-locationbar-rtl"
+                            source: search.LayoutMirroring.enabled ? ActionIcons.source('edit-clear-locationbar-ltr') : ActionIcons.source('edit-clear-locationbar-rtl')
                             isMask: true
                             color: Kirigami.Theme.textColor
                         }
@@ -134,7 +152,7 @@ Item {
                     Layout.preferredWidth: 44
                     Layout.preferredHeight: 44
                     padding: 12
-                    icon.name: "search"
+                    icon.source: ActionIcons.source('search')
                     implicitHeight: search.implicitHeight
                     implicitWidth: height
                     enabled: search.text !== ""
@@ -142,7 +160,7 @@ Item {
                     height: search.height
                     onClicked: root.model.textChanged(root.searchQuery, 0)
                     contentItem: Kirigami.Icon {
-                        source: "search"
+                        source: ActionIcons.source('search')
                         isMask: true
                         implicitWidth: 20
                         implicitHeight: 20
@@ -249,7 +267,7 @@ Item {
                 anchors.right: parent.right
                 anchors.margins: Kirigami.Units.largeSpacing
 
-                icon.name: "network-disconnect"
+                icon.source: ActionIcons.source('network-disconnect')
                 text: i18n("Unable to connect")
                 visible: root.model.networkError
             }
@@ -261,7 +279,7 @@ Item {
                 anchors.right: parent.right
                 anchors.margins: Kirigami.Units.largeSpacing
 
-                icon.name: "search"
+                icon.source: ActionIcons.source('search')
                 text: i18n("Search for a location")
                 visible: !root.model.networkError && !root.model.loading && root.count == 0 && root.searchQuery == ""
             }
@@ -273,7 +291,7 @@ Item {
                 anchors.right: parent.right
                 anchors.margins: Kirigami.Units.largeSpacing
 
-                icon.name: "search"
+                icon.source: ActionIcons.source('search')
                 text: i18n("No results")
                 visible: !root.model.networkError && !root.model.loading && root.count == 0 && root.searchQuery != ""
             }

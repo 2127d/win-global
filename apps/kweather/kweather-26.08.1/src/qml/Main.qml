@@ -30,24 +30,31 @@ Kirigami.AbstractApplicationWindow {
     objectName: "sequoiaWeatherWindow"
     SystemPalette { id: systemPalette }
     readonly property bool atmospheric: settingsModel.forecastStyle === "Dynamic"
-    color: atmospheric ? "#15283d" : systemPalette.window.a < 1 ? "transparent" : systemPalette.window
+    // The native surface material follows the theme, not the forecast mode.
+    // Dynamic paints an opaque scene over it; mode changes never churn Wayland
+    // opaque regions or the compositor blur request between adjacent frames.
+    color: systemPalette.window.a < 1 ? "transparent" : systemPalette.window
     background: Item {
-        layer.enabled: (appwindow.dialogBackdropBlur || appwindow.compactBackdropBlur) && GraphicsInfo.api !== GraphicsInfo.Software
-        layer.effect: MultiEffect {
-            blurEnabled: true
-            blurMax: 32; blur: 1
-            autoPaddingEnabled: false
-        }
+        clip: true
+        readonly property alias scenery: weatherScenery
         Rectangle {
             anchors.fill: parent
-            visible: !appwindow.atmospheric
             color: systemPalette.window
         }
         WeatherScene {
+            id: weatherScenery
+            // Keep the blur's transparent sampling edge outside the window.
             anchors.fill: parent
+            anchors.margins: -32
             opacity: appwindow.atmospheric ? 1 : 0
             visible: opacity > 0
             Behavior on opacity { NumberAnimation { duration: Kirigami.Units.longDuration } }
+            layer.enabled: visible && (appwindow.dialogBackdropBlur || appwindow.compactBackdropBlur) && GraphicsInfo.api !== GraphicsInfo.Software
+            layer.effect: MultiEffect {
+                blurEnabled: true
+                blurMax: 32; blur: 1
+                autoPaddingEnabled: false
+            }
             condition: appwindow.pageStack.currentItem?.location?.currentHourForecast?.weatherIcon || "weather-few-clouds"
             motion: settingsModel.animateWeather
         }
@@ -71,11 +78,21 @@ Kirigami.AbstractApplicationWindow {
 
     readonly property bool isDialogOpen: settingsDialogLoader.isOpen || addLocationDialogLoader.isOpen || locationsListDialogLoader.isOpen
 
-    // Follow the same popup fade, including exit; no dimming on compact pages.
-    readonly property real sequoiaModalAmount: 0.3 * Math.max(
-        settingsDialogLoader.isOpen ? settingsDialogLoader.item.opacity : 0,
-        addLocationDialogLoader.isOpen ? addLocationDialogLoader.item.opacity : 0,
-        locationsListDialogLoader.isOpen ? locationsListDialogLoader.item.opacity : 0)
+    // One scrim for all embedded dialogs, including overlapping exit/enter
+    // transitions. KWin receives this exact alpha for the decoration.
+    readonly property real sequoiaModalAmount: 0.3 * Math.min(1,
+        (settingsDialogLoader.isOpen ? settingsDialogLoader.item.opacity : 0) +
+        (addLocationDialogLoader.isOpen ? addLocationDialogLoader.item.opacity : 0) +
+        (locationsListDialogLoader.isOpen ? locationsListDialogLoader.item.opacity : 0))
+    Rectangle {
+        objectName: "weatherModalScrim"
+        parent: appwindow.overlay
+        anchors.fill: parent
+        z: -1
+        color: "black"
+        opacity: appwindow.sequoiaModalAmount
+        visible: opacity > 0
+    }
 
     KConfig.WindowStateSaver {
         configGroupName: "MainWindow"

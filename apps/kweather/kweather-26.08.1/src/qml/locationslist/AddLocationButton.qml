@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
@@ -26,7 +27,7 @@ Button {
         id: addContent
         spacing: 8
         Kirigami.Icon {
-            source: "list-add"
+            source: ActionIcons.source('list-add')
             isMask: true
             implicitWidth: 18; implicitHeight: 18
             color: Kirigami.Theme.textColor

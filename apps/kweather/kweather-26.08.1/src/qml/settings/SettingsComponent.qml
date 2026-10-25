@@ -6,6 +6,7 @@
  */
 
 import QtQuick
+import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
@@ -140,6 +141,15 @@ ColumnLayout {
             background: RowBackground { control: aboutButton }
 
             text: i18n("About")
+            contentItem: RowLayout {
+                spacing: 12
+                Label { text: aboutButton.text; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+                Kirigami.Icon {
+                    source: ActionIcons.source(aboutButton.mirrored ? "go-previous-symbolic" : "go-next-symbolic")
+                    isMask: true
+                    Layout.preferredWidth: 18; Layout.preferredHeight: 18
+                }
+            }
             onClicked: root.aboutRequested()
         }
     }

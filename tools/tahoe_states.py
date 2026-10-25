@@ -72,6 +72,13 @@ def geometry(symbol):
     thin = stroke.replace('1.65','1.3')
     if symbol.startswith('sequoia_soft_'):
         kind=symbol.removeprefix('sequoia_soft_')
+        # GTK's symbolic recoloring can fill stroke-only primitives. Encode
+        # window controls as filled silhouettes, with a real hole for maximize.
+        if kind == 'window':
+            return '<path fill-rule="evenodd" d="M6.6 3h10.8A3.6 3.6 0 0 1 21 6.6v10.8a3.6 3.6 0 0 1-3.6 3.6H6.6A3.6 3.6 0 0 1 3 17.4V6.6A3.6 3.6 0 0 1 6.6 3Zm0 2A1.6 1.6 0 0 0 5 6.6v10.8A1.6 1.6 0 0 0 6.6 19h10.8a1.6 1.6 0 0 0 1.6-1.6V6.6A1.6 1.6 0 0 0 17.4 5H6.6Z"/>'
+        if kind == 'minimize':
+            return '<path d="M6 11h12a1 1 0 0 1 0 2H6a1 1 0 0 1 0-2Z"/>'
+
         paper='<rect x="4" y="2.5" width="16" height="19" rx="3.3"/>'
         shapes={
             'clipboard':'<path d="M8 4.5H7a3 3 0 0 0-3 3v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-11a3 3 0 0 0-3-3h-1"/><rect x="8" y="2" width="8" height="5" rx="2"/>',
@@ -80,7 +87,6 @@ def geometry(symbol):
             'newdocument':paper+'<path d="M8 12h8m-4-4v8"/>',
             'document':paper+'<path d="M8 7.5h8M8 12h8m-8 4.5h5"/>',
             'save':'<path d="M6 3h9.8a2 2 0 0 1 1.4.6l3.2 3.2a2 2 0 0 1 .6 1.4V18a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z"/><path d="M7 3v4a1.5 1.5 0 0 0 1.5 1.5h5A1.5 1.5 0 0 0 15 7V3"/><circle cx="12" cy="15" r="3"/>',
-            'window':'<rect x="3" y="3" width="18" height="18" rx="3.6"/>',
         }
         return f'<g {stroke.replace("1.65","1.9")}>{shapes[kind]}</g>'
     def badge(kind):
