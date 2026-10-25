@@ -16832,22 +16832,22 @@
   "actions/32/application-exit.svg": {
     "symbol": "logout",
     "role": "Text",
-    "sha256": "eb743c94693909f6dc5022b6d3dc46ee7fb468e3c68fceb50be1cb2f4247380f"
+    "sha256": "ed58d583423c65f482bcb2fb02c608274d014471593c9584b56194fd63aafc28"
   },
   "actions/32/brisk_system-log-out.svg": {
     "symbol": "logout",
     "role": "Text",
-    "sha256": "eb743c94693909f6dc5022b6d3dc46ee7fb468e3c68fceb50be1cb2f4247380f"
+    "sha256": "ed58d583423c65f482bcb2fb02c608274d014471593c9584b56194fd63aafc28"
   },
   "actions/32/system-log-out.svg": {
     "symbol": "logout",
     "role": "Text",
-    "sha256": "eb743c94693909f6dc5022b6d3dc46ee7fb468e3c68fceb50be1cb2f4247380f"
+    "sha256": "ed58d583423c65f482bcb2fb02c608274d014471593c9584b56194fd63aafc28"
   },
   "actions/32/xfsm-logout-symbolic.svg": {
     "symbol": "logout",
     "role": "Text",
-    "sha256": "eb743c94693909f6dc5022b6d3dc46ee7fb468e3c68fceb50be1cb2f4247380f"
+    "sha256": "ed58d583423c65f482bcb2fb02c608274d014471593c9584b56194fd63aafc28"
   },
   "actions/32/am-power.svg": {
     "symbol": "power_settings_new",
