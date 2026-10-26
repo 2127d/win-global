@@ -605,6 +605,122 @@ static void verifyBrowser(QWidget *window, const QString &output, const QString 
     fprintf(stderr, "PASS: browser header, sorting, hidden files, details, selection, adaptive filters, empty states, narrow layout, thumbnail fitting, fullscreen and activation\n");
 }
 
+static void verifyFullscreenBrowser(QWidget *window, const QString &output)
+{
+    // The isolated session cannot launch the desktop tags worker.
+    if (auto dialog = qobject_cast<QDialog *>(QApplication::activeModalWidget())) {
+        for (auto label : dialog->findChildren<QLabel *>()) {
+            if (label->text().contains("Unable to create KIO worker") && label->text().contains("protocol 'tags'")) {
+                dialog->reject(); break;
+            }
+        }
+    }
+    QApplication::setActiveWindow(window);
+    const QString fixtures = qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES");
+    const auto galleryUrl = QUrl::fromLocalFile(fixtures + "/Gallery");
+    require(QMetaObject::invokeMethod(window, "slotStartMainPageUrlSelected", Q_ARG(QUrl, galleryUrl)), "open fullscreen browser fixture");
+    QTest::qWait(500);
+    auto full = findAction(window, "fullscreen"); full->trigger(); QTest::qWait(300);
+    auto page = window->findChild<QWidget *>("BrowseMainPage");
+    auto chrome = page->findChild<QWidget *>("fullscreenBrowseChrome");
+    auto gallery = page->findChild<QWidget *>("fullscreenBrowseGallery");
+    auto navigation = page->findChild<QWidget *>("fullscreenBrowseNavigation");
+    auto location = page->findChild<QWidget *>("mUrlNavigatorContainer");
+    auto view = page->findChild<QListView *>("mThumbnailView");
+    auto title = page->findChild<QLabel *>("browseFolderTitle");
+    auto sort = page->findChild<QToolButton *>("browseSortButton");
+    auto details = page->findChild<QToolButton *>("browseDetailsButton");
+    auto filters = page->findChild<QToolButton *>("mAddFilterButton");
+    auto filterScroll = page->findChild<QScrollArea *>("browseFilterScroll");
+    auto slider = page->findChild<QWidget *>("mThumbnailSlider")->findChild<QSlider *>();
+    auto sidebar = window->findChild<QWidget *>("sidebarIsland");
+    auto split = qobject_cast<QSplitter *>(sidebar->parentWidget());
+    require(chrome && gallery && navigation && location && view && title && sort && details && filters && slider, "fullscreen browser surfaces and controls exist");
+    auto button = [&](const char *name) {
+        auto b = page->findChild<QToolButton *>(QStringLiteral("fullscreenBrowser_") + QString::fromLatin1(name));
+        require(b && b->isVisible() && !b->icon().isNull() && !b->toolTip().isEmpty(), "fullscreen browser action is visible and described"); return b;
+    };
+    auto capture = [&](const char *name) { require(window->grab().save(output + '/' + name + ".png"), "fullscreen browser screenshot"); };
+    if (!sidebar->isVisible()) button("toggle_sidebar")->click();
+    window->resize(1280, 800); split->setSizes({240, 1040}); slider->setValue(145); QTest::qWait(800);
+    require(view->model()->rowCount() == 13 && title->text() == "Gallery", "fullscreen browser displays folder contents");
+    require(qAbs(navigation->geometry().center().y() - location->geometry().center().y()) <= 8
+        && location->x() > navigation->x(), "wide navigation shares one row with location");
+    capture("fullscreen-browser-wide");
+    window->resize(640, 480); split->setSizes({190, 450}); QTest::qWait(300);
+    require(window->width() <= 640 && page->width() < 760, "fullscreen browser fits small window with sidebar");
+    require(location->y() > navigation->y(), "location gains a full row beside an open sidebar");
+    auto visible = [&](QWidget *control, QWidget *surface) {
+        require(control->isVisible() && control->visibleRegion().contains(control->rect().center())
+            && surface->rect().contains(QRect(control->mapTo(surface, QPoint()), control->size())), "compact fullscreen control is visible and reachable");
+    };
+    for (const char *name : {"toggle_sidebar", "view", "browse_history_back", "browse_history_forward", "go_up", "leave_fullscreen"}) visible(button(name), chrome);
+    for (auto control : {static_cast<QWidget *>(sort), static_cast<QWidget *>(details), static_cast<QWidget *>(filters), location}) visible(control, chrome);
+    visible(slider->parentWidget(), gallery);
+    require(view->viewport()->height() >= 150 && view->horizontalScrollBar()->maximum() == 0, "compact gallery retains browsing space");
+    capture("fullscreen-browser-sidebar-narrow");
+
+    auto openMenu = [&](QToolButton *control) {
+        bool opened = false;
+        QTimer::singleShot(80, window, [&] { opened = control->menu()->isVisible(); control->menu()->close(); });
+        QTest::mouseClick(control, Qt::LeftButton); require(opened, "compact browser menu opens");
+    };
+    openMenu(sort); openMenu(details); openMenu(filters);
+    findAction(window, "sort_desc")->setChecked(true); QTest::qWait(150);
+    require(view->model()->index(1, 0).data().toString() == "scene-11.png", "fullscreen sorting remains native");
+    findAction(window, "sort_desc")->setChecked(false);
+    filters->menu()->actions().first()->trigger(); QTest::qWait(150);
+    auto name = filterScroll->findChild<QLineEdit *>(); require(name, "fullscreen name filter available");
+    name->setText("scene-02"); QTest::qWait(500);
+    require(view->model()->rowCount() == 1 && filterScroll->horizontalScrollBar()->maximum() == 0, "fullscreen filter fits and filters images");
+    require(view->viewport()->height() >= 100, "fullscreen filters preserve image browsing space");
+    capture("fullscreen-browser-filtered");
+    filterScroll->findChild<QToolButton *>("removeBrowseFilter")->click(); QTest::qWait(300);
+    view->setCurrentIndex(view->model()->index(1, 0)); view->setFocus();
+    QTest::keyClick(view, Qt::Key_Right); QTest::qWait(80);
+    require(view->currentIndex().row() > 1, "fullscreen thumbnails support keyboard navigation");
+    view->selectionModel()->select(view->model()->index(4, 0), QItemSelectionModel::Select); QTest::qWait(80);
+    require(page->findChild<QLabel *>("mDocumentCountLabel")->text().contains("Selected"), "fullscreen selection count updates");
+    slider->setValue(400); QTest::qWait(150);
+    require(view->gridSize().width() <= view->viewport()->width() && view->gridSize().height() <= view->viewport()->height(), "fullscreen thumbnail size fits beside sidebar");
+    slider->setValue(145);
+
+    require(QMetaObject::invokeMethod(window, "openDirUrl", Q_ARG(QUrl, QUrl::fromLocalFile(fixtures + "/Gallery/Empty folder"))), "open child folder");
+    QTest::qWait(250);
+    require(button("browse_history_back")->isEnabled(), "folder back action enabled");
+    button("browse_history_back")->click(); QTest::qWait(250);
+    require(title->toolTip().endsWith("/Gallery"), "folder Back returns to gallery");
+    button("browse_history_forward")->click(); QTest::qWait(250);
+    require(title->toolTip().endsWith("/Empty folder"), "folder Forward restores child folder");
+    button("go_up")->click(); QTest::qWait(250);
+    require(title->toolTip().endsWith("/Gallery"), "Up navigates to parent folder");
+    findAction(window, "edit_location")->trigger(); QTest::qWait(100);
+    bool editable = false;
+    for (auto edit : location->findChildren<QLineEdit *>()) editable |= edit->isVisible();
+    require(editable, "F6 location editing stays available");
+    capture("fullscreen-browser-location-edit");
+    auto status = findAction(window, "options_show_statusbar");
+    if (status->isChecked()) status->trigger();
+    require(!slider->isVisible() && button("toggle_sidebar")->isVisible(), "sidebar toggle remains available when status bar hidden");
+    button("toggle_sidebar")->click(); QTest::qWait(100); require(!sidebar->isVisible(), "fullscreen sidebar toggle closes sidebar");
+    button("toggle_sidebar")->click(); QTest::qWait(100); require(sidebar->isVisible(), "fullscreen sidebar toggle restores sidebar");
+    if (!status->isChecked()) status->trigger();
+    view->setCurrentIndex(view->model()->index(1, 0));
+    button("view")->click(); QTest::qWait(300);
+    require(!page->isVisible() && window->findChild<QWidget *>("fullScreenBar")->isVisible(), "View opens matching fullscreen image controls");
+    findAction(window, "browse")->trigger(); QTest::qWait(250);
+    require(page->isVisible() && !window->findChild<QWidget *>("fullScreenBar")->isVisible(), "Browse restores fullscreen gallery without image overlay");
+    button("leave_fullscreen")->click(); QTest::qWait(250);
+    require(!full->isChecked() && !navigation->isVisible() && window->findChild<QToolBar *>("mainToolBar")->isVisible(), "exit restores standard browser controls");
+    for (int i = 0; i < 2; ++i) {
+        full->trigger(); QTest::qWait(100);
+        view->setFocus(); QTest::keyClick(view, Qt::Key_Escape); QTest::qWait(150);
+        require(!full->isChecked() && !navigation->isVisible(), "Escape exits fullscreen browser repeatedly");
+    }
+    capture("fullscreen-browser-restored");
+    fprintf(stderr, "PASS: fullscreen browser floating surfaces, sidebar resizing, menus, filters, folder history, location editing, thumbnail zoom, view transitions and exit restoration\n");
+}
+
 static void verifyFullscreen(QWidget *window, const QString &output)
 {
     // Isolated sessions have no desktop tags worker. Dismiss only its startup
@@ -764,6 +880,10 @@ static void startup() {
         require(!window->findChild<QWidget *>("mRecentFoldersView"), "no recent folders start grid");
         const auto output = qEnvironmentVariable("SEQUOIA_GWENVIEW_VERIFY");
         auto capture = [&](const char *name) { require(window->grab().save(output + '/' + name + ".png"), "screenshot"); };
+        if (mode == "fullscreen-browser") {
+            verifyFullscreenBrowser(window, output);
+            require(window->close(), "clean close"); QCoreApplication::exit(0); return;
+        }
         if (mode == "fullscreen") {
             verifyFullscreen(window, output);
             require(window->close(), "clean close"); QCoreApplication::exit(0); return;

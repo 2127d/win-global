@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 */
 // Self
 #include "floatingsurface.h"
+#include "fullscreencontrols.h"
 #include "browsemainpage.h"
 
 // Qt
@@ -116,6 +117,23 @@ public:
     }
 };
 
+class BrowseGallerySurface : public QWidget
+{
+public:
+    using QWidget::QWidget;
+    void setFloating(bool floating) { mFloating = floating; update(); }
+protected:
+    void paintEvent(QPaintEvent *) override
+    {
+        if (!mFloating) return;
+        QPainter painter(this);
+        paintFloatingPanel(painter, QRectF(rect()).adjusted(FloatingPanelInset, FloatingPanelInset,
+                                                         -FloatingPanelInset, -FloatingPanelInset), palette());
+    }
+private:
+    bool mFloating = false;
+};
+
 inline Sorting::Enum sortingFromSortAction(const QAction *action)
 {
     Q_ASSERT(action);
@@ -148,6 +166,13 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
     int mPreferredThumbnailWidth = 128;
     bool mResizingThumbnails = false;
     bool mLoading = false;
+    QWidget *mHeader = nullptr;
+    FullScreenSurface *mChrome = nullptr;
+    BrowseGallerySurface *mGallery = nullptr;
+    QWidget *mFullScreenNavigation = nullptr;
+    FullScreenButton *mExitFullScreenButton = nullptr;
+    QAction *mHistoryBack = nullptr;
+    QAction *mHistoryForward = nullptr;
 
     void setupWidgets()
     {
@@ -163,11 +188,19 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mThumbnailSlider->setMaximumWidth(180);
         mThumbnailSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
         mThumbnailSlider->slider()->setAccessibleName(i18n("Thumbnail size"));
+        for (auto button : mThumbnailSlider->findChildren<QToolButton *>()) {
+            const QString iconName = button->icon().name();
+            button->setProperty("browseIconName", iconName);
+            button->setToolTip(iconName == QStringLiteral("zoom-in") ? i18n("Larger thumbnails") : i18n("Smaller thumbnails"));
+            button->setAccessibleName(button->toolTip());
+            button->setFocusPolicy(Qt::TabFocus);
+        }
         mSizeCaption = new QLabel(i18n("Thumbnails"), mStatusBarContainer);
         mSizeCaption->setForegroundRole(QPalette::PlaceholderText);
         static_cast<QHBoxLayout *>(mStatusBarContainer->layout())->insertWidget(3, mSizeCaption);
 
         auto header = new QWidget(q); header->setObjectName(QStringLiteral("browseHeader"));
+        mHeader = header;
         auto headerLayout = new QHBoxLayout(header); headerLayout->setContentsMargins(0, 0, 0, 0);
         headerLayout->setSpacing(6);
         mFolderTitle = new QLabel(header); mFolderTitle->setObjectName(QStringLiteral("browseFolderTitle"));
@@ -230,19 +263,40 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mUrlNavigator->setMinimumWidth(0);
         mUrlNavigator->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
         mUrlNavigator->setAccessibleName(i18n("Folder location"));
-        QObject::connect(mUrlNavigator, &KUrlNavigator::urlChanged, q, [this] { updatePresentation(); });
+        QObject::connect(mUrlNavigator, &KUrlNavigator::urlChanged, q, [this] {
+            updatePresentation();
+            QTimer::singleShot(0, q, [this] { updateControlIcons(); });
+        });
         auto layout = new QVBoxLayout(mUrlNavigatorContainer);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(mUrlNavigator);
         QObject::connect(mUrlNavigator, SIGNAL(urlsDropped(QUrl, QDropEvent *)), q, SLOT(slotUrlsDropped(QUrl, QDropEvent *)));
 
-        // FullScreen Toolbar
-        mFullScreenToolBar->setVisible(false);
-        mFullScreenToolBar2->setVisible(false);
-        mFullScreenToolBar->setAutoFillBackground(true);
-        mFullScreenToolBar2->setAutoFillBackground(true);
-        mFullScreenToolBar->setBackgroundRole(QPalette::Mid);
-        mFullScreenToolBar2->setBackgroundRole(QPalette::Mid);
+        // Reuse the normal controls inside two floating surfaces in fullscreen.
+        // The breadcrumb keeps its own row when the sidebar narrows the pane.
+        mChrome = new FullScreenSurface(q);
+        mChrome->setObjectName(QStringLiteral("fullscreenBrowseChrome"));
+        mChrome->setFloating(false);
+        mChrome->setHorizontalInset(FloatingPanelInset);
+        auto chromeLayout = new QVBoxLayout(mChrome);
+        chromeLayout->setContentsMargins(0, 0, 0, 0); chromeLayout->setSpacing(8);
+        q->layout()->removeWidget(mHeader);
+        chromeLayout->addWidget(mHeader);
+        q->layout()->removeItem(horizontalLayout_2);
+        chromeLayout->addLayout(horizontalLayout_2);
+        delete mFullScreenToolBar; mFullScreenToolBar = nullptr;
+        delete mFullScreenToolBar2; mFullScreenToolBar2 = nullptr;
+
+        mGallery = new BrowseGallerySurface(q);
+        mGallery->setObjectName(QStringLiteral("fullscreenBrowseGallery"));
+        auto galleryLayout = new QVBoxLayout(mGallery);
+        galleryLayout->setContentsMargins(0, 0, 0, 0); galleryLayout->setSpacing(8);
+        for (auto widget : {static_cast<QWidget *>(mFilterScroll), static_cast<QWidget *>(mThumbnailView), mStatusBarContainer}) {
+            q->layout()->removeWidget(widget);
+            galleryLayout->addWidget(widget, widget == mThumbnailView ? 1 : 0);
+        }
+        static_cast<QVBoxLayout *>(q->layout())->addWidget(mChrome);
+        static_cast<QVBoxLayout *>(q->layout())->addWidget(mGallery, 1);
 
         QObject::connect(mThumbnailSlider, &ZoomSlider::valueChanged, q, [this](int value) {
             mPreferredThumbnailWidth = value; fitThumbnails();
@@ -281,12 +335,20 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mFolderTitle->setText(mFolderTitle->fontMetrics().elidedText(title, Qt::ElideMiddle, mFolderTitle->width()));
         mFolderTitle->setToolTip(mUrlNavigator->locationUrl().toDisplayString());
         mFolderTitle->setAccessibleName(title);
-        const bool compact = q->width() < 560;
+        if (mHistoryBack) {
+            mHistoryBack->setEnabled(mUrlNavigator->historyIndex() + 1 < mUrlNavigator->historySize());
+            mHistoryForward->setEnabled(mUrlNavigator->historyIndex() > 0);
+        }
+        const bool stacked = mFullScreen && q->width() < 760;
+        horizontalLayout_2->setDirection(stacked ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight);
+        if (mFullScreenNavigation) horizontalLayout_2->setAlignment(mFullScreenNavigation, Qt::AlignLeft);
+        const bool compact = q->width() < (mFullScreen ? 640 : 560);
         for (auto button : {mSortButton, mDetailsButton, static_cast<QToolButton *>(mAddFilterButton)})
             button->setToolButtonStyle(compact ? Qt::ToolButtonIconOnly : Qt::ToolButtonTextBesideIcon);
         mSizeCaption->setVisible(q->width() >= 460);
         mThumbnailSlider->setMaximumWidth(compact ? 120 : 180);
-        mFilterScroll->setMaximumHeight(qBound(72, q->height() / 3, 170));
+        const int filterBudget = mFullScreen ? (q->height() - mChrome->height() - 210) : q->height() / 3;
+        mFilterScroll->setMaximumHeight(qBound(60, filterBudget, 170));
         mFilterScroll->setVisible(!mFilterFrame->isHidden());
         mEmptyState->setGeometry(mThumbnailView->viewport()->rect().adjusted(12, 12, -12, -12));
         mEmptyState->setText(mLoading ? i18n("Loading folder…")
@@ -299,9 +361,25 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
     void updateControlIcons()
     {
         // Use theme assets as masks so symbolic icons work in both palettes.
-        const QList<QPair<QToolButton *, QString>> icons = {
+        QList<QPair<QToolButton *, QString>> icons = {
             {mSortButton, QStringLiteral("view-sort")}, {mDetailsButton, QStringLiteral("view-list-details")},
             {mAddFilterButton, QStringLiteral("view-filter")}};
+        for (auto button : mThumbnailSlider->findChildren<QToolButton *>())
+            icons.append({button, button->property("browseIconName").toString()});
+        // KUrlNavigator's places/home glyphs must also remain legible against
+        // the fullscreen surface. Keep their original assets for palette changes.
+        for (auto button : mUrlNavigator->findChildren<QAbstractButton *>()) {
+            QIcon source = button->icon();
+            if (source.isNull()) continue;
+            if (!source.name().isEmpty() || !button->property("browseOriginalIcon").isValid())
+                button->setProperty("browseOriginalIcon", source);
+            else source = qvariant_cast<QIcon>(button->property("browseOriginalIcon"));
+            QPixmap pix = source.pixmap(button->iconSize(), q->devicePixelRatioF());
+            if (pix.isNull()) continue;
+            QPainter painter(&pix); painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+            painter.fillRect(pix.rect(), q->palette().color(QPalette::WindowText)); painter.end();
+            button->setIcon(QIcon(pix));
+        }
         for (const auto &item : icons) {
             QPixmap pix = QIcon::fromTheme(item.second, QIcon::fromTheme(QStringLiteral("configure"))).pixmap(QSize(18, 18), q->devicePixelRatioF());
             QPainter p(&pix); p.setCompositionMode(QPainter::CompositionMode_SourceIn);
@@ -415,14 +493,34 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
 
     void setupFullScreenToolBar()
     {
-        mFullScreenToolBar->setIconDimensions(KIconLoader::SizeMedium);
-        mFullScreenToolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-        mFullScreenToolBar->addAction(mActionCollection->action(QStringLiteral("browse")));
-        mFullScreenToolBar->addAction(mActionCollection->action(QStringLiteral("view")));
-
-        mFullScreenToolBar2->setIconDimensions(KIconLoader::SizeMedium);
-        mFullScreenToolBar2->setToolButtonStyle(Qt::ToolButtonIconOnly);
-        mFullScreenToolBar2->addAction(mActionCollection->action(QStringLiteral("leave_fullscreen")));
+        mFullScreenNavigation = new QWidget(mChrome);
+        mFullScreenNavigation->setObjectName(QStringLiteral("fullscreenBrowseNavigation"));
+        mFullScreenNavigation->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        auto row = new QHBoxLayout(mFullScreenNavigation);
+        row->setContentsMargins(0, 0, 0, 0); row->setSpacing(3);
+        mHistoryBack = new QAction(QIcon::fromTheme(QStringLiteral("go-previous")), i18n("Back to previous folder"), q);
+        mHistoryBack->setObjectName(QStringLiteral("browse_history_back"));
+        mHistoryBack->setShortcut(QKeySequence(Qt::ALT | Qt::Key_Left));
+        mHistoryForward = new QAction(QIcon::fromTheme(QStringLiteral("go-next")), i18n("Forward to next folder"), q);
+        mHistoryForward->setObjectName(QStringLiteral("browse_history_forward"));
+        mHistoryForward->setShortcut(QKeySequence(Qt::ALT | Qt::Key_Right));
+        for (auto action : {mHistoryBack, mHistoryForward}) {
+            action->setShortcutContext(Qt::WidgetWithChildrenShortcut); q->addAction(action);
+        }
+        QObject::connect(mHistoryBack, &QAction::triggered, mUrlNavigator, &KUrlNavigator::goBack);
+        QObject::connect(mHistoryForward, &QAction::triggered, mUrlNavigator, &KUrlNavigator::goForward);
+        QObject::connect(mUrlNavigator, &KUrlNavigator::historyChanged, q, [this] { updatePresentation(); });
+        for (auto action : {mActionCollection->action(QStringLiteral("toggle_sidebar")),
+                            mActionCollection->action(QStringLiteral("view")), mHistoryBack, mHistoryForward,
+                            mActionCollection->action(QStringLiteral("go_up"))}) {
+            auto button = new FullScreenButton(action, mFullScreenNavigation);
+            button->setObjectName(QStringLiteral("fullscreenBrowser_") + action->objectName());
+            row->addWidget(button);
+        }
+        horizontalLayout_2->insertWidget(0, mFullScreenNavigation);
+        mExitFullScreenButton = new FullScreenButton(mActionCollection->action(QStringLiteral("leave_fullscreen")), mHeader);
+        mExitFullScreenButton->setObjectName(QStringLiteral("fullscreenBrowser_leave_fullscreen"));
+        static_cast<QHBoxLayout *>(mHeader->layout())->addWidget(mExitFullScreenButton);
     }
 
     void updateSelectedMediaItems(const QItemSelection &selected, const QItemSelection &deselected)
@@ -500,7 +598,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         case ThumbnailActions::AllButtons:
         default:
             actions = PreviewItemDelegate::SelectionAction | PreviewItemDelegate::RotateAction;
-            if (!q->window()->isFullScreen()) {
+            if (!mFullScreen) {
                 actions |= PreviewItemDelegate::FullScreenAction;
             }
             break;
@@ -512,15 +610,15 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
     {
         q->setPalette(mGvCore->palette(fullScreenmode ? GvCore::FullScreenPalette : GvCore::NormalPalette));
         auto viewPalette = mGvCore->palette(fullScreenmode ? GvCore::FullScreenViewPalette : GvCore::NormalViewPalette);
-        if (!fullScreenmode) {
+        {
             QColor surface = q->palette().color(QPalette::Button);
             surface.setAlpha(255);
             viewPalette.setColor(QPalette::Base, surface);
             viewPalette.setColor(QPalette::Window, surface);
         }
         mThumbnailView->setPalette(viewPalette);
-        mThumbnailView->viewport()->setAutoFillBackground(fullScreenmode);
-        mUrlNavigatorContainer->setAutoFillBackground(fullScreenmode);
+        mThumbnailView->viewport()->setAutoFillBackground(false);
+        mUrlNavigatorContainer->setAutoFillBackground(false);
         const QColor edge = q->palette().color(QPalette::WindowText);
         mUrlNavigatorContainer->setStyleSheet(QStringLiteral(
             "QWidget#mUrlNavigatorContainer { border: 1px solid rgba(%1,%2,%3,22); border-radius: 10px; }")
@@ -555,7 +653,7 @@ BrowseMainPage::BrowseMainPage(QWidget *parent, KActionCollection *actionCollect
     connect(thumbnailView(), &ThumbnailView::selectionChangedSignal, this, &BrowseMainPage::slotSelectionChanged);
 
     connect(qApp, &QApplication::paletteChanged, this, [this]() {
-        d->applyPalette(window()->isFullScreen());
+        d->applyPalette(d->mFullScreen);
     });
 
     auto refresh = [this] { QTimer::singleShot(0, this, [this] { d->updatePresentation(); }); };
@@ -579,7 +677,7 @@ void BrowseMainPage::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     if (d->mFullScreen) {
-        painter.fillRect(rect(), palette().brush(QPalette::Window));
+        painter.fillRect(rect(), d->mGvCore->palette(GvCore::FullScreenViewPalette).brush(QPalette::Base));
         return;
     }
     paintFloatingPanel(painter, QRectF(rect()).adjusted(FloatingPanelInset, FloatingPanelInset, -FloatingPanelInset, -FloatingPanelInset), palette());
@@ -637,7 +735,7 @@ bool BrowseMainPage::eventFilter(QObject *watched, QEvent *event)
         || (watched == d->mFilterFrame && (event->type() == QEvent::ShowToParent || event->type() == QEvent::HideToParent)))
         QTimer::singleShot(0, this, [this] { d->updatePresentation(); });
     // Leave fullscreen when not viewing an image
-    if (window()->isFullScreen() && event->type() == QEvent::ShortcutOverride) {
+    if (d->mFullScreen && event->type() == QEvent::ShortcutOverride) {
         const QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
         if (keyEvent->key() == Qt::Key_Escape) {
             d->mActionCollection->action(QStringLiteral("leave_fullscreen"))->trigger();
@@ -790,15 +888,25 @@ void BrowseMainPage::setFullScreenMode(bool fullScreen)
     d->mFullScreen = fullScreen;
     const int margin = fullScreen ? 0 : FloatingPanelPadding;
     layout()->setContentsMargins(margin, margin, margin, margin);
+    layout()->setSpacing(fullScreen ? 0 : 8);
     d->applyPalette(fullScreen);
-    d->mUrlNavigatorContainer->setContentsMargins(fullScreen ? 6 : 0, 0, 0, 0);
+    d->mUrlNavigatorContainer->setContentsMargins(4, 3, 4, 3);
     d->updateContextBarActions();
-
-    d->mFullScreenToolBar->setVisible(fullScreen);
-    d->mFullScreenToolBar2->setVisible(fullScreen);
-    if (fullScreen && d->mFullScreenToolBar->actions().isEmpty()) {
-        d->setupFullScreenToolBar();
+    if (fullScreen && !d->mFullScreenNavigation) d->setupFullScreenToolBar();
+    if (d->mFullScreenNavigation) {
+        d->mFullScreenNavigation->setVisible(fullScreen);
+        d->mExitFullScreenButton->setVisible(fullScreen);
     }
+    d->mChrome->setFloating(fullScreen);
+    d->mGallery->setFloating(fullScreen);
+    d->mChrome->layout()->setContentsMargins(fullScreen ? QMargins(FloatingPanelPadding, 18, FloatingPanelPadding, 28) : QMargins());
+    const int galleryPadding = fullScreen ? FloatingPanelPadding : 0;
+    d->mGallery->layout()->setContentsMargins(galleryPadding, galleryPadding, galleryPadding, galleryPadding);
+    d->mToggleSideBarButton->setVisible(!fullScreen);
+    for (auto button : {d->mSortButton, d->mDetailsButton, static_cast<QToolButton *>(d->mAddFilterButton)})
+        button->setMinimumHeight(fullScreen ? 38 : 34);
+    d->updatePresentation();
+
 }
 
 void BrowseMainPage::setStatusBarVisible(bool visible)

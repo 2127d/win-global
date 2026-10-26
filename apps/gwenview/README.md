@@ -49,7 +49,7 @@ clears that state; unsupported drags do not highlight the target.
 The welcome page sits in a rounded, floating panel matching the viewer's
 7-pixel inset, 16-pixel corners, and theme surface color. Browse mode uses the
 same panel around its folder navigation, thumbnail grid, filters, and status
-controls, with inner padding and edge-to-edge fullscreen. Its folder header exposes
+controls, with inner padding. Its folder header exposes
 native Sort, View, and Filters menus; header actions collapse to icons in smaller
 windows. Rounded thumbnail cards distinguish hover, selection, and keyboard focus
 without replacing Gwenview's thumbnail generation or file operations. The native
@@ -70,6 +70,17 @@ optional thumbnail row spans the panel, with its preferred height bounded by
 available screen space. A pin keeps controls visible; otherwise the top edge
 reveals them, and keyboard focus, menus and dialogs protect ongoing interaction.
 Fullscreen exit cancels hiding and restores the cursor, including rapid toggles.
+
+Fullscreen Browse uses the same floating surfaces and action buttons as the
+fullscreen image view. Its navigation panel contains the folder title, native
+Sort/View/Filters menus, a persistent sidebar toggle, View, folder Back/Forward,
+Up, and Exit Fullscreen. Folder history uses KUrlNavigator and also accepts
+Alt+Left/Alt+Right while the browser has focus. A narrow pane places the location
+bar below navigation, so opening or resizing the sidebar never squeezes out the
+path or exit button. The gallery has its own rounded surface, bounded filters,
+and thumbnail controls; the sidebar toggle remains available when the status
+bar is hidden. Location and thumbnail icons follow the active palette. Escape
+and the exit button restore the normal browser layout and native toolbar.
 
 The sidebar has a live recent-image count and an overflow menu for choosing a
 thumbnail grid or a list with filenames and parent folders. That view preference
@@ -275,3 +286,14 @@ To verify fullscreen viewing controls, compact layouts and auto-hide behavior:
 python3 tools/verify-gwenview.py --fullscreen-preview
 python3 tools/verify-gwenview.py --fullscreen-preview --dark
 ```
+
+To verify fullscreen browsing with the sidebar open at 1280×800 and 640×480:
+
+```sh
+python3 tools/verify-gwenview.py --fullscreen-browser-preview
+python3 tools/verify-gwenview.py --fullscreen-browser-preview --dark
+```
+
+These checks cover control visibility, responsive rows, menus, filtering,
+selection, thumbnail size, folder history, F6 location editing, status-bar
+preferences, sidebar toggling, image/browser transitions and repeated exits.
