@@ -17,6 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
+#include "floatingsurface.h"
 #include "viewmainpage.h"
 #include "floatingviewtoolbar.h"
 #include "config-gwenview.h"
@@ -80,12 +81,8 @@ protected:
     void paintEvent(QPaintEvent *) override
     {
         QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);
-        QColor surface = qApp->palette().color(QPalette::Button);
-        surface.setAlpha(255);
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(surface);
-        painter.drawRoundedRect(QRectF(rect()), 16, 16);
+        // ViewMainPage owns the shadow outside this full-width surface.
+        paintFloatingPanel(painter, QRectF(rect()), qApp->palette(), false);
     }
 };
 }
@@ -175,14 +172,14 @@ struct ViewMainPagePrivate {
         mDocumentCountLabel->setAlignment(Qt::AlignCenter);
         mDocumentCountLabel->setTextElideMode(Qt::ElideRight);
         QMargins labelMargins = mDocumentCountLabel->contentsMargins();
-        labelMargins.setLeft(8);
-        labelMargins.setRight(8);
+        labelMargins.setLeft(15);
+        labelMargins.setRight(15);
         mDocumentCountLabel->setContentsMargins(labelMargins);
 
         auto statusBarContainerLayout = new QHBoxLayout(mStatusBarContainer);
         // Use toolbar-like margins and spacing
         int margins = q->style()->pixelMetric(QStyle::PM_ToolBarItemMargin) + q->style()->pixelMetric(QStyle::PM_ToolBarFrameWidth);
-        statusBarContainerLayout->setContentsMargins(qMax(10, margins), 0, qMax(10, margins), 0);
+        statusBarContainerLayout->setContentsMargins(margins, margins, margins, margins);
         statusBarContainerLayout->setSpacing(q->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing));
         statusBarContainerLayout->addWidget(mToggleSideBarButton);
         statusBarContainerLayout->addWidget(mToggleThumbnailBarButton);
@@ -239,7 +236,10 @@ struct ViewMainPagePrivate {
         viewMainPageLayout->setSpacing(0);
         viewMainPageLayout->addWidget(mThumbnailSplitter);
         mDocumentViewContainer->setObjectName(QStringLiteral("roundedImageViewer"));
+        mDocumentViewContainer->installEventFilter(q);
+        mThumbnailBarIsland->installEventFilter(q);
         mFloatingToolbar = new FloatingViewToolbar(mStatusBarContainer, mDocumentViewContainer);
+        mFloatingToolbar->setControlsDocked(q);
         //--
         mDocumentViewController = new DocumentViewController(mActionCollection, q);
         mDocumentViewController->setZoomWidget(mZoomWidget);
@@ -407,6 +407,7 @@ ViewMainPage::ViewMainPage(QWidget *parent, SlideShow *slideShow, KActionCollect
     : QWidget(parent)
     , d(new ViewMainPagePrivate)
 {
+    setObjectName(QStringLiteral("imageViewPage"));
     d->q = this;
     d->mDirModelToBarModelProxyMapper = nullptr; // Initialized later
     d->mSlideShow = slideShow;
@@ -461,6 +462,8 @@ ViewMainPage::ViewMainPage(QWidget *parent, SlideShow *slideShow, KActionCollect
 
 ViewMainPage::~ViewMainPage()
 {
+    d->mDocumentViewContainer->removeEventFilter(this);
+    d->mThumbnailBarIsland->removeEventFilter(this);
     delete d;
 }
 
@@ -524,12 +527,16 @@ void ViewMainPage::setThumbnailBarVisibility(bool visible)
 
 int ViewMainPage::statusBarHeight() const
 {
-    return 0; // The floating toolbar no longer reserves image layout space.
+    return d->mStatusBarContainer->parentWidget() == this && d->mStatusBarContainer->isVisible()
+        ? d->mStatusBarContainer->height() : 0;
 }
 
 void ViewMainPage::setStatusBarVisible(bool visible)
 {
-    d->mFloatingToolbar->setVisible(visible);
+    d->mFloatingToolbar->setControlsDocked(visible ? this : nullptr);
+    const int margins = style()->pixelMetric(QStyle::PM_ToolBarItemMargin) + style()->pixelMetric(QStyle::PM_ToolBarFrameWidth);
+    d->mStatusBarContainer->layout()->setContentsMargins(visible ? margins : qMax(10, margins), visible ? margins : 0,
+                                                       visible ? margins : qMax(10, margins), visible ? margins : 0);
 }
 
 FloatingViewToolbar *ViewMainPage::createMainToolbar(QWidget *controls)
@@ -821,8 +828,29 @@ void ViewMainPage::slotEnterPressed()
     }
 }
 
+void ViewMainPage::paintEvent(QPaintEvent *)
+{
+    if (window()->isFullScreen()) return;
+    // Paint into the page's existing gutters, outside the child surfaces. This
+    // keeps the viewer and thumbnail panel full-width, with aligned edges,
+    // while their shadows remain unclipped and never affect image rendering.
+    QPainter painter(this);
+    for (QWidget *panel : {static_cast<QWidget *>(d->mDocumentViewContainer), d->mThumbnailBarIsland}) {
+        if (panel->isVisible()) {
+            const QRectF bounds(panel->mapTo(this, QPoint()), panel->size());
+            paintFloatingShadow(painter, bounds, 16, qApp->palette());
+        }
+    }
+}
+
 bool ViewMainPage::eventFilter(QObject *watched, QEvent *event)
 {
+    if (watched == d->mDocumentViewContainer || watched == d->mThumbnailBarIsland) {
+        if (event->type() == QEvent::Move || event->type() == QEvent::Resize
+            || event->type() == QEvent::Show || event->type() == QEvent::Hide) {
+            update();
+        }
+    }
     if (watched == d->mThumbnailBar && event->type() == QEvent::KeyPress) {
         auto ke = static_cast<QKeyEvent *>(event);
         switch (ke->key()) {

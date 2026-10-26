@@ -39,7 +39,8 @@ public:
     }
 
 private:
-    std::list<QString> _shadowSizes = {"None", "Small", "Medium", "Large", "VeryLarge"};
+    void populate();
+    bool _loading = false;
 
 Q_SIGNALS:
 

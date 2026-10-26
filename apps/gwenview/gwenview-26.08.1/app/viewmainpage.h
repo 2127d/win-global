@@ -150,6 +150,7 @@ private Q_SLOTS:
     void slotDirModelItemsAddedOrRemoved();
 
 protected:
+    void paintEvent(QPaintEvent *) override;
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:

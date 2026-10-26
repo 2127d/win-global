@@ -39,16 +39,32 @@ Gwenview's main interface uses C++/Qt Widgets and KDE XMLGUI.
 
 ## Welcome page and recent images
 
-Gwenview opens to an empty welcome page with **Add files…** and drag-and-drop
-for images. The welcome page sits in a rounded, floating panel matching the
-viewer's 8-pixel inset, 16-pixel corners, and theme surface color.
-Browse mode uses the same panel around its folder navigation, thumbnail grid,
-filters, and status controls, with inner padding and edge-to-edge fullscreen.
-Its status-bar buttons have soft shadows, adjusted for light and dark palettes,
-to separate them from the panel surface.
-The old folder-navigation sidebar is replaced by **Recent images**,
-ordered newest first. Information and editing tabs remain available. The
-existing Browse mode, menus, shortcuts, and image operations remain accessible.
+Gwenview opens to a welcome page headed **Open your images**, with a vector
+image-stack mark and a compact action group just above center. **Open images…**
+uses the native multi-file picker; its adjacent shortcut hint follows the actual
+configured Open action. **Browse a folder…** opens a directory picker and then
+Gwenview's normal Browse mode. Supported image drags add an accent outline,
+subtle tint, and **Drop to open** guidance. Leaving, dropping, or hiding the page
+clears that state; unsupported drags do not highlight the target.
+The welcome page sits in a rounded, floating panel matching the viewer's
+8-pixel inset, 16-pixel corners, and theme surface color. Browse mode uses the
+same panel around its folder navigation, thumbnail grid, filters, and status
+controls, with inner padding and edge-to-edge fullscreen. Its status-bar buttons
+have soft shadows, adjusted for light and dark palettes.
+
+The sidebar has a live recent-image count and an overflow menu for choosing a
+thumbnail grid or a list with filenames and parent folders. That view preference
+survives restarts. The same menu exposes removal of the selected history entry
+and clearing history; these commands do not delete image files. Grid tiles and
+list rows have distinct hover, selection, and keyboard-focus states.
+
+Three equal footer tabs always show their icons above **Recent**, **Information**,
+and **Tools** labels. The selected tab has a softly raised capsule, with a visible
+keyboard focus ring. The sidebar keeps enough width for the labels and anchors
+the footer while the page content scrolls. Before opening an image, Information
+and Tools explain what they will show; opening an image reveals the native
+metadata and operations. Returning to the welcome page restores these empty
+states, so stale image details are never presented as current.
 
 The sidebar uses Gwenview's existing thumbnail provider and recent-file history.
 Recent images appear as equally sized, center-cropped square previews with
@@ -59,10 +75,10 @@ Reopening an image moves it to the top; history survives a restart and respects
 Settings → Remember history. Its context menu can remove an entry or clear
 history without deleting image files. Existing saved folder-tab selections
 migrate to the Recent tab. A single rounded, inset panel surrounds the header,
-content, and Recent/Information/Operations buttons. The panel uses the theme
+content, and Recent/Information/Tools buttons. The panel uses the theme
 surface color, including dark mode, and keeps native tab selection behavior.
 
-The picker accepts multiple files. Multiple dropped/selected images use the
+The image picker accepts multiple files. Multiple dropped/selected images use the
 same temporary-link approach as upstream's multi-file command line, with unique
 link names for files from different directories that have identical names.
 Next/previous and editing use the native viewer. History records original image
@@ -70,14 +86,32 @@ paths, not temporary links; links are kept until the application closes.
 
 ## Rounded viewer and floating controls
 
-In image view, the docked main toolbar is hidden and disabled. A second glass
-island at the upper right starts as a circular toggle and expands left when
-clicked, using the same animation and finish as the bottom controls. It shares
-the main toolbar's actions, including their menus, shortcuts, and enabled states.
-The copy follows toolbar customization, omitting layout-only spacers. Start and
-Browse restore the docked toolbar; returning to image view collapses the island.
-Fullscreen hides the floating main toolbar and its toggle; leaving fullscreen
-restores it collapsed. It remains available in spotlight mode.
+In image view, KDE's **Show Toolbar** and **Show Status Bar** checkboxes select
+between the normal bars and the custom floating controls independently. Both
+bars are shown by default. With a checkbox checked, its original native bar is
+visible and the corresponding glass pill is hidden. Unchecking it enables the
+auto-hiding pill for that bar in image view. Checking it again restores the
+native layout, spacing, palette, icons, and control styling. The choices persist
+across restarts using Gwenview's existing settings.
+
+The top-right pill expands left and shares the native toolbar's actions,
+including their menus, shortcuts, and enabled states. It follows toolbar
+customization while omitting layout-only spacers. Floating icon buttons hide
+the extra dropdown-arrow indicator while keeping their menus available. Start and Browse keep KDE's
+normal toolbar visibility preference and hide the image-view pill. Returning to
+image view restores the pill collapsed if the native toolbar remains hidden.
+Fullscreen hides the main toolbar and its pill; leaving fullscreen restores the
+previous choice. Spotlight retains its floating controls and restores the
+previous bars when leaving that mode.
+
+Floating surfaces follow the Weather makeover's elevation treatment: soft,
+downward shadows, restrained borders, and calmer glass highlights. Toolbar
+pills and their circular toggles have a wider shadow than the sidebar, welcome,
+Browse, and thumbnail panels. Shadow layers stay outside the glass and never
+blur controls or intercept image gestures. Toggle shadows fade with their
+buttons and disappear with native bars or fullscreen. The image viewer and
+thumbnail panel cast matching shadows into the page's shared gutters, keeping
+their visible edges aligned without reducing the width of the thumbnail surface.
 
 Both collapsed toolbar toggles fade out when the pointer is away from their
 corner. Moving within 48 pixels of a toggle smoothly reveals it in 180 ms;
@@ -85,13 +119,15 @@ a wider exit boundary avoids flicker at the edge. Expanded toolbars stay visible
 Invisible toggles pass mouse input through to the image, while keyboard focus
 reveals them for tab navigation. Disabled desktop animations switch immediately.
 
-The main image canvas has an inset, rounded outline matching the sidebar. In
+The main image canvas has an inset, rounded outline and soft floating shadow
+matching the sidebar. Its shadow stays outside the image and disappears in
+fullscreen. In
 Auto background mode it uses the theme's raised surface color; explicit image
 background choices remain available. Fullscreen retains its edge-to-edge view.
 
-The old bottom toolbar is now a floating control at the lower right of the
-image area. It starts as a circular toolbar button. Clicking expands the native
-controls to the left with a 220 ms animation; clicking again collapses them.
+With **Show Status Bar** unchecked, the bottom controls become a floating
+control at the lower right of the image area. It starts as a circular toolbar
+button. Clicking expands the native controls to the left with a 220 ms animation; clicking again collapses them.
 The expanded panel matches the toggle's 44-pixel height and circular end radius.
 The panel and toggle share a blurred glass finish with a soft vertical
 sheen and a highlighted rim, adapting to light and dark palettes. The image
@@ -107,8 +143,9 @@ and selected states and an already-open zoom menu. Repeated clicks and mid-anima
 disabled desktop animations switch directly to the requested state.
 Zoom, Fit, image count, sidebar, thumbnails, and comparison synchronization use
 the existing controls. Opening the toolbar does not resize the image. A narrow
-pane can scroll the controls horizontally. The existing status-bar visibility
-setting controls whether the floating button is available.
+pane can scroll the controls horizontally. Checking **Show Status Bar** moves
+the same controls back below the image and removes the pill styling, reserving
+normal layout space for the native bar.
 The Bird's Eye View navigation box is hidden by default when zoomed in, keeping
 the area behind the floating toolbar clear. It can still be enabled from the
 View menu.
@@ -165,7 +202,9 @@ XDG configuration and disposable images. It checks the welcome page, picker,
 drag/drop, same-name multi-file navigation, MRU ordering, recent activation,
 native rotate/save, persistence, and disabled history. It also checks private
 library loading, argument forwarding, upgrade fallback, and reversible install.
-Captures and logs are written to `preview/gwenview/`.
+Captures and logs are written to `preview/gwenview/`. Sidebar preview checks also
+cover the four toolbar/status-bar combinations, repeated native styling restoration,
+mode changes, and persistence of both native and pill choices across restarts.
 
 To capture all three sidebar pages with the project theme:
 
@@ -175,3 +214,15 @@ python3 tools/verify-gwenview.py --sidebar-preview --dark
 python3 tools/verify-gwenview.py --sidebar-preview --transparent
 python3 tools/verify-gwenview.py --sidebar-preview --dark --transparent
 ```
+
+To verify and capture the welcome page and sidebar in both themes:
+
+```sh
+python3 tools/verify-gwenview.py --welcome-preview
+python3 tools/verify-gwenview.py --welcome-preview --dark
+```
+
+These checks exercise opening images and a selected folder, configured shortcut
+hints, drag acceptance and cancellation, footer labels and keyboard navigation,
+contextual empty states, compact-window scrolling, grid/list switching and
+persistence, live counts, and removing/clearing history without deleting images.

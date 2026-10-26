@@ -85,7 +85,7 @@
        <item row="3" column="0">
         <widget class="QCheckBox" name="_sunkenEffect">
          <property name="text">
-          <string>Float and sunken effect on checkboxes and radio buttons</string>
+          <string>Raised and inset effects on checkboxes and radio buttons</string>
          </property>
         </widget>
        </item>
@@ -514,10 +514,23 @@
        <item row="4" column="0">
         <widget class="QCheckBox" name="_useNewCheckBox">
          <property name="text">
-          <string>Use the new checkbox style</string>
+          <string>Use an alternative checkmark shape</string>
          </property>
         </widget>
        </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Views">
+      <attribute name="title"><string>Views</string></attribute>
+      <layout class="QVBoxLayout" name="viewsLayout">
+       <item><widget class="QCheckBox" name="_viewDrawTreeBranchLines"><property name="text"><string>Draw connecting lines in tree views</string></property></widget></item>
+       <item><widget class="QCheckBox" name="_viewInvertSortIndicator"><property name="text"><string>Reverse column sort arrows</string></property></widget></item>
+       <item><widget class="QCheckBox" name="_splitterProxyEnabled"><property name="text"><string>Make splitters easier to grab</string></property></widget></item>
+       <item><layout class="QHBoxLayout" name="splitterProxyWidthLayout">
+ <item><widget class="QLabel" name="splitterProxyWidthLabel"><property name="text"><string>Splitter grab area width:</string></property><property name="buddy"><cstring>_splitterProxyWidth</cstring></property></widget></item>
+ <item><widget class="QSpinBox" name="_splitterProxyWidth"><property name="minimum"><number>1</number></property><property name="maximum"><number>64</number></property><property name="suffix"><string> px</string></property></widget></item>
+ </layout></item>
+       <item><spacer name="viewsSpacer"><property name="orientation"><enum>Qt::Orientation::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
       </layout>
      </widget>
      <widget class="QWidget" name="Tabs">
@@ -558,21 +571,21 @@
          <item>
           <widget class="QRadioButton" name="_oldTabbar">
            <property name="text">
-            <string>Lightly Default</string>
+            <string>Classic</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QRadioButton" name="_tabBarAltStyle">
            <property name="text">
-            <string>Lightly Alternative</string>
+            <string>Alternative</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="_documentModeTabs">
            <property name="text">
-            <string>Tabs sometimes inside frame</string>
+            <string>Use document-mode tabs</string>
            </property>
           </widget>
          </item>
@@ -729,6 +742,7 @@
          </item>
         </layout>
        </item>
+       <item><widget class="QCheckBox" name="_tabBarTabExpandFullWidth"><property name="text"><string>Expand document-mode tab bar to available width</string></property></widget></item>
        <item>
         <spacer name="verticalSpacer_3">
          <property name="orientation">
@@ -767,7 +781,7 @@
        <item row="2" column="0">
         <widget class="QCheckBox" name="_scrollBarTransient">
          <property name="text">
-          <string>Transient scrollbar</string>
+          <string>Expand scrollbars on hover</string>
          </property>
         </widget>
        </item>
@@ -779,13 +793,20 @@
          <item>
           <widget class="QCheckBox" name="_animationsEnabled">
            <property name="text">
-            <string>Enable animations</string>
+            <string>Enable widget animations</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="5" column="0">
+       <item row="5" column="0"><widget class="QCheckBox" name="_stackedWidgetTransitionsEnabled"><property name="text"><string>Animate page transitions</string></property></widget></item>
+<item row="6" column="0"><widget class="QCheckBox" name="_progressBarAnimated"><property name="text"><string>Animate busy progress bars</string></property></widget></item>
+<item row="7" column="0"><layout class="QHBoxLayout" name="progressBarBusyStepDurationLayout">
+ <item><widget class="QLabel" name="progressBarBusyStepDurationLabel"><property name="text"><string>Busy progress animation duration:</string></property><property name="buddy"><cstring>_progressBarBusyStepDuration</cstring></property></widget></item>
+ <item><widget class="QSpinBox" name="_progressBarBusyStepDuration"><property name="minimum"><number>100</number></property><property name="maximum"><number>5000</number></property><property name="suffix"><string> ms</string></property></widget></item>
+ </layout></item>
+
+       <item row="8" column="0">
         <spacer name="verticalSpacer_5">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
@@ -856,7 +877,7 @@
        <item row="3" column="0">
         <widget class="QCheckBox" name="_scrollBarTransientAlwaysShowSlim">
          <property name="text">
-          <string>Always show slim</string>
+          <string>Keep a slim scrollbar visible when idle</string>
          </property>
         </widget>
        </item>
@@ -887,7 +908,7 @@
          <item>
           <widget class="QCheckBox" name="_dockWidgetDrawFrame">
            <property name="toolTip">
-            <string>When enabled, disables Dolphin sidebar transparency</string>
+            <string>Treat dockable panels as framed surfaces</string>
            </property>
            <property name="text">
             <string>Draw frame around dockable panels</string>
@@ -935,14 +956,14 @@
          <item>
           <widget class="QCheckBox" name="_disableDolphinUrlNavigatorBackground">
            <property name="text">
-            <string>Disable Dolphin UrlNavigator Background</string>
+            <string>Use a transparent Dolphin location bar</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="_fancyMargins">
            <property name="text">
-            <string>Fancy margins</string>
+            <string>Add extra spacing to control frames</string>
            </property>
           </widget>
          </item>
@@ -1003,7 +1024,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Render a thin separator between the scrollbar</string>
+          <string>Draw a separator beside scrollbars</string>
          </property>
         </widget>
        </item>
@@ -1239,10 +1260,10 @@
        <item row="2" column="0">
         <widget class="QLabel" name="label_5">
          <property name="toolTip">
-          <string>Dolphin sidebar transparency. Requires &quot;Draw frame around dockable panels&quot; to be disabled.</string>
+          <string>Opacity of Dolphin sidebar islands</string>
          </property>
          <property name="text">
-          <string>Si&amp;debar:</string>
+          <string>Dolphin si&amp;debar:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -1255,7 +1276,7 @@
        <item row="2" column="1">
         <widget class="QSlider" name="_sidebarOpacity">
          <property name="toolTip">
-          <string>Dolphin sidebar transparency. Requires &quot;Draw frame around dockable panels&quot; to be disabled.</string>
+          <string>Opacity of Dolphin sidebar islands</string>
          </property>
          <property name="maximum">
           <number>100</number>
@@ -1293,7 +1314,7 @@
           <string>This changes the transparency of the Dolphin main file view area</string>
          </property>
          <property name="text">
-          <string>&amp;View:</string>
+          <string>Dolphin file &amp;view:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -1517,19 +1538,6 @@
         <string>Draw widget shadow</string>
        </property>
       </widget>
-      <widget class="QCheckBox" name="_widgetToolBarShadow">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>40</y>
-         <width>211</width>
-         <height>24</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Draw shadow under toolbar</string>
-       </property>
-      </widget>
       <widget class="QGroupBox" name="groupBox_2">
        <property name="geometry">
         <rect>
@@ -1540,7 +1548,7 @@
         </rect>
        </property>
        <property name="title">
-        <string>These settings change how menu shadow outlines are displayed</string>
+        <string>Popup shadows</string>
        </property>
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">

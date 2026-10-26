@@ -17,6 +17,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
+#include "floatingsurface.h"
 #include "sidebar.h"
 
 // Qt
@@ -24,6 +25,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QIcon>
 #include <QLabel>
 #include <QMenu>
+#include <QScrollArea>
+#include <QStackedLayout>
 #include <QStyle>
 #include <QStyleOptionTab>
 #include <QToolButton>
@@ -149,6 +152,10 @@ struct SideBarPagePrivate {
     QIcon mIcon;
     QString mTitle;
     QVBoxLayout *mLayout = nullptr;
+    QStackedLayout *mStack = nullptr;
+    QWidget *mContent = nullptr;
+    QWidget *mContentPage = nullptr;
+    QWidget *mEmpty = nullptr;
 };
 
 SideBarPage::SideBarPage(const QIcon &icon, const QString &title)
@@ -157,7 +164,12 @@ SideBarPage::SideBarPage(const QIcon &icon, const QString &title)
 {
     d->mIcon = icon;
     d->mTitle = title;
-    d->mLayout = new QVBoxLayout(this);
+    d->mStack = new QStackedLayout(this);
+    d->mStack->setContentsMargins(0, 0, 0, 0);
+    d->mContent = new QWidget(this);
+    d->mContentPage = d->mContent;
+    d->mLayout = new QVBoxLayout(d->mContent);
+    d->mStack->addWidget(d->mContent);
     QMargins margins = d->mLayout->contentsMargins();
     margins.setRight(qMax(0, margins.right() - style()->pixelMetric(QStyle::PM_SplitterWidth)));
     d->mLayout->setContentsMargins(margins);
@@ -188,175 +200,159 @@ void SideBarPage::addStretch()
     d->mLayout->addStretch();
 }
 
+void SideBarPage::setContentMargins(const QMargins &margins)
+{
+    d->mLayout->setContentsMargins(margins);
+}
+
+void SideBarPage::setEmptyMessage(const QString &message)
+{
+    if (d->mEmpty) return;
+    // Keep lengthy information and tool lists inside the page, above the footer.
+    auto scroll = new QScrollArea(this);
+    scroll->setFrameShape(QFrame::NoFrame);
+    scroll->setWidgetResizable(true);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scroll->setAutoFillBackground(false);
+    scroll->viewport()->setAutoFillBackground(false);
+    d->mStack->removeWidget(d->mContent);
+    scroll->setWidget(d->mContent);
+    d->mContent->setAutoFillBackground(false);
+    d->mContentPage = scroll;
+    d->mStack->addWidget(scroll);
+    d->mEmpty = new QWidget(this);
+    d->mEmpty->setObjectName(objectName() + QStringLiteral("EmptyState"));
+    auto layout = new QVBoxLayout(d->mEmpty);
+    layout->setContentsMargins(16, 28, 16, 28);
+    layout->setSpacing(16);
+    layout->addStretch(2);
+    auto label = new QLabel(message, d->mEmpty);
+    label->setObjectName(objectName() + QStringLiteral("EmptyMessage"));
+    label->setAlignment(Qt::AlignCenter);
+    label->setWordWrap(true);
+    layout->addWidget(label);
+    layout->addStretch(3);
+    d->mStack->addWidget(d->mEmpty);
+}
+
+void SideBarPage::setContextAvailable(bool available)
+{
+    if (d->mEmpty) d->mStack->setCurrentWidget(available ? d->mContentPage : d->mEmpty);
+}
+
 //- SideBarTabBar --------------------------------------------------------------
 struct SideBarTabBarPrivate {
-    SideBarTabBar::TabButtonStyle tabButtonStyle = SideBarTabBar::TabButtonTextBesideIcon;
+    SideBarTabBar::TabButtonStyle tabButtonStyle = SideBarTabBar::TabButtonTextUnderIcon;
 };
 
 SideBarTabBar::SideBarTabBar(QWidget *parent)
-    : QTabBar(parent)
-    , d(new SideBarTabBarPrivate)
+    : QTabBar(parent), d(new SideBarTabBarPrivate)
 {
-    setIconSize(QSize(KIconLoader::SizeSmallMedium, KIconLoader::SizeSmallMedium));
+    setIconSize(QSize(20, 20));
+    setElideMode(Qt::ElideNone);
+    setMouseTracking(true);
 }
 
 SideBarTabBar::~SideBarTabBar() = default;
-
 SideBarTabBar::TabButtonStyle SideBarTabBar::tabButtonStyle() const
 {
-    return d->tabButtonStyle;
+    return width() < sizeHint(TabButtonTextUnderIcon).width() ? TabButtonIconOnly : TabButtonTextUnderIcon;
 }
 
-QSize SideBarTabBar::sizeHint(const TabButtonStyle tabButtonStyle) const
+QSize SideBarTabBar::tabContentSize(int index, TabButtonStyle style, const QStyleOptionTab &opt) const
 {
-    QRect tabBarRect(0, 0, 0, 0);
-    for (int i = 0; i < count(); ++i) {
-        const QRect tabRect(tabBarRect.topRight(), tabSizeHint(i, tabButtonStyle));
-        tabBarRect = tabBarRect.united(tabRect);
-    }
-    return tabBarRect.size();
+    if (index < 0 || index >= count()) return {};
+    // KDE can add mnemonic markers after the tabs are created. Measure and
+    // paint them with Qt's mnemonic handling, including escaped ampersands.
+    const int labelWidth = style == TabButtonIconOnly ? 0
+        : opt.fontMetrics.size(Qt::TextHideMnemonic, tabText(index)).width();
+    return QSize(qMax(opt.iconSize.width(), labelWidth),
+                 opt.iconSize.height() + opt.fontMetrics.height() + 5);
 }
 
-QSize SideBarTabBar::sizeHint() const
+QSize SideBarTabBar::tabSizeHint(int index, TabButtonStyle style) const
 {
-    return sizeHint(d->tabButtonStyle);
+    QStyleOptionTab opt; initStyleOption(&opt, index);
+    int width = 0;
+    for (int i = 0; i < count(); ++i) width = qMax(width, tabContentSize(i, style, opt).width());
+    return QSize(width + 18, tabContentSize(index, style, opt).height() + 22);
 }
 
-QSize SideBarTabBar::minimumSizeHint() const
+QSize SideBarTabBar::sizeHint(TabButtonStyle style) const
 {
-    return sizeHint(TabButtonIconOnly);
+    if (!count()) return {};
+    const QSize tab = tabSizeHint(0, style);
+    return QSize(tab.width() * count(), tab.height());
 }
+QSize SideBarTabBar::sizeHint() const { return sizeHint(TabButtonTextUnderIcon); }
+QSize SideBarTabBar::minimumSizeHint() const { return sizeHint(TabButtonIconOnly); }
+QSize SideBarTabBar::tabSizeHint(int index) const { return tabSizeHint(index, TabButtonTextUnderIcon); }
+QSize SideBarTabBar::minimumTabSizeHint(int index) const { return tabSizeHint(index, TabButtonIconOnly); }
+void SideBarTabBar::tabLayoutChange() { update(); }
 
-QSize SideBarTabBar::tabContentSize(const int index, const TabButtonStyle tabButtonStyle, const QStyleOptionTab &opt) const
+void SideBarTabBar::paintEvent(QPaintEvent *)
 {
-    if (index < 0 || index > count() - 1) {
-        return QSize();
-    }
-
-    const int textWidth = opt.fontMetrics.size(Qt::TextShowMnemonic, tabText(index)).width();
-
-    if (tabButtonStyle == TabButtonIconOnly) {
-        return QSize(opt.iconSize.width(), qMax(opt.iconSize.height(), opt.fontMetrics.height()));
-    }
-    if (tabButtonStyle == TabButtonTextOnly) {
-        return QSize(textWidth, qMax(opt.iconSize.height(), opt.fontMetrics.height()));
-    }
-    // 4 is the hardcoded spacing between icons and text used in Qt Widgets
-    const int spacing = !opt.icon.isNull() ? 4 : 0;
-    return QSize(opt.iconSize.width() + spacing + textWidth, qMax(opt.iconSize.height(), opt.fontMetrics.height()));
-}
-
-QSize SideBarTabBar::tabSizeHint(const int index, const TabButtonStyle tabButtonStyle) const
-{
-    if (index < 0 || index > count() - 1) {
-        return QSize();
-    }
-
-    QStyleOptionTab opt;
-    initStyleOption(&opt, index);
-    if (tabButtonStyle == TabButtonIconOnly) {
-        opt.text.clear();
-    } else if (tabButtonStyle == TabButtonTextOnly) {
-        opt.icon = QIcon();
-    }
-    const QSize contentSize = tabContentSize(index, tabButtonStyle, opt);
-    const int buttonMargin = style()->pixelMetric(QStyle::PM_ButtonMargin);
-    const int toolBarMargin = style()->pixelMetric(QStyle::PM_ToolBarFrameWidth) + style()->pixelMetric(QStyle::PM_ToolBarItemMargin);
-    return QSize(contentSize.width() + buttonMargin * 2 + toolBarMargin * 2, contentSize.height() + buttonMargin * 2 + toolBarMargin * 2);
-}
-
-QSize SideBarTabBar::tabSizeHint(const int index) const
-{
-    return tabSizeHint(index, d->tabButtonStyle);
-}
-
-QSize SideBarTabBar::minimumTabSizeHint(int index) const
-{
-    return tabSizeHint(index, TabButtonIconOnly);
-}
-
-void SideBarTabBar::tabLayoutChange()
-{
-    const int width = this->width();
-    if (width < sizeHint(TabButtonTextOnly).width()) {
-        d->tabButtonStyle = TabButtonIconOnly;
-    } else if (width < sizeHint(TabButtonTextBesideIcon).width()) {
-        d->tabButtonStyle = TabButtonTextOnly;
-    } else {
-        d->tabButtonStyle = TabButtonTextBesideIcon;
-    }
-}
-
-void SideBarTabBar::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event)
     QStylePainter painter(this);
-    // Don't need to draw PE_FrameTabBarBase because it's in a QTabWidget
-
-    const int selected = currentIndex();
-
-    for (int i = 0; i < this->count(); ++i) {
-        if (i == selected) {
-            continue;
-        }
-        drawTab(i, painter);
-    }
-
-    // draw selected tab last so it appears on top
-    if (selected >= 0) {
-        drawTab(selected, painter);
-    }
+    for (int i = 0; i < count(); ++i) drawTab(i, painter);
 }
 
 void SideBarTabBar::drawTab(int index, QStylePainter &painter) const
 {
-    QStyleOptionTab opt;
-    QTabBar::initStyleOption(&opt, index);
-
-    // The sidebar owns one continuous surface. Tabs only paint their selected
-    // or hovered state, leaving the panel visible around the whole button row.
-    if (opt.state & (QStyle::State_Selected | QStyle::State_MouseOver | QStyle::State_HasFocus)) {
-        QColor fill = opt.palette.color(QPalette::Highlight);
-        fill.setAlpha(opt.state & QStyle::State_Selected ? 38 : 20);
-        painter.save();
-        painter.setRenderHint(QPainter::Antialiasing);
-        painter.setPen(Qt::NoPen);
+    QStyleOptionTab opt; initStyleOption(&opt, index);
+    const bool selected = opt.state & QStyle::State_Selected;
+    const bool hovered = opt.state & QStyle::State_MouseOver;
+    const QRectF capsule = QRectF(opt.rect).adjusted(4, 5, -4, -8);
+    painter.save();
+    painter.setRenderHint(QPainter::Antialiasing);
+    if (selected || hovered) {
+        QColor accent = opt.palette.color(QPalette::Active, QPalette::Highlight);
+        QColor fill = opt.palette.color(QPalette::Button);
+        if (selected) paintFloatingShadow(painter, capsule, 12, opt.palette);
+        painter.setPen(QPen(QColor(accent.red(), accent.green(), accent.blue(), selected ? 55 : 20), 1));
         painter.setBrush(fill);
-        painter.drawRoundedRect(opt.rect.adjusted(3, 3, -3, -3), 9, 9);
+        painter.drawRoundedRect(capsule, 12, 12);
+        accent.setAlpha(selected ? 24 : 12);
+        painter.setPen(Qt::NoPen); painter.setBrush(accent);
+        painter.drawRoundedRect(capsule, 12, 12);
+    }
+    if (hasFocus() && selected) {
+        painter.setBrush(Qt::NoBrush);
+        painter.setPen(QPen(opt.palette.color(QPalette::Highlight), 2));
+        painter.drawRoundedRect(capsule.adjusted(1, 1, -1, -1), 11, 11);
+    }
+    const QColor ink = selected ? opt.palette.color(QPalette::Active, QPalette::Highlight)
+                                : opt.palette.color(QPalette::WindowText);
+    const bool showLabel = tabButtonStyle() != TabButtonIconOnly;
+    const QRect target(opt.rect.center().x() - 10,
+                       showLabel ? opt.rect.top() + 12 : qRound(capsule.center().y()) - 10, 20, 20);
+    if (tabData(index).toString() == QLatin1String("recent")) {
+        // A theme-independent history symbol, using the same palette as the other tabs.
+        painter.save();
+        painter.translate(target.topLeft());
+        painter.setPen(QPen(ink, 1.7, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawArc(QRectF(3, 3, 14, 14), 135 * 16, -315 * 16);
+        painter.drawLine(QPointF(3, 2.5), QPointF(3, 6.5));
+        painter.drawLine(QPointF(3, 6.5), QPointF(7, 6.5));
+        painter.drawLine(QPointF(10, 6), QPointF(10, 10));
+        painter.drawLine(QPointF(10, 10), QPointF(13, 12));
         painter.restore();
+    } else {
+        QPixmap icon = opt.icon.pixmap(opt.iconSize, devicePixelRatioF());
+        if (!icon.isNull()) {
+            QPainter tint(&icon); tint.setCompositionMode(QPainter::CompositionMode_SourceIn);
+            tint.fillRect(icon.rect(), ink); tint.end();
+            painter.drawPixmap(target, icon);
+        }
     }
-
-    const TabButtonStyle tabButtonStyle = this->tabButtonStyle();
-    if (tabButtonStyle == TabButtonTextOnly) {
-        opt.icon = QIcon();
-    } else if (tabButtonStyle == TabButtonIconOnly) {
-        opt.text.clear();
+    if (showLabel) {
+        QFont labelFont = font(); labelFont.setWeight(selected ? QFont::DemiBold : QFont::Normal);
+        painter.setFont(labelFont);
+        painter.setPen(opt.palette.color(QPalette::WindowText));
+        painter.drawText(opt.rect.adjusted(4, 36, -4, -10),
+                         Qt::AlignHCenter | Qt::AlignTop | Qt::TextHideMnemonic, tabText(index));
     }
-    const bool hasIcon = !opt.icon.isNull();
-    const bool hasText = !opt.text.isEmpty();
-
-    int flags = Qt::TextShowMnemonic;
-    flags |= hasIcon && hasText ? Qt::AlignLeft | Qt::AlignVCenter : Qt::AlignCenter;
-    if (!style()->styleHint(QStyle::SH_UnderlineShortcut, &opt, this)) {
-        flags |= Qt::TextHideMnemonic;
-    }
-
-    const QSize contentSize = tabContentSize(index, tabButtonStyle, opt);
-    const QRect contentRect = QStyle::alignedRect(this->layoutDirection(), Qt::AlignCenter, contentSize, opt.rect);
-
-    if (hasIcon) {
-        painter.drawItemPixmap(contentRect, flags, opt.icon.pixmap(opt.iconSize));
-    }
-
-    if (hasText) {
-        // The available space to draw the text depends on whether we already drew an icon into our contentRect.
-        const QSize availableSizeForText = !hasIcon ? contentSize : QSize(contentSize.width() - opt.iconSize.width() - 4, contentSize.height());
-        // The '4' above is the hardcoded spacing between icons and text used in Qt Widgets.
-        const QRect availableRectForText =
-            !hasIcon ? contentRect : QStyle::alignedRect(this->layoutDirection(), Qt::AlignRight, availableSizeForText, contentRect);
-
-        painter.drawItemText(availableRectForText, flags, opt.palette, opt.state & QStyle::State_Enabled, opt.text, QPalette::WindowText);
-    }
+    painter.restore();
 }
 
 //- SideBar --------------------------------------------------------------------
@@ -371,7 +367,7 @@ public:
         setAutoFillBackground(false);
         tabBar()->setDocumentMode(true);
         tabBar()->setUsesScrollButtons(false);
-        tabBar()->setFocusPolicy(Qt::NoFocus);
+        tabBar()->setFocusPolicy(Qt::StrongFocus);
         tabBar()->setExpanding(true);
         tabBar()->setDrawBase(false);
         tabBar()->setAutoFillBackground(false);
@@ -409,18 +405,12 @@ void SideBar::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
     QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(Qt::NoPen);
-    // The theme uses Base for its canvas; Button is its raised, opaque surface.
-    QColor surface = palette().color(QPalette::Button);
-    surface.setAlpha(255);
-    painter.setBrush(surface);
-    painter.drawRoundedRect(QRectF(rect()).adjusted(8, 8, -8, -8), 16, 16);
+    paintFloatingPanel(painter, QRectF(rect()).adjusted(8, 8, -8, -8), palette());
 }
 
 QSize SideBar::sizeHint() const
 {
-    return QSize(232, 200);
+    return QSize(qMax(280, d->tabs->tabBar()->sizeHint().width() + 32), 200);
 }
 
 void SideBar::addPage(SideBarPage *page)
@@ -429,6 +419,14 @@ void SideBar::addPage(SideBarPage *page)
     SignalBlocker blocker(d->tabs);
     const int index = d->tabs->addTab(page, page->icon(), page->title());
     d->tabs->setTabToolTip(index, page->title());
+    d->tabs->tabBar()->setTabData(index, page->objectName());
+    setMinimumWidth(d->tabs->tabBar()->minimumSizeHint().width() + 32);
+}
+
+void SideBar::setContextAvailable(bool available)
+{
+    for (int i = 0; i < d->tabs->count(); ++i)
+        static_cast<SideBarPage *>(d->tabs->widget(i))->setContextAvailable(available);
 }
 
 QString SideBar::currentPage() const

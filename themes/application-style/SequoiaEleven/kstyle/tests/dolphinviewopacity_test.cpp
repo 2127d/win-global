@@ -36,12 +36,12 @@ void DolphinViewOpacityTest::initTestCase()
 {
     // Use temporary directory for config files
     QVERIFY(m_tempDir.isValid());
-    QStandardPaths::setTestModeEnabled(true);
+
 }
 
 void DolphinViewOpacityTest::cleanupTestCase()
 {
-    QStandardPaths::setTestModeEnabled(false);
+
 }
 
 void DolphinViewOpacityTest::init()
@@ -103,7 +103,7 @@ void DolphinViewOpacityTest::testPersistence()
     QCOMPARE(SequoiaEleven::StyleConfigData::dolphinViewOpacity(), 42);
 
     // Save configuration
-    SequoiaEleven::StyleConfigData::self()->save();
+    QVERIFY(SequoiaEleven::StyleConfigData::self()->save());
 
     // Reset to defaults
     SequoiaEleven::StyleConfigData::self()->setDefaults();
@@ -134,5 +134,13 @@ void DolphinViewOpacityTest::testIndependentFromSidebarOpacity()
     QCOMPARE(SequoiaEleven::StyleConfigData::dolphinSidebarOpacity(), 25);
 }
 
-QTEST_MAIN(DolphinViewOpacityTest)
+int main(int argc, char **argv)
+{
+    QTemporaryDir config;
+    if (!config.isValid()) return 1;
+    qputenv("XDG_CONFIG_HOME", config.path().toUtf8());
+    QApplication app(argc, argv);
+    DolphinViewOpacityTest test;
+    return QTest::qExec(&test, argc, argv);
+}
 #include "dolphinviewopacity_test.moc"

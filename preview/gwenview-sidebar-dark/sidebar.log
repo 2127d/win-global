@@ -1,5 +1,15 @@
+dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
 GRID: viewport=184 first=0,0 91x91 second=91,0 third=0,91
-dbus-daemon[2063431]: [session uid=1000 pid=2063431 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=2063432 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[2063431]: [session uid=1000 pid=2063431 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
-TOOLBAR: window=845 viewer=596 panel=500 controls=508 scroll=8
-PASS: preview grid, tabs, rounded viewer, toolbar animation/reversal, zoom, narrow layout, fullscreen
+dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+PASS: native defaults, independent checkbox combinations, repeated style restoration, resizing, fullscreen and spotlight restoration
+MAIN TOOLBAR: y=16 right=834 anchor=834 viewer before=0,0 851x744 after=0,0 851x744 controls=475x28
+PASS: floating main toolbar actions, animation, native visibility preference across Browse/Start
+PASS: both toggles hide, reveal nearby, fade/reverse, pass through input, stay visible expanded, and support keyboard focus
+BLUR: panel stripe contrast=0
+BLUR: toggle stripe contrast=0
+TOOLBAR: window=819 viewer=596 panel=496 controls=585 scroll=89
+dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
+PASS: rounded vertical thumbnail area, selection, resizing, visibility, fullscreen restoration
+PASS: preview grid, tabs, rounded viewer, blurred glass, opaque controls, native zoom dropdown, live light/dark text and icons, repeated slides/reversal, zoom, narrow layout, fullscreen

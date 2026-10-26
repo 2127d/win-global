@@ -1,175 +1,186 @@
-/*
- * Unit tests for StyleConfig UI module with DolphinViewOpacity
- *
- * Tests that the configuration UI properly handles the
- * DolphinViewOpacity slider and integrates with the config system.
- */
-
+/* Regression tests exercise the real application-style settings widget. */
 #include <QTest>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QRadioButton>
 #include <QSlider>
 #include <QSpinBox>
+#include <QTabWidget>
 #include <QTemporaryDir>
-#include <QStandardPaths>
 #include <QSignalSpy>
+#include <QDir>
+#include <KLocalizedString>
+#include <KConfigGroup>
+#include <KSharedConfig>
 
+#include "../config/sequoiaelevenstyleconfig.h"
 #include "sequoiaelevenstyleconfigdata.h"
+
+using SequoiaEleven::StyleConfig;
+using SequoiaEleven::StyleConfigData;
 
 class StyleConfigTest : public QObject
 {
     Q_OBJECT
-
-private:
-    QTemporaryDir m_tempDir;
-
 private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-    void init();
-    void cleanup();
+    void init()
+    {
+        StyleConfigData::self()->setDefaults();
+        QVERIFY(StyleConfigData::self()->save());
+    }
 
-    // UI component tests
-    void testSliderRange();
-    void testSliderDefaultValue();
-    void testSliderSpinBoxSync();
-    void testOpacityAlphaConversion();
-    void testTransparencyConditionCheck();
+    void cleanLoadAndReset()
+    {
+        StyleConfig widget(nullptr);
+        QSignalSpy changed(&widget, &StyleConfig::changed);
+        for (int i = 0; i < 3; ++i) {
+            widget.reset();
+            QVERIFY(!changed.last().at(0).toBool());
+            QCOMPARE(widget.findChild<QComboBox *>("_shadowSize")->count(), 5);
+        }
+        auto rounded = widget.findChild<QCheckBox *>("_roundedRubberBandFrame");
+        rounded->toggle();
+        QVERIFY(changed.last().at(0).toBool());
+        rounded->toggle();
+        QVERIFY(!changed.last().at(0).toBool());
+        auto strength = widget.findChild<QSpinBox *>("_shadowStrength");
+        strength->setValue(180);
+        QVERIFY(changed.last().at(0).toBool());
+        widget.save();
+        QVERIFY(!changed.last().at(0).toBool());
+        QCOMPARE(StyleConfigData::shadowStrength(), 180);
+    }
+
+    void defaultsArePendingUntilSaved()
+    {
+        StyleConfigData::setMenuOpacity(45);
+        StyleConfigData::setOldTabbar(true);
+        StyleConfigData::setViewDrawTreeBranchLines(true);
+        QVERIFY(StyleConfigData::self()->save());
+        StyleConfig widget(nullptr);
+        QSignalSpy changed(&widget, &StyleConfig::changed);
+        widget.defaults();
+        QCOMPARE(widget.findChild<QSlider *>("_menuOpacity")->value(), 86);
+        QVERIFY(widget.findChild<QRadioButton *>("_defaultTabbar")->isChecked());
+        QVERIFY(changed.last().at(0).toBool());
+        QCOMPARE(StyleConfigData::menuOpacity(), 45);
+        KConfig disk(QStringLiteral("sequoiaelevenrc"), KConfig::SimpleConfig);
+        QCOMPARE(KConfigGroup(&disk, "Style").readEntry("MenuOpacity", 0), 45);
+        widget.reset();
+        QCOMPARE(widget.findChild<QSlider *>("_menuOpacity")->value(), 45);
+        QVERIFY(widget.findChild<QRadioButton *>("_oldTabbar")->isChecked());
+        QVERIFY(!changed.last().at(0).toBool());
+        widget.defaults();
+        widget.save();
+        widget.reset();
+        QCOMPARE(widget.findChild<QSlider *>("_menuOpacity")->value(), 86);
+        QVERIFY(!widget.findChild<QCheckBox *>("_viewDrawTreeBranchLines")->isChecked());
+        QVERIFY(!changed.last().at(0).toBool());
+    }
+
+    void supportedOptionsRoundTrip_data()
+    {
+        QTest::addColumn<QString>("key");
+        QTest::addColumn<QVariant>("value");
+        for (const char *key : {"ViewDrawTreeBranchLines", "ViewInvertSortIndicator", "TabBarTabExpandFullWidth", "StackedWidgetTransitionsEnabled"})
+            QTest::newRow(key) << QString::fromLatin1(key) << QVariant(true);
+        for (const char *key : {"ProgressBarAnimated", "SplitterProxyEnabled"})
+            QTest::newRow(key) << QString::fromLatin1(key) << QVariant(false);
+        QTest::newRow("busy duration") << QStringLiteral("ProgressBarBusyStepDuration") << QVariant(1200);
+        QTest::newRow("splitter width") << QStringLiteral("SplitterProxyWidth") << QVariant(18);
+    }
+
+    void supportedOptionsRoundTrip()
+    {
+        QFETCH(QString, key);
+        QFETCH(QVariant, value);
+        StyleConfig widget(nullptr);
+        QSignalSpy changed(&widget, &StyleConfig::changed);
+        QString name = key;
+        name[0] = name[0].toLower();
+        auto control = widget.findChild<QWidget *>(QLatin1Char('_') + name);
+        QVERIFY(control);
+        if (auto check = qobject_cast<QCheckBox *>(control)) check->setChecked(value.toBool());
+        else qobject_cast<QSpinBox *>(control)->setValue(value.toInt());
+        QVERIFY(changed.last().at(0).toBool());
+        widget.save();
+        widget.reset();
+        QCOMPARE(StyleConfigData::self()->findItem(key)->property(), value);
+        QVERIFY(!changed.last().at(0).toBool());
+    }
+
+    void dependentControls()
+    {
+        StyleConfig widget(nullptr);
+        auto check = [&](const char *name) { return widget.findChild<QCheckBox *>(name); };
+        auto enabled = [&](const char *name) { return widget.findChild<QWidget *>(name)->isEnabled(); };
+        check("_animationsEnabled")->setChecked(false);
+        QVERIFY(!enabled("_animationsDuration"));
+        QVERIFY(!enabled("_stackedWidgetTransitionsEnabled"));
+        QVERIFY(enabled("_progressBarBusyStepDuration")); // Busy indicator is independent.
+        check("_progressBarAnimated")->setChecked(false);
+        QVERIFY(!enabled("_progressBarBusyStepDuration"));
+        check("_scrollBarTransient")->setChecked(false);
+        QVERIFY(!enabled("_scrollBarTransientAlwaysShowSlim"));
+        check("_splitterProxyEnabled")->setChecked(false);
+        QVERIFY(!enabled("_splitterProxyWidth"));
+        QVERIFY(!enabled("_tabBarTabExpandFullWidth"));
+        check("_documentModeTabs")->setChecked(true);
+        QVERIFY(enabled("_tabBarTabExpandFullWidth"));
+        check("_noOutline")->setChecked(true);
+        QVERIFY(!enabled("_fullOutline"));
+        widget.findChild<QComboBox *>("_shadowSize")->setCurrentIndex(0);
+        QVERIFY(!enabled("_shadowStrength"));
+        widget.reset();
+        QVERIFY(enabled("_animationsDuration"));
+        QVERIFY(enabled("_shadowStrength"));
+        QVERIFY(enabled("_fullOutline"));
+        QVERIFY(!widget.findChild<QWidget *>("_widgetToolBarShadow"));
+    }
+
+    void opacityControlsStaySynchronized()
+    {
+        StyleConfig widget(nullptr);
+        for (const char *name : {"_menuOpacity", "_sidebarOpacity", "_viewOpacity", "_menuBarOpacity", "_toolBarOpacity", "_tabBarOpacity"}) {
+            auto slider = widget.findChild<QSlider *>(name);
+            auto spin = widget.findChild<QSpinBox *>(QString::fromLatin1(name) + "SpinBox");
+            slider->setValue(42);
+            QCOMPARE(spin->value(), 42);
+            spin->setValue(67);
+            QCOMPARE(slider->value(), 67);
+        }
+        widget.save();
+        widget.reset();
+        QCOMPARE(StyleConfigData::menuOpacity(), 67);
+        QCOMPARE(StyleConfigData::dolphinViewOpacity(), 67);
+    }
+
+    void previewPages()
+    {
+        const QString output = qEnvironmentVariable("SEQUOIA_SETTINGS_PREVIEW_DIR");
+        if (output.isEmpty()) QSKIP("Optional visual preview");
+        QVERIFY(QDir().mkpath(output));
+        StyleConfig widget(nullptr);
+        widget.resize(780, 620);
+        widget.show();
+        auto tabs = widget.findChild<QTabWidget *>("tabWidget");
+        for (int i = 0; i < tabs->count(); ++i) {
+            tabs->setCurrentIndex(i);
+            QTest::qWait(40);
+            QVERIFY(widget.grab().save(output + '/' + tabs->widget(i)->objectName() + ".png"));
+        }
+    }
 };
 
-void StyleConfigTest::initTestCase()
+int main(int argc, char **argv)
 {
-    QVERIFY(m_tempDir.isValid());
-    QStandardPaths::setTestModeEnabled(true);
+    // Isolate configuration before Qt or KConfig initializes; never touch user preferences.
+    QTemporaryDir config;
+    if (!config.isValid()) return 1;
+    qputenv("XDG_CONFIG_HOME", config.path().toUtf8());
+    QApplication app(argc, argv);
+    KLocalizedString::setApplicationDomain("sequoiaeleven_style_config");
+    StyleConfigTest test;
+    return QTest::qExec(&test, argc, argv);
 }
-
-void StyleConfigTest::cleanupTestCase()
-{
-    QStandardPaths::setTestModeEnabled(false);
-}
-
-void StyleConfigTest::init()
-{
-    SequoiaEleven::StyleConfigData::self()->setDefaults();
-}
-
-void StyleConfigTest::cleanup()
-{
-}
-
-void StyleConfigTest::testSliderRange()
-{
-    // Create a slider like the one in the UI
-    QSlider slider;
-    slider.setRange(0, 100);
-
-    QCOMPARE(slider.minimum(), 0);
-    QCOMPARE(slider.maximum(), 100);
-
-    // Test that all valid opacity values are within range
-    for (int i = 0; i <= 100; ++i) {
-        slider.setValue(i);
-        QCOMPARE(slider.value(), i);
-    }
-}
-
-void StyleConfigTest::testSliderDefaultValue()
-{
-    // The default opacity should be 100 (fully opaque)
-    int defaultValue = SequoiaEleven::StyleConfigData::dolphinViewOpacity();
-    QCOMPARE(defaultValue, 100);
-
-    // A slider initialized with this value should show 100
-    QSlider slider;
-    slider.setRange(0, 100);
-    slider.setValue(defaultValue);
-    QCOMPARE(slider.value(), 100);
-}
-
-void StyleConfigTest::testSliderSpinBoxSync()
-{
-    // Create slider and spinbox like in the UI
-    QSlider slider;
-    slider.setRange(0, 100);
-    slider.setValue(100);
-
-    QSpinBox spinBox;
-    spinBox.setRange(0, 100);
-    spinBox.setValue(100);
-
-    // Connect them like in StyleConfig constructor
-    QObject::connect(&slider, &QSlider::valueChanged,
-                     &spinBox, &QSpinBox::setValue);
-    QObject::connect(&spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-                     &slider, &QSlider::setValue);
-
-    // Change slider, spinbox should follow
-    slider.setValue(50);
-    QCOMPARE(spinBox.value(), 50);
-
-    // Change spinbox, slider should follow
-    spinBox.setValue(25);
-    QCOMPARE(slider.value(), 25);
-
-    // Test edge cases
-    slider.setValue(0);
-    QCOMPARE(spinBox.value(), 0);
-
-    spinBox.setValue(100);
-    QCOMPARE(slider.value(), 100);
-}
-
-void StyleConfigTest::testOpacityAlphaConversion()
-{
-    // Test conversion from opacity percentage to alpha float
-    // This is how it's done in the style code:
-    // backgroundColor.setAlphaF(StyleConfigData::dolphinViewOpacity() / 100.0);
-
-    auto opacityToAlpha = [](int opacity) -> qreal {
-        return opacity / 100.0;
-    };
-
-    // Test key values
-    QCOMPARE(opacityToAlpha(0), 0.0);
-    QCOMPARE(opacityToAlpha(50), 0.5);
-    QCOMPARE(opacityToAlpha(100), 1.0);
-    QCOMPARE(opacityToAlpha(25), 0.25);
-    QCOMPARE(opacityToAlpha(75), 0.75);
-
-    // Test that setting opacity and converting gives correct alpha
-    SequoiaEleven::StyleConfigData::setDolphinViewOpacity(42);
-    qreal alpha = SequoiaEleven::StyleConfigData::dolphinViewOpacity() / 100.0;
-    QCOMPARE(alpha, 0.42);
-}
-
-void StyleConfigTest::testTransparencyConditionCheck()
-{
-    // Test the condition used throughout the code:
-    // StyleConfigData::dolphinViewOpacity() < 100
-
-    auto isTransparent = []() -> bool {
-        return SequoiaEleven::StyleConfigData::dolphinViewOpacity() < 100;
-    };
-
-    // Default (100) should not be transparent
-    SequoiaEleven::StyleConfigData::setDolphinViewOpacity(100);
-    QVERIFY(!isTransparent());
-
-    // 99 and below should be transparent
-    SequoiaEleven::StyleConfigData::setDolphinViewOpacity(99);
-    QVERIFY(isTransparent());
-
-    SequoiaEleven::StyleConfigData::setDolphinViewOpacity(50);
-    QVERIFY(isTransparent());
-
-    SequoiaEleven::StyleConfigData::setDolphinViewOpacity(1);
-    QVERIFY(isTransparent());
-
-    SequoiaEleven::StyleConfigData::setDolphinViewOpacity(0);
-    QVERIFY(isTransparent());
-
-    // Back to 100 should not be transparent
-    SequoiaEleven::StyleConfigData::setDolphinViewOpacity(100);
-    QVERIFY(!isTransparent());
-}
-
-QTEST_MAIN(StyleConfigTest)
 #include "styleconfig_test.moc"

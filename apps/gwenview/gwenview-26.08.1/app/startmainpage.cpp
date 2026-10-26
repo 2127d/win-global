@@ -18,10 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA.
 
 */
+#include "floatingsurface.h"
 #include "startmainpage.h"
 #include "gvcore.h"
 #include <lib/mimetypeutils.h>
 #include <QApplication>
+#include <QAction>
+#include <QHideEvent>
+#include <QLinearGradient>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QLabel>
@@ -33,6 +37,38 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 
 namespace Gwenview
 {
+namespace {
+class ImageStackMark : public QWidget {
+public:
+    explicit ImageStackMark(QWidget *parent) : QWidget(parent) { setFixedSize(112, 96); }
+protected:
+    void paintEvent(QPaintEvent *) override
+    {
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        const QColor accent = palette().color(QPalette::Active, QPalette::Highlight);
+        QColor back = accent; back.setAlpha(28);
+        QColor edge = accent; edge.setAlpha(65);
+        painter.translate(56, 48);
+        painter.save(); painter.rotate(-13);
+        painter.setPen(QPen(edge, 1.5)); painter.setBrush(back);
+        painter.drawRoundedRect(QRectF(-37, -27, 74, 54), 10, 10);
+        painter.restore();
+        const QRectF card(-32, -26, 76, 56);
+        paintFloatingShadow(painter, card, 10, palette());
+        QColor surface = palette().color(QPalette::Button); surface.setAlpha(255);
+        painter.setPen(QPen(edge, 1.5)); painter.setBrush(surface);
+        painter.drawRoundedRect(card, 10, 10);
+        painter.setPen(Qt::NoPen); painter.setBrush(accent);
+        painter.drawEllipse(QPointF(22, -10), 5, 5);
+        QPainterPath hills; hills.moveTo(-23, 20); hills.lineTo(-6, -1);
+        hills.quadTo(-3, -4, 0, 0); hills.lineTo(9, 10); hills.lineTo(15, 4);
+        hills.quadTo(17, 2, 20, 5); hills.lineTo(34, 20); hills.closeSubpath();
+        QColor mountain = accent; mountain.setAlpha(180); painter.fillPath(hills, mountain);
+    }
+};
+}
+
 StartMainPage::StartMainPage(QWidget *parent, GvCore *core)
     : QFrame(parent), mCore(core)
 {
@@ -40,39 +76,91 @@ StartMainPage::StartMainPage(QWidget *parent, GvCore *core)
     setFrameShape(QFrame::NoFrame);
     setAcceptDrops(true);
     auto layout = new QVBoxLayout(this);
-    layout->setContentsMargins(48, 48, 48, 48);
-    layout->setSpacing(16);
-    layout->addStretch();
-    auto icon = new QLabel(this);
-    icon->setPixmap(QIcon::fromTheme(QStringLiteral("image-x-generic")).pixmap(72, 72));
-    icon->setAlignment(Qt::AlignCenter);
-    layout->addWidget(icon);
-    auto title = new QLabel(i18n("Open an image"), this);
-    QFont font = title->font();
-    font.setPointSizeF(font.pointSizeF() * 1.8);
+    layout->setContentsMargins(32, 32, 32, 32);
+    layout->setSpacing(0);
+    layout->addStretch(4);
+    auto group = new QWidget(this);
+    group->setObjectName(QStringLiteral("welcomeContent"));
+    group->setMaximumWidth(520);
+    auto content = new QVBoxLayout(group);
+    content->setContentsMargins(12, 12, 12, 12);
+    content->setSpacing(18);
+    auto mark = new ImageStackMark(group);
+    mark->setObjectName(QStringLiteral("welcomeImageStack"));
+    content->addWidget(mark, 0, Qt::AlignHCenter);
+    mTitle = new QLabel(i18n("Open your images"), group);
+    mTitle->setObjectName(QStringLiteral("welcomeTitle"));
+    QFont font = mTitle->font();
+    font.setPointSizeF(font.pointSizeF() * 1.9);
     font.setBold(true);
-    title->setFont(font);
-    title->setAlignment(Qt::AlignCenter);
-    layout->addWidget(title);
-    auto text = new QLabel(i18n("Drag and drop images here, or choose files to get started."), this);
-    text->setAlignment(Qt::AlignCenter);
-    text->setWordWrap(true);
-    layout->addWidget(text);
-    auto button = new QPushButton(QIcon::fromTheme(QStringLiteral("list-add")), i18n("Add files…"), this);
+    mTitle->setFont(font); mTitle->setAlignment(Qt::AlignCenter);
+    mTitle->setWordWrap(true);
+    content->addWidget(mTitle);
+    mDescription = new QLabel(i18n("Drop images here, choose files, or pick up where you left off in Recent."), group);
+    mDescription->setAlignment(Qt::AlignCenter); mDescription->setWordWrap(true);
+    content->addWidget(mDescription);
+    content->addSpacing(4);
+    auto openRow = new QHBoxLayout;
+    openRow->setSpacing(12); openRow->addStretch();
+    auto button = new QPushButton(i18n("Open images…"), group);
     button->setObjectName(QStringLiteral("addImagesButton"));
-    button->setMinimumSize(160, 42);
-    layout->addWidget(button, 0, Qt::AlignHCenter);
+    button->setMinimumSize(184, 44);
+    openRow->addWidget(button);
+    mShortcut = new QLabel(group);
+    mShortcut->setObjectName(QStringLiteral("openImagesShortcut"));
+    openRow->addWidget(mShortcut); openRow->addStretch();
+    content->addLayout(openRow);
+    auto browse = new QPushButton(i18n("Browse a folder…"), group);
+    browse->setObjectName(QStringLiteral("browseFolderButton"));
+    browse->setFlat(true); browse->setMinimumHeight(36);
+    content->addWidget(browse, 0, Qt::AlignHCenter);
+    layout->addWidget(group, 0, Qt::AlignHCenter);
+    layout->addStretch(5);
     connect(button, &QPushButton::clicked, this, &StartMainPage::addFilesRequested);
-    layout->addStretch();
+    connect(browse, &QPushButton::clicked, this, &StartMainPage::browseFolderRequested);
     setFocusProxy(button);
     loadConfig();
     connect(qApp, &QApplication::paletteChanged, this, [this] { loadConfig(); });
+}
+
+void StartMainPage::setOpenAction(QAction *action)
+{
+    auto refresh = [this, action] {
+        const QString shortcut = action->shortcut().toString(QKeySequence::NativeText);
+        mShortcut->setText(shortcut);
+        mShortcut->setVisible(!shortcut.isEmpty());
+        mShortcut->setAccessibleName(i18n("Open images shortcut: %1", shortcut));
+    };
+    connect(action, &QAction::changed, this, refresh);
+    refresh();
+}
+
+void StartMainPage::setDropActive(bool active)
+{
+    if (mDropActive == active) return;
+    mDropActive = active;
+    setProperty("dropActive", active);
+    mTitle->setText(active ? i18n("Drop to open") : i18n("Open your images"));
+    mDescription->setText(active ? i18n("Release to open your images.")
+        : i18n("Drop images here, choose files, or pick up where you left off in Recent."));
+    update();
 }
 
 void StartMainPage::applyPalette(const QPalette &palette)
 {
     setPalette(palette);
     setAutoFillBackground(false);
+    QPalette muted = palette;
+    QColor ink = palette.color(QPalette::WindowText); ink.setAlpha(180);
+    muted.setColor(QPalette::WindowText, ink);
+    mDescription->setPalette(muted); mShortcut->setPalette(muted);
+    const QColor accent = palette.color(QPalette::Active, QPalette::Highlight);
+    const QColor text = palette.color(QPalette::Active, QPalette::HighlightedText);
+    findChild<QPushButton *>(QStringLiteral("addImagesButton"))->setStyleSheet(QStringLiteral(
+        "QPushButton { background: %1; color: %2; border: 1px solid %1; border-radius: 11px; padding: 4px 16px; font-weight: 600; }"
+        "QPushButton:hover { background: %3; } QPushButton:pressed { background: %4; }"
+        "QPushButton:focus { border: 2px solid %2; }")
+        .arg(accent.name(), text.name(), accent.lighter(108).name(), accent.darker(110).name()));
     update();
 }
 
@@ -80,12 +168,14 @@ void StartMainPage::paintEvent(QPaintEvent *)
 {
     // Match the viewer's 8px inset, 16px corners, and raised theme surface.
     QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    QColor surface = palette().color(QPalette::Button);
-    surface.setAlpha(255);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(surface);
-    painter.drawRoundedRect(QRectF(rect()).adjusted(8, 8, -8, -8), 16, 16);
+    paintFloatingPanel(painter, QRectF(rect()).adjusted(8, 8, -8, -8), palette());
+    if (mDropActive) {
+        QColor accent = palette().color(QPalette::Active, QPalette::Highlight);
+        QColor tint = accent; tint.setAlpha(16);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setPen(QPen(accent, 2.5)); painter.setBrush(tint);
+        painter.drawRoundedRect(QRectF(rect()).adjusted(10, 10, -10, -10), 15, 15);
+    }
 }
 
 void StartMainPage::loadConfig()
@@ -106,12 +196,30 @@ static QList<QUrl> imageUrls(const QMimeData *mime)
 
 void StartMainPage::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (!imageUrls(event->mimeData()).isEmpty()) event->acceptProposedAction();
+    setDropActive(!imageUrls(event->mimeData()).isEmpty());
+    if (mDropActive) event->acceptProposedAction();
+    else event->ignore();
+}
+
+void StartMainPage::dragMoveEvent(QDragMoveEvent *event)
+{
+    if (mDropActive) event->acceptProposedAction();
+}
+
+void StartMainPage::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    setDropActive(false); event->accept();
+}
+
+void StartMainPage::hideEvent(QHideEvent *event)
+{
+    setDropActive(false); QFrame::hideEvent(event);
 }
 
 void StartMainPage::dropEvent(QDropEvent *event)
 {
     const auto urls = imageUrls(event->mimeData());
+    setDropActive(false);
     if (urls.isEmpty()) return;
     event->acceptProposedAction();
     Q_EMIT filesSelected(urls);

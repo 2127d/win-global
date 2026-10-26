@@ -46,9 +46,19 @@ StyleConfig::StyleConfig(QWidget *parent)
 {
     setupUi(this);
 
-    // load setup from configData
+    _shadowSize->addItems({i18n("None"), i18n("Small"), i18n("Medium"), i18n("Large"), i18n("Very large")});
+
+    // Load after setting up the one-time choices.
     load();
 
+    connect(_viewDrawTreeBranchLines, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_viewInvertSortIndicator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_tabBarTabExpandFullWidth, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_stackedWidgetTransitionsEnabled, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_progressBarAnimated, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_splitterProxyEnabled, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_progressBarBusyStepDuration, &QSpinBox::valueChanged, this, &StyleConfig::updateChanged);
+    connect(_splitterProxyWidth, &QSpinBox::valueChanged, this, &StyleConfig::updateChanged);
     connect(_tabDrawHighlight, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
     connect(_unifiedTabBarKonsole, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
     connect(_renderThinSeperatorBetweenTheScrollBar, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
@@ -93,10 +103,9 @@ StyleConfig::StyleConfig(QWidget *parent)
     connect(_kTextEditDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
 
     connect(_widgetDrawShadow, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
-    connect(_widgetToolBarShadow, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
     connect(_shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(_shadowColor, &KColorCombo::activated, this, &StyleConfig::updateChanged);
-    connect(_shadowStrength, SIGNAL(valueChanged(int)), _shadowStrength, SLOT(setValue(int)));
+    connect(_shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(_shadowIntensity, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
 
     connect(_scrollableMenu, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
@@ -131,6 +140,14 @@ StyleConfig::StyleConfig(QWidget *parent)
 //__________________________________________________________________
 void StyleConfig::save()
 {
+    StyleConfigData::setViewDrawTreeBranchLines(_viewDrawTreeBranchLines->isChecked());
+    StyleConfigData::setViewInvertSortIndicator(_viewInvertSortIndicator->isChecked());
+    StyleConfigData::setTabBarTabExpandFullWidth(_tabBarTabExpandFullWidth->isChecked());
+    StyleConfigData::setStackedWidgetTransitionsEnabled(_stackedWidgetTransitionsEnabled->isChecked());
+    StyleConfigData::setProgressBarAnimated(_progressBarAnimated->isChecked());
+    StyleConfigData::setSplitterProxyEnabled(_splitterProxyEnabled->isChecked());
+    StyleConfigData::setProgressBarBusyStepDuration(_progressBarBusyStepDuration->value());
+    StyleConfigData::setSplitterProxyWidth(_splitterProxyWidth->value());
     StyleConfigData::setTabDrawHighlight(_tabDrawHighlight->isChecked());
     StyleConfigData::setUnifiedTabBarKonsole(_unifiedTabBarKonsole->isChecked());
     StyleConfigData::setRenderThinSeperatorBetweenTheScrollBar(_renderThinSeperatorBetweenTheScrollBar->isChecked());
@@ -156,7 +173,6 @@ void StyleConfig::save()
     StyleConfigData::setTabBarOpacity(_tabBarOpacity->value());
     StyleConfigData::setKTextEditDrawFrame(_kTextEditDrawFrame->isChecked());
     StyleConfigData::setWidgetDrawShadow(_widgetDrawShadow->isChecked());
-    StyleConfigData::setWidgetToolBarShadow(_widgetToolBarShadow->isChecked());
     StyleConfigData::setShadowSize(_shadowSize->currentIndex());
     StyleConfigData::setShadowColor(_shadowColor->color());
     StyleConfigData::setShadowStrength(_shadowStrength->value());
@@ -184,6 +200,7 @@ void StyleConfig::save()
     StyleConfigData::setScrollBarTransientAlwaysShowSlim(_scrollBarTransientAlwaysShowSlim->isChecked());
 
     StyleConfigData::self()->save();
+    updateChanged();
 
     // emit dbus signal
     QDBusMessage message(
@@ -194,26 +211,45 @@ void StyleConfig::save()
 //__________________________________________________________________
 void StyleConfig::defaults()
 {
-    StyleConfigData::self()->setDefaults();
-    load();
+    // Display defaults without replacing the saved comparison baseline or writing to disk.
+    StyleConfigData::self()->useDefaults(true);
+    populate();
+    StyleConfigData::self()->useDefaults(false);
+    updateChanged();
 }
 
 //__________________________________________________________________
 void StyleConfig::reset()
 {
-    // reparse configuration
-    StyleConfigData::self()->load();
-
     load();
 }
 
 //__________________________________________________________________
 void StyleConfig::updateChanged()
 {
+    if (_loading)
+        return;
+
     bool modified(false);
 
     // check if any value was modified
-    if (_tabDrawHighlight->isChecked() != StyleConfigData::tabDrawHighlight())
+    if (_viewDrawTreeBranchLines->isChecked() != StyleConfigData::viewDrawTreeBranchLines())
+        modified = true;
+    else if (_viewInvertSortIndicator->isChecked() != StyleConfigData::viewInvertSortIndicator())
+        modified = true;
+    else if (_tabBarTabExpandFullWidth->isChecked() != StyleConfigData::tabBarTabExpandFullWidth())
+        modified = true;
+    else if (_stackedWidgetTransitionsEnabled->isChecked() != StyleConfigData::stackedWidgetTransitionsEnabled())
+        modified = true;
+    else if (_progressBarAnimated->isChecked() != StyleConfigData::progressBarAnimated())
+        modified = true;
+    else if (_splitterProxyEnabled->isChecked() != StyleConfigData::splitterProxyEnabled())
+        modified = true;
+    else if (_progressBarBusyStepDuration->value() != StyleConfigData::progressBarBusyStepDuration())
+        modified = true;
+    else if (_splitterProxyWidth->value() != StyleConfigData::splitterProxyWidth())
+        modified = true;
+    else if (_tabDrawHighlight->isChecked() != StyleConfigData::tabDrawHighlight())
         modified = true;
     else if (_unifiedTabBarKonsole->isChecked() != StyleConfigData::unifiedTabBarKonsole())
         modified = true;
@@ -231,7 +267,7 @@ void StyleConfig::updateChanged()
         modified = true;
     else if (_menuItemDrawThinFocus->isChecked() == StyleConfigData::menuItemDrawStrongFocus())
         modified = true;
-    else if (_roundedRubberBandFrame->isChecked() == StyleConfigData::roundedRubberBandFrame())
+    else if (_roundedRubberBandFrame->isChecked() != StyleConfigData::roundedRubberBandFrame())
         modified = true;
     else if (_mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode())
         modified = true;
@@ -272,8 +308,6 @@ void StyleConfig::updateChanged()
     else if (_tabBarDrawCenteredTabs->isChecked() != StyleConfigData::tabBarDrawCenteredTabs())
         modified = true;
     else if (_widgetDrawShadow->isChecked() != StyleConfigData::widgetDrawShadow())
-        modified = true;
-    else if (_widgetToolBarShadow->isChecked() != StyleConfigData::widgetToolBarShadow())
         modified = true;
     else if (_shadowSize->currentIndex() != StyleConfigData::shadowSize()) {
         modified = true;
@@ -322,7 +356,6 @@ void StyleConfig::updateChanged()
     else if (_scrollBarTransientAlwaysShowSlim->isChecked() != StyleConfigData::scrollBarTransientAlwaysShowSlim())
         modified = true;
 
-
     if (_shadowSize->currentIndex() == 0) {
         _shadowColor->setEnabled(false);
         _shadowIntensity->setEnabled(false);
@@ -333,17 +366,20 @@ void StyleConfig::updateChanged()
         _shadowStrength->setEnabled(true);
     }
 
-    if (!_widgetDrawShadow->isChecked()) {
-        _widgetToolBarShadow->setEnabled(false);
-    } else {
-        _widgetToolBarShadow->setEnabled(true);
-    }
-
     if (_adjustToDarkThemes->isChecked()) {
         _tabBGColor->setEnabled(true);
     } else {
         _tabBGColor->setEnabled(false);
     }
+
+    _animationsDuration->setEnabled(_animationsEnabled->isChecked());
+    _animationsDurationLabel->setEnabled(_animationsEnabled->isChecked());
+    _stackedWidgetTransitionsEnabled->setEnabled(_animationsEnabled->isChecked());
+    _progressBarBusyStepDuration->setEnabled(_progressBarAnimated->isChecked());
+    _splitterProxyWidth->setEnabled(_splitterProxyEnabled->isChecked());
+    _scrollBarTransientAlwaysShowSlim->setEnabled(_scrollBarTransient->isChecked());
+    _tabBarTabExpandFullWidth->setEnabled(_documentModeTabs->isChecked());
+    _fullOutline->setEnabled(!_noOutline->isChecked());
 
     emit changed(modified);
 }
@@ -352,7 +388,23 @@ void StyleConfig::updateChanged()
 void StyleConfig::load()
 {
     StyleConfigData::self()->load();
+    populate();
+    updateChanged();
+}
 
+//__________________________________________________________________
+void StyleConfig::populate()
+{
+    _loading = true;
+
+    _viewDrawTreeBranchLines->setChecked(StyleConfigData::viewDrawTreeBranchLines());
+    _viewInvertSortIndicator->setChecked(StyleConfigData::viewInvertSortIndicator());
+    _tabBarTabExpandFullWidth->setChecked(StyleConfigData::tabBarTabExpandFullWidth());
+    _stackedWidgetTransitionsEnabled->setChecked(StyleConfigData::stackedWidgetTransitionsEnabled());
+    _progressBarAnimated->setChecked(StyleConfigData::progressBarAnimated());
+    _splitterProxyEnabled->setChecked(StyleConfigData::splitterProxyEnabled());
+    _progressBarBusyStepDuration->setValue(StyleConfigData::progressBarBusyStepDuration());
+    _splitterProxyWidth->setValue(StyleConfigData::splitterProxyWidth());
     _tabDrawHighlight->setChecked(StyleConfigData::tabDrawHighlight());
     _unifiedTabBarKonsole->setChecked(StyleConfigData::unifiedTabBarKonsole());
     _renderThinSeperatorBetweenTheScrollBar->setChecked(StyleConfigData::renderThinSeperatorBetweenTheScrollBar());
@@ -396,7 +448,6 @@ void StyleConfig::load()
     _buttonWidth->setValue(StyleConfigData::buttonWidth());
     _kTextEditDrawFrame->setChecked(StyleConfigData::kTextEditDrawFrame());
     _widgetDrawShadow->setChecked(StyleConfigData::widgetDrawShadow());
-    _widgetToolBarShadow->setChecked(StyleConfigData::widgetToolBarShadow());
     _menuItemHeight->setValue(StyleConfigData::menuItemHeight());
     _fancyMargins->setChecked(StyleConfigData::fancyMargins());
     _sunkenEffect->setChecked(StyleConfigData::sunkenEffect());
@@ -407,42 +458,14 @@ void StyleConfig::load()
     _scrollBarTransient->setChecked(StyleConfigData::scrollBarTransient());
     _scrollBarTransientAlwaysShowSlim->setChecked(StyleConfigData::scrollBarTransientAlwaysShowSlim());
 
-    if (!_widgetDrawShadow->isChecked()) {
-        _widgetToolBarShadow->setEnabled(false);
-    }
-
-    for (QString &item : _shadowSizes) {
-        if (item == "None") {
-            _shadowSize->addItem(item, "ShadowNone");
-        } else if (item == "Small") {
-            _shadowSize->addItem(item, "ShadowSmall");
-        } else if (item == "Medium") {
-            _shadowSize->addItem(item, "ShadowMedium");
-        } else if (item == "Large") {
-            _shadowSize->addItem(item, "ShadowLarge");
-        } else if (item == "VeryLarge") {
-            _shadowSize->addItem(item, "ShadowVeryLarge");
-        }
-    }
     _shadowSize->setCurrentIndex(StyleConfigData::shadowSize());
-    if (_shadowSize->currentIndex() == 0) {
-        _shadowColor->setEnabled(false);
-        _shadowIntensity->setEnabled(false);
-        _shadowStrength->setEnabled(false);
-    }
-
     _adjustToDarkThemes->setChecked(StyleConfigData::adjustToDarkThemes());
-
-    if (_adjustToDarkThemes->isChecked()) {
-        _tabBGColor->setEnabled(true);
-    } else {
-        _tabBGColor->setEnabled(false);
-    }
 
     _shadowColor->setColor(StyleConfigData::shadowColor());
     _shadowStrength->setValue(StyleConfigData::shadowStrength());
     _shadowIntensity->setCurrentIndex(StyleConfigData::shadowIntensity());
     _scrollableMenu->setChecked(StyleConfigData::scrollableMenu());
+    _defaultTabbar->setChecked(!StyleConfigData::oldTabbar() && !StyleConfigData::tabBarAltStyle());
     _oldTabbar->setChecked(StyleConfigData::oldTabbar());
 
     _tabBarAltStyle->setChecked(StyleConfigData::tabBarAltStyle());
@@ -453,6 +476,7 @@ void StyleConfig::load()
     _disableDolphinUrlNavigatorBackground->setChecked(StyleConfigData::disableDolphinUrlNavigatorBackground());
     _versionNumber->setText(SEQUOIAELEVEN_VERSION_STRING);
     _tabsHeight->setValue(StyleConfigData::tabsHeight());
+    _loading = false;
 }
 
 }

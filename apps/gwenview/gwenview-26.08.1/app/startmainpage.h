@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 #pragma once
 #include <QFrame>
 #include <QUrl>
+class QAction;
+class QLabel;
 namespace Gwenview
 {
 class GvCore;
@@ -31,14 +33,24 @@ public:
     explicit StartMainPage(QWidget *parent, GvCore *core);
     void applyPalette(const QPalette &);
     void loadConfig();
+    void setOpenAction(QAction *);
 Q_SIGNALS:
     void addFilesRequested();
+    void browseFolderRequested();
     void filesSelected(const QList<QUrl> &urls);
 protected:
     void paintEvent(QPaintEvent *) override;
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
+    void dragMoveEvent(QDragMoveEvent *) override;
+    void dragLeaveEvent(QDragLeaveEvent *) override;
+    void hideEvent(QHideEvent *) override;
 private:
+    void setDropActive(bool);
     GvCore *mCore;
+    QLabel *mTitle;
+    QLabel *mDescription;
+    QLabel *mShortcut;
+    bool mDropActive = false;
 };
 }

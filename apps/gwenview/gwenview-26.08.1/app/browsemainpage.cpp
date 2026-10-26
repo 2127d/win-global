@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 
 */
 // Self
+#include "floatingsurface.h"
 #include "browsemainpage.h"
 
 // Qt
@@ -400,12 +401,7 @@ void BrowseMainPage::paintEvent(QPaintEvent *)
         painter.fillRect(rect(), palette().brush(QPalette::Window));
         return;
     }
-    painter.setRenderHint(QPainter::Antialiasing);
-    QColor surface = palette().color(QPalette::Button);
-    surface.setAlpha(255);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(surface);
-    painter.drawRoundedRect(QRectF(rect()).adjusted(8, 8, -8, -8), 16, 16);
+    paintFloatingPanel(painter, QRectF(rect()).adjusted(8, 8, -8, -8), palette());
 }
 
 void BrowseMainPage::loadConfig()

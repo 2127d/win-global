@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QDateTime>
 #include <QDialog>
 #include <QFileDialog>
+#include <QStandardPaths>
 #include <QImageReader>
 #include <QLineEdit>
 #include <QMenuBar>
@@ -269,12 +270,9 @@ struct MainWindow::Private {
         if (!mFloatingMainToolbar) return;
         const bool viewing = mCurrentMainPageId == ViewMainPageId;
         auto source = q->toolBar();
-        // Disable the widget, not its shared actions: the floating copy and
-        // keyboard shortcuts must continue to use the native action state.
-        source->setEnabled(!viewing);
-        source->toggleViewAction()->setEnabled(!viewing);
-        source->setVisible(!viewing && !q->isFullScreen() && !mSpotlightModeAction->isChecked());
-        const bool showFloatingToolbar = viewing && !q->isFullScreen();
+        // KDE owns the docked toolbar and its persisted visibility action.
+        // Only offer the image-view island when that toolbar is hidden.
+        const bool showFloatingToolbar = viewing && source->isHidden() && !q->isFullScreen();
         if (!showFloatingToolbar) mFloatingMainToolbar->collapse();
         mFloatingMainToolbar->setVisible(showFloatingToolbar);
     }
@@ -295,6 +293,9 @@ struct MainWindow::Private {
         connect(mMainToolbarSyncTimer, &QTimer::timeout, q, [this] {
             syncMainToolbarActions();
             updateMainToolbar();
+        });
+        connect(q->toolBar(), &QToolBar::visibilityChanged, q, [this] {
+            mMainToolbarSyncTimer->start();
         });
         q->toolBar()->installEventFilter(q);
         updateMainToolbar();
@@ -422,6 +423,21 @@ struct MainWindow::Private {
     {
         mStartMainPage = new StartMainPage(parent, mGvCore);
         connect(mStartMainPage, &StartMainPage::addFilesRequested, q, &MainWindow::openFile);
+        connect(mStartMainPage, &StartMainPage::browseFolderRequested, q, [this] {
+            auto dialog = new QFileDialog(q);
+            dialog->setObjectName(QStringLiteral("welcomeFolderDialog"));
+            dialog->setAttribute(Qt::WA_DeleteOnClose);
+            dialog->setModal(true);
+            dialog->setWindowTitle(i18nc("@title:window", "Browse a Folder"));
+            dialog->setFileMode(QFileDialog::Directory);
+            dialog->setOption(QFileDialog::ShowDirsOnly);
+            const QUrl dir = mContextManager->currentDirUrl();
+            dialog->setDirectoryUrl(dir.isEmpty() ? QUrl::fromLocalFile(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)) : dir);
+            connect(dialog, &QDialog::accepted, q, [this, dialog] {
+                if (!dialog->selectedUrls().isEmpty()) q->slotStartMainPageUrlSelected(dialog->selectedUrls().first());
+            });
+            dialog->show();
+        });
         connect(mStartMainPage, &StartMainPage::filesSelected, q, &MainWindow::openImages);
     }
 
@@ -439,7 +455,8 @@ struct MainWindow::Private {
 
         file->addAction(KStandardActions::Save, q, &MainWindow::saveCurrent);
         file->addAction(KStandardActions::SaveAs, q, &MainWindow::saveCurrentAs);
-        file->addAction(KStandardActions::Open, q, &MainWindow::openFile);
+        auto openAction = file->addAction(KStandardActions::Open, q, &MainWindow::openFile);
+        mStartMainPage->setOpenAction(openAction);
         mFileOpenRecentAction = KStandardAction::openRecent(q, SLOT(openUrl(QUrl)), q);
         connect(mFileOpenRecentAction, &KRecentFilesAction::recentListCleared, mGvCore, &GvCore::clearRecentFilesAndFolders);
         auto clearAction = mFileOpenRecentAction->menu()->findChild<QAction *>("clear_action");
@@ -706,11 +723,12 @@ struct MainWindow::Private {
         page = new SideBarPage(QIcon::fromTheme(QStringLiteral("document-open-recent")), i18n("Recent"));
         page->setObjectName(QStringLiteral("recent"));
         page->addWidget(recentImages);
-        page->layout()->setContentsMargins(0, 0, 0, 0);
+        page->setContentMargins(QMargins(0, 0, 0, 0));
         mSideBar->addPage(page);
 
         page = new SideBarPage(QIcon::fromTheme(QStringLiteral("documentinfo")), i18n("Information"));
         page->setObjectName(QStringLiteral("information"));
+        page->setEmptyMessage(i18n("Open an image to see its details."));
 #ifndef GWENVIEW_SEMANTICINFO_BACKEND_NONE
         // If we have semantic info, we want to share the sidebar using a splitter,
         // so the user can dynamically resize the two widgets.
@@ -748,8 +766,9 @@ struct MainWindow::Private {
 #endif
         mSideBar->addPage(page);
 
-        page = new SideBarPage(QIcon::fromTheme(QStringLiteral("document-edit")), i18n("Operations"));
+        page = new SideBarPage(QIcon::fromTheme(QStringLiteral("document-edit")), i18n("Tools"));
         page->setObjectName(QStringLiteral("operations"));
+        page->setEmptyMessage(i18n("Open an image to edit or manage it."));
         page->addWidget(imageOpsItem->widget());
         auto separator = new QFrame;
         separator->setFrameShape(QFrame::HLine);
@@ -849,7 +868,8 @@ struct MainWindow::Private {
         mBrowseAction->setEnabled(enabled);
         mViewAction->setEnabled(enabled);
         mToggleSideBarAction->setEnabled(true);
-        mToggleOperationsSideBarAction->setEnabled(enabled);
+        mToggleOperationsSideBarAction->setEnabled(true);
+        mSideBar->setContextAvailable(enabled);
         mShowStatusBarAction->setEnabled(enabled);
         mFullScreenAction->setEnabled(enabled);
         mToggleSlideShowAction->setEnabled(enabled);
@@ -2147,10 +2167,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     if (d->mFloatingMainToolbar && obj == toolBar()) {
         if (event->type() == QEvent::ActionAdded || event->type() == QEvent::ActionRemoved) {
             d->mMainToolbarSyncTimer->start();
-        } else if (event->type() == QEvent::Show && d->mCurrentMainPageId == ViewMainPageId) {
-            // XMLGUI can restore toolbar visibility after customization or
-            // loading window settings. Image view always uses the island.
-            toolBar()->hide();
         }
     }
     Q_UNUSED(obj);

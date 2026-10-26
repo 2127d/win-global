@@ -19,6 +19,7 @@ set(QT_MIN_VERSION "6.7.0")
 include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
+include(CTest)
 
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 #find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)

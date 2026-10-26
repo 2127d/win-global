@@ -55,6 +55,9 @@ public:
     ~SideBarPage() override;
     void addWidget(QWidget *);
     void addStretch();
+    void setEmptyMessage(const QString &);
+    void setContextAvailable(bool);
+    void setContentMargins(const QMargins &);
 
     const QIcon &icon() const;
     const QString &title() const;
@@ -67,6 +70,7 @@ struct SideBarTabBarPrivate;
 class SideBarTabBar : public QTabBar
 {
     Q_OBJECT
+    Q_PROPERTY(TabButtonStyle tabButtonStyle READ tabButtonStyle)
 public:
     explicit SideBarTabBar(QWidget *parent);
     ~SideBarTabBar() override;
@@ -75,6 +79,7 @@ public:
         TabButtonIconOnly,
         TabButtonTextOnly,
         TabButtonTextBesideIcon,
+        TabButtonTextUnderIcon,
     };
     Q_ENUM(TabButtonStyle)
 
@@ -116,6 +121,7 @@ public:
     void setCurrentPage(const QString &name);
 
     void loadConfig();
+    void setContextAvailable(bool);
 
     QSize sizeHint() const override;
 

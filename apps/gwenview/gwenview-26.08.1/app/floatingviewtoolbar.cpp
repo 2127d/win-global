@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
+#include "floatingsurface.h"
 #include "floatingviewtoolbar.h"
 #include <KLocalizedString>
 #include <QApplication>
@@ -86,27 +87,48 @@ void paintGlass(QPainter &painter, QWidget *widget, const ToolbarBackdrop &backd
     QColor tint = palette.color(QPalette::Window);
     const bool dark = tint.lightness() < 128;
     QLinearGradient body(bounds.topLeft(), bounds.bottomLeft());
-    tint.setAlpha(dark ? 165 : 150);
+    tint.setAlpha(dark ? 185 : 170);
     body.setColorAt(0, tint);
-    tint.setAlpha(dark ? 125 : 105);
+    tint.setAlpha(dark ? 155 : 140);
     body.setColorAt(1, tint);
     painter.setPen(QPen(QColor(0, 0, 0, dark ? 95 : 35), 1));
     painter.setBrush(body);
     painter.drawRoundedRect(bounds, radius, radius);
 
     QLinearGradient sheen(bounds.topLeft(), bounds.bottomLeft());
-    sheen.setColorAt(0, QColor(255, 255, 255, dark ? 48 : 115));
+    sheen.setColorAt(0, QColor(255, 255, 255, dark ? 28 : 55));
     sheen.setColorAt(0.48, QColor(255, 255, 255, 12));
     sheen.setColorAt(0.52, QColor(255, 255, 255, 0));
     sheen.setColorAt(1, QColor(255, 255, 255, dark ? 10 : 32));
     QLinearGradient rim(bounds.topLeft(), bounds.bottomLeft());
-    rim.setColorAt(0, QColor(255, 255, 255, dark ? 100 : 235));
+    rim.setColorAt(0, QColor(255, 255, 255, dark ? 65 : 130));
     rim.setColorAt(0.5, QColor(255, 255, 255, 30));
-    rim.setColorAt(1, QColor(255, 255, 255, dark ? 40 : 110));
+    rim.setColorAt(1, QColor(255, 255, 255, dark ? 24 : 65));
     painter.setPen(QPen(QBrush(rim), 1));
     painter.setBrush(sheen);
     painter.drawRoundedRect(bounds.adjusted(1, 1, -1, -1), radius - 1, radius - 1);
 }
+
+class ToolbarShadow : public QWidget {
+public:
+    explicit ToolbarShadow(QWidget *viewer) : QWidget(viewer)
+    {
+        setAttribute(Qt::WA_TransparentForMouseEvents);
+        setAttribute(Qt::WA_NoSystemBackground);
+        setFocusPolicy(Qt::NoFocus);
+        hide();
+    }
+    QRectF panel;
+    QRectF toggle;
+    qreal toggleOpacity = 0;
+protected:
+    void paintEvent(QPaintEvent *) override
+    {
+        QPainter painter(this);
+        paintFloatingShadow(painter, panel, 22, palette(), true);
+        paintFloatingShadow(painter, toggle, 22, palette(), true, toggleOpacity);
+    }
+};
 
 class ToolbarSurface : public QWidget {
 public:
@@ -217,7 +239,11 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     mPanel->setAlignment(Qt::AlignVCenter);
     mPanel->viewport()->setBackgroundRole(QPalette::Window);
     mControls->setBackgroundRole(QPalette::Window);
-    for (auto layout : mControls->findChildren<QLayout *>()) layout->setSpacing(6);
+    mNativeStyleSheet = mControls->styleSheet();
+    for (auto layout : mControls->findChildren<QLayout *>()) {
+        mNativeLayoutSpacing.insert(layout, layout->spacing());
+        layout->setSpacing(6);
+    }
     mPanel->hide();
     mToggle = new ToolbarButton(this, mBackdrop);
     mToggle->setObjectName(position == TopRight ? QStringLiteral("mainToolbarToggle") : QStringLiteral("imageToolbarToggle"));
@@ -227,11 +253,16 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     mToggle->setToolTip(position == TopRight ? i18n("Show main toolbar") : i18n("Show image toolbar"));
     mToggle->setAccessibleName(mToggle->toolTip());
     mToggle->setProperty("revealOpacity", 0.0);
+    // A separate, input-transparent sibling lets shadows extend beyond the
+    // clipped sliding panel without changing any control or image hit areas.
+    mShadow = new ToolbarShadow(viewer);
+    mShadow->setObjectName(position == TopRight ? QStringLiteral("mainToolbarShadow") : QStringLiteral("imageToolbarShadow"));
     mRevealAnimation = new QVariantAnimation(this);
     mRevealAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     connect(mRevealAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
         mToggle->setProperty("revealOpacity", value);
         mToggle->update();
+        updateShadow();
         // The invisible collapsed island must not intercept image gestures.
         setAttribute(Qt::WA_TransparentForMouseEvents, value.toReal() == 0 && mProgress == 0 && !mToggle->isChecked());
     });
@@ -284,6 +315,26 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     updateGeometryAndMask();
 }
 
+FloatingViewToolbar::~FloatingViewToolbar()
+{
+    delete mShadow.data();
+}
+
+void FloatingViewToolbar::updateShadow()
+{
+    if (!mShadow) return;
+    auto shadow = static_cast<ToolbarShadow *>(mShadow.data());
+    const QPointF padding(16, 16);
+    shadow->setGeometry(geometry().adjusted(-16, -16, 16, 16));
+    shadow->toggle = QRectF(mToggle->geometry()).adjusted(1, 1, -1, -1).translated(padding);
+    shadow->panel = mProgress > 0
+        ? QRectF(mSurface->geometry().intersected(rect())).adjusted(1, 1, -1, -1).translated(padding) : QRectF();
+    shadow->toggleOpacity = mToggle->property("revealOpacity").toReal();
+    shadow->setVisible(isVisible() && !mControlsDocked && (mProgress > 0 || shadow->toggleOpacity > 0));
+    shadow->stackUnder(this);
+    shadow->update();
+}
+
 void FloatingViewToolbar::setFullScreen(bool fullScreen)
 {
     mFullScreen = fullScreen;
@@ -296,6 +347,45 @@ void FloatingViewToolbar::collapse()
     mAnimation->stop();
     mProgress = 0;
     updateGeometryAndMask();
+}
+
+void FloatingViewToolbar::setControlsDocked(QWidget *parent)
+{
+    const bool docked = parent != nullptr;
+    if (mControlsDocked == docked) return;
+    mControlsDocked = docked;
+    collapse();
+    if (docked) {
+        hide();
+        mThemeTimer->stop();
+        mPanel->takeWidget();
+        mControls->setParent(parent);
+        mControls->setStyleSheet(mNativeStyleSheet);
+        mControls->setPalette(QPalette());
+        for (auto child : mControls->findChildren<QWidget *>()) child->setPalette(QPalette());
+        for (auto combo : mControls->findChildren<QComboBox *>()) {
+            combo->view()->setPalette(QPalette());
+            combo->view()->window()->setPalette(QPalette());
+        }
+        for (auto button : mControls->findChildren<QToolButton *>()) {
+            QIcon original = button->defaultAction() ? button->defaultAction()->icon() : mOriginalIcons.value(button, button->icon());
+            if (!original.name().isEmpty()) original = QIcon::fromTheme(original.name(), original);
+            button->setIcon(original);
+        }
+        mOriginalIcons.clear();
+        mThemedIconKeys.clear();
+        for (auto it = mNativeLayoutSpacing.cbegin(); it != mNativeLayoutSpacing.cend(); ++it)
+            it.key()->setSpacing(it.value());
+        parent->layout()->addWidget(mControls);
+        mControls->show();
+    } else {
+        mControls->parentWidget()->layout()->removeWidget(mControls);
+        mPanel->setWidget(mControls);
+        for (auto layout : mControls->findChildren<QLayout *>()) layout->setSpacing(6);
+        refreshTheme();
+        mControls->show();
+        show();
+    }
 }
 
 void FloatingViewToolbar::updatePointerProximity(const QPoint &globalPosition)
@@ -322,6 +412,7 @@ void FloatingViewToolbar::updateToggleReveal()
     if (!isVisible() || style()->styleHint(QStyle::SH_Widget_Animation_Duration) == 0) {
         mToggle->setProperty("revealOpacity", target);
         mToggle->update();
+        updateShadow();
         setAttribute(Qt::WA_TransparentForMouseEvents, !reveal);
         return;
     }
@@ -349,7 +440,9 @@ bool FloatingViewToolbar::eventFilter(QObject *object, QEvent *event)
                || (event->type() == QEvent::Hide && object == this)) {
         mPointerNear = false;
         updateToggleReveal();
+        updateShadow();
     } else if (event->type() == QEvent::Show && object == this) {
+        updateShadow();
         QTimer::singleShot(0, this, [this] { updatePointerProximity(QCursor::pos()); });
     } else if (object == mToggle && event->type() == QEvent::FocusIn) {
         const auto reason = static_cast<QFocusEvent *>(event)->reason();
@@ -398,6 +491,8 @@ void FloatingViewToolbar::updateGeometryAndMask()
             mViewer->setMask(QRegion(outline.toFillPolygon().toPolygon()));
         }
     }
+    // The native layout owns control size and styling while docked.
+    if (mControlsDocked) return;
     mControls->ensurePolished();
     // These controls were created without a parent. A translucent application
     // style can leave window flags on them after they become embedded, making
@@ -430,15 +525,18 @@ void FloatingViewToolbar::updateGeometryAndMask()
     mToggle->raise();
     raise();
     updateToggleReveal();
+    updateShadow();
 }
 
 void FloatingViewToolbar::refreshTheme()
 {
+    if (mControlsDocked) return;
     // Keep image-background choices separate from the system control palette.
     const QPalette system = qApp->palette();
     setPalette(system);
     mSurface->setPalette(system);
     mToggle->setPalette(system);
+    mShadow->setPalette(system);
     QPalette controls = system;
     for (auto group : {QPalette::Active, QPalette::Inactive, QPalette::Disabled}) {
         for (auto role : {QPalette::Window, QPalette::Base, QPalette::Button, QPalette::Highlight}) {
@@ -460,6 +558,9 @@ void FloatingViewToolbar::refreshTheme()
             border: 1px solid %1; border-radius: 14px;
             background: %2; padding: 0px 9px; color: %3;
         }
+        QToolButton::menu-indicator, QToolButton::menu-arrow {
+            image: none; width: 0px; height: 0px;
+        }
         QToolButton:hover { background: %4; border-color: %3; }
         QToolButton:checked, QToolButton:pressed {
             background: %5; border-color: %5; color: %6;
@@ -473,8 +574,8 @@ void FloatingViewToolbar::refreshTheme()
             border: 1px solid %1; background: %9;
         }
         QSlider::handle:horizontal:focus { border-color: %5; }
-    )").arg(mixedColor(background, foreground, 0.34).name(),
-           mixedColor(background, foreground, 0.12).name(), foreground.name(),
+    )").arg(mixedColor(background, foreground, 0.22).name(),
+           mixedColor(background, foreground, 0.07).name(), foreground.name(),
            mixedColor(background, foreground, 0.22).name(),
            controls.color(QPalette::Highlight).name(), controls.color(QPalette::HighlightedText).name(),
            controls.color(QPalette::Disabled, QPalette::ButtonText).name(),

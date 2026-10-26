@@ -16,6 +16,7 @@
 #include <QPainter>
 #include <algorithm>
 #include <QLabel>
+#include <QLayout>
 #include <QMimeData>
 #include <QMenu>
 #include <QPushButton>
@@ -29,6 +30,7 @@
 #include <QTest>
 #include <QTimer>
 #include <QDragEnterEvent>
+#include <QDragLeaveEvent>
 #include <QDropEvent>
 #include <QMouseEvent>
 #include <cstdio>
@@ -53,15 +55,27 @@ static void verifyToggleProximity(QWidget *window, const QString &output)
         auto toggle = window->findChild<QToolButton *>(name);
         require(toggle && !toggle->isChecked(), "proximity starts with collapsed toolbar");
         auto island = toggle->parentWidget();
+        auto shadow = window->findChild<QWidget *>(QString::fromLatin1(name) == "mainToolbarToggle" ? "mainToolbarShadow" : "imageToolbarShadow");
+        require(shadow && shadow->testAttribute(Qt::WA_TransparentForMouseEvents) && shadow->focusPolicy() == Qt::NoFocus,
+                "floating shadow never takes pointer input or keyboard focus");
         auto opacity = [&] { return toggle->property("revealOpacity").toReal(); };
         toggle->clearFocus();
         moveTo(viewer->rect().center()); QTest::qWait(250);
         require(opacity() == 0 && island->testAttribute(Qt::WA_TransparentForMouseEvents), "collapsed toggle invisible and passes image input through");
+        require(!shadow->isVisible(), "hidden toggle leaves no shadow behind");
         const QPoint nearby = toggle->mapTo(viewer, toggle->rect().center()) - QPoint(60, 0);
         moveTo(nearby); QTest::qWait(60);
         require(opacity() > 0 && opacity() < 1, "nearby cursor smoothly fades toggle in");
         QTest::qWait(200);
         require(opacity() == 1 && !island->testAttribute(Qt::WA_TransparentForMouseEvents), "revealed toggle usable before pointer reaches button");
+        require(shadow->isVisible() && shadow->geometry().contains(island->geometry()), "revealed toggle has room for its floating shadow");
+        QImage shadowImage(shadow->size(), QImage::Format_ARGB32_Premultiplied);
+        shadowImage.fill(Qt::transparent);
+        shadow->render(&shadowImage, QPoint(), QRegion(), QWidget::DrawChildren);
+        const QPoint below = shadow->mapFromGlobal(toggle->mapToGlobal(QPoint(toggle->width() / 2, toggle->height() + 4)));
+        require(qAlpha(shadowImage.pixel(below)) > 0, "soft shadow is visibly painted below the circular toggle");
+        require(qAlpha(shadowImage.pixel(0, 0)) == 0, "shadow halo has clear outer corners");
+        require(shadowImage.save(output + '/' + shadow->objectName() + ".png"), "shadow render capture");
         moveTo(viewer->rect().center()); QTest::qWait(60);
         require(opacity() > 0 && opacity() < 1, "departing cursor smoothly fades toggle out");
         moveTo(nearby); QTest::qWait(220);
@@ -82,6 +96,63 @@ static void verifyToggleProximity(QWidget *window, const QString &output)
     require(window->grab().save(output + "/viewer-toggles-hidden.png"), "hidden toggle screenshot");
     fprintf(stderr, "PASS: both toggles hide, reveal nearby, fade/reverse, pass through input, stay visible expanded, and support keyboard focus\n");
 }
+static QAction *findAction(QWidget *window, const char *name)
+{
+    auto widgets = window->findChildren<QWidget *>();
+    widgets.prepend(window);
+    for (auto widget : widgets)
+        for (auto action : widget->actions())
+            if (action->objectName() == name) return action;
+    require(false, name);
+    return nullptr;
+}
+
+static void verifyBarModes(QWidget *window, const QString &output)
+{
+    auto toolbar = window->findChild<QToolBar *>("mainToolBar");
+    auto top = window->findChild<QWidget *>("floatingMainToolbar");
+    auto bottom = window->findChild<QWidget *>("floatingImageToolbar");
+    auto status = window->findChild<QWidget *>("imageToolbarControls");
+    auto flyout = window->findChild<QScrollArea *>("imageToolbarFlyout");
+    auto viewer = window->findChild<QWidget *>("roundedImageViewer");
+    auto showStatus = findAction(window, "options_show_statusbar");
+    require(toolbar && top && bottom && status && flyout && viewer, "native and floating bars exist");
+    require(toolbar->isVisible() && toolbar->toggleViewAction()->isChecked() && showStatus->isChecked(), "native bars enabled by default");
+    require(status->isVisible() && !top->isVisible() && !bottom->isVisible(), "default native bars hide both custom pills");
+    require(status->styleSheet().isEmpty() && toolbar->styleSheet().isEmpty(), "native bars have no custom pill stylesheet");
+    require(status->width() > viewer->width() / 2, "native status bar spans image layout");
+    require(status->mapTo(window, QPoint()).y() >= viewer->mapTo(window, QPoint(0, viewer->height())).y(), "native status bar reserves space below image");
+    require(window->grab().save(output + "/viewer-native-bars.png"), "native bars capture");
+    for (int repeat = 0; repeat < 2; ++repeat) {
+        toolbar->toggleViewAction()->trigger(); QTest::qWait(250);
+        require(!toolbar->isVisible() && toolbar->isEnabled() && top->isVisible() && status->isVisible() && !bottom->isVisible(), "unchecked toolbar changes only top bar to pill");
+        showStatus->trigger(); QTest::qWait(250);
+        require(!showStatus->isChecked() && bottom->isVisible() && flyout->widget() == status, "unchecked status bar moves native controls into bottom pill");
+        require(!status->styleSheet().isEmpty(), "floating status controls receive pill styling");
+        toolbar->toggleViewAction()->trigger(); QTest::qWait(250);
+        require(toolbar->isVisible() && !top->isVisible() && bottom->isVisible(), "checked toolbar restores native top bar independently");
+        showStatus->trigger(); QTest::qWait(250);
+        require(status->isVisible() && !bottom->isVisible() && flyout->widget() == nullptr && status->styleSheet().isEmpty(), "checking status restores native controls and removes glass styling");
+        const QSize nativeSize = status->size();
+        window->resize(window->width() + 80, window->height()); QTest::qWait(250);
+        require(status->width() > nativeSize.width(), "restored status bar expands with window");
+        window->resize(window->width() - 80, window->height()); QTest::qWait(250);
+    }
+    auto fullscreen = findAction(window, "fullscreen");
+    fullscreen->trigger(); QTest::qWait(250);
+    require(!toolbar->isVisible() && !top->isVisible(), "fullscreen hides standard and floating main toolbar");
+    fullscreen->trigger(); QTest::qWait(250);
+    require(toolbar->isVisible() && status->isVisible() && !top->isVisible() && !bottom->isVisible(), "fullscreen exit restores native bars");
+    auto spotlight = findAction(window, "view_toggle_spotlightmode");
+    spotlight->trigger(); QTest::qWait(250);
+    spotlight->trigger(); QTest::qWait(250);
+    require(toolbar->isVisible() && status->isVisible() && !top->isVisible() && !bottom->isVisible(), "spotlight exit restores native bars");
+    toolbar->toggleViewAction()->trigger();
+    showStatus->trigger();
+    QTest::qWait(300);
+    fprintf(stderr, "PASS: native defaults, independent checkbox combinations, repeated style restoration, resizing, fullscreen and spotlight restoration\n");
+}
+
 static void verifyMainToolbar(QWidget *window, const QUrl &image, const QString &output)
 {
     auto docked = window->findChild<QToolBar *>("mainToolBar");
@@ -93,11 +164,9 @@ static void verifyMainToolbar(QWidget *window, const QUrl &image, const QString 
     require(docked && controls && island && toggle && flyout && viewer, "main toolbar island widgets");
     for (auto action : controls->actions())
         require(action->isSeparator() || !action->text().isEmpty() || !action->icon().isNull(), "no empty spacer buttons in island");
-    require(!docked->isVisible() && !docked->isEnabled(), "docked toolbar hidden and disabled in image view");
-    require(!docked->toggleViewAction()->isEnabled(), "docked toolbar cannot be toggled back in image view");
-    docked->show();
-    QTest::qWait(200);
-    require(!docked->isVisible(), "restoring docked toolbar cannot bypass image mode");
+    verifyBarModes(window, output);
+    require(!docked->isVisible() && docked->isEnabled(), "unchecked toolbar hidden but native actions remain enabled");
+    require(docked->toggleViewAction()->isEnabled(), "native toolbar checkbox remains usable in image view");
     require(toggle->isVisible() && !toggle->isChecked() && !flyout->isVisible(), "main toolbar starts collapsed");
     auto button = [&](const char *name) {
         for (auto action : controls->actions()) if (action->objectName() == name) {
@@ -144,15 +213,18 @@ static void verifyMainToolbar(QWidget *window, const QUrl &image, const QString 
     require(!controls->actions().contains(&custom), "floating copy removes customized action");
     require(window->grab().save(output + "/viewer-main-toolbar-expanded.png"), "main toolbar screenshot");
     QTest::mouseClick(button("browse"), Qt::LeftButton); QTest::qWait(350);
-    require(docked->isVisible() && docked->isEnabled() && !island->isVisible(), "Browse restores docked toolbar");
+    require(!docked->isVisible() && !island->isVisible(), "Browse respects unchecked toolbar and hides image pill");
+    docked->toggleViewAction()->trigger(); QTest::qWait(250);
+    require(docked->isVisible() && docked->isEnabled(), "Browse shows native toolbar when checked");
     require(window->grab().save(output + "/browse-rounded.png"), "rounded Browse capture");
-    require(docked->toggleViewAction()->isEnabled(), "Browse restores toolbar visibility control");
+    require(docked->toggleViewAction()->isEnabled(), "Browse keeps toolbar visibility control");
+    docked->toggleViewAction()->trigger(); QTest::qWait(250);
     require(QMetaObject::invokeMethod(window, "openImages", Q_ARG(QList<QUrl>, QList<QUrl>{image})), "return to image view");
     QTest::qWait(500);
-    require(!docked->isVisible() && !docked->isEnabled() && toggle->isVisible() && !toggle->isChecked(), "return to viewer collapses main island");
+    require(!docked->isVisible() && docked->isEnabled() && toggle->isVisible() && !toggle->isChecked(), "return to viewer collapses main island");
     QTest::mouseClick(toggle, Qt::LeftButton); QTest::qWait(300);
     QTest::mouseClick(button("go_start_page"), Qt::LeftButton); QTest::qWait(300);
-    require(docked->isVisible() && docked->isEnabled() && !island->isVisible(), "Start restores docked toolbar");
+    require(!docked->isVisible() && docked->isEnabled() && !island->isVisible(), "Start respects unchecked toolbar and hides pill");
     require(QMetaObject::invokeMethod(window, "openImages", Q_ARG(QList<QUrl>, QList<QUrl>{image})), "reopen image after Start");
     QTest::qWait(500);
     QAction *spotlight = nullptr;
@@ -165,8 +237,142 @@ static void verifyMainToolbar(QWidget *window, const QUrl &image, const QString 
     require(!docked->isVisible() && toggle->isVisible(), "spotlight retains main island");
     spotlight->trigger(); QTest::qWait(250);
     require(!docked->isVisible() && toggle->isVisible(), "leaving spotlight keeps image toolbar floating");
-    fprintf(stderr, "PASS: floating main toolbar actions, animation, docked toolbar suppression, Browse/Start restoration\n");
+    fprintf(stderr, "PASS: floating main toolbar actions, animation, native visibility preference across Browse/Start\n");
 }
+static void verifyWelcome(QWidget *window, const QString &output, const QString &mode)
+{
+    QApplication::setAttribute(Qt::AA_DontUseNativeDialogs);
+    auto welcome = window->findChild<QWidget *>("imageWelcomePage");
+    auto title = window->findChild<QLabel *>("welcomeTitle");
+    auto shortcut = window->findChild<QLabel *>("openImagesShortcut");
+    auto button = window->findChild<QPushButton *>("addImagesButton");
+    auto browse = window->findChild<QPushButton *>("browseFolderButton");
+    auto tabs = window->findChild<QTabWidget *>("sidebarTabs");
+    auto recent = window->findChild<QAbstractItemView *>("recentImagesView");
+    auto count = window->findChild<QLabel *>("recentImagesCount");
+    auto more = window->findChild<QToolButton *>("recentImagesMenuButton");
+    require(welcome && title && shortcut && button && browse && tabs && recent && count && more, "welcome and sidebar controls exist");
+    require(title->text() == "Open your images" && button->text() == "Open images…", "clear welcome labels");
+    require(window->findChild<QWidget *>("welcomeImageStack"), "vector image-stack mark exists");
+    auto capture = [&](const char *name) { require(window->grab().save(output + '/' + name + ".png"), "welcome capture"); };
+    auto grid = window->findChild<QAction *>("recentGridView");
+    auto list = window->findChild<QAction *>("recentListView");
+    auto remove = window->findChild<QAction *>("removeRecentImage");
+    auto clear = window->findChild<QAction *>("clearRecentImages");
+    require(grid && list && remove && clear, "shared recent menu commands exist");
+    const QString fixtures = qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES");
+    if (mode == "welcome-restart") {
+        require(recent->property("listMode").toBool() && list->isChecked(), "recent list preference survives restart");
+        require(count->text().toInt() == recent->model()->rowCount() && count->text().toInt() > 0, "recent count survives restart");
+        clear->trigger(); QTest::qWait(250);
+        require(recent->model()->rowCount() == 0 && count->text() == "0", "clear history updates live count");
+        require(QFileInfo::exists(fixtures + "/one/picture.png") && QFileInfo::exists(fixtures + "/two/picture.png"), "clear history preserves source images");
+        capture("welcome-cleared");
+        fprintf(stderr, "PASS: persisted list preference, clear history, live count, source files preserved\n");
+        return;
+    }
+    if (mode == "welcome-cleared") {
+        require(recent->model()->rowCount() == 0 && count->text() == "0", "cleared history persists after restart");
+        require(window->findChild<QLabel *>("recentImagesEmpty")->isVisible(), "cleared recents has an explanatory empty state");
+        fprintf(stderr, "PASS: history remains cleared after restart\n");
+        return;
+    }
+    require(count->text() == "6", "recent count reflects six fixtures");
+    require(tabs->tabText(0) == "Recent" && tabs->tabText(1) == "Information" && tabs->tabText(2) == "Tools", "footer labels are discoverable");
+    const int tabWidth = tabs->tabBar()->tabRect(0).width();
+    for (int i = 0; i < 3; ++i) {
+        require(qAbs(tabs->tabBar()->tabRect(i).width() - tabWidth) <= 1, "footer tabs have equal widths");
+        require(tabs->tabBar()->tabRect(i).width() >= tabs->tabBar()->fontMetrics().horizontalAdvance(tabs->tabText(i)) + 8, "footer labels fit without truncation");
+    }
+    auto infoEmpty = window->findChild<QWidget *>("informationEmptyState");
+    auto toolsEmpty = window->findChild<QWidget *>("operationsEmptyState");
+    require(infoEmpty && toolsEmpty, "sidebar context empty states exist");
+    tabs->setCurrentIndex(1); QTest::qWait(120);
+    require(infoEmpty->isVisible(), "Information explains its purpose before opening an image"); capture("welcome-information");
+    tabs->setCurrentIndex(2); QTest::qWait(120);
+    require(toolsEmpty->isVisible(), "Tools explains its purpose before opening an image"); capture("welcome-tools");
+    tabs->tabBar()->setFocus(Qt::TabFocusReason);
+    QTest::keyClick(tabs->tabBar(), Qt::Key_Left); QTest::qWait(100);
+    require(tabs->currentIndex() == 1, "footer supports keyboard navigation");
+    tabs->setCurrentIndex(0); QTest::qWait(150); capture("welcome-grid");
+    auto open = findAction(window, "file_open");
+    require(shortcut->text() == open->shortcut().toString(QKeySequence::NativeText), "welcome shortcut matches native Open action");
+    const auto originalShortcut = open->shortcut();
+    open->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O));
+    require(shortcut->text() == open->shortcut().toString(QKeySequence::NativeText), "displayed shortcut follows customization");
+    open->setShortcut(originalShortcut);
+    QTest::mouseClick(button, Qt::LeftButton); QTest::qWait(250);
+    auto picker = window->findChild<QFileDialog *>();
+    require(picker && picker->isVisible() && picker->fileMode() == QFileDialog::ExistingFiles, "Open images opens native multi-file picker");
+    picker->reject(); QTest::qWait(200);
+    QMimeData invalidMime; invalidMime.setText("not an image");
+    QDragEnterEvent invalid(QPoint(60, 60), Qt::CopyAction, &invalidMime, Qt::LeftButton, Qt::NoModifier);
+    QApplication::sendEvent(welcome, &invalid);
+    require(!invalid.isAccepted() && !welcome->property("dropActive").toBool(), "invalid drags never highlight image drop target");
+    QMimeData mime; mime.setUrls({QUrl::fromLocalFile(fixtures + "/one/picture.png")});
+    QDragEnterEvent enter(QPoint(60, 60), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
+    QApplication::sendEvent(welcome, &enter); QTest::qWait(100);
+    require(enter.isAccepted() && welcome->property("dropActive").toBool() && title->text() == "Drop to open", "valid image drag highlights the panel and explains the action");
+    capture("welcome-drop-active");
+    QDragLeaveEvent leave; QApplication::sendEvent(welcome, &leave);
+    require(!welcome->property("dropActive").toBool() && title->text() == "Open your images", "drag leave resets welcome state");
+    QTest::mouseClick(browse, Qt::LeftButton); QTest::qWait(250);
+    auto folder = window->findChild<QFileDialog *>("welcomeFolderDialog");
+    require(folder && folder->isVisible() && folder->fileMode() == QFileDialog::Directory, "Browse opens a directory picker");
+    folder->setDirectory(fixtures + "/one"); QTest::qWait(250);
+    require(folder->selectedUrls().value(0) == QUrl::fromLocalFile(fixtures + "/one"), "folder picker accepts the selected directory");
+    require(QMetaObject::invokeMethod(folder, "accept"), "accept folder picker"); QTest::qWait(800);
+    require(!welcome->isVisible() && findAction(window, "browse")->isChecked(), "selected folder opens native Browse mode");
+    findAction(window, "go_start_page")->trigger(); QTest::qWait(250);
+    require(welcome->isVisible(), "return from folder to welcome");
+    QDragEnterEvent enterAgain(QPoint(60, 60), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
+    QApplication::sendEvent(welcome, &enterAgain);
+    QDropEvent drop(QPointF(60, 60), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
+    QApplication::sendEvent(welcome, &drop); QTest::qWait(700);
+    require(drop.isAccepted() && !welcome->isVisible() && !welcome->property("dropActive").toBool(), "image drop opens native viewer and clears highlight");
+    tabs->setCurrentIndex(1); QTest::qWait(150);
+    require(!infoEmpty->isVisible(), "image information replaces empty state");
+    tabs->setCurrentIndex(2); QTest::qWait(150);
+    require(!toolsEmpty->isVisible(), "native tools replace empty state");
+    findAction(window, "go_start_page")->trigger(); QTest::qWait(250);
+    tabs->setCurrentIndex(1); require(infoEmpty->isVisible(), "welcome never shows stale image information");
+    tabs->setCurrentIndex(0);
+    bool menuOpened = false;
+    QTimer::singleShot(120, window, [&] {
+        menuOpened = more->menu()->isVisible(); capture("welcome-recents-menu");
+        list->trigger(); more->menu()->close();
+    });
+    QTest::mouseClick(more, Qt::LeftButton); QTest::qWait(200);
+    require(menuOpened && recent->property("listMode").toBool(), "overflow menu changes to filename view");
+    const QRect first = recent->visualRect(recent->model()->index(0, 0));
+    const QRect second = recent->visualRect(recent->model()->index(1, 0));
+    require(first.width() > first.height() && second.top() > first.top(), "filename view lays out full-width rows");
+    recent->setCurrentIndex(recent->model()->index(0, 0)); recent->setFocus();
+    QTest::keyClick(recent, Qt::Key_Down);
+    require(recent->currentIndex().row() == 1, "recent filename view supports keyboard selection");
+    capture("welcome-list");
+    const QSize originalSize = window->size();
+    window->resize(900, 520); QTest::qWait(250);
+    const QRect footer = tabs->tabBar()->geometry();
+    require(recent->verticalScrollBar()->maximum() > 0, "recent filename view scrolls in a compact window");
+    recent->verticalScrollBar()->setValue(recent->verticalScrollBar()->maximum()); QTest::qWait(100);
+    require(tabs->tabBar()->geometry() == footer && tabs->tabBar()->isVisible(), "sidebar footer stays anchored while recent content scrolls");
+    capture("welcome-compact");
+    window->resize(originalSize); QTest::qWait(200);
+    const QPersistentModelIndex selection(recent->currentIndex());
+    grid->trigger(); QTest::qWait(150);
+    require(!recent->property("listMode").toBool() && recent->currentIndex() == selection, "grid/list switching preserves selection");
+    list->trigger(); QTest::qWait(150);
+    const int before = recent->model()->rowCount();
+    const QString removedPath = recent->currentIndex().data(Qt::ToolTipRole).toString();
+    more->menu()->popup(more->mapToGlobal(QPoint(0, more->height()))); QTest::qWait(100);
+    remove->trigger(); more->menu()->close(); QTest::qWait(250);
+    require(recent->model()->rowCount() == before - 1 && count->text().toInt() == before - 1, "remove selected updates history and header count");
+    require(QFileInfo::exists(removedPath), "remove recent leaves that exact image file intact");
+    capture("welcome-final");
+    fprintf(stderr, "PASS: welcome identity, configured shortcut, file/folder opening, drag highlight/reset, labeled keyboard footer, contextual empty states, recent menu, count, grid/list switching and removal\n");
+}
+
 static void startup() {
     if (qEnvironmentVariable("SEQUOIA_GWENVIEW_VERIFY").isEmpty()) return;
     if (QFileInfo(QFileInfo(QStringLiteral("/proc/self/exe")).symLinkTarget()).fileName() != QStringLiteral("gwenview")) return;
@@ -181,13 +387,35 @@ static void startup() {
         auto recent = window->findChild<QAbstractItemView *>("recentImagesView");
         auto empty = window->findChild<QLabel *>("recentImagesEmpty");
         require(welcome && welcome->isVisible() && button && button->isVisible(), "welcome page with Add files");
+        const auto mode = qEnvironmentVariable("SEQUOIA_GWENVIEW_MODE");
         auto mainToolbar = window->findChild<QToolBar *>("mainToolBar");
-        require(mainToolbar && mainToolbar->isVisible() && mainToolbar->isEnabled(), "Start has usable docked toolbar, including after restart");
+        require(mainToolbar && mainToolbar->isEnabled(), "Start has enabled native toolbar");
+        require(mainToolbar->isVisible() == (mode != "bars-restart"), "native toolbar preference survives restart");
         require(recent && empty, "recent images sidebar");
         require(!window->findChild<QWidget *>("mRecentFoldersView"), "no recent folders start grid");
         const auto output = qEnvironmentVariable("SEQUOIA_GWENVIEW_VERIFY");
         auto capture = [&](const char *name) { require(window->grab().save(output + '/' + name + ".png"), "screenshot"); };
-        const auto mode = qEnvironmentVariable("SEQUOIA_GWENVIEW_MODE");
+        if (mode.startsWith("welcome")) {
+            verifyWelcome(window, output, mode);
+            require(window->close(), "clean close"); QCoreApplication::exit(0); return;
+        }
+        if (mode == "bars-restart" || mode == "bars-native-restart") {
+            const auto file = QUrl::fromLocalFile(qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES") + "/one/picture.png");
+            require(QMetaObject::invokeMethod(window, "openImages", Q_ARG(QList<QUrl>, QList<QUrl>{file})), "open image after bar preference restart");
+            QTest::qWait(500);
+            const bool native = mode == "bars-native-restart";
+            auto showStatus = findAction(window, "options_show_statusbar");
+            require(showStatus->isChecked() == native && mainToolbar->isVisible() == native, "both native checkbox preferences persisted");
+            require(window->findChild<QWidget *>("floatingMainToolbar")->isVisible() != native
+                && window->findChild<QWidget *>("floatingImageToolbar")->isVisible() != native, "both pills follow persisted preferences");
+            if (!native) {
+                mainToolbar->toggleViewAction()->trigger();
+                showStatus->trigger();
+                QTest::qWait(250);
+            }
+            fprintf(stderr, "PASS: %s bar preferences survive closing and reopening\n", native ? "native" : "pill");
+            require(window->close(), "clean close"); QCoreApplication::exit(0); return;
+        }
         if (mode == "sidebar") {
             auto sidebar = window->findChild<QTabWidget *>("sidebarTabs");
             require(sidebar && sidebar->count() == 3, "three sidebar tabs");
@@ -198,7 +426,8 @@ static void startup() {
             require(first.width() == first.height() && first.size() == secondCell.size(), "equal square preview cells");
             capture("sidebar-grid");
             fprintf(stderr, "GRID: viewport=%d first=%d,%d %dx%d second=%d,%d third=%d,%d\n", recent->viewport()->width(), first.x(), first.y(), first.width(), first.height(), secondCell.x(), secondCell.y(), third.x(), third.y());
-            require(first.top() == secondCell.top() && third.top() > first.top(), "preview columns and rows");
+            require(first.top() == secondCell.top(), "preview grid has multiple columns");
+            require(recent->visualRect(recent->model()->index(5, 0)).top() > first.top(), "preview grid wraps into rows");
             capture("sidebar-start");
             QTest::mouseClick(recent->viewport(), Qt::LeftButton, Qt::NoModifier, first.center());
             QTest::qWait(100);
@@ -483,13 +712,31 @@ static void startup() {
             const QRect viewerRect(viewer->mapTo(window, QPoint()), viewer->size());
             const QRect islandRect(thumbnailIsland->mapTo(window, QPoint()), thumbnailIsland->size());
             require(!viewerRect.intersects(islandRect), "thumbnail panel has separate space outside image");
+            const bool horizontalStrip = thumbnailSplitter->orientation() == Qt::Vertical;
+            if (horizontalStrip) {
+                require(islandRect.left() == viewerRect.left() && islandRect.right() == viewerRect.right(),
+                        "horizontal thumbnail surface has exactly the viewer's width and aligned edges");
+            } else {
+                require(islandRect.top() == viewerRect.top() && islandRect.bottom() == viewerRect.bottom(),
+                        "vertical thumbnail surface matches viewer height");
+            }
+            auto imagePage = window->findChild<QWidget *>("imageViewPage");
+            require(imagePage, "image page owns the shared shadow gutters");
+            QImage pageShadows(imagePage->size(), QImage::Format_ARGB32_Premultiplied);
+            pageShadows.fill(Qt::transparent);
+            imagePage->render(&pageShadows, QPoint(), QRegion(), QWidget::RenderFlags());
+            for (QWidget *panel : {viewer, thumbnailIsland}) {
+                const QPoint shadowPoint = panel->mapTo(imagePage, QPoint(panel->width() + 2, panel->height() / 2));
+                require(pageShadows.rect().contains(shadowPoint) && qAlpha(pageShadows.pixel(shadowPoint)) > 0,
+                        "viewer and thumbnail panel both paint shadows outside their right edges");
+            }
+            require(pageShadows.save(output + "/viewer-panel-shadows.png"), "viewer and thumbnail shadow capture");
             require(thumbnails->x() >= 8 && thumbnails->y() >= 8, "thumbnail view inset inside rounded panel");
             QImage islandImage(thumbnailIsland->size(), QImage::Format_ARGB32_Premultiplied);
             islandImage.fill(Qt::transparent);
             thumbnailIsland->render(&islandImage, QPoint(), QRegion(), QWidget::DrawChildren);
-            require(qAlpha(islandImage.pixel(0, 0)) == 0 && qAlpha(islandImage.pixel(16, 2)) == 255, "rounded thumbnail surface with clear corners");
+            require(qAlpha(islandImage.pixel(0, 0)) == 0 && qAlpha(islandImage.pixel(16, 2)) == 255, "full-width rounded thumbnail surface with clear corners");
             capture("viewer-thumbnail-island");
-            const bool horizontalStrip = thumbnailSplitter->orientation() == Qt::Vertical;
             const auto lastThumbnail = thumbnails->model()->index(5, 0);
             thumbnails->scrollTo(lastThumbnail);
             QTest::qWait(350);
