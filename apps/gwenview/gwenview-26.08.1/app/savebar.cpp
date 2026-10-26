@@ -156,6 +156,12 @@ SaveBar::SaveBar(QWidget *parent, KActionCollection *actionCollection)
     connect(DocumentFactory::instance(), &DocumentFactory::modifiedDocumentListChanged, this, &SaveBar::updateContent);
 }
 
+QSize SaveBar::minimumSizeHint() const
+{
+    // Collapsed notifications must not reserve the width of their hidden text.
+    return height() == 0 ? QSize(0, 0) : SlideContainer::minimumSizeHint();
+}
+
 SaveBar::~SaveBar()
 {
     delete d;

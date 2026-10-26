@@ -24,7 +24,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 // Qt
 #include <QAction>
 #include <QApplication>
-#include <QBitmap>
+#include <QFocusEvent>
+#include <QResizeEvent>
 #include <QEvent>
 #include <QLayout>
 #include <QMouseEvent>
@@ -59,6 +60,11 @@ struct FullScreenBarPrivate {
     QTimer *mAutoHideCursorTimer = nullptr;
     bool mAutoHidingEnabled;
     bool mEdgeTriggerEnabled;
+    bool mActivated = false;
+    bool mOwnsCursor = false;
+    bool mKeyboardInteraction = false;
+    QPoint mPointer;
+    qreal mReveal = 1;
     QTimer *mInitialHideTimer = nullptr;
 
     void startTimeLine()
@@ -70,10 +76,18 @@ struct FullScreenBarPrivate {
 
     void hideCursor()
     {
-        QBitmap empty(32, 32);
-        empty.clear();
-        const QCursor blankCursor(empty, empty);
-        QApplication::setOverrideCursor(blankCursor);
+        if (!mOwnsCursor) {
+            QApplication::setOverrideCursor(Qt::BlankCursor);
+            mOwnsCursor = true;
+        }
+    }
+
+    void restoreCursor()
+    {
+        if (mOwnsCursor) {
+            QApplication::restoreOverrideCursor();
+            mOwnsCursor = false;
+        }
     }
 
     /**
@@ -82,17 +96,9 @@ struct FullScreenBarPrivate {
      */
     QRect slideInTriggerRect() const
     {
-        const QScreen *screen = QGuiApplication::screenAt(QCursor::pos());
-
-        if (!screen) {
-            return {};
-        }
-
-        QRect rect = screen->geometry();
-        // Take parent widget position into account because it may not be at
-        // the top of the screen, for example when the save bar warning is
-        // shown.
-        rect.setHeight(q->parentWidget()->y() + q->height() + EXTRA_BAR_HEIGHT);
+        // Use the image pane's global bounds, including sidebar/save-bar offsets.
+        QRect rect(q->parentWidget()->mapToGlobal(QPoint()), q->parentWidget()->size());
+        rect.setHeight(mReveal > 0 ? qMax(12, q->y() + q->height() + EXTRA_BAR_HEIGHT) : 12);
         return rect;
     }
 
@@ -100,13 +106,15 @@ struct FullScreenBarPrivate {
     {
         Q_ASSERT(q->parentWidget());
 
-        if (!mAutoHidingEnabled) {
+        if (!mActivated || !mAutoHidingEnabled) {
             return false;
         }
-        if (slideInTriggerRect().contains(QCursor::pos())) {
+        if (slideInTriggerRect().contains(mPointer)) {
             return false;
         }
-        if (QApplication::activePopupWidget()) {
+        QWidget *focus = QApplication::focusWidget();
+        if (mKeyboardInteraction && focus && (focus == q || q->isAncestorOf(focus))) return false;
+        if (QApplication::activePopupWidget() || QApplication::activeModalWidget()) {
             return false;
         }
         // Do not hide if a button is down, which can happen when we are
@@ -145,6 +153,7 @@ FullScreenBar::FullScreenBar(QWidget *parent)
 
 FullScreenBar::~FullScreenBar()
 {
+    d->restoreCursor();
     delete d;
 }
 
@@ -163,6 +172,7 @@ QSize FullScreenBar::sizeHint() const
 
 void FullScreenBar::moveBar(qreal value)
 {
+    d->mReveal = value;
     move(0, -height() + int(value * height()));
 
     // For some reason, if Gwenview is started with command line options to
@@ -173,6 +183,11 @@ void FullScreenBar::moveBar(qreal value)
 
 void FullScreenBar::setActivated(bool activated)
 {
+    if (d->mActivated == activated) return;
+    d->mActivated = activated;
+    d->mPointer = QCursor::pos();
+    d->mTimeLine->stop();
+    d->mInitialHideTimer->stop();
     if (activated) {
         // Delay installation of event filter because switching to fullscreen
         // cause a few window adjustments, which seems to generate unwanted
@@ -182,23 +197,24 @@ void FullScreenBar::setActivated(bool activated)
         adjustSize();
 
         // Make sure the widget is visible on start
-        move(0, 0);
+        moveBar(1);
         raise();
         show();
     } else {
         qApp->removeEventFilter(this);
         hide();
         d->mAutoHideCursorTimer->stop();
-        QApplication::restoreOverrideCursor();
+        d->restoreCursor();
     }
 }
 
 void FullScreenBar::delayedInstallEventFilter()
 {
+    if (!d->mActivated) return;
     qApp->installEventFilter(this);
     if (d->shouldHide()) {
         d->mInitialHideTimer->start();
-        d->hideCursor();
+        d->mAutoHideCursorTimer->start();
     }
 }
 
@@ -213,6 +229,7 @@ void FullScreenBar::slotAutoHideCursorTimeout()
 
 void FullScreenBar::slideOut()
 {
+    if (!d->shouldHide()) return;
     d->mInitialHideTimer->stop();
     d->mTimeLine->setDirection(QTimeLine::Backward);
     d->startTimeLine();
@@ -220,54 +237,38 @@ void FullScreenBar::slideOut()
 
 void FullScreenBar::slideIn()
 {
+    if (!d->mActivated) return;
     d->mInitialHideTimer->stop();
+    d->restoreCursor();
     d->mTimeLine->setDirection(QTimeLine::Forward);
     d->startTimeLine();
 }
 
 bool FullScreenBar::eventFilter(QObject *object, QEvent *event)
 {
-    if (event->type() == QEvent::MouseMove) {
-        QApplication::restoreOverrideCursor();
+    if (!d->mActivated) return false;
+    auto widget = qobject_cast<QWidget *>(object);
+    if (!widget || widget->window() != window()) return false;
+    if (event->type() == QEvent::FocusIn) {
+        auto focus = static_cast<QFocusEvent *>(event);
+        if (isAncestorOf(widget) && (focus->reason() == Qt::TabFocusReason || focus->reason() == Qt::BacktabFocusReason || focus->reason() == Qt::ShortcutFocusReason)) {
+            d->mKeyboardInteraction = true;
+            slideIn();
+        }
+    }
+    if (event->type() == QEvent::KeyPress) d->restoreCursor();
+    if (event->type() == QEvent::MouseButtonPress) d->mKeyboardInteraction = false;
+    if (event->type() == QEvent::MouseMove || event->type() == QEvent::MouseButtonRelease) {
+        auto mouse = static_cast<QMouseEvent *>(event);
+        d->mPointer = mouse->globalPosition().toPoint();
+        d->restoreCursor();
         d->mAutoHideCursorTimer->start();
         if (y() == 0) {
-            if (d->shouldHide()) {
-                slideOut();
-            }
-        } else {
-            auto mouseEvent = static_cast<QMouseEvent *>(event);
-            if (d->mEdgeTriggerEnabled && mouseEvent->buttons() == 0 && d->slideInTriggerRect().contains(QCursor::pos())) {
-                slideIn();
-            }
+            if (d->shouldHide()) slideOut();
+        } else if (d->mEdgeTriggerEnabled && mouse->buttons() == Qt::NoButton && d->slideInTriggerRect().contains(d->mPointer)) {
+            slideIn();
         }
         return false;
-    }
-
-    if (event->type() == QEvent::MouseButtonRelease) {
-        // This can happen if user released the mouse after using a scrollbar
-        // in the content (the bar does not hide while a button is down)
-        if (y() == 0 && d->shouldHide()) {
-            slideOut();
-        }
-        return false;
-    }
-
-    // Filtering message on tooltip text for CJK to remove accelerators.
-    // Quoting ktoolbar.cpp:
-    // """
-    // CJK languages use more verbose accelerator marker: they add a Latin
-    // letter in parenthesis, and put accelerator on that. Hence, the default
-    // removal of ampersand only may not be enough there, instead the whole
-    // parenthesis construct should be removed. Use KLocale's method to do this.
-    // """
-    if (event->type() == QEvent::Show || event->type() == QEvent::Paint) {
-        auto button = qobject_cast<QToolButton *>(object);
-        if (button && !button->actions().isEmpty()) {
-            QAction *action = button->actions().constFirst();
-            const QString toolTip = KLocalizedString::removeAcceleratorMarker(action->toolTip());
-            // Filtering message requested by translators (scripting).
-            button->setToolTip(i18nc("@info:tooltip of custom toolbar button", "%1", toolTip));
-        }
     }
 
     return false;
@@ -276,6 +277,14 @@ bool FullScreenBar::eventFilter(QObject *object, QEvent *event)
 void FullScreenBar::setAutoHidingEnabled(bool value)
 {
     d->mAutoHidingEnabled = value;
+    if (!value) slideIn();
+    else if (d->mActivated && d->shouldHide()) d->mInitialHideTimer->start();
+}
+
+void FullScreenBar::resizeEvent(QResizeEvent *event)
+{
+    QFrame::resizeEvent(event);
+    moveBar(d->mReveal);
 }
 
 void FullScreenBar::setEdgeTriggerEnabled(bool value)

@@ -213,7 +213,7 @@ struct ViewMainPagePrivate {
         //--
         Qt::Orientation orientation = GwenviewConfig::thumbnailBarOrientation();
         mThumbnailSplitter = new Splitter(orientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal, q);
-        mThumbnailSplitter->setHandleWidth(12);
+        mThumbnailSplitter->setHandleWidth(10);
         mThumbnailSplitter->setStyleSheet(QStringLiteral("QSplitter::handle { background: transparent; border: none; }"));
         mThumbnailBar->setOrientation(orientation);
         mThumbnailBar->setThumbnailAspectRatio(GwenviewConfig::thumbnailAspectRatio());
@@ -232,7 +232,7 @@ struct ViewMainPagePrivate {
         mThumbnailBar->installEventFilter(q);
 
         auto viewMainPageLayout = new QVBoxLayout(q);
-        viewMainPageLayout->setContentsMargins(8, 8, 8, 8);
+        viewMainPageLayout->setContentsMargins(FloatingPanelInset, FloatingPanelInset, FloatingPanelInset, FloatingPanelInset);
         viewMainPageLayout->setSpacing(0);
         viewMainPageLayout->addWidget(mThumbnailSplitter);
         mDocumentViewContainer->setObjectName(QStringLiteral("roundedImageViewer"));
@@ -546,7 +546,7 @@ FloatingViewToolbar *ViewMainPage::createMainToolbar(QWidget *controls)
 
 void ViewMainPage::setFullScreenMode(bool fullScreenMode)
 {
-    layout()->setContentsMargins(fullScreenMode ? 0 : 8, fullScreenMode ? 0 : 8, fullScreenMode ? 0 : 8, fullScreenMode ? 0 : 8);
+    layout()->setContentsMargins(fullScreenMode ? 0 : FloatingPanelInset, fullScreenMode ? 0 : FloatingPanelInset, fullScreenMode ? 0 : FloatingPanelInset, fullScreenMode ? 0 : FloatingPanelInset);
     d->mFloatingToolbar->setFullScreen(fullScreenMode);
     if (fullScreenMode) {
         d->mThumbnailBarIsland->setVisible(false);
@@ -631,17 +631,8 @@ QSize ViewMainPage::minimumSizeHint() const
     }
 
     QSize minimumSize = layout()->minimumSize();
-    if (window()->isFullScreen()) {
-        // Check minimum width of the overlay fullscreen bar
-        // since there is no layout link which could do this
-        const FullScreenBar *fullScreenBar = findChild<FullScreenBar *>();
-        if (fullScreenBar && fullScreenBar->layout()) {
-            const int fullScreenBarWidth = fullScreenBar->layout()->minimumSize().width();
-            if (fullScreenBarWidth > minimumSize.width()) {
-                minimumSize.setWidth(fullScreenBarWidth);
-            }
-        }
-    }
+    // Fullscreen controls are an adaptive overlay. Their current width must
+    // not become the minimum window width and prevent the next resize.
     return minimumSize;
 }
 

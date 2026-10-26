@@ -8,14 +8,19 @@
 #include <QFileInfo>
 #include <QImage>
 #include <QComboBox>
+#include <QCheckBox>
+#include <QDialog>
 #include <QStyleOptionComboBox>
 #include <QLineEdit>
+#include <QListView>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <QPainter>
 #include <algorithm>
 #include <QLabel>
+#include <QTextEdit>
+#include <QClipboard>
 #include <QLayout>
 #include <QMimeData>
 #include <QMenu>
@@ -35,6 +40,7 @@
 #include <QMouseEvent>
 #include <cstdio>
 #include <cstdlib>
+#include <sys/xattr.h>
 static void require(bool ok, const char *message) {
     if (!ok) { fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
 }
@@ -279,11 +285,35 @@ static void verifyWelcome(QWidget *window, const QString &output, const QString 
     }
     require(count->text() == "6", "recent count reflects six fixtures");
     require(tabs->tabText(0) == "Recent" && tabs->tabText(1) == "Information" && tabs->tabText(2) == "Tools", "footer labels are discoverable");
+    auto sidebarIsland = window->findChild<QWidget *>("sidebarIsland");
+    auto splitter = qobject_cast<QSplitter *>(sidebarIsland->parentWidget());
+    require(splitter, "sidebar splitter exists");
+    splitter->setSizes({340, window->width() - 340}); QTest::qWait(200);
     const int tabWidth = tabs->tabBar()->tabRect(0).width();
     for (int i = 0; i < 3; ++i) {
         require(qAbs(tabs->tabBar()->tabRect(i).width() - tabWidth) <= 1, "footer tabs have equal widths");
         require(tabs->tabBar()->tabRect(i).width() >= tabs->tabBar()->fontMetrics().horizontalAdvance(tabs->tabText(i)) + 8, "footer labels fit without truncation");
     }
+    auto bar = tabs->tabBar();
+    require(bar->property("tabButtonStyle").toInt() == 3, "wide footer shows labels");
+    const QImage plainFooter = bar->grab().toImage();
+    tabs->setTabText(0, "&Recent"); tabs->setTabText(2, "&Tools"); QTest::qWait(100);
+    require(bar->grab().toImage() == plainFooter, "mnemonic ampersands do not appear or change label spacing");
+    const QIcon recentIcon = tabs->tabIcon(0);
+    tabs->setTabIcon(0, QIcon()); QTest::qWait(100);
+    require(bar->grab().toImage() == plainFooter, "Recent history icon is independent of missing theme assets");
+    const auto savedSizes = splitter->sizes();
+    splitter->setSizes({190, window->width() - 190}); QTest::qWait(200);
+    require(bar->property("tabButtonStyle").toInt() == 0, "narrow sidebar switches to icons only");
+    require(bar->tabRect(2).right() < bar->width(), "all three narrow tabs remain visible");
+    require(tabs->tabToolTip(0) == "Recent" && tabs->tabToolTip(2) == "Tools", "icon-only tabs retain descriptive tooltips");
+    capture("welcome-footer-narrow");
+    QTest::mouseClick(bar, Qt::LeftButton, Qt::NoModifier, bar->tabRect(2).center());
+    require(tabs->currentIndex() == 2, "narrow Tools tab remains clickable");
+    splitter->setSizes(savedSizes); tabs->setCurrentIndex(0); QTest::qWait(200);
+    require(bar->property("tabButtonStyle").toInt() == 3, "widening restores footer labels");
+    tabs->setTabText(0, "Recent"); tabs->setTabText(2, "Tools"); tabs->setTabIcon(0, recentIcon);
+    fprintf(stderr, "PASS: mnemonic-free footer, theme-independent Recent icon, responsive labels and narrow tab navigation\n");
     auto infoEmpty = window->findChild<QWidget *>("informationEmptyState");
     auto toolsEmpty = window->findChild<QWidget *>("operationsEmptyState");
     require(infoEmpty && toolsEmpty, "sidebar context empty states exist");
@@ -297,9 +327,16 @@ static void verifyWelcome(QWidget *window, const QString &output, const QString 
     tabs->setCurrentIndex(0); QTest::qWait(150); capture("welcome-grid");
     auto open = findAction(window, "file_open");
     require(shortcut->text() == open->shortcut().toString(QKeySequence::NativeText), "welcome shortcut matches native Open action");
+    auto verifyWelcomeCenter = [&] {
+        const int center = welcome->mapToGlobal(welcome->rect().center()).x();
+        require(qAbs(button->mapToGlobal(button->rect().center()).x() - center) <= 1, "Open images button is centered independently of shortcut");
+        require(qAbs(browse->mapToGlobal(browse->rect().center()).x() - center) <= 1, "Browse folder action shares welcome center");
+    };
+    verifyWelcomeCenter();
     const auto originalShortcut = open->shortcut();
-    open->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O));
+    open->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_O)); QTest::qWait(150);
     require(shortcut->text() == open->shortcut().toString(QKeySequence::NativeText), "displayed shortcut follows customization");
+    verifyWelcomeCenter();
     open->setShortcut(originalShortcut);
     QTest::mouseClick(button, Qt::LeftButton); QTest::qWait(250);
     auto picker = window->findChild<QFileDialog *>();
@@ -309,6 +346,9 @@ static void verifyWelcome(QWidget *window, const QString &output, const QString 
     QDragEnterEvent invalid(QPoint(60, 60), Qt::CopyAction, &invalidMime, Qt::LeftButton, Qt::NoModifier);
     QApplication::sendEvent(welcome, &invalid);
     require(!invalid.isAccepted() && !welcome->property("dropActive").toBool(), "invalid drags never highlight image drop target");
+    const QByteArray tagText(90, 'W');
+    const QByteArray taggedFile = QFile::encodeName(fixtures + "/one/picture.png");
+    require(setxattr(taggedFile.constData(), "user.xdg.tags", tagText.constData(), tagText.size(), 0) == 0, "long tag fixture metadata");
     QMimeData mime; mime.setUrls({QUrl::fromLocalFile(fixtures + "/one/picture.png")});
     QDragEnterEvent enter(QPoint(60, 60), Qt::CopyAction, &mime, Qt::LeftButton, Qt::NoModifier);
     QApplication::sendEvent(welcome, &enter); QTest::qWait(100);
@@ -334,6 +374,83 @@ static void verifyWelcome(QWidget *window, const QString &output, const QString 
     require(!infoEmpty->isVisible(), "image information replaces empty state");
     tabs->setCurrentIndex(2); QTest::qWait(150);
     require(!toolsEmpty->isVisible(), "native tools replace empty state");
+    auto toolsScroll = window->findChild<QScrollArea *>("operationsScrollArea");
+    auto infoScroll = window->findChild<QScrollArea *>("informationScrollArea");
+    require(toolsScroll && infoScroll, "both context pages have one outer scroll area");
+    const auto contextSize = window->size();
+    window->resize(1100, 650); splitter->setSizes({340, 760}); QTest::qWait(250);
+    capture("context-tools-wide");
+    auto rotateButton = window->findChild<QToolButton *>("sidebarAction_rotate_right");
+    require(rotateButton && rotateButton->isVisible(), "native image tools appear in polished rows");
+    require(rotateButton->focusPolicy() == Qt::StrongFocus, "tool rows accept keyboard focus");
+    auto rotateAction = rotateButton->defaultAction();
+    const QString originalToolText = rotateAction->text();
+    rotateAction->setText("Rotate the selected image clockwise");
+    splitter->setSizes({190, 910}); QTest::qWait(250);
+    require(sidebarIsland->width() <= 205, "Tools respects a narrow sidebar");
+    require(toolsScroll->horizontalScrollBar()->maximum() == 0, "Tools needs no horizontal scrolling");
+    require(rotateButton->height() >= rotateButton->heightForWidth(rotateButton->width()), "long tool labels wrap without vertical clipping");
+    require(rotateButton->height() > 40, "long tool action uses multiple lines at narrow widths");
+    rotateButton->setFocus(); toolsScroll->ensureWidgetVisible(rotateButton); QTest::qWait(150);
+    capture("context-tools-narrow");
+    bool rotated = false;
+    auto rotationConnection = QObject::connect(rotateAction, &QAction::triggered, window, [&] { rotated = true; });
+    QTest::keyClick(rotateButton, Qt::Key_Space); QTest::qWait(200);
+    require(rotated, "wrapped tool row triggers the native action by keyboard");
+    QObject::disconnect(rotationConnection);
+    findAction(window, "edit_undo")->trigger(); QTest::qWait(200);
+    // Action rows are rebuilt after the document changes.
+    rotateAction->setText(originalToolText);
+    const QRect footerRect = bar->geometry();
+    require(toolsScroll->verticalScrollBar()->maximum() > 0, "long Tools page scrolls vertically");
+    toolsScroll->verticalScrollBar()->setValue(toolsScroll->verticalScrollBar()->maximum()); QTest::qWait(100);
+    require(bar->geometry() == footerRect, "Tools scrolling keeps footer anchored");
+    capture("context-tools-narrow-bottom");
+    tabs->setCurrentIndex(1); QTest::qWait(200);
+    require(sidebarIsland->width() <= 205, "Information respects a narrow sidebar");
+    require(infoScroll->horizontalScrollBar()->maximum() == 0, "Information needs no horizontal scrolling");
+    auto values = tabs->widget(1)->findChildren<QTextEdit *>("metadataValue");
+    require(!values.isEmpty(), "Information shows image metadata");
+    auto value = values.last(); const QString originalValue = value->toPlainText();
+    value->setPlainText(QString(90, 'W') + ".png");
+    value->parentWidget()->updateGeometry();
+    splitter->setSizes({192, 908}); QTest::qWait(200);
+    require(value->heightForWidth(value->width()) > value->fontMetrics().height() * 2, "long metadata values wrap at narrow widths");
+    require(value->height() >= value->heightForWidth(value->width()), "metadata value height contains its wrapped text");
+    value->selectAll(); value->copy();
+    require(QApplication::clipboard()->text() == value->toPlainText(), "wrapped metadata copies its exact original text");
+    value->moveCursor(QTextCursor::Start);
+    capture("context-information-narrow");
+    value->setPlainText(originalValue); value->parentWidget()->updateGeometry();
+    splitter->setSizes({190, 910}); QTest::qWait(200);
+    auto tags = tabs->widget(1)->findChildren<QLabel *>("sidebarTag");
+    const int narrowTagWidth = tags.isEmpty() ? 0 : tags.first()->width();
+    for (auto tag : tags) {
+        require(tag->width() <= tag->parentWidget()->width(), "long tags fit the narrow panel");
+        require(!tag->toolTip().isEmpty(), "elided tags retain their full labels in tooltips");
+    }
+    capture("context-information-narrow-normal");
+    if (auto description = tabs->widget(1)->findChild<QTextEdit *>("mDescriptionTextEdit")) {
+        require(!tags.isEmpty(), "long tag fixture appears in the native semantic panel");
+        infoScroll->verticalScrollBar()->setValue(infoScroll->verticalScrollBar()->maximum()); QTest::qWait(150);
+        require(description->width() <= infoScroll->viewport()->width(), "description editor fits narrow Information panel");
+        require(description->mapTo(infoScroll->viewport(), QPoint()).y() >= 0
+                && description->mapTo(infoScroll->viewport(), description->rect().bottomRight()).y() < infoScroll->viewport()->height(),
+                "entire description editor is reachable by scrolling");
+        capture("context-information-narrow-bottom");
+    }
+    splitter->setSizes({340, 760}); infoScroll->verticalScrollBar()->setValue(0); QTest::qWait(200);
+    if (!tags.isEmpty()) require(tags.first()->width() > narrowTagWidth, "wider Information panel reveals more of long tags");
+    capture("context-information-wide");
+    auto details = window->findChild<QLabel *>("showMoreImageDetails");
+    require(details && details->focusPolicy() == Qt::StrongFocus, "full image details link is keyboard accessible");
+    QMetaObject::invokeMethod(details, "linkActivated", Q_ARG(QString, "#")); QTest::qWait(200);
+    QDialog *detailsDialog = nullptr;
+    for (auto dialog : window->findChildren<QDialog *>()) if (dialog->isVisible()) detailsDialog = dialog;
+    require(detailsDialog, "full metadata dialog remains available"); detailsDialog->close();
+    window->resize(contextSize); splitter->setSizes(savedSizes); QTest::qWait(200);
+    fprintf(stderr, "PASS: centered welcome actions, wrapped metadata and tools, narrow panels, native tool keyboard activation and details dialog\n");
+
     findAction(window, "go_start_page")->trigger(); QTest::qWait(250);
     tabs->setCurrentIndex(1); require(infoEmpty->isVisible(), "welcome never shows stale image information");
     tabs->setCurrentIndex(0);
@@ -373,6 +490,258 @@ static void verifyWelcome(QWidget *window, const QString &output, const QString 
     fprintf(stderr, "PASS: welcome identity, configured shortcut, file/folder opening, drag highlight/reset, labeled keyboard footer, contextual empty states, recent menu, count, grid/list switching and removal\n");
 }
 
+static void verifyBrowser(QWidget *window, const QString &output, const QString &mode)
+{
+    const QString fixtures = qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES");
+    auto gallery = QUrl::fromLocalFile(fixtures + "/Gallery");
+    require(QMetaObject::invokeMethod(window, "slotStartMainPageUrlSelected", Q_ARG(QUrl, gallery)), "open gallery in native browser");
+    QTest::qWait(700);
+    auto page = window->findChild<QWidget *>("BrowseMainPage");
+    auto view = window->findChild<QListView *>("mThumbnailView");
+    auto title = window->findChild<QLabel *>("browseFolderTitle");
+    auto sort = window->findChild<QToolButton *>("browseSortButton");
+    auto details = window->findChild<QToolButton *>("browseDetailsButton");
+    auto filters = window->findChild<QToolButton *>("mAddFilterButton");
+    auto filterScroll = window->findChild<QScrollArea *>("browseFilterScroll");
+    auto sliderContainer = window->findChild<QWidget *>("mThumbnailSlider");
+    auto slider = sliderContainer ? sliderContainer->findChild<QSlider *>() : nullptr;
+    auto empty = window->findChild<QLabel *>("browseEmptyState");
+    auto sidebar = window->findChild<QWidget *>("sidebarIsland");
+    auto splitter = qobject_cast<QSplitter *>(sidebar->parentWidget());
+    require(page && view && title && sort && details && filters && filterScroll && slider && empty && splitter, "browser presentation controls exist");
+    auto capture = [&](const char *name) { require(window->grab().save(output + '/' + name + ".png"), "browser screenshot"); };
+    if (mode == "browser-restart") {
+        require(slider->value() == 400, "preferred thumbnail size survives close from narrow window");
+        fprintf(stderr, "PASS: browser preferred thumbnail size survives restart\n"); return;
+    }
+    require(page->isVisible() && title->text() == "Gallery", "folder identity follows navigation");
+    require(view->model()->rowCount() == 13, "gallery shows images and its folder");
+    require(!empty->isVisible(), "populated folder hides empty state");
+    slider->setValue(150); QTest::qWait(300);
+    view->setCurrentIndex(view->model()->index(1, 0)); view->setFocus();
+    QTest::keyClick(view, Qt::Key_Right); QTest::qWait(100);
+    require(view->currentIndex().row() == 2, "thumbnail keyboard navigation retained");
+    view->selectionModel()->select(view->model()->index(3, 0), QItemSelectionModel::Select); QTest::qWait(100);
+    auto count = window->findChild<QLabel *>("mDocumentCountLabel");
+    require(count && count->text().contains("Selected"), "selection count remains accurate");
+    capture("browser-wide");
+    bool menuShown = false;
+    QTimer::singleShot(100, window, [&] { menuShown = sort->menu()->isVisible(); sort->menu()->close(); });
+    QTest::mouseClick(sort, Qt::LeftButton); require(menuShown, "Sort button opens native sorting menu");
+    findAction(window, "sort_desc")->setChecked(true); QTest::qWait(150);
+    require(view->model()->index(1, 0).data().toString() == "scene-11.png", "native descending sort applies");
+    findAction(window, "sort_desc")->setChecked(false);
+    findAction(window, "view_toggle_showhiddenfiles")->setChecked(true); QTest::qWait(250);
+    require(view->model()->rowCount() == 14, "View menu retains hidden-file action");
+    findAction(window, "view_toggle_showhiddenfiles")->setChecked(false); QTest::qWait(150);
+    auto detailAction = details->menu()->actions().at(1); detailAction->trigger(); QTest::qWait(100);
+    require(detailAction->isChecked(), "thumbnail details toggle works"); detailAction->trigger();
+    filters->menu()->actions().first()->trigger(); QTest::qWait(250);
+    auto nameField = filterScroll->findChild<QLineEdit *>();
+    require(nameField && filterScroll->isVisible(), "name filter appears beneath navigation");
+    nameField->setText("scene-01"); QTest::qWait(600);
+    require(view->model()->rowCount() == 1, "filename filtering works");
+    nameField->setText("no-matches-expected"); QTest::qWait(600);
+    require(empty->isVisible() && empty->text().contains("No matching"), "filtered empty state explains recovery"); capture("browser-no-results");
+    nameField->clear(); QTest::qWait(500);
+    filters->menu()->actions().last()->trigger(); QTest::qWait(200);
+    const auto filterActions = filters->menu()->actions();
+    for (int i = 1; i < filterActions.size() - 1; ++i) filterActions[i]->trigger();
+    QTest::qWait(250);
+    window->resize(720, 500); splitter->setSizes({190, 530}); QTest::qWait(350);
+    require(window->width() <= 720 && window->height() <= 500, "browser permits a small window");
+    require(sort->toolButtonStyle() == Qt::ToolButtonIconOnly && details->toolButtonStyle() == Qt::ToolButtonIconOnly, "small browser uses compact header actions");
+    for (auto control : {static_cast<QWidget *>(sort), static_cast<QWidget *>(details), static_cast<QWidget *>(filters), sliderContainer}) {
+        const QRect rect(control->mapTo(page, QPoint()), control->size());
+        require(page->rect().contains(rect), "browser controls remain inside small page");
+    }
+    require(filterScroll->horizontalScrollBar()->maximum() == 0, "filter cards fit without horizontal scrolling");
+    require(view->viewport()->height() >= 100, "multiple filters preserve thumbnail browsing space");
+    filterScroll->verticalScrollBar()->setValue(filterScroll->verticalScrollBar()->maximum());
+    capture("browser-small-filters");
+    while (auto close = filterScroll->findChild<QToolButton *>("removeBrowseFilter")) {
+        close->click(); QTest::qWait(100);
+    }
+    QTest::qWait(300);
+    require(!filterScroll->isVisible() && view->model()->rowCount() == 13, "removing all filters restores full gallery and space");
+    window->resize(640, 480); splitter->setSizes({190, 450}); QTest::qWait(250);
+    require(window->width() <= 640, "browser also fits a 640px window");
+    slider->setValue(400); QTest::qWait(250);
+    require(view->gridSize().width() <= view->viewport()->width(), "large thumbnails fit small viewport");
+    require(view->gridSize().height() <= view->viewport()->height(), "one full thumbnail and its caption fit the small viewport height");
+    const int smallGrid = view->gridSize().width(); capture("browser-small");
+    window->resize(1200, 760); splitter->setSizes({240, 960}); QTest::qWait(300);
+    require(view->gridSize().width() > smallGrid && slider->value() == 400, "widening restores preferred thumbnail size");
+    require(QMetaObject::invokeMethod(window, "openDirUrl", Q_ARG(QUrl, QUrl::fromLocalFile(fixtures + "/Gallery/Empty folder"))), "navigate to empty folder");
+    QTest::qWait(500);
+    require(empty->isVisible() && empty->text().contains("No images"), "empty folder explains navigation"); capture("browser-empty-folder");
+    require(QMetaObject::invokeMethod(window, "openDirUrl", Q_ARG(QUrl, gallery)), "navigate back to gallery"); QTest::qWait(350);
+    findAction(window, "edit_location")->trigger(); QTest::qWait(100);
+    auto location = page->findChild<QWidget *>("mUrlNavigatorContainer");
+    require(location && !location->findChildren<QLineEdit *>().isEmpty(), "F6 location editing is retained");
+    view->setCurrentIndex(view->model()->index(1, 0)); view->setFocus(); QTest::qWait(100);
+    auto full = findAction(window, "fullscreen");
+    full->trigger();
+    require(window->isFullScreen(), "browser requests fullscreen");
+    QTest::qWait(300);
+    auto mainToolbar = window->findChild<QToolBar *>("mainToolBar");
+    require(full->isChecked() && !mainToolbar->isVisible() && page->layout()->contentsMargins().left() == 0,
+            "browser fullscreen presentation remains available");
+    capture("browser-fullscreen");
+    // The offscreen platform can revoke window state without a window manager.
+    // Exercise the same native exit action used by Escape.
+    findAction(window, "leave_fullscreen")->trigger(); QTest::qWait(200);
+    require(!full->isChecked() && mainToolbar->isVisible() && page->layout()->contentsMargins().left() > 0,
+            "leaving fullscreen restores browser presentation");
+    auto showStatus = findAction(window, "options_show_statusbar");
+    if (showStatus->isChecked()) showStatus->trigger(); QTest::qWait(100);
+    require(!sliderContainer->isVisible() && filters->isVisible(), "status preference hides footer without losing filters");
+    if (!showStatus->isChecked()) showStatus->trigger();
+    view->setCurrentIndex(view->model()->index(1, 0));
+    QTest::keyClick(view, Qt::Key_Return); QTest::qWait(400);
+    require(!page->isVisible(), "browser activation opens native image viewer");
+    findAction(window, "browse")->trigger(); QTest::qWait(200);
+    window->resize(720, 500); splitter->setSizes({190, 530}); QTest::qWait(150);
+    fprintf(stderr, "PASS: browser header, sorting, hidden files, details, selection, adaptive filters, empty states, narrow layout, thumbnail fitting, fullscreen and activation\n");
+}
+
+static void verifyFullscreen(QWidget *window, const QString &output)
+{
+    // Isolated sessions have no desktop tags worker. Dismiss only its startup
+    // error so it cannot hold keyboard focus during input/auto-hide checks.
+    if (auto dialog = qobject_cast<QDialog *>(QApplication::activeModalWidget())) {
+        for (auto label : dialog->findChildren<QLabel *>()) {
+            if (label->text().contains("Unable to create KIO worker") && label->text().contains("protocol 'tags'")) {
+                dialog->reject(); break;
+            }
+        }
+    }
+    QApplication::setActiveWindow(window);
+
+    const QString fixtures = qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES");
+    const auto file = QUrl::fromLocalFile(fixtures + "/Gallery/scene-00.png");
+    require(QMetaObject::invokeMethod(window, "openImages", Q_ARG(QList<QUrl>, QList<QUrl>{file})), "open image for fullscreen");
+    QTest::qWait(650);
+    auto full = findAction(window, "fullscreen");
+    full->trigger(); QTest::qWait(650);
+    auto bar = window->findChild<QWidget *>("fullScreenBar");
+    auto surface = window->findChild<QWidget *>("fullscreenSurface");
+    auto thumbs = window->findChild<QListView *>("fullscreenThumbnails");
+    auto info = window->findChild<QLabel *>("fullscreenImageInformation");
+    auto count = window->findChild<QLabel *>("fullscreenImageCount");
+    auto viewer = window->findChild<QGraphicsView *>("roundedImageViewer");
+    auto button = [&](const char *name) {
+        auto b = bar->findChild<QToolButton *>(QStringLiteral("fullscreen_") + QString::fromLatin1(name));
+        require(b && !b->icon().isNull() && !b->toolTip().isEmpty(), "fullscreen button has an icon and tooltip"); return b;
+    };
+    require(bar && bar->isVisible() && surface && thumbs && info && count && viewer, "fullscreen floating panel exists");
+    auto capture = [&](const char *name) { require(window->grab().save(output + '/' + name + ".png"), "fullscreen screenshot"); };
+    auto pin = button("keep_controls_visible"); pin->click(); QTest::qWait(200);
+    require(pin->isChecked() && bar->y() == 0, "pin keeps fullscreen controls revealed");
+    for (const char *name : {"go_previous", "toggle_slideshow", "go_next", "rotate_left", "rotate_right", "view_zoom_in", "view_zoom_out", "view_zoom_to_fit", "view_actual_size", "leave_fullscreen", "options", "browse", "toggle_sidebar"}) button(name);
+    require(info->toolTip().contains("scene-00") && count->text().contains("of"), "image information and count are shown");
+    capture("fullscreen-wide");
+    button("go_next")->click(); QTest::qWait(450);
+    require(info->toolTip().contains("scene-01"), "next button opens the next image");
+    button("go_previous")->click(); QTest::qWait(450);
+    require(info->toolTip().contains("scene-00"), "previous button opens the previous image");
+    auto zoom = window->findChild<QWidget *>("imageViewControls");
+    if (!zoom) zoom = window->findChild<QWidget *>("imageToolbarFlyout");
+    auto slider = zoom ? zoom->findChild<QSlider *>() : nullptr;
+    require(slider, "native image zoom slider exists");
+    const int before = slider->value();
+    button("view_zoom_in")->click(); QTest::qWait(150);
+    require(slider->value() > before, "fullscreen zoom in changes actual image scale");
+    button("view_zoom_out")->click(); QTest::qWait(150);
+    require(slider->value() < before + 1, "fullscreen zoom out changes actual image scale");
+    button("view_actual_size")->click(); QTest::qWait(100);
+    require(findAction(window, "view_actual_size")->isChecked(), "actual size control follows native state");
+    button("view_zoom_to_fit")->click(); QTest::qWait(100);
+    require(findAction(window, "view_zoom_to_fit")->isChecked(), "fit control follows native state");
+    button("rotate_right")->click(); QTest::qWait(250);
+    require(findAction(window, "file_save")->isEnabled(), "fullscreen rotation edits image");
+    findAction(window, "edit_undo")->trigger(); QTest::qWait(150);
+    button("toggle_slideshow")->click(); QTest::qWait(150);
+    require(findAction(window, "toggle_slideshow")->text().contains("Pause"), "slideshow starts from fullscreen control");
+    button("toggle_slideshow")->click(); QTest::qWait(150);
+    require(!findAction(window, "toggle_slideshow")->text().contains("Pause"), "slideshow pauses from same control");
+
+    bool menuWorked = false;
+    QTimer::singleShot(100, window, [&] {
+        auto menu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
+        require(menu && menu->objectName() == "fullscreenOptionsMenu", "fullscreen options menu opens");
+        auto show = menu->findChild<QCheckBox *>("mShowThumbnailsCheckBox");
+        auto height = menu->findChild<QSlider *>("mHeightSlider");
+        require(show && height, "native thumbnail settings remain available");
+        if (!show->isChecked()) show->click();
+        height->setValue(130); QTest::qWait(100);
+        require(thumbs->isVisible() && thumbs->height() <= 160, "thumbnail height responds and remains bounded");
+        require(menu->grab().save(output + "/fullscreen-options.png"), "fullscreen options screenshot");
+        show->click(); QTest::qWait(100);
+        require(!thumbs->isVisible() && bar->height() < 180, "thumbnails can be hidden without losing controls");
+        capture("fullscreen-no-thumbnails");
+        show->click(); menuWorked = true; menu->close();
+    });
+    button("options")->click(); require(menuWorked, "options menu completed"); QTest::qWait(150);
+    // Compact layout follows the image pane, including when the sidebar is open.
+    window->resize(640, 480); QTest::qWait(200);
+    require(window->width() <= 640 && bar->width() <= bar->parentWidget()->width(), "fullscreen panel fits narrow image pane");
+    for (auto b : bar->findChildren<QToolButton *>()) {
+        if (b->objectName().startsWith("fullscreen_"))
+            require(surface->rect().contains(QRect(b->mapTo(surface, QPoint()), b->size())), "fullscreen controls remain inside compact surface");
+    }
+    capture("fullscreen-compact");
+    require(thumbs->width() >= surface->width() - 60, "thumbnails span the floating panel width");
+    auto sidebar = window->findChild<QWidget *>("sidebarIsland");
+    if (!sidebar->isVisible()) button("toggle_sidebar")->click();
+    auto split = qobject_cast<QSplitter *>(sidebar->parentWidget());
+    split->setSizes({190, 450}); QTest::qWait(250);
+    require(bar->width() < 560, "fullscreen controls adapt to narrow pane beside sidebar");
+    auto navigation = bar->findChild<QWidget *>("fullscreenNavigation");
+    auto imageControls = bar->findChild<QWidget *>("fullscreenImageControls");
+    require(imageControls->y() > navigation->y(), "narrow fullscreen controls stack into two groups");
+    for (auto b : bar->findChildren<QToolButton *>()) {
+        if (b->objectName().startsWith("fullscreen_"))
+            require(b->isVisible() && b->visibleRegion().contains(b->rect().center())
+                && surface->rect().contains(QRect(b->mapTo(surface, QPoint()), b->size())), "sidebar leaves every fullscreen control visible and reachable");
+    }
+    capture("fullscreen-sidebar-narrow");
+    button("toggle_sidebar")->click(); QTest::qWait(200);
+    const auto index = thumbs->model()->index(2, 0);
+    thumbs->scrollTo(index); QTest::qWait(100);
+    QTest::mouseClick(thumbs->viewport(), Qt::LeftButton, Qt::NoModifier, thumbs->visualRect(index).center());
+    QTest::qWait(400);
+    require(info->toolTip().contains("scene-02"), "fullscreen thumbnail opens selected image");
+
+    auto pointer = [&](const QPoint &global) {
+        QMouseEvent move(QEvent::MouseMove, viewer->viewport()->mapFromGlobal(global), global,
+                         Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+        QApplication::sendEvent(viewer->viewport(), &move);
+    };
+    pin->click();
+    viewer->setFocus();
+    pointer(bar->parentWidget()->mapToGlobal(QPoint(100, bar->parentWidget()->height() - 20)));
+    QTest::qWait(250);
+    require(bar->y() == -bar->height(), "fullscreen panel hides away from controls");
+    capture("fullscreen-hidden");
+    pointer(bar->parentWidget()->mapToGlobal(QPoint(100, 4))); QTest::qWait(250);
+    require(bar->y() == 0, "top edge reveals fullscreen controls");
+    button("go_next")->setFocus(Qt::TabFocusReason); QTest::qWait(100);
+    pointer(bar->parentWidget()->mapToGlobal(QPoint(100, bar->parentWidget()->height() - 20))); QTest::qWait(250);
+    require(bar->y() == 0, "keyboard focus keeps controls available");
+    QTest::keyClick(button("go_next"), Qt::Key_Space); QTest::qWait(400);
+    require(info->toolTip().contains("scene-03"), "keyboard activates fullscreen navigation");
+    viewer->setFocus(); pointer(bar->parentWidget()->mapToGlobal(QPoint(100, bar->parentWidget()->height() - 20)));
+    QTest::qWait(1400);
+    require(QApplication::overrideCursor() && QApplication::overrideCursor()->shape() == Qt::BlankCursor, "idle fullscreen hides cursor once");
+    findAction(window, "leave_fullscreen")->trigger(); QTest::qWait(600);
+    require(!bar->isVisible() && !QApplication::overrideCursor(), "fullscreen exit restores cursor and hides overlay");
+    for (int i = 0; i < 3; ++i) { full->trigger(); QTest::qWait(50); full->trigger(); QTest::qWait(50); }
+    QTest::qWait(650);
+    require(!bar->isVisible() && !QApplication::overrideCursor(), "rapid fullscreen changes leave no timers or hidden cursor");
+    fprintf(stderr, "PASS: fullscreen floating layout, native navigation/zoom/rotation/slideshow, settings, compact sizing, thumbnails, keyboard focus, auto-hide and cursor restoration\n");
+}
+
 static void startup() {
     if (qEnvironmentVariable("SEQUOIA_GWENVIEW_VERIFY").isEmpty()) return;
     if (QFileInfo(QFileInfo(QStringLiteral("/proc/self/exe")).symLinkTarget()).fileName() != QStringLiteral("gwenview")) return;
@@ -395,6 +764,14 @@ static void startup() {
         require(!window->findChild<QWidget *>("mRecentFoldersView"), "no recent folders start grid");
         const auto output = qEnvironmentVariable("SEQUOIA_GWENVIEW_VERIFY");
         auto capture = [&](const char *name) { require(window->grab().save(output + '/' + name + ".png"), "screenshot"); };
+        if (mode == "fullscreen") {
+            verifyFullscreen(window, output);
+            require(window->close(), "clean close"); QCoreApplication::exit(0); return;
+        }
+        if (mode.startsWith("browser")) {
+            verifyBrowser(window, output, mode);
+            require(window->close(), "clean close"); QCoreApplication::exit(0); return;
+        }
         if (mode.startsWith("welcome")) {
             verifyWelcome(window, output, mode);
             require(window->close(), "clean close"); QCoreApplication::exit(0); return;

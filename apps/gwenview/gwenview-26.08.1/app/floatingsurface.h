@@ -6,8 +6,10 @@
 #include <QtMath>
 
 namespace Gwenview {
+inline constexpr int FloatingPanelInset = 7;
+inline constexpr int FloatingPanelPadding = FloatingPanelInset + 8;
 // Paint only the surface's shadow, never blur its contents. The compact card
-// shadow fits the existing 8px gutter; floating controls use a softer 16px halo.
+// shadow fits the compact panel gutter; floating controls use a softer 16px halo.
 inline void paintFloatingShadow(QPainter &painter, const QRectF &bounds, qreal radius,
                                 const QPalette &palette, bool elevated = false, qreal opacity = 1)
 {

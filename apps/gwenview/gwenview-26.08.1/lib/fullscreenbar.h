@@ -60,6 +60,7 @@ private Q_SLOTS:
 
 protected:
     bool eventFilter(QObject *, QEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
 
 private:
     FullScreenBarPrivate *const d;

@@ -40,6 +40,7 @@ class SaveBar : public SlideContainer
 public:
     SaveBar(QWidget *parent, KActionCollection *collection);
     ~SaveBar() override;
+    QSize minimumSizeHint() const override;
 
     void setFullScreenMode(bool);
 

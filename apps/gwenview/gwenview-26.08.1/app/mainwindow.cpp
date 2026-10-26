@@ -154,6 +154,21 @@ enum MainPageId {
     ViewMainPageId,
 };
 
+// Hidden pages must not impose their control widths on the current page.
+class MainPageStack : public QStackedWidget
+{
+public:
+    explicit MainPageStack(QWidget *parent) : QStackedWidget(parent)
+    {
+        layout()->setSizeConstraint(QLayout::SetNoConstraint);
+        connect(this, &QStackedWidget::currentChanged, this, [this] { updateGeometry(); });
+    }
+    QSize minimumSizeHint() const override
+    {
+        return currentWidget() ? currentWidget()->minimumSizeHint().expandedTo(currentWidget()->minimumSize()) : QSize();
+    }
+};
+
 struct MainWindowState {
     bool mToolBarVisible;
 };
@@ -327,7 +342,7 @@ struct MainWindow::Private {
 
         mSaveBar = new SaveBar(mContentWidget, q->actionCollection());
         connect(mContextManager, &ContextManager::currentUrlChanged, mSaveBar, &SaveBar::setCurrentUrl);
-        mViewStackedWidget = new QStackedWidget(mContentWidget);
+        mViewStackedWidget = new MainPageStack(mContentWidget);
         auto layout = new QVBoxLayout(mContentWidget);
         layout->addWidget(mSharedMessage);
         layout->addWidget(mSaveBar);
@@ -729,51 +744,17 @@ struct MainWindow::Private {
         page = new SideBarPage(QIcon::fromTheme(QStringLiteral("documentinfo")), i18n("Information"));
         page->setObjectName(QStringLiteral("information"));
         page->setEmptyMessage(i18n("Open an image to see its details."));
-#ifndef GWENVIEW_SEMANTICINFO_BACKEND_NONE
-        // If we have semantic info, we want to share the sidebar using a splitter,
-        // so the user can dynamically resize the two widgets.
-        if (semanticInfoItem) {
-            auto splitter = new QSplitter;
-            splitter->setObjectName(QStringLiteral("information_splitter")); // This name is used to find it when loading previous sizes.
-            splitter->setOrientation(Qt::Vertical);
-            splitter->setHandleWidth(5);
-
-            splitter->addWidget(infoItem->widget());
-            splitter->setCollapsible(0, false);
-
-            // Cram the semantic info widget and a separator into a separate widget,
-            // so that they can be added to the splitter together (layouts can't be added directly).
-            // This will give the splitter a visible separator between the two widgets.
-            auto separator = new QFrame;
-            separator->setFrameShape(QFrame::HLine);
-            separator->setLineWidth(1);
-
-            auto container = new QWidget;
-            auto containerLayout = new QVBoxLayout(container);
-            containerLayout->setContentsMargins(0, 0, 0, 0);
-            containerLayout->addWidget(separator);
-            containerLayout->addWidget(semanticInfoItem->widget());
-
-            splitter->addWidget(container);
-            splitter->setCollapsible(1, false);
-
-            page->addWidget(splitter);
-        } else {
-            page->addWidget(infoItem->widget());
-        }
-#else
         page->addWidget(infoItem->widget());
+#ifndef GWENVIEW_SEMANTICINFO_BACKEND_NONE
+        if (semanticInfoItem) page->addWidget(semanticInfoItem->widget());
 #endif
+        page->addStretch();
         mSideBar->addPage(page);
 
         page = new SideBarPage(QIcon::fromTheme(QStringLiteral("document-edit")), i18n("Tools"));
         page->setObjectName(QStringLiteral("operations"));
         page->setEmptyMessage(i18n("Open an image to edit or manage it."));
         page->addWidget(imageOpsItem->widget());
-        auto separator = new QFrame;
-        separator->setFrameShape(QFrame::HLine);
-        separator->setLineWidth(1);
-        page->addWidget(separator);
         page->addWidget(fileOpsItem->widget());
         page->addStretch();
         mSideBar->addPage(page);
@@ -1000,30 +981,6 @@ struct MainWindow::Private {
     {
         if (mSideBar->isVisible()) {
             GwenviewConfig::setSideBarSplitterSizes(mCentralSplitter->sizes());
-        }
-    }
-
-    void loadInformationSplitterConfig()
-    {
-        const QList<int> sizes = GwenviewConfig::informationSplitterSizes();
-        if (!sizes.isEmpty()) {
-            // Find the splitter inside the sidebar by objectName.
-            auto informationSidebar = mSideBar->findChild<QSplitter *>(QStringLiteral("information_splitter"), Qt::FindChildrenRecursively);
-            if (informationSidebar) {
-                informationSidebar->setSizes(sizes);
-            } else {
-                qCWarning(GWENVIEW_APP_LOG) << "Could not find information splitter in sidebar when loading old position.";
-            }
-        }
-    }
-
-    void saveInformationSplitterConfig()
-    {
-        auto informationSidebar = mSideBar->findChild<QSplitter *>(QStringLiteral("information_splitter"), Qt::FindChildrenRecursively);
-        if (informationSidebar) {
-            GwenviewConfig::setInformationSplitterSizes(informationSidebar->sizes());
-        } else {
-            qCWarning(GWENVIEW_APP_LOG) << "Could not find information splitter in sidebar when saving new position.";
         }
     }
 
@@ -2060,7 +2017,6 @@ void MainWindow::loadConfig()
     d->mContextManager->loadConfig();
     d->mSideBar->loadConfig();
     d->loadSplitterConfig();
-    d->loadInformationSplitterConfig();
 }
 
 void MainWindow::saveConfig()
@@ -2070,7 +2026,6 @@ void MainWindow::saveConfig()
     d->mBrowseMainPage->saveConfig();
     d->mContextManager->saveConfig();
     d->saveSplitterConfig();
-    d->saveInformationSplitterConfig();
     GwenviewConfig::setFullScreenModeActive(isFullScreen());
     GwenviewConfig::setSpotlightMode(d->mSpotlightModeAction->isChecked());
     // Save the last used version when Gwenview closes so we know which settings/features the user

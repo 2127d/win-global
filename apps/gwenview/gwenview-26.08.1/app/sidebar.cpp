@@ -24,6 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QAction>
 #include <QIcon>
 #include <QLabel>
+#include <QTextLayout>
+#include <QScrollBar>
+#include <QTimer>
 #include <QMenu>
 #include <QScrollArea>
 #include <QStackedLayout>
@@ -41,44 +44,107 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 namespace Gwenview
 {
-/**
- * A button which always leave room for an icon, even if there is none, so that
- * all button texts are correctly aligned.
- */
+// Keep native QAction/menu behavior, with a wrapping, keyboard-accessible row.
 class SideBarButton : public QToolButton
 {
-protected:
-    void paintEvent(QPaintEvent *event) override
+public:
+    SideBarButton()
     {
-        forceIcon();
-        QToolButton::paintEvent(event);
+        QSizePolicy policy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        policy.setHeightForWidth(true);
+        setSizePolicy(policy);
+        setFocusPolicy(Qt::StrongFocus);
+        setMouseTracking(true);
     }
 
-    QSize sizeHint() const override
+    QSize sizeHint() const override { return QSize(220, heightForWidth(220)); }
+    QSize minimumSizeHint() const override { return QSize(64, 40); }
+    int heightForWidth(int width) const override
     {
-        const_cast<SideBarButton *>(this)->forceIcon();
-        return QToolButton::sizeHint();
+        return qMax(40, qCeil(textLayout(nullptr, qMax(16, width - 52))) + 20);
+    }
+
+protected:
+    void paintEvent(QPaintEvent *) override
+    {
+        QPainter p(this); p.setRenderHint(QPainter::Antialiasing);
+        const auto group = isEnabled() ? QPalette::Active : QPalette::Disabled;
+        const QColor ink = palette().color(group, QPalette::WindowText);
+        QColor accent = palette().color(QPalette::Active, QPalette::Highlight);
+        if (underMouse() || isDown() || isChecked() || hasFocus()) {
+            QColor fill = accent; fill.setAlpha(isDown() ? 38 : 18);
+            p.setBrush(fill);
+            accent.setAlpha(hasFocus() ? 180 : 35);
+            p.setPen(QPen(accent, hasFocus() ? 1.5 : 1));
+            p.drawRoundedRect(QRectF(rect()).adjusted(1, 1, -1, -1), 9, 9);
+        }
+        QPixmap pix = icon().pixmap(QSize(18, 18), devicePixelRatioF());
+        if (!pix.isNull()) {
+            QPainter tint(&pix); tint.setCompositionMode(QPainter::CompositionMode_SourceIn);
+            tint.fillRect(pix.rect(), ink); tint.end();
+            p.drawPixmap(QRect(10, (height() - 18) / 2, 18, 18), pix);
+        }
+        p.setPen(ink);
+        p.save(); p.translate(38, (height() - textLayout(nullptr, qMax(16, width() - 52))) / 2);
+        textLayout(&p, qMax(16, width() - 52)); p.restore();
+        if (menu()) {
+            p.setPen(QPen(ink, 1.3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            const QPointF c(width() - 9, height() / 2.0);
+            p.drawLine(c + QPointF(-2, -2), c + QPointF(1, 0));
+            p.drawLine(c + QPointF(1, 0), c + QPointF(-2, 2));
+        }
     }
 
 private:
-    void forceIcon()
+    qreal textLayout(QPainter *painter, int width) const
     {
-        if (!icon().isNull()) {
-            return;
+        QString label;
+        const QString source = text();
+        for (int i = 0; i < source.size(); ++i) {
+            if (source[i] == QLatin1Char('&')) {
+                if (i + 1 < source.size() && source[i + 1] == QLatin1Char('&')) ++i;
+                else continue;
+            }
+            label += source[i];
         }
-
-        // Assign an empty icon to the button if there is no icon associated
-        // with the action so that all button texts are correctly aligned.
-        QSize wantedSize = iconSize();
-        if (mEmptyIcon.isNull() || mEmptyIcon.actualSize(wantedSize) != wantedSize) {
-            QPixmap pix(wantedSize);
-            pix.fill(Qt::transparent);
-            mEmptyIcon.addPixmap(pix);
+        QTextLayout layout(label, font());
+        QTextOption option; option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+        layout.setTextOption(option);
+        layout.beginLayout(); qreal y = 0;
+        while (true) {
+            auto line = layout.createLine(); if (!line.isValid()) break;
+            line.setLineWidth(width); line.setPosition(QPointF(0, y)); y += line.height();
         }
-        setIcon(mEmptyIcon);
+        layout.endLayout();
+        if (painter) layout.draw(painter, QPointF());
+        return y;
     }
+};
 
-    QIcon mEmptyIcon;
+class SideBarEmptyMark : public QWidget
+{
+public:
+    SideBarEmptyMark(bool information, QWidget *parent) : QWidget(parent), mInformation(information)
+    { setFixedSize(64, 64); }
+protected:
+    void paintEvent(QPaintEvent *) override
+    {
+        QPainter p(this); p.setRenderHint(QPainter::Antialiasing);
+        QColor accent = palette().color(QPalette::Active, QPalette::Highlight);
+        QColor fill = accent; fill.setAlpha(18);
+        p.setPen(Qt::NoPen); p.setBrush(fill); p.drawRoundedRect(QRectF(1, 1, 62, 62), 18, 18);
+        p.setBrush(Qt::NoBrush); p.setPen(QPen(accent, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        if (mInformation) {
+            p.drawEllipse(QRectF(19, 19, 26, 26));
+            p.drawPoint(QPointF(32, 25)); p.drawLine(QPointF(32, 31), QPointF(32, 39));
+        } else {
+            QPolygonF pencil; pencil << QPointF(21, 37) << QPointF(37, 21) << QPointF(43, 27)
+                                     << QPointF(27, 43) << QPointF(20, 44) << QPointF(21, 37);
+            p.drawPolyline(pencil); p.drawLine(QPointF(34, 24), QPointF(40, 30));
+        }
+    }
+private:
+    bool mInformation;
 };
 
 //- SideBarGroup ---------------------------------------------------------------
@@ -95,15 +161,27 @@ SideBarGroup::SideBarGroup(const QString &title)
     d->mTitleLabel = new QLabel(this);
     d->mTitleLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QFont font(d->mTitleLabel->font());
-    font.setPointSizeF(font.pointSizeF() + 1);
+    font.setWeight(QFont::DemiBold);
     d->mTitleLabel->setFont(font);
     d->mTitleLabel->setText(title);
+    d->mTitleLabel->setWordWrap(true);
     d->mTitleLabel->setVisible(!d->mTitleLabel->text().isEmpty());
 
     auto layout = new QVBoxLayout(this);
     layout->addWidget(d->mTitleLabel);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(12, 12, 12, 12);
+    layout->setSpacing(10);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     clear();
+}
+
+void SideBarGroup::paintEvent(QPaintEvent *)
+{
+    QPainter p(this); p.setRenderHint(QPainter::Antialiasing);
+    QColor edge = palette().color(QPalette::WindowText); edge.setAlpha(18);
+    QColor fill = palette().color(QPalette::WindowText); fill.setAlpha(4);
+    p.setPen(QPen(edge, 1)); p.setBrush(fill);
+    p.drawRoundedRect(QRectF(rect()).adjusted(.5, .5, -.5, -.5), 12, 12);
 }
 
 SideBarGroup::~SideBarGroup()
@@ -120,13 +198,15 @@ void SideBarGroup::addWidget(QWidget *widget)
 void SideBarGroup::clear()
 {
     if (d->mContainer) {
+        layout()->removeWidget(d->mContainer);
+        d->mContainer->hide();
         d->mContainer->deleteLater();
     }
 
     d->mContainer = new QFrame(this);
     auto containerLayout = new QVBoxLayout(d->mContainer);
     containerLayout->setContentsMargins(0, 0, 0, 0);
-    containerLayout->setSpacing(0);
+    containerLayout->setSpacing(2);
 
     layout()->addWidget(d->mContainer);
 }
@@ -135,10 +215,16 @@ void SideBarGroup::addAction(QAction *action)
 {
     int size = KIconLoader::global()->currentSize(KIconLoader::Small);
     QToolButton *button = new SideBarButton();
-    button->setFocusPolicy(Qt::NoFocus);
-    button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    button->setObjectName(QStringLiteral("sidebarAction_") + action->objectName());
     button->setAutoRaise(true);
     button->setDefaultAction(action);
+    auto refresh = [button, action] {
+        QString tip = action->toolTip();
+        if (!action->shortcut().isEmpty()) tip += QStringLiteral(" (%1)").arg(action->shortcut().toString(QKeySequence::NativeText));
+        button->setToolTip(tip);
+        button->updateGeometry();
+    };
+    connect(action, &QAction::changed, button, refresh); refresh();
     button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     button->setIconSize(QSize(size, size));
     if (action->menu()) {
@@ -146,6 +232,43 @@ void SideBarGroup::addAction(QAction *action)
     }
     addWidget(button);
 }
+
+// QScrollArea otherwise uses minimum-size hints that can omit wrapped rows.
+// Keep the full height-for-width of the page reachable through its scrollbar.
+class SideBarScrollArea : public QScrollArea
+{
+public:
+    explicit SideBarScrollArea(QWidget *parent) : QScrollArea(parent)
+    {
+        viewport()->installEventFilter(this);
+    }
+    void setPage(QWidget *page)
+    {
+        setWidget(page); page->installEventFilter(this); scheduleHeightUpdate();
+    }
+protected:
+    bool eventFilter(QObject *object, QEvent *event) override
+    {
+        if ((object == widget() && event->type() == QEvent::LayoutRequest)
+            || (object == viewport() && event->type() == QEvent::Resize)) scheduleHeightUpdate();
+        return QScrollArea::eventFilter(object, event);
+    }
+private:
+    void scheduleHeightUpdate()
+    {
+        if (mPending) return;
+        mPending = true;
+        QTimer::singleShot(0, this, [this] {
+            mPending = false;
+            if (!widget() || !widget()->layout()) return;
+            auto layout = widget()->layout();
+            const int height = layout->hasHeightForWidth()
+                ? layout->totalHeightForWidth(viewport()->width()) : layout->totalSizeHint().height();
+            if (widget()->minimumHeight() != height) widget()->setMinimumHeight(qMax(0, height));
+        });
+    }
+    bool mPending = false;
+};
 
 //- SideBarPage ----------------------------------------------------------------
 struct SideBarPagePrivate {
@@ -208,28 +331,41 @@ void SideBarPage::setContentMargins(const QMargins &margins)
 void SideBarPage::setEmptyMessage(const QString &message)
 {
     if (d->mEmpty) return;
+    d->mLayout->setContentsMargins(8, 8, 8, 12);
+    d->mLayout->setSpacing(14);
+    auto makeHeading = [this](QWidget *parent) {
+        auto heading = new QLabel(d->mTitle, parent);
+        QFont font = heading->font(); font.setBold(true); heading->setFont(font);
+        heading->setWordWrap(true);
+        return heading;
+    };
+    d->mLayout->insertWidget(0, makeHeading(d->mContent));
     // Keep lengthy information and tool lists inside the page, above the footer.
-    auto scroll = new QScrollArea(this);
+    auto scroll = new SideBarScrollArea(this);
+    scroll->setObjectName(objectName() + QStringLiteral("ScrollArea"));
     scroll->setFrameShape(QFrame::NoFrame);
     scroll->setWidgetResizable(true);
     scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scroll->setAutoFillBackground(false);
     scroll->viewport()->setAutoFillBackground(false);
     d->mStack->removeWidget(d->mContent);
-    scroll->setWidget(d->mContent);
+    scroll->setPage(d->mContent);
     d->mContent->setAutoFillBackground(false);
     d->mContentPage = scroll;
     d->mStack->addWidget(scroll);
     d->mEmpty = new QWidget(this);
     d->mEmpty->setObjectName(objectName() + QStringLiteral("EmptyState"));
     auto layout = new QVBoxLayout(d->mEmpty);
-    layout->setContentsMargins(16, 28, 16, 28);
+    layout->setContentsMargins(8, 8, 8, 16);
+    layout->addWidget(makeHeading(d->mEmpty));
     layout->setSpacing(16);
     layout->addStretch(2);
+    layout->addWidget(new SideBarEmptyMark(objectName() == QLatin1String("information"), d->mEmpty), 0, Qt::AlignHCenter);
     auto label = new QLabel(message, d->mEmpty);
     label->setObjectName(objectName() + QStringLiteral("EmptyMessage"));
     label->setAlignment(Qt::AlignCenter);
     label->setWordWrap(true);
+    label->setContentsMargins(4, 0, 4, 0);
     layout->addWidget(label);
     layout->addStretch(3);
     d->mStack->addWidget(d->mEmpty);
@@ -386,7 +522,7 @@ SideBar::SideBar(QWidget *parent)
     setObjectName(QStringLiteral("sidebarIsland"));
     setAutoFillBackground(false);
     auto layout = new QVBoxLayout(this);
-    layout->setContentsMargins(16, 16, 16, 16);
+    layout->setContentsMargins(FloatingPanelPadding, FloatingPanelPadding, FloatingPanelPadding, FloatingPanelPadding);
     layout->setSpacing(0);
     d->tabs = new SideBarTabs(this);
     layout->addWidget(d->tabs);
@@ -405,12 +541,12 @@ void SideBar::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
     QPainter painter(this);
-    paintFloatingPanel(painter, QRectF(rect()).adjusted(8, 8, -8, -8), palette());
+    paintFloatingPanel(painter, QRectF(rect()).adjusted(FloatingPanelInset, FloatingPanelInset, -FloatingPanelInset, -FloatingPanelInset), palette());
 }
 
 QSize SideBar::sizeHint() const
 {
-    return QSize(qMax(280, d->tabs->tabBar()->sizeHint().width() + 32), 200);
+    return QSize(qMax(280, d->tabs->tabBar()->sizeHint().width() + 2 * FloatingPanelPadding), 200);
 }
 
 void SideBar::addPage(SideBarPage *page)
@@ -420,7 +556,7 @@ void SideBar::addPage(SideBarPage *page)
     const int index = d->tabs->addTab(page, page->icon(), page->title());
     d->tabs->setTabToolTip(index, page->title());
     d->tabs->tabBar()->setTabData(index, page->objectName());
-    setMinimumWidth(d->tabs->tabBar()->minimumSizeHint().width() + 32);
+    setMinimumWidth(d->tabs->tabBar()->minimumSizeHint().width() + 2 * FloatingPanelPadding);
 }
 
 void SideBar::setContextAvailable(bool available)

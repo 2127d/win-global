@@ -123,7 +123,7 @@ FileOpsContextManagerItem::FileOpsContextManagerItem(ContextManager *manager,
 {
     mThumbnailView = thumbnailView;
     mXMLGUIClient = client;
-    mGroup = new SideBarGroup(i18n("File Operations"));
+    mGroup = new SideBarGroup(i18n("Manage file"));
     setWidget(mGroup);
     EventWatcher::install(mGroup, QEvent::Show, this, SLOT(updateSideBarContent()));
 

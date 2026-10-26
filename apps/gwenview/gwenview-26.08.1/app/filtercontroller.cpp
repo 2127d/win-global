@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 
 // Qt
 #include <QAction>
+#include <QApplication>
 #include <QCompleter>
 #include <QIcon>
 #include <QLabel>
@@ -30,6 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 #include <QPainter>
 #include <QPainterPath>
 #include <QTimer>
+#include <QResizeEvent>
 #include <QToolButton>
 
 // KF
@@ -61,6 +63,8 @@ NameFilterWidget::NameFilterWidget(SortedDirModel *model)
     mModeComboBox->addItem(i18n("Name does not contain"), QVariant(NameFilter::DoesNotContain));
 
     mLineEdit = new QLineEdit;
+    mLineEdit->setPlaceholderText(i18n("Filter by filename…"));
+    mLineEdit->setAccessibleName(i18n("Filter by filename"));
 
     auto layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -136,6 +140,15 @@ RatingFilterWidget::RatingFilterWidget(SortedDirModel *model)
     mRatingWidget = new KRatingWidget;
     mRatingWidget->setHalfStepsEnabled(true);
     mRatingWidget->setMaxRating(10);
+    auto updateStar = [this] {
+        QPixmap star = QIcon::fromTheme(QStringLiteral("rating")).pixmap(18, 18);
+        if (!star.isNull()) {
+            QPainter painter(&star); painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+            painter.fillRect(star.rect(), palette().color(QPalette::Active, QPalette::Highlight)); painter.end();
+            mRatingWidget->setCustomPixmap(star);
+        }
+    };
+    connect(qApp, &QApplication::paletteChanged, this, updateStar); updateStar();
 
     auto layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -242,10 +255,16 @@ ImageDimensionsWidget::ImageDimensionsWidget(SortedDirModel *model)
     auto *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(mModeComboBox);
-    layout->addWidget(mLabelWidth);
-    layout->addWidget(mLineEditWidth);
-    layout->addWidget(mLabelHeight);
-    layout->addWidget(mLineEditHeight);
+    auto addDimension = [this, layout](QLabel *label, QLineEdit *edit) {
+        auto pair = new QWidget(this);
+        auto row = new QHBoxLayout(pair); row->setContentsMargins(0, 0, 0, 0); row->setSpacing(6);
+        row->setSizeConstraint(QLayout::SetNoConstraint);
+        edit->setMinimumWidth(0); edit->setPlaceholderText(i18n("Pixels")); edit->setAccessibleName(label->text());
+        row->addWidget(label); row->addWidget(edit, 1);
+        layout->addWidget(pair);
+    };
+    addDimension(mLabelWidth, mLineEditWidth);
+    addDimension(mLabelHeight, mLineEditHeight);
 
     connect(mModeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applyImageDimensions()));
     connect(mLineEditHeight, &QLineEdit::editingFinished, this, &ImageDimensionsWidget::applyImageDimensions);
@@ -280,14 +299,33 @@ class FilterWidgetContainer : public QFrame
 public:
     FilterWidgetContainer()
     {
-        QPalette pal = palette();
-        pal.setColor(QPalette::Window, pal.color(QPalette::Highlight));
-        setPalette(pal);
+        setObjectName(QStringLiteral("browseFilterCard"));
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     }
+    QSize minimumSizeHint() const override { return QSize(120, sizeHint().height()); }
+    QSize sizeHint() const override { return QSize(300, layout() ? layout()->sizeHint().height() : 40); }
 
     void setFilterWidget(QWidget *widget)
     {
+        mFilterWidget = widget;
+        widget->setMinimumWidth(0);
+        widget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+        widget->layout()->setSizeConstraint(QLayout::SetNoConstraint);
+        for (auto field : widget->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly)) {
+            field->setMinimumWidth(0);
+            field->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+            if (auto line = qobject_cast<QLineEdit *>(field)) {
+                line->setClearButtonEnabled(true);
+                if (line->placeholderText().isEmpty()) line->setPlaceholderText(i18n("Value"));
+            }
+        }
         auto closeButton = new QToolButton;
+        closeButton->setObjectName(QStringLiteral("removeBrowseFilter"));
+        closeButton->setText(QStringLiteral("×"));
+        closeButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+        closeButton->setToolTip(i18n("Remove this filter"));
+        closeButton->setAccessibleName(i18n("Remove this filter"));
+        closeButton->setFocusPolicy(Qt::StrongFocus);
         closeButton->setIcon(QIcon::fromTheme(QStringLiteral("window-close")));
         closeButton->setAutoRaise(true);
         closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
@@ -295,24 +333,44 @@ public:
         closeButton->setIconSize(QSize(size, size));
         connect(closeButton, &QAbstractButton::clicked, this, &QObject::deleteLater);
         auto layout = new QHBoxLayout(this);
-        layout->setContentsMargins(2, 2, 2, 2);
-        layout->setSpacing(2);
+        layout->setContentsMargins(8, 8, 8, 8);
+        layout->setSpacing(6);
+        layout->setSizeConstraint(QLayout::SetNoConstraint);
         layout->addWidget(widget);
-        layout->addWidget(closeButton);
+        layout->addWidget(closeButton, 0, Qt::AlignTop);
     }
 
 protected:
+    void resizeEvent(QResizeEvent *event) override
+    {
+        QFrame::resizeEvent(event);
+        auto row = qobject_cast<QBoxLayout *>(mFilterWidget->layout());
+        if (!row) return;
+        int wanted = 0;
+        for (int i = 0; i < row->count(); ++i) {
+            auto field = row->itemAt(i)->widget();
+            if (field) wanted += field->sizeHint().width() + 6;
+        }
+        const auto direction = wanted > width() - 50 ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight;
+        row->setDirection(direction);
+        row->setSpacing(6);
+        row->invalidate(); layout()->invalidate();
+        setMinimumHeight(layout()->sizeHint().height());
+        updateGeometry();
+    }
     void paintEvent(QPaintEvent *) override
     {
         QPainter painter(this);
         painter.setRenderHint(QPainter::Antialiasing);
-        const QPainterPath path = PaintUtils::roundedRectangle(QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5), 6);
+        const QPainterPath path = PaintUtils::roundedRectangle(QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5), 10);
 
-        const QColor color = palette().color(QPalette::Highlight);
-        painter.fillPath(path, PaintUtils::alphaAdjustedF(color, 0.5));
-        painter.setPen(color);
+        const QColor color = palette().color(QPalette::Active, QPalette::Highlight);
+        painter.fillPath(path, PaintUtils::alphaAdjustedF(color, 0.05));
+        painter.setPen(PaintUtils::alphaAdjustedF(color, 0.22));
         painter.drawPath(path);
     }
+private:
+    QWidget *mFilterWidget = nullptr;
 };
 
 FilterController::FilterController(QFrame *frame, SortedDirModel *dirModel)
@@ -324,8 +382,11 @@ FilterController::FilterController(QFrame *frame, SortedDirModel *dirModel)
     mFilterWidgetCount = 0;
 
     mFrame->hide();
-    auto layout = new FlowLayout(mFrame);
-    layout->setSpacing(2);
+    auto layout = new QVBoxLayout(mFrame);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(6);
+    layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    layout->setAlignment(Qt::AlignTop);
 
     addAction(i18nc("@action:inmenu", "Filter by Name"), SLOT(addFilterByName()), QKeySequence(Qt::CTRL | Qt::Key_I));
 

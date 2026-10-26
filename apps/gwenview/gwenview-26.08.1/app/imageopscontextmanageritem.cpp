@@ -172,7 +172,7 @@ ImageOpsContextManagerItem::ImageOpsContextManagerItem(ContextManager *manager, 
 {
     d->q = this;
     d->mMainWindow = mainWindow;
-    d->mGroup = new SideBarGroup(i18n("Image Operations"));
+    d->mGroup = new SideBarGroup(i18n("Edit image"));
     setWidget(d->mGroup);
     EventWatcher::install(d->mGroup, QEvent::Show, this, SLOT(updateSideBarContent()));
     d->mCropStateRect = new QRect;

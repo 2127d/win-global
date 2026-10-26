@@ -25,10 +25,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 // Qt
 #include <QActionGroup>
 #include <QDropEvent>
-#include <QGraphicsDropShadowEffect>
 #include <QMenu>
 #include <QPainter>
 #include <QVBoxLayout>
+#include <QLabel>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QTimer>
+#include <QResizeEvent>
+#include <QSignalBlocker>
+#include <QStyleOptionViewItem>
+#include <QSlider>
+#include <KDirLister>
 
 // KF
 #include <KActionCategory>
@@ -64,6 +72,50 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 
 namespace Gwenview
 {
+class BrowseUrlNavigator : public KUrlNavigator
+{
+public:
+    using KUrlNavigator::KUrlNavigator;
+    QSize minimumSizeHint() const override
+    {
+        // KUrlNavigator can collapse breadcrumbs, but its preferred minimum
+        // otherwise keeps the outer window as wide as the entire path.
+        return QSize(80, KUrlNavigator::minimumSizeHint().height());
+    }
+};
+
+// Extend the native delegate so thumbnail generation, editing, drag/drop,
+// context actions and metadata remain Gwenview's own implementation.
+class BrowsePreviewDelegate : public PreviewItemDelegate
+{
+public:
+    explicit BrowsePreviewDelegate(ThumbnailView *view) : PreviewItemDelegate(view) {}
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
+    {
+        painter->save(); painter->setRenderHint(QPainter::Antialiasing);
+        const bool selected = option.state & QStyle::State_Selected;
+        const bool hovered = option.state & QStyle::State_MouseOver;
+        const bool focused = option.state & QStyle::State_HasFocus;
+        const QRectF card = QRectF(option.rect).adjusted(2, 2, -2, -2);
+        QColor accent = option.palette.color(QPalette::Active, QPalette::Highlight);
+        QColor fill = selected || hovered ? accent : option.palette.color(QPalette::WindowText);
+        fill.setAlpha(selected ? 24 : hovered ? 12 : 4);
+        QColor edge = selected || focused ? accent : option.palette.color(QPalette::WindowText);
+        edge.setAlpha(selected || focused ? 170 : hovered ? 35 : 16);
+        painter->setPen(QPen(edge, selected ? 1.5 : 1)); painter->setBrush(fill);
+        painter->drawRoundedRect(card, 10, 10);
+        painter->restore();
+        auto native = option;
+        native.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver | QStyle::State_HasFocus);
+        PreviewItemDelegate::paint(painter, native, index);
+        if (focused) {
+            painter->save(); painter->setRenderHint(QPainter::Antialiasing);
+            painter->setBrush(Qt::NoBrush); painter->setPen(QPen(accent, 1, Qt::DashLine));
+            painter->drawRoundedRect(card.adjusted(2, 2, -2, -2), 8, 8); painter->restore();
+        }
+    }
+};
+
 inline Sorting::Enum sortingFromSortAction(const QAction *action)
 {
     Q_ASSERT(action);
@@ -87,24 +139,55 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
     QActionGroup *mThumbnailDetailsActionGroup = nullptr;
     PreviewItemDelegate *mDelegate = nullptr;
     bool mFullScreen = false;
+    QLabel *mFolderTitle = nullptr;
+    QLabel *mEmptyState = nullptr;
+    QLabel *mSizeCaption = nullptr;
+    QToolButton *mSortButton = nullptr;
+    QToolButton *mDetailsButton = nullptr;
+    QScrollArea *mFilterScroll = nullptr;
+    int mPreferredThumbnailWidth = 128;
+    bool mResizingThumbnails = false;
+    bool mLoading = false;
 
     void setupWidgets()
     {
         setupUi(q);
         // The panel has the viewer's outer inset plus padding for its controls.
-        q->layout()->setContentsMargins(16, 16, 16, 16);
+        q->layout()->setContentsMargins(FloatingPanelPadding, FloatingPanelPadding, FloatingPanelPadding, FloatingPanelPadding);
+        q->layout()->setSpacing(8);
         q->setAutoFillBackground(false);
 
-        int margins = qMax(6, q->style()->pixelMetric(QStyle::PM_ToolBarItemMargin) + q->style()->pixelMetric(QStyle::PM_ToolBarFrameWidth));
-        mStatusBarContainer->layout()->setContentsMargins(margins, margins, margins, margins);
-        mStatusBarContainer->layout()->setSpacing(q->style()->pixelMetric(QStyle::PM_ToolBarItemSpacing));
-        // Lift the Browse controls off the matching panel surface.
-        for (auto button : mStatusBarContainer->findChildren<QToolButton *>()) {
-            auto shadow = new QGraphicsDropShadowEffect(button);
-            shadow->setBlurRadius(8);
-            shadow->setOffset(0, 2);
-            button->setGraphicsEffect(shadow);
+        mStatusBarContainer->layout()->setContentsMargins(0, 6, 0, 0);
+        mStatusBarContainer->layout()->setSpacing(8);
+        mThumbnailSlider->setMinimumWidth(100);
+        mThumbnailSlider->setMaximumWidth(180);
+        mThumbnailSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        mThumbnailSlider->slider()->setAccessibleName(i18n("Thumbnail size"));
+        mSizeCaption = new QLabel(i18n("Thumbnails"), mStatusBarContainer);
+        mSizeCaption->setForegroundRole(QPalette::PlaceholderText);
+        static_cast<QHBoxLayout *>(mStatusBarContainer->layout())->insertWidget(3, mSizeCaption);
+
+        auto header = new QWidget(q); header->setObjectName(QStringLiteral("browseHeader"));
+        auto headerLayout = new QHBoxLayout(header); headerLayout->setContentsMargins(0, 0, 0, 0);
+        headerLayout->setSpacing(6);
+        mFolderTitle = new QLabel(header); mFolderTitle->setObjectName(QStringLiteral("browseFolderTitle"));
+        QFont titleFont = mFolderTitle->font(); titleFont.setBold(true); titleFont.setPointSizeF(titleFont.pointSizeF() * 1.25);
+        mFolderTitle->setFont(titleFont); mFolderTitle->setTextFormat(Qt::PlainText);
+        mFolderTitle->setMinimumWidth(0); mFolderTitle->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+        headerLayout->addWidget(mFolderTitle, 1);
+        mSortButton = new QToolButton(header); mSortButton->setObjectName(QStringLiteral("browseSortButton"));
+        mDetailsButton = new QToolButton(header); mDetailsButton->setObjectName(QStringLiteral("browseDetailsButton"));
+        // Moving the existing button preserves its filter menu and shortcuts.
+        mStatusBarContainer->layout()->removeWidget(mAddFilterButton);
+        for (auto button : {mSortButton, mDetailsButton, static_cast<QToolButton *>(mAddFilterButton)}) {
+            button->setPopupMode(QToolButton::InstantPopup); button->setAutoRaise(true);
+            button->setMinimumHeight(34); button->setIconSize(QSize(18, 18));
+            button->setFocusPolicy(Qt::StrongFocus);
+            headerLayout->addWidget(button);
         }
+        mAddFilterButton->setText(i18n("Filters")); mAddFilterButton->setToolTip(i18n("Filter images by name, date, rating, tags or dimensions"));
+        mAddFilterButton->setAccessibleName(i18n("Add filter"));
+        static_cast<QVBoxLayout *>(q->layout())->insertWidget(0, header);
 
         // mThumbnailView
         mThumbnailView->setModel(mDirModel);
@@ -113,20 +196,41 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mThumbnailView->viewport()->setAutoFillBackground(false);
         mFilterFrame->setFrameShape(QFrame::NoFrame);
 
-        mDelegate = new PreviewItemDelegate(mThumbnailView);
+        mThumbnailView->setSpacing(5);
+        mThumbnailView->setMouseTracking(true);
+        mThumbnailView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        mThumbnailView->viewport()->installEventFilter(q);
+        mDelegate = new BrowsePreviewDelegate(mThumbnailView);
         mThumbnailView->setItemDelegate(mDelegate);
         mThumbnailView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        mEmptyState = new QLabel(mThumbnailView->viewport());
+        mEmptyState->setObjectName(QStringLiteral("browseEmptyState"));
+        mEmptyState->setAlignment(Qt::AlignCenter); mEmptyState->setWordWrap(true);
+        mEmptyState->setForegroundRole(QPalette::PlaceholderText);
+        mEmptyState->setAttribute(Qt::WA_TransparentForMouseEvents);
+        mEmptyState->hide();
+        mFilterScroll = new QScrollArea(q); mFilterScroll->setObjectName(QStringLiteral("browseFilterScroll"));
+        mFilterScroll->setFrameShape(QFrame::NoFrame); mFilterScroll->setWidgetResizable(true);
+        mFilterScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        mFilterScroll->setAutoFillBackground(false); mFilterScroll->viewport()->setAutoFillBackground(false);
+        // Active filters sit below the navigation, above the thumbnail grid.
+        q->layout()->removeWidget(mFilterFrame);
+        mFilterScroll->setWidget(mFilterFrame); mFilterFrame->setAutoFillBackground(false);
+        mFilterFrame->installEventFilter(q);
+        static_cast<QVBoxLayout *>(q->layout())->insertWidget(2, mFilterScroll);
+        mFilterScroll->hide();
 
         // mUrlNavigator (use stupid layouting code because KUrlNavigator ctor
         // can't be used directly from Designer)
         mFilePlacesModel = new KFilePlacesModel(q);
-        mUrlNavigator = new KUrlNavigator(mFilePlacesModel, QUrl(), mUrlNavigatorContainer);
+        mUrlNavigator = new BrowseUrlNavigator(mFilePlacesModel, QUrl(), mUrlNavigatorContainer);
         mUrlNavigatorContainer->setAutoFillBackground(false);
         mUrlNavigatorContainer->setBackgroundRole(QPalette::Mid);
-        mUrlNavigatorContainer->setContentsMargins(mUrlNavigator->style()->pixelMetric(QStyle::PM_LayoutLeftMargin),
-                                                   mUrlNavigator->style()->pixelMetric(QStyle::PM_LayoutTopMargin),
-                                                   mUrlNavigator->style()->pixelMetric(QStyle::PM_LayoutRightMargin),
-                                                   mUrlNavigator->style()->pixelMetric(QStyle::PM_LayoutBottomMargin));
+        mUrlNavigatorContainer->setContentsMargins(4, 3, 4, 3);
+        mUrlNavigator->setMinimumWidth(0);
+        mUrlNavigator->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+        mUrlNavigator->setAccessibleName(i18n("Folder location"));
+        QObject::connect(mUrlNavigator, &KUrlNavigator::urlChanged, q, [this] { updatePresentation(); });
         auto layout = new QVBoxLayout(mUrlNavigatorContainer);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(mUrlNavigator);
@@ -140,15 +244,70 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mFullScreenToolBar->setBackgroundRole(QPalette::Mid);
         mFullScreenToolBar2->setBackgroundRole(QPalette::Mid);
 
-        // Thumbnail slider
-        QObject::connect(mThumbnailSlider, &ZoomSlider::valueChanged, mThumbnailView, &ThumbnailView::setThumbnailWidth);
-        QObject::connect(mThumbnailView, &ThumbnailView::thumbnailWidthChanged, mThumbnailSlider, &ZoomSlider::setValue);
+        QObject::connect(mThumbnailSlider, &ZoomSlider::valueChanged, q, [this](int value) {
+            mPreferredThumbnailWidth = value; fitThumbnails();
+        });
+        QObject::connect(mThumbnailView, &ThumbnailView::thumbnailWidthChanged, q, [this](int value) {
+            if (mResizingThumbnails) return;
+            mPreferredThumbnailWidth = value;
+            const QSignalBlocker blocker(mThumbnailSlider); mThumbnailSlider->setValue(value);
+            fitThumbnails();
+        });
+        mDocumentCountLabel->setContentsMargins(4, 0, 4, 0);
+        mDocumentCountLabel->setMinimumWidth(0);
+        mDocumentCountLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+        static_cast<QHBoxLayout *>(mStatusBarContainer->layout())->setStretchFactor(mDocumentCountLabel, 1);
+    }
 
-        // Document count label
-        QMargins labelMargins = mDocumentCountLabel->contentsMargins();
-        labelMargins.setLeft(15);
-        labelMargins.setRight(15);
-        mDocumentCountLabel->setContentsMargins(labelMargins);
+    void fitThumbnails()
+    {
+        if (mResizingThumbnails) return;
+        mResizingThumbnails = true;
+        // Preserve the user's preferred size while temporarily fitting one tile.
+        const int availableWidth = qMax(32, mThumbnailView->viewport()->width() - 40);
+        const int detailsHeight = qMax(0, mThumbnailView->gridSize().height() - mThumbnailView->thumbnailSize().height());
+        const int availableHeight = qMax(32, mThumbnailView->viewport()->height() - detailsHeight - 2 * mThumbnailView->spacing());
+        const int widthForHeight = qMax(32, qFloor(availableHeight * mThumbnailView->thumbnailAspectRatio()));
+        mThumbnailView->setThumbnailWidth(qMin(mPreferredThumbnailWidth, qMin(availableWidth, widthForHeight)));
+        mResizingThumbnails = false;
+    }
+
+    void updatePresentation()
+    {
+        if (!mUrlNavigator) return;
+        QString title = mUrlNavigator->locationUrl().adjusted(QUrl::StripTrailingSlash).fileName();
+        if (title.isEmpty()) title = mUrlNavigator->locationUrl().toDisplayString();
+        if (title.isEmpty()) title = i18n("Browse images");
+        mFolderTitle->setText(mFolderTitle->fontMetrics().elidedText(title, Qt::ElideMiddle, mFolderTitle->width()));
+        mFolderTitle->setToolTip(mUrlNavigator->locationUrl().toDisplayString());
+        mFolderTitle->setAccessibleName(title);
+        const bool compact = q->width() < 560;
+        for (auto button : {mSortButton, mDetailsButton, static_cast<QToolButton *>(mAddFilterButton)})
+            button->setToolButtonStyle(compact ? Qt::ToolButtonIconOnly : Qt::ToolButtonTextBesideIcon);
+        mSizeCaption->setVisible(q->width() >= 460);
+        mThumbnailSlider->setMaximumWidth(compact ? 120 : 180);
+        mFilterScroll->setMaximumHeight(qBound(72, q->height() / 3, 170));
+        mFilterScroll->setVisible(!mFilterFrame->isHidden());
+        mEmptyState->setGeometry(mThumbnailView->viewport()->rect().adjusted(12, 12, -12, -12));
+        mEmptyState->setText(mLoading ? i18n("Loading folder…")
+            : !mFilterFrame->isHidden() ? i18n("No matching items\nTry changing or removing your filters.")
+            : i18n("No images or folders to show\nChoose another folder using the location bar."));
+        mEmptyState->setVisible(mDirModel->rowCount() == 0);
+        fitThumbnails();
+    }
+
+    void updateControlIcons()
+    {
+        // Use theme assets as masks so symbolic icons work in both palettes.
+        const QList<QPair<QToolButton *, QString>> icons = {
+            {mSortButton, QStringLiteral("view-sort")}, {mDetailsButton, QStringLiteral("view-list-details")},
+            {mAddFilterButton, QStringLiteral("view-filter")}};
+        for (const auto &item : icons) {
+            QPixmap pix = QIcon::fromTheme(item.second, QIcon::fromTheme(QStringLiteral("configure"))).pixmap(QSize(18, 18), q->devicePixelRatioF());
+            QPainter p(&pix); p.setCompositionMode(QPainter::CompositionMode_SourceIn);
+            p.fillRect(pix.rect(), q->palette().color(QPalette::WindowText)); p.end();
+            item.first->setIcon(QIcon(pix));
+        }
     }
 
     QAction *thumbnailDetailAction(const QString &text, PreviewItemDelegate::ThumbnailDetail detail)
@@ -220,6 +379,14 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mShowHiddenFilesAction->setText(i18nc("@action:inmenu View", "Show Hidden Files"));
         mShowHiddenFilesAction->setIcon(QIcon::fromTheme(QStringLiteral("view-visible")));
         mShowHiddenFilesAction->setChecked(mDirModel->isShowHiddenFiles());
+        mSortButton->setText(i18n("Sort")); mSortButton->setToolTip(i18n("Sort images"));
+        mSortButton->setMenu(sortActionMenu->menu());
+        mDetailsButton->setText(i18n("View")); mDetailsButton->setToolTip(i18n("Thumbnail details and hidden files"));
+        auto detailsMenu = new QMenu(mDetailsButton);
+        for (auto detail : mThumbnailDetailsActionGroup->actions()) detailsMenu->addAction(detail);
+        detailsMenu->addSeparator(); detailsMenu->addAction(mShowHiddenFilesAction);
+        mDetailsButton->setMenu(detailsMenu);
+
         actionCollection->setDefaultShortcuts(mShowHiddenFilesAction, KStandardShortcut::showHideHiddenFiles());
         QObject::connect(mShowHiddenFilesAction, SIGNAL(toggled(bool)), q, SLOT(slotToggleShowHiddenFiles()));
 
@@ -238,6 +405,12 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
             menu->addAction(action);
         }
         mAddFilterButton->setMenu(menu);
+        for (auto action : actionList) {
+            q->addAction(action);
+            QObject::connect(action, &QAction::triggered, q, [this] {
+                QTimer::singleShot(0, q, [this] { updatePresentation(); });
+            });
+        }
     }
 
     void setupFullScreenToolBar()
@@ -279,6 +452,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
                                        mDocumentCountImages + mDocumentCountVideos,
                                        KIO::convertSize(totalSize));
             mDocumentCountLabel->setText(text);
+            mDocumentCountLabel->setToolTip(text);
         } else {
             const QString imageText = i18ncp("@info:status Image files", "%1 image", "%1 images", mDocumentCountImages);
             const QString videoText = i18ncp("@info:status Video files", "%1 video", "%1 videos", mDocumentCountVideos);
@@ -291,6 +465,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
                 labelText = i18nc("@info:status images, videos", "%1, %2", imageText, videoText);
             }
             mDocumentCountLabel->setText(labelText);
+            mDocumentCountLabel->setToolTip(labelText);
         }
     }
 
@@ -346,12 +521,11 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mThumbnailView->setPalette(viewPalette);
         mThumbnailView->viewport()->setAutoFillBackground(fullScreenmode);
         mUrlNavigatorContainer->setAutoFillBackground(fullScreenmode);
-        const bool dark = q->palette().color(QPalette::Button).lightness() < 128;
-        for (auto button : mStatusBarContainer->findChildren<QToolButton *>()) {
-            if (auto shadow = qobject_cast<QGraphicsDropShadowEffect *>(button->graphicsEffect())) {
-                shadow->setColor(QColor(0, 0, 0, dark ? 150 : 65));
-            }
-        }
+        const QColor edge = q->palette().color(QPalette::WindowText);
+        mUrlNavigatorContainer->setStyleSheet(QStringLiteral(
+            "QWidget#mUrlNavigatorContainer { border: 1px solid rgba(%1,%2,%3,22); border-radius: 10px; }")
+            .arg(edge.red()).arg(edge.green()).arg(edge.blue()));
+        updateControlIcons();
         q->update();
     }
 };
@@ -384,7 +558,14 @@ BrowseMainPage::BrowseMainPage(QWidget *parent, KActionCollection *actionCollect
         d->applyPalette(window()->isFullScreen());
     });
 
+    auto refresh = [this] { QTimer::singleShot(0, this, [this] { d->updatePresentation(); }); };
+    connect(d->mDirModel, &SortedDirModel::rowsInserted, this, refresh);
+    connect(d->mDirModel, &SortedDirModel::rowsRemoved, this, refresh);
+    connect(d->mDirModel, &SortedDirModel::modelReset, this, refresh);
+    connect(d->mDirModel->dirLister(), &KDirLister::started, this, [this] { d->mLoading = true; d->updatePresentation(); });
+    connect(d->mDirModel->dirLister(), qOverload<>(&KDirLister::completed), this, [this] { d->mLoading = false; d->updatePresentation(); });
     installEventFilter(this);
+    refresh();
 }
 
 BrowseMainPage::~BrowseMainPage()
@@ -401,7 +582,7 @@ void BrowseMainPage::paintEvent(QPaintEvent *)
         painter.fillRect(rect(), palette().brush(QPalette::Window));
         return;
     }
-    paintFloatingPanel(painter, QRectF(rect()).adjusted(8, 8, -8, -8), palette());
+    paintFloatingPanel(painter, QRectF(rect()).adjusted(FloatingPanelInset, FloatingPanelInset, -FloatingPanelInset, -FloatingPanelInset), palette());
 }
 
 void BrowseMainPage::loadConfig()
@@ -416,7 +597,9 @@ void BrowseMainPage::loadConfig()
     // mThumbnailSlider, it won't emit valueChanged() and the thumbnail view
     // won't be updated. That's why we do it ourself.
     d->mThumbnailView->setThumbnailAspectRatio(GwenviewConfig::thumbnailAspectRatio());
-    d->mThumbnailView->setThumbnailWidth(GwenviewConfig::thumbnailSize());
+    d->mPreferredThumbnailWidth = GwenviewConfig::thumbnailSize();
+    { const QSignalBlocker blocker(d->mThumbnailSlider); d->mThumbnailSlider->setValue(d->mPreferredThumbnailWidth); }
+    d->fitThumbnails();
 
     const auto actionsList = d->mSortAction->actions();
     for (QAction *action : actionsList) {
@@ -435,15 +618,24 @@ void BrowseMainPage::saveConfig() const
 {
     GwenviewConfig::setUrlNavigatorIsEditable(d->mUrlNavigator->isUrlEditable());
     GwenviewConfig::setUrlNavigatorShowFullPath(d->mUrlNavigator->showFullPath());
-    GwenviewConfig::setThumbnailSize(d->mThumbnailSlider->value());
+    GwenviewConfig::setThumbnailSize(d->mPreferredThumbnailWidth);
     GwenviewConfig::setSorting(sortingFromSortAction(d->mSortAction->checkedAction()));
     GwenviewConfig::setSortDescending(d->mSortDescendingAction->isChecked());
     GwenviewConfig::setThumbnailDetails(d->mDelegate->thumbnailDetails());
     GwenviewConfig::setShowHiddenFiles(d->mShowHiddenFilesAction->isChecked());
 }
 
+void BrowseMainPage::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    QTimer::singleShot(0, this, [this] { d->updatePresentation(); });
+}
+
 bool BrowseMainPage::eventFilter(QObject *watched, QEvent *event)
 {
+    if ((watched == d->mThumbnailView->viewport() && event->type() == QEvent::Resize)
+        || (watched == d->mFilterFrame && (event->type() == QEvent::ShowToParent || event->type() == QEvent::HideToParent)))
+        QTimer::singleShot(0, this, [this] { d->updatePresentation(); });
     // Leave fullscreen when not viewing an image
     if (window()->isFullScreen() && event->type() == QEvent::ShortcutOverride) {
         const QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
@@ -590,12 +782,13 @@ void BrowseMainPage::updateThumbnailDetails()
         }
     }
     d->mDelegate->setThumbnailDetails(details);
+    d->fitThumbnails();
 }
 
 void BrowseMainPage::setFullScreenMode(bool fullScreen)
 {
     d->mFullScreen = fullScreen;
-    const int margin = fullScreen ? 0 : 16;
+    const int margin = fullScreen ? 0 : FloatingPanelPadding;
     layout()->setContentsMargins(margin, margin, margin, margin);
     d->applyPalette(fullScreen);
     d->mUrlNavigatorContainer->setContentsMargins(fullScreen ? 6 : 0, 0, 0, 0);

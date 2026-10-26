@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 #include <QShortcut>
 #include <QStyle>
 #include <QTimer>
+#include <QtMath>
 #include <QVBoxLayout>
 
 // KF
@@ -59,6 +60,43 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 namespace Gwenview
 {
 static const int RATING_INDICATOR_HIDE_DELAY = 2000;
+
+class SideBarTag : public DecoratedTag
+{
+public:
+    explicit SideBarTag(const QString &label) : DecoratedTag(label), mLabel(label)
+    {
+        setObjectName(QStringLiteral("sidebarTag"));
+        setToolTip(label); setAccessibleName(label); setTextFormat(Qt::PlainText);
+    }
+    QSize sizeHint() const override
+    {
+        const auto margins = contentsMargins();
+        const int natural = fontMetrics().horizontalAdvance(mLabel) + margins.left() + margins.right() + 2;
+        return QSize(parentWidget() ? qMin(natural, qMax(1, parentWidget()->width())) : natural,
+                     fontMetrics().height() + margins.top() + margins.bottom());
+    }
+    QSize minimumSizeHint() const override { return QSize(32, sizeHint().height()); }
+protected:
+    bool event(QEvent *event) override
+    {
+        const bool handled = DecoratedTag::event(event);
+        if (event->type() == QEvent::ParentChange && parentWidget()) parentWidget()->installEventFilter(this);
+        return handled;
+    }
+    bool eventFilter(QObject *object, QEvent *event) override
+    {
+        if (object == parentWidget() && event->type() == QEvent::Resize) updateGeometry();
+        return DecoratedTag::eventFilter(object, event);
+    }
+    void resizeEvent(QResizeEvent *event) override
+    {
+        DecoratedTag::resizeEvent(event);
+        setText(fontMetrics().elidedText(mLabel, Qt::ElideRight, contentsRect().width()));
+    }
+private:
+    QString mLabel;
+};
 
 struct SemanticInfoDialog : public QDialog, public Ui_SemanticInfoDialog {
     SemanticInfoDialog(QWidget *parent)
@@ -166,15 +204,45 @@ struct SemanticInfoContextManagerItemPrivate : public Ui_SemanticInfoSideBarItem
     FlowLayout *mTagLayout;
     QLabel *mEditLabel;
 
+    void updateRatingIcon()
+    {
+        const qreal scale = mRatingWidget->devicePixelRatioF();
+        QPixmap star(QSize(20, 20) * scale); star.setDevicePixelRatio(scale); star.fill(Qt::transparent);
+        QPainter painter(&star); painter.setRenderHint(QPainter::Antialiasing);
+        QPolygonF points;
+        for (int i = 0; i < 10; ++i) {
+            const qreal angle = qDegreesToRadians(-90.0 + i * 36.0);
+            const qreal radius = (i % 2 == 0) ? 8.0 : 3.7;
+            points << QPointF(10 + radius * qCos(angle), 10 + radius * qSin(angle));
+        }
+        painter.setPen(QPen(mRatingWidget->palette().color(QPalette::WindowText), 1));
+        painter.setBrush(mRatingWidget->palette().color(QPalette::Active, QPalette::Highlight));
+        painter.drawPolygon(points); painter.end();
+        mRatingWidget->setCustomPixmap(star);
+        mRatingWidget->setPixmapSize(18);
+    }
+
     void setupGroup()
     {
-        mGroup = new SideBarGroup();
+        mGroup = new SideBarGroup(i18n("Organize"));
         q->setWidget(mGroup);
         EventWatcher::install(mGroup, QEvent::Show, q, SLOT(update()));
 
         auto container = new QWidget;
         setupUi(container);
         container->layout()->setContentsMargins(0, 0, 0, 0);
+        formLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
+        formLayout->setLabelAlignment(Qt::AlignLeft);
+        formLayout->setVerticalSpacing(6);
+        mDescriptionTextEdit->setMinimumHeight(100);
+        mDescriptionTextEdit->setMaximumHeight(140);
+        mDescriptionTextEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        mDescriptionTextEdit->setFocusPolicy(Qt::StrongFocus);
+        mDescriptionTextEdit->setAccessibleName(i18n("Description"));
+        mDescriptionTextEdit->setLineWrapMode(QTextEdit::WidgetWidth);
+        mDescriptionTextEdit->setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+        mRatingWidget->installEventFilter(q);
+        updateRatingIcon();
         mGroup->addWidget(container);
         mTagLayout = new FlowLayout;
         mTagLayout->setHorizontalSpacing(2);
@@ -254,7 +322,7 @@ struct SemanticInfoContextManagerItemPrivate : public Ui_SemanticInfoSideBarItem
         const QStringList labels(labelMap.values());
 
         for (const QString &label : labels) {
-            auto decoratedTag = new DecoratedTag(label);
+            auto decoratedTag = new SideBarTag(label);
             mTagLayout->addWidget(decoratedTag);
         }
         mTagLayout->addWidget(mEditLabel);
@@ -464,9 +532,10 @@ void SemanticInfoContextManagerItem::showSemanticInfoDialog()
     d->mSemanticInfoDialog->show();
 }
 
-bool SemanticInfoContextManagerItem::eventFilter(QObject *, QEvent *event)
+bool SemanticInfoContextManagerItem::eventFilter(QObject *object, QEvent *event)
 {
-    if (event->type() == QEvent::FocusOut) {
+    if (object == d->mRatingWidget && event->type() == QEvent::PaletteChange) d->updateRatingIcon();
+    if (object == d->mDescriptionTextEdit && event->type() == QEvent::FocusOut) {
         storeDescription();
     }
     return false;

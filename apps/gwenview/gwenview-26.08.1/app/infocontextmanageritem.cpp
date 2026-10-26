@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 // Qt
 #include <QLabel>
+#include <QTextEdit>
+#include <QTextDocument>
+#include <QWheelEvent>
 #include <QPointer>
 #include <QPushButton>
 #include <QScrollArea>
@@ -53,6 +56,37 @@ namespace Gwenview
 #define LOG(x) ;
 #endif
 
+// Read-only text keeps long, unbroken filenames selectable without changing
+// their copied contents. Its document grows vertically inside the page scroller.
+class MetadataValue : public QTextEdit
+{
+public:
+    explicit MetadataValue(QWidget *parent) : QTextEdit(parent)
+    {
+        setReadOnly(true); setFrameShape(QFrame::NoFrame);
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        setLineWrapMode(QTextEdit::WidgetWidth);
+        setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+        document()->setDocumentMargin(0);
+        setAutoFillBackground(false); viewport()->setAutoFillBackground(false);
+        setStyleSheet(QStringLiteral("QTextEdit { background: transparent; border: none; padding: 0; }"));
+        setFocusPolicy(Qt::StrongFocus);
+        show();
+    }
+    int heightForWidth(int width) const override
+    {
+        QTextDocument text;
+        text.setDefaultFont(font()); text.setDocumentMargin(0);
+        QTextOption option; option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+        text.setDefaultTextOption(option); text.setPlainText(toPlainText());
+        text.setTextWidth(qMax(1, width));
+        return qCeil(text.size().height()) + 2;
+    }
+protected:
+    void wheelEvent(QWheelEvent *event) override { event->ignore(); }
+};
+
 /**
  * This widget is capable of showing multiple lines of key/value pairs.
  */
@@ -61,18 +95,15 @@ class KeyValueWidget : public QWidget
     struct Row {
         Row(QWidget *parent)
             : keyLabel(new QLabel(parent))
-            , valueLabel(new QLabel(parent))
+            , valueLabel(new MetadataValue(parent))
         {
             initLabel(keyLabel);
-            initLabel(valueLabel);
 
-            QPalette pal = keyLabel->palette();
-            QColor color = pal.color(QPalette::WindowText);
-            color.setAlphaF(0.65);
-            pal.setColor(QPalette::WindowText, color);
-            keyLabel->setPalette(pal);
+            keyLabel->setForegroundRole(QPalette::PlaceholderText);
 
-            valueLabel->setIndent(parent->fontInfo().pixelSize());
+            keyLabel->setTextFormat(Qt::PlainText);
+            keyLabel->setObjectName(QStringLiteral("metadataKey"));
+            valueLabel->setObjectName(QStringLiteral("metadataValue"));
         }
 
         ~Row()
@@ -85,16 +116,16 @@ class KeyValueWidget : public QWidget
         {
             int labelHeight = keyLabel->heightForWidth(labelWidth);
             keyLabel->setGeometry(0, rowY, labelWidth, labelHeight);
-            rowY += labelHeight;
+            rowY += labelHeight + 4;
             labelHeight = valueLabel->heightForWidth(labelWidth);
             valueLabel->setGeometry(0, rowY, labelWidth, labelHeight);
             rowY += labelHeight;
-            return rowY;
+            return rowY + 14;
         }
 
         int heightForWidth(int width) const
         {
-            return keyLabel->heightForWidth(width) + valueLabel->heightForWidth(width);
+            return keyLabel->heightForWidth(width) + valueLabel->heightForWidth(width) + 18;
         }
 
         static void initLabel(QLabel *label)
@@ -105,7 +136,7 @@ class KeyValueWidget : public QWidget
         }
 
         QLabel *const keyLabel;
-        QLabel *const valueLabel;
+        MetadataValue *const valueLabel;
     };
 
 public:
@@ -121,6 +152,8 @@ public:
         qDeleteAll(mRows);
         mRows.clear();
     }
+
+    QSize minimumSizeHint() const override { return QSize(40, 0); }
 
     QSize sizeHint() const override
     {
@@ -149,7 +182,8 @@ public:
     {
         Row *row = new Row(this);
         row->keyLabel->setText(i18nc("@item:intext %1 is a key, we append a colon to it. A value is displayed after", "%1:", key));
-        row->valueLabel->setText(value);
+        row->valueLabel->setPlainText(value);
+        row->valueLabel->setAccessibleName(key);
         mRows << row;
     }
 
@@ -198,7 +232,7 @@ struct InfoContextManagerItemPrivate {
     SideBarGroup *mGroup;
 
     // One selection fields
-    QScrollArea *mOneFileWidget;
+    QWidget *mOneFileWidget;
     KeyValueWidget *mKeyValueWidget;
     Document::Ptr mDocument;
 
@@ -218,28 +252,28 @@ struct InfoContextManagerItemPrivate {
 
     void setupGroup()
     {
-        mOneFileWidget = new QScrollArea();
-        mOneFileWidget->setFrameStyle(QFrame::NoFrame);
-        mOneFileWidget->setWidgetResizable(true);
-
+        mOneFileWidget = new QWidget();
         mKeyValueWidget = new KeyValueWidget;
 
         auto moreLabel = new QLabel(mOneFileWidget);
         moreLabel->setText(QStringLiteral("<a href='#'>%1</a>").arg(i18nc("@action show more image meta info", "Show more details...")));
         // for some reason, this label appears much further down the page without the following line
         moreLabel->setAlignment(Qt::AlignLeft);
+        moreLabel->setObjectName(QStringLiteral("showMoreImageDetails"));
+        moreLabel->setWordWrap(true);
+        moreLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::LinksAccessibleByKeyboard);
+        moreLabel->setFocusPolicy(Qt::StrongFocus);
 
-        auto content = new QWidget;
-        auto layout = new QVBoxLayout(content);
+        auto layout = new QVBoxLayout(mOneFileWidget);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(mKeyValueWidget);
         layout->addWidget(moreLabel);
 
-        mOneFileWidget->setWidget(content);
 
         mMultipleFilesLabel = new QLabel();
+        mMultipleFilesLabel->setWordWrap(true);
 
-        mGroup = new SideBarGroup(i18nc("@title:group", "Image Information"));
+        mGroup = new SideBarGroup(i18nc("@title:group", "Image details"));
         q->setWidget(mGroup);
         mGroup->addWidget(mOneFileWidget);
         mGroup->addWidget(mMultipleFilesLabel);

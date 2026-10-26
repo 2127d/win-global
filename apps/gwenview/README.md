@@ -47,10 +47,29 @@ Gwenview's normal Browse mode. Supported image drags add an accent outline,
 subtle tint, and **Drop to open** guidance. Leaving, dropping, or hiding the page
 clears that state; unsupported drags do not highlight the target.
 The welcome page sits in a rounded, floating panel matching the viewer's
-8-pixel inset, 16-pixel corners, and theme surface color. Browse mode uses the
+7-pixel inset, 16-pixel corners, and theme surface color. Browse mode uses the
 same panel around its folder navigation, thumbnail grid, filters, and status
-controls, with inner padding and edge-to-edge fullscreen. Its status-bar buttons
-have soft shadows, adjusted for light and dark palettes.
+controls, with inner padding and edge-to-edge fullscreen. Its folder header exposes
+native Sort, View, and Filters menus; header actions collapse to icons in smaller
+windows. Rounded thumbnail cards distinguish hover, selection, and keyboard focus
+without replacing Gwenview's thumbnail generation or file operations. The native
+location bar collapses breadcrumbs and still supports F6 editing. Filter cards
+stack their fields when narrow and scroll independently in a bounded area. Empty
+folders and filtered-out results explain how to continue. Oversized thumbnails
+temporarily fit the viewport and regain their preferred size when space returns;
+only the preferred size is saved. Panel gutters are slightly tighter, with 10px
+between the viewer and thumbnail strip and a 6px floating-control gap.
+
+Fullscreen image controls share a rounded floating surface with a soft shadow,
+a single-line image description and count, and separate navigation and image
+control groups. The groups stack in a narrow image pane. Native previous/next,
+slideshow, zoom, fit, actual size, rotation, sidebar, Browse and exit actions keep
+their shortcuts and enabled states. Icons follow the fullscreen palette, and
+thumbnail previews have rounded corners and visible selection borders. The
+optional thumbnail row spans the panel, with its preferred height bounded by
+available screen space. A pin keeps controls visible; otherwise the top edge
+reveals them, and keyboard focus, menus and dialogs protect ongoing interaction.
+Fullscreen exit cancels hiding and restores the cursor, including rapid toggles.
 
 The sidebar has a live recent-image count and an overflow menu for choosing a
 thumbnail grid or a list with filenames and parent folders. That view preference
@@ -58,13 +77,25 @@ survives restarts. The same menu exposes removal of the selected history entry
 and clearing history; these commands do not delete image files. Grid tiles and
 list rows have distinct hover, selection, and keyboard-focus states.
 
-Three equal footer tabs always show their icons above **Recent**, **Information**,
-and **Tools** labels. The selected tab has a softly raised capsule, with a visible
-keyboard focus ring. The sidebar keeps enough width for the labels and anchors
-the footer while the page content scrolls. Before opening an image, Information
+Three equal footer tabs show their icons above **Recent**, **Information**,
+and **Tools** labels when space permits, switching to centered icons with tooltips
+when the sidebar is narrow. The Recent history symbol is drawn independently of
+the installed icon theme, and shortcut mnemonic markers are never displayed. The selected tab has a softly raised capsule, with a visible
+keyboard focus ring. The sidebar anchors the footer while the page content scrolls. Before opening an image, Information
 and Tools explain what they will show; opening an image reveals the native
 metadata and operations. Returning to the welcome page restores these empty
 states, so stale image details are never presented as current.
+
+Information and Tools use softly outlined section cards and consistent headers.
+Metadata pairs wrap above one shared page scrollbar; rating, tags, and a compact
+description editor follow below. Long tags elide with their full text available
+on hover, and rating stars follow the active palette. The old nested information splitter is replaced
+by this vertical flow. Tool rows wrap long action labels and retain native
+QAction behavior, tooltips, menus, and keyboard focus. Both pages scroll above
+the fixed footer at narrow widths. The empty states have matching accent symbols.
+The welcome buttons share the main panel's horizontal center; the opening
+shortcut sits independently to the right of the primary action.
+
 
 The sidebar uses Gwenview's existing thumbnail provider and recent-file history.
 Recent images appear as equally sized, center-cropped square previews with
@@ -226,3 +257,21 @@ These checks exercise opening images and a selected folder, configured shortcut
 hints, drag acceptance and cancellation, footer labels and keyboard navigation,
 contextual empty states, compact-window scrolling, grid/list switching and
 persistence, live counts, and removing/clearing history without deleting images.
+
+To verify the browser at wide, 720×500, and 640×480 window sizes:
+
+```sh
+python3 tools/verify-gwenview.py --browser-preview
+python3 tools/verify-gwenview.py --browser-preview --dark
+```
+
+Browser checks cover native sorting, hidden files, thumbnail details, multiple
+selection, all filter controls, empty states, location editing, fullscreen,
+status-bar visibility, activation, and preferred thumbnail-size persistence.
+
+To verify fullscreen viewing controls, compact layouts and auto-hide behavior:
+
+```sh
+python3 tools/verify-gwenview.py --fullscreen-preview
+python3 tools/verify-gwenview.py --fullscreen-preview --dark
+```

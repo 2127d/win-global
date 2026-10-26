@@ -40,7 +40,6 @@ namespace Gwenview
 {
 class FullScreenBar;
 class FullScreenToolBar;
-class ShadowFilter;
 class SlideShow;
 class GvCore;
 class ThumbnailBarView;
@@ -97,21 +96,22 @@ private:
     QWidget *mContent;
     FullScreenToolBar *mToolBar;
     FullScreenToolBar *mRightToolBar;
+    FullScreenToolBar *mImageToolBar;
+    QBoxLayout *mControlLayout = nullptr;
     ThumbnailBarView *mThumbnailBar;
     QLabel *mInformationLabel;
     QLabel *mDocumentCountLabel;
     QWidget *mInformationContainer;
-    ShadowFilter *mToolBarShadow;
-    ShadowFilter *mRightToolBarShadow;
-    ShadowFilter *mInformationContainerShadow;
     Document::Ptr mCurrentDocument;
     QPointer<ImageMetaInfoDialog> mImageMetaInfoDialog;
     QPointer<FullScreenConfigWidget> mConfigWidget;
     QAction *mOptionsAction;
+    QAction *mKeepVisibleAction;
     GvCore *mGvCore;
     int mMinimumThumbnailBarHeight;
 
     bool mViewPageVisible;
+    bool mFullScreenMode = false;
 
     void createOptionsAction();
     void updateContainerAppearance();

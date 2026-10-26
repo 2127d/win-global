@@ -35,7 +35,7 @@ struct ToolbarBackdrop {
 namespace {
 constexpr int ButtonSize = 44;
 constexpr int EdgeMargin = 16;
-constexpr int Gap = 8;
+constexpr int Gap = 6;
 constexpr int PanelHorizontalInset = 8;
 constexpr int PanelVerticalInset = 6;
 

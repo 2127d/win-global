@@ -42,6 +42,9 @@ public:
     void addAction(QAction *);
     void clear();
 
+protected:
+    void paintEvent(QPaintEvent *) override;
+
 private:
     SideBarGroupPrivate *const d;
 };

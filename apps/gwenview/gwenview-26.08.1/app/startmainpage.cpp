@@ -32,12 +32,50 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 #include <QMimeData>
 #include <QPainter>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QVBoxLayout>
 #include <KLocalizedString>
 
 namespace Gwenview
 {
 namespace {
+class WelcomeOpenRow : public QWidget
+{
+public:
+    WelcomeOpenRow(QPushButton *button, QLabel *shortcut, QWidget *parent)
+        : QWidget(parent), mButton(button), mShortcut(shortcut)
+    {
+        button->setParent(this); shortcut->setParent(this);
+        auto layout = new QHBoxLayout(this); layout->setContentsMargins(0, 0, 0, 0);
+        layout->addStretch(); layout->addWidget(button); layout->addStretch();
+    }
+    QSize sizeHint() const override
+    {
+        const int shortcutWidth = mShortcut->fontMetrics().horizontalAdvance(mShortcut->property("fullShortcut").toString()) + 8;
+        return QWidget::sizeHint().expandedTo(QSize(qMax(mButton->minimumWidth(), mButton->sizeHint().width()) + 2 * (shortcutWidth + 12), 44));
+    }
+    void placeShortcut()
+    {
+        const int left = mButton->geometry().right() + 13;
+        const int available = qMax(0, width() - left);
+        mShortcut->setFixedWidth(available);
+        mShortcut->setFixedHeight(mShortcut->sizeHint().height());
+        mShortcut->move(left, (height() - mShortcut->height()) / 2);
+        const QString full = mShortcut->property("fullShortcut").toString();
+        mShortcut->setText(mShortcut->fontMetrics().elidedText(full, Qt::ElideRight, available));
+        mShortcut->setToolTip(full);
+        mShortcut->setVisible(!full.isEmpty() && available > 0);
+    }
+protected:
+    void resizeEvent(QResizeEvent *event) override
+    {
+        QWidget::resizeEvent(event); layout()->activate(); placeShortcut();
+    }
+private:
+    QPushButton *mButton;
+    QLabel *mShortcut;
+};
+
 class ImageStackMark : public QWidget {
 public:
     explicit ImageStackMark(QWidget *parent) : QWidget(parent) { setFixedSize(112, 96); }
@@ -100,16 +138,12 @@ StartMainPage::StartMainPage(QWidget *parent, GvCore *core)
     mDescription->setAlignment(Qt::AlignCenter); mDescription->setWordWrap(true);
     content->addWidget(mDescription);
     content->addSpacing(4);
-    auto openRow = new QHBoxLayout;
-    openRow->setSpacing(12); openRow->addStretch();
     auto button = new QPushButton(i18n("Open images…"), group);
     button->setObjectName(QStringLiteral("addImagesButton"));
     button->setMinimumSize(184, 44);
-    openRow->addWidget(button);
     mShortcut = new QLabel(group);
     mShortcut->setObjectName(QStringLiteral("openImagesShortcut"));
-    openRow->addWidget(mShortcut); openRow->addStretch();
-    content->addLayout(openRow);
+    content->addWidget(new WelcomeOpenRow(button, mShortcut, group));
     auto browse = new QPushButton(i18n("Browse a folder…"), group);
     browse->setObjectName(QStringLiteral("browseFolderButton"));
     browse->setFlat(true); browse->setMinimumHeight(36);
@@ -127,8 +161,9 @@ void StartMainPage::setOpenAction(QAction *action)
 {
     auto refresh = [this, action] {
         const QString shortcut = action->shortcut().toString(QKeySequence::NativeText);
-        mShortcut->setText(shortcut);
-        mShortcut->setVisible(!shortcut.isEmpty());
+        mShortcut->setProperty("fullShortcut", shortcut);
+        mShortcut->parentWidget()->updateGeometry();
+        static_cast<WelcomeOpenRow *>(mShortcut->parentWidget())->placeShortcut();
         mShortcut->setAccessibleName(i18n("Open images shortcut: %1", shortcut));
     };
     connect(action, &QAction::changed, this, refresh);
@@ -166,15 +201,15 @@ void StartMainPage::applyPalette(const QPalette &palette)
 
 void StartMainPage::paintEvent(QPaintEvent *)
 {
-    // Match the viewer's 8px inset, 16px corners, and raised theme surface.
+    // Match the viewer's inset, rounded corners, and raised theme surface.
     QPainter painter(this);
-    paintFloatingPanel(painter, QRectF(rect()).adjusted(8, 8, -8, -8), palette());
+    paintFloatingPanel(painter, QRectF(rect()).adjusted(FloatingPanelInset, FloatingPanelInset, -FloatingPanelInset, -FloatingPanelInset), palette());
     if (mDropActive) {
         QColor accent = palette().color(QPalette::Active, QPalette::Highlight);
         QColor tint = accent; tint.setAlpha(16);
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setPen(QPen(accent, 2.5)); painter.setBrush(tint);
-        painter.drawRoundedRect(QRectF(rect()).adjusted(10, 10, -10, -10), 15, 15);
+        painter.drawRoundedRect(QRectF(rect()).adjusted(FloatingPanelInset + 2, FloatingPanelInset + 2, -FloatingPanelInset - 2, -FloatingPanelInset - 2), 15, 15);
     }
 }
 
