@@ -975,6 +975,7 @@ static void verifyFullscreenBrowser(QWidget *window, const QString &output)
     require(view->model()->rowCount() == 13 && title->text() == "Gallery", "fullscreen browser displays folder contents");
     require(qAbs(navigation->geometry().center().y() - location->geometry().center().y()) <= 8
         && location->x() > navigation->x(), "wide navigation shares one row with location");
+    require(location->height() <= 36, "wide folder location keeps the same pill height as navigation");
     capture("fullscreen-browser-wide");
     window->resize(640, 480); split->setSizes({190, 450}); QTest::qWait(300);
     require(window->width() <= 640 && page->width() < 760, "fullscreen browser fits small window with sidebar");
@@ -1069,8 +1070,13 @@ static void verifyProperties(QWidget *window, const QString &output)
     for (int i = 0; i < tabs->count(); ++i) { tabs->setCurrentIndex(i); QTest::qWait(25); }
     tabs->setCurrentIndex(0); QTest::qWait(50);
     require(dialog->grab().save(output + "/properties-polished.png"), "Properties capture");
-    auto name = dialog->findChild<QLineEdit *>();
-    require(name && name->isEnabled(), "native editable filename field preserved");
+    auto filenameEdit = [](QDialog *dialog) {
+        for (auto edit : dialog->findChildren<QLineEdit *>())
+            if (edit->isVisible() && edit->isEnabled() && !edit->isReadOnly()) return edit;
+        return static_cast<QLineEdit *>(nullptr);
+    };
+    auto name = filenameEdit(dialog);
+    require(name, "native editable filename field preserved");
     const QString original = name->text(); name->setText(original + "-cancelled");
     QTest::keyClick(dialog, Qt::Key_Escape); QTest::qWait(80);
     require(!window->findChild<QDialog *>("gwenviewPropertiesDialog"), "Escape cancels and destroys Properties safely");
@@ -1080,7 +1086,7 @@ static void verifyProperties(QWidget *window, const QString &output)
     QTest::keyClick(dialog, Qt::Key_Shift); QTest::qWait(30);
     entrance = dialog->findChild<QWidget *>("dialogEntrance");
     require(!entrance->isVisible(), "immediate dialog input cancels a pending entrance");
-    name = dialog->findChild<QLineEdit *>();
+    name = filenameEdit(dialog);
     require(name && name->text() == original, "cancelled property edits do not alter the file");
     dialog->reject(); QTest::qWait(80);
     action->trigger();
@@ -1088,6 +1094,8 @@ static void verifyProperties(QWidget *window, const QString &output)
     NoSidebarMotionStyle noMotion; dialog->setStyle(&noMotion); QTest::qWait(50);
     require(!dialog->findChild<QWidget *>("dialogEntrance")->isVisible(), "disabled motion skips Properties entrance");
     dialog->setStyle(nullptr); dialog->reject(); QTest::qWait(80);
+    // The offscreen platform has no window manager to reactivate the owner.
+    QApplication::setActiveWindow(window);
     fprintf(stderr, "PASS: native Properties pages/edit/cancel, quick entrance, immediate input, reduced motion and repeat opening\n");
 }
 
@@ -1108,6 +1116,7 @@ static void verifyFullscreen(QWidget *window, const QString &output)
     const auto file = QUrl::fromLocalFile(fixtures + "/Gallery/scene-00.png");
     require(QMetaObject::invokeMethod(window, "openImages", Q_ARG(QList<QUrl>, QList<QUrl>{file})), "open image for fullscreen");
     QTest::qWait(650);
+    const QColor normalControlColor = qApp->palette().color(QPalette::Window);
     auto full = findAction(window, "fullscreen");
     full->trigger(); QTest::qWait(650);
     auto bar = window->findChild<QWidget *>("fullScreenBar");
@@ -1126,8 +1135,7 @@ static void verifyFullscreen(QWidget *window, const QString &output)
     require(pin->isChecked() && bar->y() == 0, "pin keeps fullscreen controls revealed");
     for (const char *name : {"go_previous", "toggle_slideshow", "go_next", "rotate_left", "rotate_right", "view_zoom_in", "view_zoom_out", "view_zoom_to_fit", "view_actual_size", "leave_fullscreen", "options", "browse", "toggle_sidebar"}) button(name);
     require(info->toolTip().contains("scene-00") && count->text().contains("of"), "image information and count are shown");
-    fprintf(stderr, "PALETTE: surface=%s app=%s\n", qPrintable(surface->palette().color(QPalette::Window).name()), qPrintable(qApp->palette().color(QPalette::Window).name()));
-    require((surface->palette().color(QPalette::Window).lightness() < 128) == (qApp->palette().color(QPalette::Window).lightness() < 128), "fullscreen pills follow the desktop light/dark palette");
+    require((surface->palette().color(QPalette::Window).lightness() < 128) == (normalControlColor.lightness() < 128), "fullscreen pills follow the desktop light/dark palette");
     require(button("go_previous")->parentWidget() == button("go_next")->parentWidget()
             && button("view_zoom_in")->parentWidget() != button("rotate_left")->parentWidget(),
             "fullscreen controls are grouped into related floating pills");

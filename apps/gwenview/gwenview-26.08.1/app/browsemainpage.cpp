@@ -620,7 +620,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
     void applyPalette(bool fullScreenmode)
     {
         q->setPalette(mGvCore->palette(GvCore::NormalPalette));
-        auto viewPalette = mGvCore->palette(fullScreenmode ? GvCore::FullScreenViewPalette : GvCore::NormalViewPalette);
+        auto viewPalette = mGvCore->palette(fullScreenmode ? GvCore::NormalPalette : GvCore::NormalViewPalette);
         {
             QColor surface = q->palette().color(QPalette::Button);
             surface.setAlpha(255);
@@ -905,6 +905,7 @@ void BrowseMainPage::setFullScreenMode(bool fullScreen)
     layout()->setSpacing(fullScreen ? 0 : 8);
     d->applyPalette(fullScreen);
     d->mUrlNavigatorContainer->setContentsMargins(4, 3, 4, 3);
+    d->mUrlNavigatorContainer->setMaximumHeight(fullScreen ? 36 : QWIDGETSIZE_MAX);
     d->updateContextBarActions();
     if (fullScreen && !d->mFullScreenNavigation) d->setupFullScreenToolBar();
     if (d->mFullScreenNavigation) {
@@ -913,7 +914,7 @@ void BrowseMainPage::setFullScreenMode(bool fullScreen)
     }
     d->mChrome->setFloating(fullScreen);
     d->mGallery->setFloating(fullScreen);
-    d->mChrome->layout()->setContentsMargins(fullScreen ? QMargins(FloatingPanelPadding, 18, FloatingPanelPadding, 28) : QMargins());
+    d->mChrome->layout()->setContentsMargins(fullScreen ? QMargins(FloatingPanelPadding, 18, FloatingPanelPadding, 20) : QMargins());
     const int galleryPadding = fullScreen ? FloatingPanelPadding : 0;
     d->mGallery->layout()->setContentsMargins(galleryPadding, galleryPadding, galleryPadding, galleryPadding);
     d->mToggleSideBarButton->setVisible(!fullScreen);

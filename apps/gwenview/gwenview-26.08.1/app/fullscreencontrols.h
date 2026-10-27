@@ -26,7 +26,7 @@ inline void paintControlPill(QPainter &painter, const QRectF &bounds, const QPal
     painter.drawRoundedRect(bounds.adjusted(1, 1, -1, -1), 21, 21);
 }
 
-// A 44px surface with space around it for an input-transparent shadow.
+// A 44px surface with space around it for a soft shadow.
 class FullScreenPill : public QWidget
 {
 public:
@@ -36,7 +36,6 @@ public:
         setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
         auto row = new QHBoxLayout(this);
         row->setContentsMargins(12, 10, 12, 16); row->setSpacing(3);
-        row->setSizeConstraint(QLayout::SetMinimumSize);
         setMinimumHeight(60);
     }
 protected:

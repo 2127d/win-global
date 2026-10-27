@@ -47,6 +47,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #include <KOpenWithDialog>
 #include <KPropertiesDialog>
 #include "polisheddialog.h"
+#include "gvcore.h"
 #include <KUrlMimeData>
 #include <KXMLGUIClient>
 
@@ -289,6 +290,7 @@ void FileOpsContextManagerItem::showProperties()
     if (!list.isEmpty() && !KPropertiesDialog::canDisplay(list)) return;
     auto dialog = !list.isEmpty() ? new KPropertiesDialog(list, mGroup)
                                  : new KPropertiesDialog(contextManager()->currentDirUrl(), mGroup);
+    if (auto core = mGroup->window()->findChild<GvCore *>()) dialog->setPalette(core->palette(GvCore::NormalPalette));
     polishDialog(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setModal(true);

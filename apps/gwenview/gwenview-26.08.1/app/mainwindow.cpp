@@ -1870,8 +1870,9 @@ void MainWindow::toggleFullScreen(bool checked)
         menuBar()->hide();
         toolBar()->hide();
 
-        qApp->setProperty("KDE_COLOR_SCHEME_PATH", d->mGvCore->fullScreenPaletteName());
-        QApplication::setPalette(d->mGvCore->palette(GvCore::FullScreenPalette));
+        // Keep controls, sidebar and dialogs in the desktop's light/dark theme.
+        // The image canvas still uses its explicit FullScreenViewPalette.
+
 
         d->setScreenSaverEnabled(false);
     } else {

@@ -60,12 +60,14 @@ temporarily fit the viewport and regain their preferred size when space returns;
 only the preferred size is saved. Panel gutters are slightly tighter, with 10px
 between the viewer and thumbnail strip and a 6px floating-control gap.
 
-Fullscreen image controls share a rounded floating surface with a soft shadow,
-a single-line image description and count, and separate navigation and image
-control groups. The groups stack in a narrow image pane. Native previous/next,
+Fullscreen image controls use separate floating pills for the description/count,
+view controls, navigation/slideshow, zoom, rotation, and pin/options/exit. Soft
+shadows, fine rims, 44px surfaces and rounded selection states match the normal
+floating bars. The groups stack in a narrow image pane. Native previous/next,
 slideshow, zoom, fit, actual size, rotation, sidebar, Browse and exit actions keep
-their shortcuts and enabled states. Icons follow the fullscreen palette, and
-thumbnail previews have rounded corners and visible selection borders. The
+their shortcuts and enabled states. Controls, sidebar and dialogs retain the
+desktop's light/dark palette; the image canvas keeps its fullscreen background.
+Thumbnail previews have their own rounded floating panel and visible selection borders. The
 optional thumbnail row spans the panel, defaults to 120px, and keeps at least
 104px of height so selection controls and the scrollbar leave a usable preview.
 Its preferred height is bounded by available screen space. A pin keeps controls visible; otherwise the top edge
@@ -80,7 +82,8 @@ the strip's selection-centering animation instead of competing with it.
 normal and fullscreen modes, including scroll endpoints and the enlarged strip.
 
 Fullscreen Browse uses the same floating surfaces and action buttons as the
-fullscreen image view. Its navigation panel contains the folder title, native
+fullscreen image view. Separate title and location surfaces accompany grouped
+view and folder-navigation pills. Its navigation area contains the folder title, native
 Sort/View/Filters menus, a persistent sidebar toggle, View, folder Back/Forward,
 Up, and Exit Fullscreen. Folder history uses KUrlNavigator and also accepts
 Alt+Left/Alt+Right while the browser has focus. A narrow pane places the location
@@ -89,6 +92,13 @@ path or exit button. The gallery has its own rounded surface, bounded filters,
 and thumbnail controls; the sidebar toggle remains available when the status
 bar is hidden. Location and thumbnail icons follow the active palette. Escape
 and the exit button restore the normal browser layout and native toolbar.
+
+The native Properties dialog retains KDE's pages, file editing, permissions,
+checksums and Apply/Cancel behavior. Rounded tabs, padded fields, calm button
+states and balanced margins follow the active theme. Opening uses a 140ms
+slide/fade of one cached frame inside the native window, so it also works on
+Wayland without moving the window. Input cancels the entrance immediately;
+resizing/closing clears it, and disabled desktop animation skips it entirely.
 
 The sidebar has a live recent-image count and an overflow menu for choosing a
 thumbnail grid or a list with filenames and parent folders. That view preference
