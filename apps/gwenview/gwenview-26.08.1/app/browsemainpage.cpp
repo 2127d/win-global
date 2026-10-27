@@ -143,6 +143,7 @@ inline Sorting::Enum sortingFromSortAction(const QAction *action)
 struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
     BrowseMainPage *q = nullptr;
     GvCore *mGvCore = nullptr;
+    QTimer *mPresentationTimer = nullptr;
     KFilePlacesModel *mFilePlacesModel = nullptr;
     KUrlNavigator *mUrlNavigator = nullptr;
     SortedDirModel *mDirModel = nullptr;
@@ -264,7 +265,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mUrlNavigator->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
         mUrlNavigator->setAccessibleName(i18n("Folder location"));
         QObject::connect(mUrlNavigator, &KUrlNavigator::urlChanged, q, [this] {
-            updatePresentation();
+            schedulePresentationUpdate();
             QTimer::singleShot(0, q, [this] { updateControlIcons(); });
         });
         auto layout = new QVBoxLayout(mUrlNavigatorContainer);
@@ -278,6 +279,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mChrome->setObjectName(QStringLiteral("fullscreenBrowseChrome"));
         mChrome->setFloating(false);
         mChrome->setHorizontalInset(FloatingPanelInset);
+        mChrome->setFloatingParts({mHeader, mUrlNavigatorContainer});
         auto chromeLayout = new QVBoxLayout(mChrome);
         chromeLayout->setContentsMargins(0, 0, 0, 0); chromeLayout->setSpacing(8);
         q->layout()->removeWidget(mHeader);
@@ -324,6 +326,13 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         const int widthForHeight = qMax(32, qFloor(availableHeight * mThumbnailView->thumbnailAspectRatio()));
         mThumbnailView->setThumbnailWidth(qMin(mPreferredThumbnailWidth, qMin(availableWidth, widthForHeight)));
         mResizingThumbnails = false;
+    }
+
+    void schedulePresentationUpdate()
+    {
+        // Folder rows and viewport changes often arrive together. Lay out the
+        // final state once instead of queuing one callback for every signal.
+        if (!mPresentationTimer->isActive()) mPresentationTimer->start();
     }
 
     void updatePresentation()
@@ -486,7 +495,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         for (auto action : actionList) {
             q->addAction(action);
             QObject::connect(action, &QAction::triggered, q, [this] {
-                QTimer::singleShot(0, q, [this] { updatePresentation(); });
+                schedulePresentationUpdate();
             });
         }
     }
@@ -510,12 +519,14 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         QObject::connect(mHistoryBack, &QAction::triggered, mUrlNavigator, &KUrlNavigator::goBack);
         QObject::connect(mHistoryForward, &QAction::triggered, mUrlNavigator, &KUrlNavigator::goForward);
         QObject::connect(mUrlNavigator, &KUrlNavigator::historyChanged, q, [this] { updatePresentation(); });
+        FullScreenPill *pill = nullptr;
         for (auto action : {mActionCollection->action(QStringLiteral("toggle_sidebar")),
                             mActionCollection->action(QStringLiteral("view")), mHistoryBack, mHistoryForward,
                             mActionCollection->action(QStringLiteral("go_up"))}) {
-            auto button = new FullScreenButton(action, mFullScreenNavigation);
+            if (!pill || action == mHistoryBack) { pill = new FullScreenPill(mFullScreenNavigation); row->addWidget(pill); }
+            auto button = new FullScreenButton(action, pill);
             button->setObjectName(QStringLiteral("fullscreenBrowser_") + action->objectName());
-            row->addWidget(button);
+            pill->layout()->addWidget(button);
         }
         horizontalLayout_2->insertWidget(0, mFullScreenNavigation);
         mExitFullScreenButton = new FullScreenButton(mActionCollection->action(QStringLiteral("leave_fullscreen")), mHeader);
@@ -608,7 +619,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
 
     void applyPalette(bool fullScreenmode)
     {
-        q->setPalette(mGvCore->palette(fullScreenmode ? GvCore::FullScreenPalette : GvCore::NormalPalette));
+        q->setPalette(mGvCore->palette(GvCore::NormalPalette));
         auto viewPalette = mGvCore->palette(fullScreenmode ? GvCore::FullScreenViewPalette : GvCore::NormalViewPalette);
         {
             QColor surface = q->palette().color(QPalette::Button);
@@ -639,6 +650,9 @@ BrowseMainPage::BrowseMainPage(QWidget *parent, KActionCollection *actionCollect
     d->mDocumentCountVideos = 0;
     d->mSelectedMediaItems = new KFileItemList;
     d->mActionCollection = actionCollection;
+    d->mPresentationTimer = new QTimer(this);
+    d->mPresentationTimer->setSingleShot(true);
+    connect(d->mPresentationTimer, &QTimer::timeout, this, [this] { d->updatePresentation(); });
     d->setupWidgets();
     d->setupActions(actionCollection);
     d->setupFilterController();
@@ -656,12 +670,12 @@ BrowseMainPage::BrowseMainPage(QWidget *parent, KActionCollection *actionCollect
         d->applyPalette(d->mFullScreen);
     });
 
-    auto refresh = [this] { QTimer::singleShot(0, this, [this] { d->updatePresentation(); }); };
+    auto refresh = [this] { d->schedulePresentationUpdate(); };
     connect(d->mDirModel, &SortedDirModel::rowsInserted, this, refresh);
     connect(d->mDirModel, &SortedDirModel::rowsRemoved, this, refresh);
     connect(d->mDirModel, &SortedDirModel::modelReset, this, refresh);
-    connect(d->mDirModel->dirLister(), &KDirLister::started, this, [this] { d->mLoading = true; d->updatePresentation(); });
-    connect(d->mDirModel->dirLister(), qOverload<>(&KDirLister::completed), this, [this] { d->mLoading = false; d->updatePresentation(); });
+    connect(d->mDirModel->dirLister(), &KDirLister::started, this, [this] { d->mLoading = true; d->schedulePresentationUpdate(); });
+    connect(d->mDirModel->dirLister(), qOverload<>(&KDirLister::completed), this, [this] { d->mLoading = false; d->schedulePresentationUpdate(); });
     installEventFilter(this);
     refresh();
 }
@@ -726,14 +740,14 @@ void BrowseMainPage::saveConfig() const
 void BrowseMainPage::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
-    QTimer::singleShot(0, this, [this] { d->updatePresentation(); });
+    d->schedulePresentationUpdate();
 }
 
 bool BrowseMainPage::eventFilter(QObject *watched, QEvent *event)
 {
     if ((watched == d->mThumbnailView->viewport() && event->type() == QEvent::Resize)
         || (watched == d->mFilterFrame && (event->type() == QEvent::ShowToParent || event->type() == QEvent::HideToParent)))
-        QTimer::singleShot(0, this, [this] { d->updatePresentation(); });
+        d->schedulePresentationUpdate();
     // Leave fullscreen when not viewing an image
     if (d->mFullScreen && event->type() == QEvent::ShortcutOverride) {
         const QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);

@@ -184,7 +184,9 @@ ZoomComboBox::ZoomComboBox(QWidget *parent)
             }
         }
     });
-    connect(this, qOverload<int>(&ZoomComboBox::highlighted), this, &ZoomComboBox::changeZoomTo);
+    // Browsing presets must not change the image or its layout while the popup
+    // is scrolling. Commit only on activation (click or Enter), like a normal
+    // combo box; cancelling then leaves the current scale untouched.
     view()->installEventFilter(this);
     connect(this, qOverload<int>(&ZoomComboBox::activated), this, &ZoomComboBox::activateAndChangeZoomTo);
 }
@@ -347,11 +349,6 @@ bool ZoomComboBox::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == view()) {
         switch (event->type()) {
-        case QEvent::Hide: {
-            Q_D(ZoomComboBox);
-            changeZoomTo(d->lastSelectedIndex);
-            break;
-        }
         case QEvent::ShortcutOverride: {
             if (view()->isVisibleTo(this)) {
                 auto keyEvent = static_cast<QKeyEvent *>(event);

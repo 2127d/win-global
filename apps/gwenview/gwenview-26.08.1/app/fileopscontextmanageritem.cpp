@@ -46,6 +46,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #include <KLocalizedString>
 #include <KOpenWithDialog>
 #include <KPropertiesDialog>
+#include "polisheddialog.h"
 #include <KUrlMimeData>
 #include <KXMLGUIClient>
 
@@ -285,12 +286,13 @@ void FileOpsContextManagerItem::updateSideBarContent()
 void FileOpsContextManagerItem::showProperties()
 {
     const KFileItemList list = contextManager()->selectedFileItemList();
-    if (!list.isEmpty()) {
-        KPropertiesDialog::showDialog(list, mGroup);
-    } else {
-        const QUrl url = contextManager()->currentDirUrl();
-        KPropertiesDialog::showDialog(url, mGroup);
-    }
+    if (!list.isEmpty() && !KPropertiesDialog::canDisplay(list)) return;
+    auto dialog = !list.isEmpty() ? new KPropertiesDialog(list, mGroup)
+                                 : new KPropertiesDialog(contextManager()->currentDirUrl(), mGroup);
+    polishDialog(dialog);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setModal(true);
+    dialog->show();
 }
 
 void FileOpsContextManagerItem::cut()

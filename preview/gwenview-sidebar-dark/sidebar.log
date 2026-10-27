@@ -1,15 +1,17 @@
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-GRID: viewport=184 first=0,0 91x91 second=91,0 third=0,91
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+dbus-daemon[134]: [session uid=1000 pid=134 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=135 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+GRID: viewport=260 first=0,0 86x86 second=86,0 third=172,0
+dbus-daemon[134]: [session uid=1000 pid=134 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=135 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[134]: [session uid=1000 pid=134 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+PASS: quick cached view slide, immediate mode changes/input, rapid reversal and disabled motion
 PASS: native defaults, independent checkbox combinations, repeated style restoration, resizing, fullscreen and spotlight restoration
-MAIN TOOLBAR: y=16 right=834 anchor=834 viewer before=0,0 851x744 after=0,0 851x744 controls=475x28
+MAIN TOOLBAR: y=16 right=762 anchor=762 viewer before=0,0 779x746 after=0,0 779x746 controls=487x33
 PASS: floating main toolbar actions, animation, native visibility preference across Browse/Start
 PASS: both toggles hide, reveal nearby, fade/reverse, pass through input, stay visible expanded, and support keyboard focus
-BLUR: panel stripe contrast=0
+PASS: zoom popup hover, bidirectional wheel endpoints, cancellation, keyboard and mouse selection
+BLUR: panel stripe contrast=3
 BLUR: toggle stripe contrast=0
-TOOLBAR: window=819 viewer=596 panel=496 controls=585 scroll=89
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
-PASS: rounded vertical thumbnail area, selection, resizing, visibility, fullscreen restoration
+TOOLBAR: window=760 viewer=385 panel=287 controls=536 scroll=249
+dbus-daemon[134]: [session uid=1000 pid=134 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.0' (uid=1000 pid=135 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[134]: [session uid=1000 pid=134 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
+PASS: rounded horizontal thumbnail area, selection, resizing, visibility, fullscreen restoration
 PASS: preview grid, tabs, rounded viewer, blurred glass, opaque controls, native zoom dropdown, live light/dark text and icons, repeated slides/reversal, zoom, narrow layout, fullscreen

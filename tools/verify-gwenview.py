@@ -17,6 +17,7 @@ parser.add_argument('--welcome-preview', action='store_true')
 parser.add_argument('--browser-preview', action='store_true')
 parser.add_argument('--fullscreen-preview', action='store_true')
 parser.add_argument('--fullscreen-browser-preview', action='store_true')
+parser.add_argument('--thumbnail-scroll', action='store_true')
 parser.add_argument('--dark', action='store_true')
 parser.add_argument('--transparent', action='store_true')
 parser.add_argument('--vertical-thumbnails', action='store_true')
@@ -25,7 +26,7 @@ args = parser.parse_args()
 helper = ROOT / '.staging/verify-gwenview.so'
 flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets', 'Qt6Test'], text=True))
 subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/verify-gwenview.cpp'), '-o', str(helper), *flags], check=True)
-output = ROOT / ('preview/gwenview-' + ('fullscreen-browser-' if args.fullscreen_browser_preview else 'fullscreen-' if args.fullscreen_preview else 'browser-' if args.browser_preview else 'welcome-' if args.welcome_preview else 'sidebar-') + ('dark' if args.dark else 'light') + ('-transparent' if args.transparent else '') if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview else 'preview/gwenview'); output.mkdir(exist_ok=True)
+output = ROOT / ('preview/gwenview-' + ('thumbnail-scroll-' if args.thumbnail_scroll else 'fullscreen-browser-' if args.fullscreen_browser_preview else 'fullscreen-' if args.fullscreen_preview else 'browser-' if args.browser_preview else 'welcome-' if args.welcome_preview else 'sidebar-') + ('dark' if args.dark else 'light') + ('-transparent' if args.transparent else '') if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll else 'preview/gwenview'); output.mkdir(exist_ok=True)
 with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging') as temp:
     base = Path(temp)
     env = dict(os.environ)
@@ -37,14 +38,14 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
         Image.new('RGB',(120,80),color).save(folder / 'picture.png')
     env.update(QT_QPA_PLATFORM='offscreen', QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion',
                LD_PRELOAD=str(helper), SEQUOIA_GWENVIEW_VERIFY=str(output), SEQUOIA_GWENVIEW_FIXTURES=str(base), LC_ALL='C.UTF-8')
-    if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview:
+    if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll:
         fixtures = [('one', (420,180), '#5783ad'), ('two', (180,420), '#e79463'),
                     ('three', (300,300), '#82a989'), ('four', (800,100), '#b497cd'),
                     ('five', (100,800), '#d1b369'), ('six', (90,60), '#729eaa')]
-        if args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview:
+        if args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll:
             gallery = base / 'Gallery'; gallery.mkdir()
             (gallery / 'Empty folder').mkdir()
-            for index in range(12):
+            for index in range(2048 if args.thumbnail_scroll else 12):
                 _, size, color = fixtures[index % len(fixtures)]
                 picture = Image.new('RGB', size, color)
                 draw = ImageDraw.Draw(picture)
@@ -71,7 +72,7 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
         (base / 'config/kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{mode}{variant}.colors').read_text())
         env.update(QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='SequoiaEleven',
                    QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'))
-    for mode in (('fullscreen-browser',) if args.fullscreen_browser_preview else ('fullscreen',) if args.fullscreen_preview else ('browser', 'browser-restart') if args.browser_preview else ('welcome', 'welcome-restart', 'welcome-cleared') if args.welcome_preview else ('sidebar', 'bars-restart', 'bars-native-restart') if args.sidebar_preview else ('fresh', 'restart', 'disabled')):
+    for mode in (('thumbnail-scroll',) if args.thumbnail_scroll else ('fullscreen-browser',) if args.fullscreen_browser_preview else ('fullscreen',) if args.fullscreen_preview else ('browser', 'browser-restart') if args.browser_preview else ('welcome', 'welcome-restart', 'welcome-cleared') if args.welcome_preview else ('sidebar', 'bars-restart', 'bars-native-restart') if args.sidebar_preview else ('fresh', 'restart', 'disabled')):
         env['SEQUOIA_GWENVIEW_MODE'] = mode
         if mode == 'disabled':
             config = base / 'config/gwenviewrc'
@@ -99,7 +100,7 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
 
 print(f'PASS: Gwenview GUI checks; captures in {output}')
 
-if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview: raise SystemExit(0)
+if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll: raise SystemExit(0)
 
 # Check installation/removal and package-upgrade fallback outside the live account.
 import importlib.util

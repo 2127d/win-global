@@ -524,7 +524,14 @@ void ThumbnailBarView::selectionChanged(const QItemSelection &selected, const QI
 
 void ThumbnailBarView::wheelEvent(QWheelEvent *event)
 {
-    d->scrollBar()->setValue(d->scrollBar()->value() - event->angleDelta().y());
+    // Direct input takes over from selection-centering animation immediately.
+    // Touchpads supply pixel deltas (and horizontal wheels may use the X axis).
+    d->mTimeLine->stop();
+    const QPoint delta = event->pixelDelta().isNull() ? event->angleDelta() : event->pixelDelta();
+    const int amount = d->mOrientation == Qt::Horizontal && delta.x() != 0 ? delta.x() : delta.y();
+    if (amount == 0) { event->ignore(); return; }
+    d->scrollBar()->setValue(d->scrollBar()->value() - amount);
+    event->accept();
 }
 
 int ThumbnailBarView::rowCount() const

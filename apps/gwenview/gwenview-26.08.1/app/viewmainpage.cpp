@@ -166,9 +166,14 @@ struct ViewMainPagePrivate {
         mToggleSideBarButton = new StatusBarToolButton;
         mToggleThumbnailBarButton = new StatusBarToolButton;
         mZoomWidget = new ZoomWidget;
+        mToggleSideBarButton->setProperty("floatingPillGroup", 1);
+        mToggleThumbnailBarButton->setProperty("floatingPillGroup", 1);
+        mZoomWidget->setProperty("floatingPillGroup", 3);
         mSynchronizeCheckBox = new QCheckBox(i18n("Synchronize"));
+        mSynchronizeCheckBox->setProperty("floatingPillGroup", 2);
         mSynchronizeCheckBox->hide();
         mDocumentCountLabel = new KSqueezedTextLabel;
+        mDocumentCountLabel->setProperty("floatingPillGroup", 2);
         mDocumentCountLabel->setAlignment(Qt::AlignCenter);
         mDocumentCountLabel->setTextElideMode(Qt::ElideRight);
         QMargins labelMargins = mDocumentCountLabel->contentsMargins();

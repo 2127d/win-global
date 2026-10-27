@@ -36,6 +36,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QShortcut>
 #include <QSplitter>
 #include <QStackedWidget>
+#include <QVariantAnimation>
+#include <QPainter>
+#include <QPointer>
 #include <QTimer>
 #include <QUndoGroup>
 #include <QUrl>
@@ -154,19 +157,120 @@ enum MainPageId {
     ViewMainPageId,
 };
 
+class MainPageSlide : public QWidget
+{
+public:
+    explicit MainPageSlide(QWidget *parent) : QWidget(parent)
+    {
+        setObjectName(QStringLiteral("mainPageSlide"));
+        setAttribute(Qt::WA_TransparentForMouseEvents);
+        setAttribute(Qt::WA_OpaquePaintEvent);
+        setFocusPolicy(Qt::NoFocus);
+        hide();
+    }
+    QPixmap from, to;
+    qreal progress = 0;
+    int direction = 1;
+protected:
+    void paintEvent(QPaintEvent *) override
+    {
+        QPainter painter(this);
+        QColor background = palette().color(QPalette::Window); background.setAlpha(255);
+        painter.fillRect(rect(), background);
+        const int shift = qRound(width() * progress);
+        painter.drawPixmap(QPoint(-direction * shift, 0), from);
+        painter.drawPixmap(QPoint(direction * (width() - shift), 0), to);
+    }
+};
+
 // Hidden pages must not impose their control widths on the current page.
 class MainPageStack : public QStackedWidget
 {
 public:
     explicit MainPageStack(QWidget *parent) : QStackedWidget(parent)
     {
+        setObjectName(QStringLiteral("mainPageStack"));
         layout()->setSizeConstraint(QLayout::SetNoConstraint);
-        connect(this, &QStackedWidget::currentChanged, this, [this] { updateGeometry(); });
+        mOverlay = new MainPageSlide(this);
+        mAnimation = new QVariantAnimation(this);
+        mAnimation->setObjectName(QStringLiteral("mainPageSlideAnimation"));
+        mAnimation->setDuration(140);
+        mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        mAnimation->setStartValue(0.0); mAnimation->setEndValue(1.0);
+        connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
+            mOverlay->progress = value.toReal(); mOverlay->update();
+        });
+        connect(mAnimation, &QVariantAnimation::finished, this, [this] { finishSlide(); });
+        mCapture = new QTimer(this); mCapture->setSingleShot(true);
+        connect(mCapture, &QTimer::timeout, this, [this] {
+            if (!isVisible() || currentWidget() != mTarget) { finishSlide(); return; }
+            mOverlay->setGeometry(rect());
+            // Capture once after navigation/layout settles. Frames only move
+            // these pixmaps; they never relayout the gallery or rerender images.
+            mOverlay->to = currentWidget()->grab();
+            const qreal dpr = devicePixelRatioF();
+            const QSize pixels = size() * dpr;
+            if (mOverlay->from.size() != pixels) {
+                mOverlay->from = mOverlay->from.scaled(pixels, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+                mOverlay->from.setDevicePixelRatio(dpr);
+            }
+            mOverlay->progress = 0;
+            mOverlay->show(); mOverlay->raise(); mAnimation->start();
+        });
+        connect(this, &QStackedWidget::currentChanged, this, [this] {
+            updateGeometry();
+            if (mTarget && currentWidget() != mTarget) finishSlide();
+        });
+        qApp->installEventFilter(this);
+    }
+    void transitionTo(QWidget *page)
+    {
+        if (page == currentWidget()) return;
+        const int oldIndex = currentIndex(), newIndex = indexOf(page);
+        const bool animate = isVisible() && oldIndex >= 0 && oldIndex < 2 && newIndex >= 0 && newIndex < 2
+            && style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, this) > 0;
+        QPixmap before;
+        if (animate) before = mOverlay->isVisible() ? mOverlay->grab() : currentWidget()->grab();
+        finishSlide();
+        mTarget = page;
+        setCurrentWidget(page);
+        if (!animate) { mTarget.clear(); return; }
+        mOverlay->from = before;
+        mOverlay->direction = (newIndex > oldIndex ? 1 : -1) * (isRightToLeft() ? -1 : 1);
+        mCapture->start();
     }
     QSize minimumSizeHint() const override
     {
         return currentWidget() ? currentWidget()->minimumSizeHint().expandedTo(currentWidget()->minimumSize()) : QSize();
     }
+protected:
+    void resizeEvent(QResizeEvent *event) override
+    {
+        if (mAnimation->state() == QAbstractAnimation::Running) finishSlide();
+        QStackedWidget::resizeEvent(event);
+    }
+    void hideEvent(QHideEvent *event) override { finishSlide(); QStackedWidget::hideEvent(event); }
+    bool eventFilter(QObject *object, QEvent *event) override
+    {
+        // Navigation takes effect immediately; user input dismisses the visual
+        // transition before the real page handles the click, key or wheel.
+        if ((mOverlay->isVisible() || mCapture->isActive()) && (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::KeyPress
+            || event->type() == QEvent::Wheel || event->type() == QEvent::TouchBegin)) {
+            auto widget = qobject_cast<QWidget *>(object);
+            if (widget && widget->window() == window()) finishSlide();
+        }
+        return QStackedWidget::eventFilter(object, event);
+    }
+private:
+    void finishSlide()
+    {
+        mCapture->stop(); mAnimation->stop(); mOverlay->hide();
+        mOverlay->from = QPixmap(); mOverlay->to = QPixmap(); mTarget.clear();
+    }
+    MainPageSlide *mOverlay;
+    QVariantAnimation *mAnimation;
+    QTimer *mCapture;
+    QPointer<QWidget> mTarget;
 };
 
 struct MainWindowState {
@@ -213,7 +317,7 @@ struct MainWindow::Private {
     QMap<QUrl, QUrl> mAddedImageOriginals;
     SideBar *mSideBar = nullptr;
     KMessageWidget *mSharedMessage = nullptr;
-    QStackedWidget *mViewStackedWidget = nullptr;
+    MainPageStack *mViewStackedWidget = nullptr;
     FullScreenContent *mFullScreenContent = nullptr;
     SaveBar *mSaveBar = nullptr;
     bool mStartSlideShowWhenDirListerCompleted;
@@ -275,9 +379,38 @@ struct MainWindow::Private {
                 && action->text().isEmpty() && action->icon().isNull()) continue;
             actions.append(action);
         }
-        if (mMainToolbarCopy->actions() == actions) return;
+        QList<QAction *> copied;
+        for (auto action : mMainToolbarCopy->actions())
+            if (!action->property("floatingGroupSeparator").toBool()) copied.append(action);
+        if (copied == actions) return;
+        const auto oldActions = mMainToolbarCopy->actions();
         mMainToolbarCopy->clear();
-        mMainToolbarCopy->addActions(actions);
+        for (auto action : oldActions)
+            if (action->property("floatingGroupSeparator").toBool()) delete action;
+        auto family = [](QAction *action) {
+            const QString name = action->objectName();
+            if (name == QLatin1String("go_previous") || name == QLatin1String("go_next")
+                || name == QLatin1String("go_first") || name == QLatin1String("go_last")) return 1;
+            if (name == QLatin1String("browse") || name == QLatin1String("view") || name == QLatin1String("go_start_page")) return 2;
+            if (name.startsWith(QLatin1String("view_zoom")) || name == QLatin1String("view_actual_size")) return 3;
+            if (name.startsWith(QLatin1String("rotate_")) || name == QLatin1String("mirror") || name == QLatin1String("flip")
+                || name == QLatin1String("crop") || name == QLatin1String("resize") || name == QLatin1String("annotate")) return 4;
+            if (name == QLatin1String("fullscreen") || name == QLatin1String("hamburger_menu")) return 5;
+            return 6;
+        };
+        int previousFamily = -1;
+        for (auto action : actions) {
+            if (action->isSeparator()) {
+                mMainToolbarCopy->addAction(action); previousFamily = -1; continue;
+            }
+            const int group = family(action);
+            if (previousFamily != -1 && previousFamily != group) {
+                auto separator = mMainToolbarCopy->addSeparator();
+                separator->setProperty("floatingGroupSeparator", true);
+            }
+            mMainToolbarCopy->addAction(action);
+            previousFamily = group;
+        }
     }
 
     void updateMainToolbar()
@@ -1225,14 +1358,14 @@ void MainWindow::setActiveViewModeAction(QAction *action)
     if (action == d->mViewAction) {
         d->mCurrentMainPageId = ViewMainPageId;
         // Switching to view mode
-        d->mViewStackedWidget->setCurrentWidget(d->mViewMainPage);
+        d->mViewStackedWidget->transitionTo(d->mViewMainPage);
         openSelectedDocuments();
         d->mPreloadDirectionIsForward = true;
         QTimer::singleShot(VIEW_PRELOAD_DELAY, this, &MainWindow::preloadNextUrl);
     } else {
         d->mCurrentMainPageId = BrowseMainPageId;
         // Switching to browse mode
-        d->mViewStackedWidget->setCurrentWidget(d->mBrowseMainPage);
+        d->mViewStackedWidget->transitionTo(d->mBrowseMainPage);
         if (!d->mViewMainPage->isEmpty() && KProtocolManager::supportsListing(d->mViewMainPage->url())) {
             // Reset the view to spare resources, but don't do it if we can't
             // browse the url, otherwise if the user starts Gwenview this way:

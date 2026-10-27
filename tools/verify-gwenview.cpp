@@ -38,12 +38,207 @@
 #include <QDragLeaveEvent>
 #include <QDropEvent>
 #include <QMouseEvent>
+#include <QWheelEvent>
+#include <QElapsedTimer>
+#include <QVariantAnimation>
+#include <QProxyStyle>
+#include <QStyleFactory>
+#include <QStackedWidget>
+#include <QWidgetAction>
 #include <cstdio>
 #include <cstdlib>
 #include <sys/xattr.h>
 static void require(bool ok, const char *message) {
     if (!ok) { fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
 }
+class NoSidebarMotionStyle : public QProxyStyle
+{
+public:
+    NoSidebarMotionStyle() : QProxyStyle(QStyleFactory::create(QStringLiteral("Fusion"))) {}
+    int styleHint(StyleHint hint, const QStyleOption *option = nullptr, const QWidget *widget = nullptr,
+                  QStyleHintReturn *data = nullptr) const override
+    {
+        if (hint == SH_Widget_Animation_Duration) return 0;
+        return QProxyStyle::styleHint(hint, option, widget, data);
+    }
+};
+
+static void verifySidebarSlide(QTabWidget *tabs, const QString &output)
+{
+    auto animation = tabs->findChild<QVariantAnimation *>("sidebarSlideAnimation");
+    require(animation && animation->duration() <= 160, "sidebar slide stays brief");
+    tabs->setCurrentIndex(0); QTest::qWait(180);
+    const QPoint origin = tabs->currentWidget()->pos();
+    const QRect footer = tabs->tabBar()->geometry();
+    tabs->setCurrentIndex(1);
+    require(tabs->currentIndex() == 1 && tabs->currentWidget()->isEnabled(), "sidebar selection takes effect immediately");
+    QTest::qWait(45);
+    require(animation->state() == QAbstractAnimation::Running, "sidebar visibly slides between pages");
+    require(tabs->widget(0)->x() < origin.x() && tabs->widget(1)->x() > origin.x(), "forward sidebar slide has direction");
+    require(tabs->tabBar()->geometry() == footer, "sidebar footer stays anchored during slide");
+    require(tabs->window()->grab().save(output + "/sidebar-slide-midway.png"), "capture sidebar transition");
+    QTest::qWait(140);
+    require(animation->state() == QAbstractAnimation::Stopped && tabs->currentWidget()->pos() == origin
+        && !tabs->widget(0)->isVisible(), "sidebar settles without a lingering outgoing page");
+    tabs->setCurrentIndex(0); QTest::qWait(35);
+    require(tabs->widget(0)->x() < origin.x(), "reverse navigation slides back");
+    tabs->setCurrentIndex(2); QTest::qWait(20);
+    tabs->setCurrentIndex(1); QTest::qWait(20);
+    tabs->setCurrentIndex(0); QTest::qWait(180);
+    for (int i = 0; i < tabs->count(); ++i)
+        require(tabs->widget(i)->isVisible() == (i == 0) && tabs->widget(i)->pos() == origin,
+                "rapid sidebar switching leaves only the selected page visible and aligned");
+    tabs->tabBar()->setFocus();
+    QTest::keyClick(tabs->tabBar(), Qt::Key_Right); QTest::qWait(180);
+    require(tabs->currentIndex() == 1, "keyboard sidebar switching works");
+    tabs->setCurrentIndex(2); QTest::qWait(30);
+    const QSize size = tabs->window()->size();
+    tabs->window()->resize(size + QSize(70, 30)); QTest::qWait(60);
+    require(animation->state() == QAbstractAnimation::Stopped && tabs->currentWidget()->pos() == origin,
+            "resizing cancels the slide without displacing content");
+    tabs->window()->resize(size); QTest::qWait(100);
+    NoSidebarMotionStyle noMotion;
+    tabs->setStyle(&noMotion);
+    tabs->setCurrentIndex(0);
+    require(animation->state() == QAbstractAnimation::Stopped && tabs->currentWidget()->pos() == origin,
+            "disabled desktop animations switch sidebar pages immediately");
+    tabs->setStyle(nullptr);
+    QTest::qWait(100);
+    fprintf(stderr, "PASS: brief sidebar slide, fixed footer, rapid reversal, keyboard, resize and disabled animations\n");
+}
+
+static QAction *findAction(QWidget *window, const char *name);
+
+class ViewPaintCounter : public QObject
+{
+public:
+    int paints = 0;
+    bool eventFilter(QObject *, QEvent *event) override { if (event->type() == QEvent::Paint) ++paints; return false; }
+};
+
+static void verifyMainPageSlide(QWidget *window, const QString &output)
+{
+    auto stack = window->findChild<QStackedWidget *>("mainPageStack");
+    auto animation = stack ? stack->findChild<QVariantAnimation *>("mainPageSlideAnimation") : nullptr;
+    auto overlay = stack ? stack->findChild<QWidget *>("mainPageSlide") : nullptr;
+    auto browse = window->findChild<QListView *>("mThumbnailView");
+    require(stack && animation && overlay && browse && animation->duration() <= 160, "quick main-page slide exists");
+    auto toBrowse = findAction(window, "browse"), toView = findAction(window, "view");
+    require(toBrowse && toView, "native view mode actions");
+    QWidget *imagePage = stack->currentWidget();
+    toBrowse->trigger();
+    require(stack->currentWidget() != imagePage, "browser becomes current without waiting for transition");
+    QTest::qWait(40);
+    require(overlay->isVisible() && animation->state() == QAbstractAnimation::Running, "browser/image transition visibly slides");
+    require(overlay->testAttribute(Qt::WA_TransparentForMouseEvents), "transition overlay never intercepts input");
+    require(window->grab().save(output + "/browser-image-slide.png"), "capture main-page slide");
+    ViewPaintCounter paints; browse->viewport()->installEventFilter(&paints);
+    int frames = 0;
+    const auto connection = QObject::connect(animation, &QVariantAnimation::valueChanged, window, [&] { ++frames; });
+    QTest::qWait(50);
+    QObject::disconnect(connection);
+    browse->viewport()->removeEventFilter(&paints);
+    require(frames >= 2 && paints.paints <= 1, "slide animates cached frames without repainting the thumbnail grid each frame");
+    QTest::qWait(100);
+    require(!overlay->isVisible() && animation->state() == QAbstractAnimation::Stopped, "main-page slide ends promptly");
+    toView->trigger(); QTest::qWait(30);
+    toBrowse->trigger(); QTest::qWait(25);
+    toView->trigger(); QTest::qWait(200);
+    require(stack->currentWidget() == imagePage && !overlay->isVisible(), "rapid view changes do not queue stale transitions");
+    toBrowse->trigger(); QTest::qWait(30);
+    QTest::keyPress(stack, Qt::Key_Shift);
+    require(!overlay->isVisible(), "input dismisses transition immediately");
+    QTest::keyRelease(stack, Qt::Key_Shift);
+    toView->trigger();
+    QTest::keyPress(stack, Qt::Key_Shift);
+    QTest::keyRelease(stack, Qt::Key_Shift);
+    QTest::qWait(30);
+    require(!overlay->isVisible() && animation->state() == QAbstractAnimation::Stopped,
+            "input before the first frame skips the pending transition");
+    NoSidebarMotionStyle noMotion;
+    stack->setStyle(&noMotion);
+    toBrowse->trigger();
+    toView->trigger(); QTest::qWait(30);
+    require(stack->currentWidget() == imagePage && !overlay->isVisible(), "disabled animations switch view modes immediately");
+    stack->setStyle(nullptr); QTest::qWait(200);
+    fprintf(stderr, "PASS: quick cached view slide, immediate mode changes/input, rapid reversal and disabled motion\n");
+}
+
+static void verifyZoomPopup(QComboBox *combo, QSlider *slider)
+{
+    require(slider, "zoom slider exists for popup checks");
+    const int originalZoom = slider->value();
+    const QString originalText = combo->lineEdit()->text();
+    auto view = combo->view();
+    auto viewport = view->viewport();
+    auto bar = view->verticalScrollBar();
+    require(bar->maximum() > bar->minimum(), "zoom presets overflow the popup");
+    auto hover = [&] {
+        const QPoint point = viewport->rect().center();
+        QMouseEvent move(QEvent::MouseMove, point, viewport->mapToGlobal(point),
+                         Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+        QApplication::sendEvent(viewport, &move);
+        QTest::qWait(20);
+    };
+    hover();
+    require(slider->value() == originalZoom, "hovering zoom presets does not change image scale");
+    for (int direction : {120, -120, 120}) {
+        for (int step = 0; step < combo->count(); ++step) {
+            const int before = bar->value();
+            const QPoint point = viewport->rect().center();
+            QWheelEvent wheel(point, viewport->mapToGlobal(point), QPoint(), QPoint(0, direction),
+                              Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+            QApplication::sendEvent(viewport, &wheel);
+            hover();
+            require(direction > 0 ? bar->value() <= before : bar->value() >= before,
+                    "zoom popup scrolls monotonically without launching backward");
+            require(slider->value() == originalZoom, "scrolling zoom presets does not change image scale");
+        }
+        require(bar->value() == (direction > 0 ? bar->minimum() : bar->maximum()),
+                "wheel scrolling reaches both ends of zoom presets");
+    }
+    QTest::keyClick(view, Qt::Key_Escape);
+    QTest::qWait(50);
+    require(slider->value() == originalZoom && combo->lineEdit()->text() == originalText,
+            "cancelling zoom popup preserves image scale and text");
+    combo->showPopup();
+    QTest::qWait(50);
+    QTest::keyClick(view, Qt::Key_Up);
+    require(slider->value() == originalZoom, "keyboard browsing waits for explicit zoom selection");
+    QTest::keyClick(view, Qt::Key_Return);
+    QTest::qWait(100);
+    require(!view->isVisible() && slider->value() != originalZoom, "Enter commits the selected zoom preset");
+    combo->showPopup();
+    QTest::qWait(50);
+    int actualSizeIndex = -1;
+    for (int index = 0; index < combo->count(); ++index) {
+        auto action = combo->itemData(index).value<QAction *>();
+        if (action && action->objectName() == QLatin1String("view_actual_size")) actualSizeIndex = index;
+    }
+    require(actualSizeIndex >= 0, "actual size preset available");
+    const auto index = combo->model()->index(actualSizeIndex, 0);
+    view->scrollTo(index);
+    QTest::qWait(30);
+    QTest::mouseClick(viewport, Qt::LeftButton, Qt::NoModifier, view->visualRect(index).center());
+    QTest::qWait(100);
+    require(!view->isVisible() && combo->itemData(actualSizeIndex).value<QAction *>()->isChecked(),
+            "click commits the chosen zoom preset");
+    fprintf(stderr, "PASS: zoom popup hover, bidirectional wheel endpoints, cancellation, keyboard and mouse selection\n");
+}
+
+class BackdropRenderProbe : public QGraphicsRectItem
+{
+public:
+    using QGraphicsRectItem::QGraphicsRectItem;
+    int imagePaints = 0;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        // Viewport painting uses a widget; glass capture renders the scene
+        // into a QImage. Observe the extra rendering without changing pixels.
+        if (painter->device()->devType() == QInternal::Image) ++imagePaints;
+    }
+};
+
 static void verifyToggleProximity(QWidget *window, const QString &output)
 {
     auto viewer = window->findChild<QGraphicsView *>("roundedImageViewer");
@@ -57,6 +252,13 @@ static void verifyToggleProximity(QWidget *window, const QString &output)
                          Qt::NoButton, Qt::NoButton, Qt::NoModifier);
         QApplication::sendEvent(viewer->viewport(), &move);
     };
+    moveTo(viewer->rect().center()); QTest::qWait(250);
+    auto probe = new BackdropRenderProbe(viewer->mapToScene(viewer->viewport()->rect()).boundingRect());
+    viewer->scene()->addItem(probe);
+    viewer->viewport()->update();
+    QTest::qWait(100);
+    require(probe->imagePaints == 0, "fully hidden toolbar controls do not recapture the image scene");
+    delete probe;
     for (const char *name : {"mainToolbarToggle", "imageToolbarToggle"}) {
         auto toggle = window->findChild<QToolButton *>(name);
         require(toggle && !toggle->isChecked(), "proximity starts with collapsed toolbar");
@@ -127,6 +329,13 @@ static void verifyBarModes(QWidget *window, const QString &output)
     require(status->isVisible() && !top->isVisible() && !bottom->isVisible(), "default native bars hide both custom pills");
     require(status->styleSheet().isEmpty() && toolbar->styleSheet().isEmpty(), "native bars have no custom pill stylesheet");
     require(status->width() > viewer->width() / 2, "native status bar spans image layout");
+    for (auto button : status->findChildren<QToolButton *>()) {
+        if (button->property("floatingPillGroup").toInt() == 1)
+            require(button->toolButtonStyle() == Qt::ToolButtonTextBesideIcon, "docked panel toggles retain native label style");
+    }
+    for (int i = 0; i < status->layout()->count(); ++i)
+        if (auto spacer = status->layout()->itemAt(i)->spacerItem())
+            require(spacer->sizePolicy().horizontalPolicy() == QSizePolicy::Expanding, "native status spacers restored");
     require(status->mapTo(window, QPoint()).y() >= viewer->mapTo(window, QPoint(0, viewer->height())).y(), "native status bar reserves space below image");
     require(window->grab().save(output + "/viewer-native-bars.png"), "native bars capture");
     for (int repeat = 0; repeat < 2; ++repeat) {
@@ -159,6 +368,17 @@ static void verifyBarModes(QWidget *window, const QString &output)
     fprintf(stderr, "PASS: native defaults, independent checkbox combinations, repeated style restoration, resizing, fullscreen and spotlight restoration\n");
 }
 
+class ToolbarWidgetProbe : public QWidgetAction
+{
+public:
+    explicit ToolbarWidgetProbe(QObject *parent) : QWidgetAction(parent) { setObjectName(QStringLiteral("toolbar_widget_probe")); }
+protected:
+    QWidget *createWidget(QWidget *parent) override
+    {
+        auto edit = new QLineEdit(parent); edit->setFixedSize(90, 26); return edit;
+    }
+};
+
 static void verifyMainToolbar(QWidget *window, const QUrl &image, const QString &output)
 {
     auto docked = window->findChild<QToolBar *>("mainToolBar");
@@ -170,6 +390,7 @@ static void verifyMainToolbar(QWidget *window, const QUrl &image, const QString 
     require(docked && controls && island && toggle && flyout && viewer, "main toolbar island widgets");
     for (auto action : controls->actions())
         require(action->isSeparator() || !action->text().isEmpty() || !action->icon().isNull(), "no empty spacer buttons in island");
+    verifyMainPageSlide(window, output);
     verifyBarModes(window, output);
     require(!docked->isVisible() && docked->isEnabled(), "unchecked toolbar hidden but native actions remain enabled");
     require(docked->toggleViewAction()->isEnabled(), "native toolbar checkbox remains usable in image view");
@@ -193,6 +414,19 @@ static void verifyMainToolbar(QWidget *window, const QUrl &image, const QString 
     require(island->y() == 16 && island->geometry().right() == anchor && viewer->geometry() == before,
             "main toolbar expands left at top without resizing image");
     require(button("go_next")->isEnabled(), "floating navigation remains enabled");
+    const auto actions = controls->actions();
+    require(actions.indexOf(button("go_next")->defaultAction()) == actions.indexOf(button("go_previous")->defaultAction()) + 1,
+            "navigation arrows share a pill without a separator");
+    const int lastArrow = actions.indexOf(button("go_next")->defaultAction());
+    require(actions.value(lastArrow + 1) && actions[lastArrow + 1]->isSeparator(), "navigation pill separates from other tools");
+    auto surface = flyout->parentWidget();
+    QImage grouped(surface->size(), QImage::Format_ARGB32_Premultiplied); grouped.fill(Qt::transparent);
+    surface->render(&grouped, QPoint(), QRegion(), QWidget::DrawChildren);
+    const QRect separator = controls->actionGeometry(actions[lastArrow + 1]);
+    const QPoint gap = controls->mapTo(surface, separator.center());
+    require(qAlpha(grouped.pixel(gap)) == 0, "floating pills leave transparent image space between groups");
+    require(!island->mask().contains(surface->mapTo(island, gap)), "gaps between pills pass image input through");
+    require(grouped.save(output + "/floating-toolbar-pills.png"), "capture grouped floating surfaces");
     int navigated = 0;
     auto connection = QObject::connect(button("go_next")->defaultAction(), &QAction::triggered, window, [&] { ++navigated; });
     QTest::mouseClick(button("go_next"), Qt::LeftButton); QTest::qWait(400);
@@ -213,10 +447,34 @@ static void verifyMainToolbar(QWidget *window, const QUrl &image, const QString 
     docked->insertAction(button("go_next")->defaultAction(), &custom);
     QTest::qWait(200);
     require(controls->actions().contains(&custom), "floating copy follows toolbar customization");
+    QList<QAction *> mirrored;
+    for (auto action : controls->actions()) if (!action->isSeparator()) mirrored.append(action);
+    require(mirrored.indexOf(&custom) + 1 == mirrored.indexOf(button("go_next")->defaultAction()),
+            "grouping preserves the user's custom action order");
+    custom.setVisible(false); QTest::qWait(50);
+    require(!controls->widgetForAction(&custom)->isVisible(), "floating pills track custom action visibility");
+    custom.setVisible(true); QTest::qWait(50);
     custom.setEnabled(false);
     require(!controls->widgetForAction(&custom)->isEnabled(), "floating copy tracks action enabled state");
     docked->removeAction(&custom); QTest::qWait(200);
     require(!controls->actions().contains(&custom), "floating copy removes customized action");
+    ToolbarWidgetProbe widgetProbe(window);
+    docked->insertAction(button("hamburger_menu")->defaultAction(), &widgetProbe); QTest::qWait(200);
+    auto editor = qobject_cast<QLineEdit *>(controls->widgetForAction(&widgetProbe));
+    require(editor && editor != docked->widgetForAction(&widgetProbe), "custom widget actions create real controls in both toolbars");
+    QTest::keyClicks(editor, "ready");
+    require(editor->text() == "ready", "custom floating widget remains interactive");
+    docked->removeAction(&widgetProbe); QTest::qWait(150);
+    require(!controls->actions().contains(&widgetProbe), "custom widget removal updates floating pills");
+    const QSize wideSize = window->size();
+    window->resize(640, wideSize.height()); QTest::qWait(250);
+    require(flyout->horizontalScrollBar()->maximum() > 0, "customizable floating toolbar scrolls in a narrow pane");
+    require(flyout->viewport()->height() >= controls->height(), "narrow floating toolbar reserves space for its scrollbar");
+    flyout->horizontalScrollBar()->setValue(flyout->horizontalScrollBar()->maximum()); QTest::qWait(50);
+    const QPoint lastCenter = button("hamburger_menu")->mapTo(island, button("hamburger_menu")->rect().center());
+    require(island->rect().contains(lastCenter) && island->mask().contains(lastCenter), "last floating tool remains reachable after scrolling");
+    require(window->grab().save(output + "/floating-pills-narrow.png"), "capture narrow grouped toolbar");
+    window->resize(wideSize); QTest::qWait(250);
     require(window->grab().save(output + "/viewer-main-toolbar-expanded.png"), "main toolbar screenshot");
     QTest::mouseClick(button("browse"), Qt::LeftButton); QTest::qWait(350);
     require(!docked->isVisible() && !island->isVisible(), "Browse respects unchecked toolbar and hides image pill");
@@ -283,6 +541,7 @@ static void verifyWelcome(QWidget *window, const QString &output, const QString 
         fprintf(stderr, "PASS: history remains cleared after restart\n");
         return;
     }
+    verifySidebarSlide(tabs, output);
     require(count->text() == "6", "recent count reflects six fixtures");
     require(tabs->tabText(0) == "Recent" && tabs->tabText(1) == "Information" && tabs->tabText(2) == "Tools", "footer labels are discoverable");
     auto sidebarIsland = window->findChild<QWidget *>("sidebarIsland");
@@ -488,6 +747,76 @@ static void verifyWelcome(QWidget *window, const QString &output, const QString 
     require(QFileInfo::exists(removedPath), "remove recent leaves that exact image file intact");
     capture("welcome-final");
     fprintf(stderr, "PASS: welcome identity, configured shortcut, file/folder opening, drag highlight/reset, labeled keyboard footer, contextual empty states, recent menu, count, grid/list switching and removal\n");
+}
+
+static void verifyThumbnailScrolling(QWidget *window, const QString &output)
+{
+    const QString fixtures = qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES");
+    const auto gallery = QUrl::fromLocalFile(fixtures + "/Gallery");
+    require(QMetaObject::invokeMethod(window, "slotStartMainPageUrlSelected", Q_ARG(QUrl, gallery)), "open large gallery");
+    auto view = window->findChild<QListView *>("mThumbnailView");
+    require(view, "large-folder browser view");
+    for (int i = 0; i < 100 && view->model()->rowCount() < 2049; ++i) QTest::qWait(50);
+    require(view->model()->rowCount() == 2049, "all 2048 images and folder are listed");
+    QTest::qWait(700);
+    auto wheel = [](QListView *list, QPoint pixels, QPoint angle) {
+        auto viewport = list->viewport(); const QPoint point = viewport->rect().center();
+        QWheelEvent event(point, viewport->mapToGlobal(point), pixels, angle,
+                          Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false);
+        QApplication::sendEvent(viewport, &event);
+    };
+    for (bool full : {false, true}) {
+        if (full) { findAction(window, "fullscreen")->trigger(); QTest::qWait(400); }
+        auto bar = view->verticalScrollBar();
+        require(bar->maximum() > 10 * bar->pageStep(), "large folder has many scrollable pages");
+        qint64 worstRefresh = 0;
+        for (int fraction : {0, 1, 2, 3, 4, 2, 0}) {
+            bar->setValue(bar->maximum() * fraction / 4);
+            QTest::qWait(100);
+            QElapsedTimer time; time.start();
+            require(QMetaObject::invokeMethod(view, "generateThumbnailsForItems", Qt::DirectConnection), "refresh visible thumbnails");
+            worstRefresh = qMax(worstRefresh, time.nsecsElapsed());
+        }
+        bar->setValue(0);
+        QElapsedTimer heartbeat; heartbeat.start(); qint64 worstGap = 0;
+        QTimer timer; timer.setInterval(8);
+        QObject::connect(&timer, &QTimer::timeout, window, [&] { worstGap = qMax(worstGap, heartbeat.restart()); });
+        timer.start();
+        for (int i = 0; i < 100; ++i) {
+            const int before = bar->value();
+            wheel(view, QPoint(0, -18), QPoint()); QTest::qWait(10);
+            require(bar->value() >= before, "pixel scrolling never snaps backward");
+        }
+        timer.stop();
+        require(bar->value() > 0, "touchpad scroll moves through thumbnails");
+        bar->setValue(bar->maximum() - bar->pageStep());
+        for (int i = 0; i < 50; ++i) wheel(view, QPoint(), QPoint(0, -120));
+        require(bar->value() == bar->maximum(), "wheel reaches last thumbnails");
+        bar->setValue(bar->pageStep());
+        for (int i = 0; i < 50; ++i) wheel(view, QPoint(), QPoint(0, 120));
+        require(bar->value() == 0, "wheel returns to first thumbnails");
+        fprintf(stderr, "PERF: %s 2048-image gallery refresh max %.3f ms; scrolling heartbeat max %lld ms\n",
+                full ? "fullscreen" : "normal", worstRefresh / 1000000.0, static_cast<long long>(worstGap));
+        require(window->grab().save(output + (full ? "/large-fullscreen.png" : "/large-normal.png")), "large-gallery capture");
+    }
+    const auto file = QUrl::fromLocalFile(fixtures + "/Gallery/scene-00.png");
+    require(QMetaObject::invokeMethod(window, "openImages", Q_ARG(QList<QUrl>, QList<QUrl>{file})), "open image from large gallery");
+    QTest::qWait(600);
+    auto thumbs = window->findChild<QListView *>("fullscreenThumbnails");
+    auto pin = window->findChild<QToolButton *>("fullscreen_keep_controls_visible");
+    require(thumbs && pin, "fullscreen image strip");
+    if (!pin->isChecked()) pin->click(); QTest::qWait(150);
+    require(thumbs->height() >= 104 && thumbs->viewport()->height() >= 80, "larger previews leave room above the scrollbar");
+    auto bar = thumbs->horizontalScrollBar();
+    thumbs->setCurrentIndex(thumbs->model()->index(100, 0));
+    bar->setValue(200);
+    wheel(thumbs, QPoint(-24, 0), QPoint());
+    const int moved = bar->value();
+    require(moved > 200, "horizontal touchpad scrolling moves image strip");
+    QTest::qWait(300);
+    require(bar->value() == moved, "image-strip scrolling does not snap back");
+    require(window->grab().save(output + "/large-image-strip.png"), "larger image previews capture");
+    fprintf(stderr, "PASS: large-folder normal/fullscreen pixel and wheel scrolling, endpoints, and larger fullscreen image strip\n");
 }
 
 static void verifyBrowser(QWidget *window, const QString &output, const QString &mode)
@@ -721,6 +1050,47 @@ static void verifyFullscreenBrowser(QWidget *window, const QString &output)
     fprintf(stderr, "PASS: fullscreen browser floating surfaces, sidebar resizing, menus, filters, folder history, location editing, thumbnail zoom, view transitions and exit restoration\n");
 }
 
+static void verifyProperties(QWidget *window, const QString &output)
+{
+    auto action = findAction(window, "file_show_properties");
+    require(action->isEnabled(), "native Properties action remains available");
+    action->trigger(); QTest::qWait(45);
+    auto dialog = window->findChild<QDialog *>("gwenviewPropertiesDialog");
+    require(dialog && dialog->isVisible() && dialog->isModal(), "polished native Properties dialog opens");
+    auto entrance = dialog->findChild<QWidget *>("dialogEntrance");
+    auto animation = dialog->findChild<QVariantAnimation *>("dialogEntranceAnimation");
+    require(entrance && animation && animation->duration() <= 160 && entrance->isVisible(), "Properties opens with a short visible entrance");
+    require(entrance->testAttribute(Qt::WA_TransparentForMouseEvents), "Properties animation does not intercept input");
+    require(dialog->grab().save(output + "/properties-opening.png"), "Properties entrance capture");
+    QTest::qWait(180);
+    require(!entrance->isVisible() && animation->state() == QAbstractAnimation::Stopped, "Properties entrance ends and releases controls");
+    auto tabs = dialog->findChild<QTabWidget *>();
+    require(tabs && tabs->count() >= 2, "native file property pages remain available");
+    for (int i = 0; i < tabs->count(); ++i) { tabs->setCurrentIndex(i); QTest::qWait(25); }
+    tabs->setCurrentIndex(0); QTest::qWait(50);
+    require(dialog->grab().save(output + "/properties-polished.png"), "Properties capture");
+    auto name = dialog->findChild<QLineEdit *>();
+    require(name && name->isEnabled(), "native editable filename field preserved");
+    const QString original = name->text(); name->setText(original + "-cancelled");
+    QTest::keyClick(dialog, Qt::Key_Escape); QTest::qWait(80);
+    require(!window->findChild<QDialog *>("gwenviewPropertiesDialog"), "Escape cancels and destroys Properties safely");
+    action->trigger();
+    dialog = window->findChild<QDialog *>("gwenviewPropertiesDialog");
+    require(dialog, "Properties can reopen");
+    QTest::keyClick(dialog, Qt::Key_Shift); QTest::qWait(30);
+    entrance = dialog->findChild<QWidget *>("dialogEntrance");
+    require(!entrance->isVisible(), "immediate dialog input cancels a pending entrance");
+    name = dialog->findChild<QLineEdit *>();
+    require(name && name->text() == original, "cancelled property edits do not alter the file");
+    dialog->reject(); QTest::qWait(80);
+    action->trigger();
+    dialog = window->findChild<QDialog *>("gwenviewPropertiesDialog");
+    NoSidebarMotionStyle noMotion; dialog->setStyle(&noMotion); QTest::qWait(50);
+    require(!dialog->findChild<QWidget *>("dialogEntrance")->isVisible(), "disabled motion skips Properties entrance");
+    dialog->setStyle(nullptr); dialog->reject(); QTest::qWait(80);
+    fprintf(stderr, "PASS: native Properties pages/edit/cancel, quick entrance, immediate input, reduced motion and repeat opening\n");
+}
+
 static void verifyFullscreen(QWidget *window, const QString &output)
 {
     // Isolated sessions have no desktop tags worker. Dismiss only its startup
@@ -756,6 +1126,11 @@ static void verifyFullscreen(QWidget *window, const QString &output)
     require(pin->isChecked() && bar->y() == 0, "pin keeps fullscreen controls revealed");
     for (const char *name : {"go_previous", "toggle_slideshow", "go_next", "rotate_left", "rotate_right", "view_zoom_in", "view_zoom_out", "view_zoom_to_fit", "view_actual_size", "leave_fullscreen", "options", "browse", "toggle_sidebar"}) button(name);
     require(info->toolTip().contains("scene-00") && count->text().contains("of"), "image information and count are shown");
+    fprintf(stderr, "PALETTE: surface=%s app=%s\n", qPrintable(surface->palette().color(QPalette::Window).name()), qPrintable(qApp->palette().color(QPalette::Window).name()));
+    require((surface->palette().color(QPalette::Window).lightness() < 128) == (qApp->palette().color(QPalette::Window).lightness() < 128), "fullscreen pills follow the desktop light/dark palette");
+    require(button("go_previous")->parentWidget() == button("go_next")->parentWidget()
+            && button("view_zoom_in")->parentWidget() != button("rotate_left")->parentWidget(),
+            "fullscreen controls are grouped into related floating pills");
     capture("fullscreen-wide");
     button("go_next")->click(); QTest::qWait(450);
     require(info->toolTip().contains("scene-01"), "next button opens the next image");
@@ -781,6 +1156,8 @@ static void verifyFullscreen(QWidget *window, const QString &output)
     require(findAction(window, "toggle_slideshow")->text().contains("Pause"), "slideshow starts from fullscreen control");
     button("toggle_slideshow")->click(); QTest::qWait(150);
     require(!findAction(window, "toggle_slideshow")->text().contains("Pause"), "slideshow pauses from same control");
+
+    verifyProperties(window, output);
 
     bool menuWorked = false;
     QTimer::singleShot(100, window, [&] {
@@ -880,6 +1257,10 @@ static void startup() {
         require(!window->findChild<QWidget *>("mRecentFoldersView"), "no recent folders start grid");
         const auto output = qEnvironmentVariable("SEQUOIA_GWENVIEW_VERIFY");
         auto capture = [&](const char *name) { require(window->grab().save(output + '/' + name + ".png"), "screenshot"); };
+        if (mode == "thumbnail-scroll") {
+            verifyThumbnailScrolling(window, output);
+            require(window->close(), "clean close"); QCoreApplication::exit(0); return;
+        }
         if (mode == "fullscreen-browser") {
             verifyFullscreenBrowser(window, output);
             require(window->close(), "clean close"); QCoreApplication::exit(0); return;
@@ -909,6 +1290,16 @@ static void startup() {
                 mainToolbar->toggleViewAction()->trigger();
                 showStatus->trigger();
                 QTest::qWait(250);
+            }
+            if (native) {
+                auto controls = window->findChild<QWidget *>("imageToolbarControls");
+                auto combo = controls ? controls->findChild<QComboBox *>() : nullptr;
+                require(combo && combo->isVisible(), "native status bar zoom field visible");
+                const int maxVisible = combo->maxVisibleItems();
+                combo->setMaxVisibleItems(4);
+                combo->showPopup(); QTest::qWait(100);
+                verifyZoomPopup(combo, controls->findChild<QSlider *>());
+                combo->setMaxVisibleItems(maxVisible);
             }
             fprintf(stderr, "PASS: %s bar preferences survive closing and reopening\n", native ? "native" : "pill");
             require(window->close(), "clean close"); QCoreApplication::exit(0); return;
@@ -958,13 +1349,46 @@ static void startup() {
             require(floating->geometry().right() == anchor && floating->width() > toggle->width(), "toolbar expands left with fixed circle");
             require(viewer->geometry() == viewerBefore, "expanding toolbar does not resize image");
             auto surface = flyout->parentWidget();
+            QMap<int, QRect> statusGroups;
+            for (auto widget : controls->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly)) {
+                const int group = widget->property("floatingPillGroup").toInt();
+                if (group && !widget->isHidden())
+                    statusGroups[group] = statusGroups[group].united(QRect(widget->mapTo(surface, QPoint()), widget->size()));
+            }
+            require(statusGroups.size() == 3, "status bar groups layout, image information and zoom separately");
+            for (auto button : controls->findChildren<QToolButton *>()) {
+                if (button->property("floatingPillGroup").toInt() != 1) continue;
+                require(!button->icon().isNull() && button->toolButtonStyle() == Qt::ToolButtonIconOnly
+                        && button->iconSize() == QSize(22, 22) && !button->toolTip().isEmpty(),
+                        "floating panel toggles use matching icons with descriptive tooltips");
+                if (button->defaultAction() && button->defaultAction()->objectName() == "toggle_thumbnailbar") {
+                    auto action = button->defaultAction(); const bool checked = action->isChecked();
+                    QTest::mouseClick(button, Qt::LeftButton); QTest::qWait(80);
+                    require(action->isChecked() != checked, "floating thumbnail icon toggles the native strip");
+                    QTest::mouseClick(button, Qt::LeftButton); QTest::qWait(80);
+                    require(action->isChecked() == checked, "floating thumbnail toggle restores its state");
+                }
+            }
+            QImage statusPills(surface->size(), QImage::Format_ARGB32_Premultiplied); statusPills.fill(Qt::transparent);
+            surface->render(&statusPills, QPoint(), QRegion(), QWidget::DrawChildren);
+            for (int group = 1; group < 3; ++group) {
+                const QPoint gap((statusGroups[group].right() + statusGroups[group + 1].left()) / 2, 22);
+                require(qAlpha(statusPills.pixel(gap)) == 0, "status pills leave clear space between related controls");
+                require(!floating->mask().contains(surface->mapTo(floating, gap)), "status pill gaps pass clicks to image");
+            }
+            require(statusPills.save(output + "/floating-status-pills.png"), "capture grouped status controls");
+            const int glassSampleX = statusGroups[3].center().x();
+            auto topToggle = window->findChild<QToolButton *>("mainToolbarToggle");
+            QTest::mouseClick(topToggle, Qt::LeftButton); QTest::qWait(300);
+            capture("floating-bars-polished");
+            QTest::mouseClick(topToggle, Qt::LeftButton); QTest::qWait(300);
             for (QWidget *glass : {surface, static_cast<QWidget *>(toggle)}) {
                 QImage rendered(glass->size(), QImage::Format_ARGB32_Premultiplied);
                 rendered.fill(Qt::transparent);
                 glass->render(&rendered, QPoint(), QRegion(), QWidget::DrawChildren);
                 require(rendered.save(output + (glass == surface ? "/toolbar-surface.png" : "/toolbar-toggle.png")), "glass screenshot");
                 require(qAlpha(rendered.pixel(0, 0)) == 0, "glass rounded corners stay clear");
-                const int alpha = qAlpha(rendered.pixel(rendered.width() / 2, 4));
+                const int alpha = qAlpha(rendered.pixel(glass == surface ? glassSampleX : rendered.width() / 2, 4));
                 require(alpha == 255, "glass composites a blurred scene behind its tint");
             }
             require(!controls->autoFillBackground() && !flyout->viewport()->autoFillBackground(), "controls preserve glass background");
@@ -975,10 +1399,15 @@ static void startup() {
             comboOption.editable = true;
             const QRect arrow = combo->style()->subControlRect(QStyle::CC_ComboBox, &comboOption, QStyle::SC_ComboBoxArrow, combo);
             require(arrow.width() >= 12, "native zoom dropdown arrow hit area");
+            const int maxVisiblePresets = combo->maxVisibleItems();
+            combo->setMaxVisibleItems(4);
             QTest::mouseClick(combo, Qt::LeftButton, Qt::NoModifier, arrow.center());
             QTest::qWait(100);
             require(combo->view()->isVisible(), "zoom arrow opens preset menu");
-            QTest::keyClick(combo->view(), Qt::Key_Escape);
+            verifyZoomPopup(combo, controls->findChild<QSlider *>());
+            combo->setMaxVisibleItems(maxVisiblePresets);
+            findAction(window, "view_zoom_to_fit")->trigger();
+            QTest::qWait(100);
             QList<QRect> buttons;
             for (auto control : controls->findChildren<QToolButton *>())
                 if (control->isVisible()) buttons.append(QRect(control->mapTo(controls, QPoint()), control->size()));
@@ -1003,7 +1432,7 @@ static void startup() {
             for (QWidget *glass : {surface, static_cast<QWidget *>(toggle)}) {
                 const auto rendered = glass->grab().toImage();
                 int low = 255, high = 0;
-                for (int x = glass == surface ? 50 : 16; x < (glass == surface ? 200 : 29); ++x) {
+                for (int x = glass == surface ? glassSampleX - 20 : 16; x < (glass == surface ? glassSampleX + 20 : 29); ++x) {
                     const int value = qGray(rendered.pixel(x, 5));
                     low = qMin(low, value); high = qMax(high, value);
                 }
@@ -1011,15 +1440,13 @@ static void startup() {
                 require(high - low < 15, "glass blurs high-contrast image details");
             }
             QList<QWidget *> opaqueControls{combo};
-            for (auto control : controls->findChildren<QToolButton *>())
-                if (control->isVisible()) opaqueControls.append(control);
             QList<QColor> redControlSamples;
             QList<QColor> redSamples;
             stripes.fill(Qt::red);
             pattern->setPixmap(QPixmap::fromImage(stripes));
             QTest::qWait(150);
             for (QWidget *glass : {surface, static_cast<QWidget *>(toggle)})
-                redSamples.append(glass->grab().toImage().pixelColor(glass->width() / 2, 5));
+                redSamples.append(glass->grab().toImage().pixelColor(glass == surface ? glassSampleX : glass->width() / 2, 5));
             for (auto control : opaqueControls)
                 redControlSamples.append(control->grab().toImage().pixelColor(control->width() / 2, 5));
             stripes.fill(Qt::blue);
@@ -1027,7 +1454,7 @@ static void startup() {
             QTest::qWait(150);
             int sample = 0;
             for (QWidget *glass : {surface, static_cast<QWidget *>(toggle)}) {
-                const auto blue = glass->grab().toImage().pixelColor(glass->width() / 2, 5);
+                const auto blue = glass->grab().toImage().pixelColor(glass == surface ? glassSampleX : glass->width() / 2, 5);
                 require(redSamples[sample].red() - blue.red() > 25 && blue.blue() - redSamples[sample].blue() > 25,
                         "blurred backdrop refreshes when image content changes");
                 ++sample;
@@ -1183,6 +1610,16 @@ static void startup() {
             require(floating->x() >= 0 && floating->geometry().right() < viewer->width(), "toolbar fits narrow viewer");
             fprintf(stderr, "TOOLBAR: window=%d viewer=%d panel=%d controls=%d scroll=%d\n", window->width(), viewer->width(), flyout->width(), controls->width(), flyout->horizontalScrollBar()->maximum());
             capture("viewer-toolbar-narrow");
+            require(flyout->viewport()->height() >= controls->height(), "narrow status pills reserve scrollbar room below controls");
+            auto statusScroll = flyout->horizontalScrollBar();
+            statusScroll->setValue(statusScroll->maximum()); QTest::qWait(80);
+            const QPoint zoomPoint = combo->mapTo(floating, combo->rect().center());
+            require(floating->rect().contains(zoomPoint) && floating->mask().contains(zoomPoint),
+                    "zoom percentage remains reachable at the end of the narrow status strip");
+            combo->showPopup(); QTest::qWait(50);
+            require(combo->view()->isVisible(), "zoom dropdown opens from a scrolled status pill");
+            combo->hidePopup();
+            statusScroll->setValue(statusScroll->minimum()); QTest::qWait(80);
             require(controls->width() <= flyout->viewport()->width() || flyout->horizontalScrollBar()->isVisible(), "narrow toolbar keeps all controls reachable");
             capture("viewer-toolbar-narrow");
             QTest::mouseClick(toggle, Qt::LeftButton);

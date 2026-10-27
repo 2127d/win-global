@@ -5,7 +5,9 @@
 #include <QHash>
 #include <QPointer>
 #include <QIcon>
+#include <QSizePolicy>
 class QLayout;
+class QSpacerItem;
 class QScrollArea;
 class QToolButton;
 class QTimer;
@@ -28,14 +30,19 @@ private:
     void updateGeometryAndMask();
     void refreshBackdrop();
     void refreshTheme();
+    void refreshIcons(bool force = false);
+    bool needsBackdrop() const;
     void updateToggleReveal();
     void updateShadow();
+    void updatePillGeometry();
     void updatePointerProximity(const QPoint &globalPosition);
     QSharedPointer<ToolbarBackdrop> mBackdrop;
     QTimer *mBackdropTimer;
     QTimer *mThemeTimer;
     QHash<QToolButton *, QIcon> mOriginalIcons;
     QHash<QToolButton *, qint64> mThemedIconKeys;
+    QHash<QToolButton *, QIcon> mThemedIcons;
+    bool mThemeDirty = false;
     QRect mCaptureRect;
     QWidget *mViewer;
     QWidget *mControls;
@@ -45,7 +52,9 @@ private:
     QToolButton *mToggle;
     QVariantAnimation *mAnimation;
     QVariantAnimation *mRevealAnimation;
+    QHash<QToolButton *, QPair<Qt::ToolButtonStyle, QSize>> mNativeButtonMetrics;
     QHash<QLayout *, int> mNativeLayoutSpacing;
+    QHash<QSpacerItem *, QPair<QSize, QSizePolicy>> mNativeSpacers;
     QString mNativeStyleSheet;
     bool mControlsDocked = false;
     bool mPointerNear = false;

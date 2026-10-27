@@ -372,7 +372,7 @@ ThumbnailView::ThumbnailView(QWidget *parent)
     setHorizontalScrollMode(ScrollPerPixel);
 
     d->mScheduledThumbnailGenerationTimer.setSingleShot(true);
-    d->mScheduledThumbnailGenerationTimer.setInterval(500);
+    d->mScheduledThumbnailGenerationTimer.setInterval(80);
     connect(&d->mScheduledThumbnailGenerationTimer, &QTimer::timeout, this, &ThumbnailView::generateThumbnailsForItems);
 
     d->mSmoothThumbnailTimer.setSingleShot(true);
@@ -931,6 +931,12 @@ void ThumbnailView::wheelEvent(QWheelEvent *event)
         int width = thumbnailSize().width() + (event->angleDelta().y() > 0 ? 1 : -1) * WHEEL_ZOOM_MULTIPLIER;
         width = qMax(int(MinThumbnailSize), qMin(width, int(MaxThumbnailSize)));
         setThumbnailWidth(width);
+    } else if (!event->pixelDelta().isNull()) {
+        // Preserve the touchpad's pixel motion instead of quantizing it into
+        // wheel notches (some devices send no angle delta at all).
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - event->pixelDelta().x());
+        verticalScrollBar()->setValue(verticalScrollBar()->value() - event->pixelDelta().y());
+        event->accept();
     } else {
         QListView::wheelEvent(event);
     }
@@ -978,83 +984,53 @@ void ThumbnailView::generateThumbnailsForItems()
     // Keep thumbnails around that are at most two "screen heights" away.
     const int discardDistance = visibleRect.bottomRight().manhattanLength() * 2;
 
-    // distance => item
+    // Evict only thumbnails we actually hold. Do not fetch file metadata for
+    // every offscreen row just to discover that it has no cached thumbnail.
+    KFileItemList discarded;
+    for (auto it = d->mThumbnailForUrl.begin(); it != d->mThumbnailForUrl.end();) {
+        const QRect rect = visualRect(it->mIndex);
+        if (!it->mIndex.isValid() || (!rect.intersects(visibleRect)
+            && (rect.center() - origin).manhattanLength() >= discardDistance)) {
+            if (it->mIndex.isValid()) discarded.append(fileItemForIndex(it->mIndex));
+            d->mSmoothThumbnailQueue.removeAll(it.key());
+            it = d->mThumbnailForUrl.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    if (d->mThumbnailProvider && !discarded.isEmpty()) d->mThumbnailProvider->removeItems(discarded);
+
+    // distance => item, with visible images ahead of folders and nearby rows.
     QMultiMap<int, KFileItem> itemMap;
+    const int rowCount = model()->rowCount(rootIndex());
+    for (int row = 0; row < rowCount; ++row) {
+        const QModelIndex index = model()->index(row, 0, rootIndex());
+        const QRect itemRect = visualRect(index);
+        if (!itemRect.isValid()) continue;
+        const bool visible = itemRect.intersects(visibleRect);
+        const int itemDistance = (itemRect.center() - origin).manhattanLength();
+        // Geometry is cheap for the uniform browser grid. MIME detection and
+        // document lookups belong only to the visible and prefetch region.
+        if (!visible && itemDistance >= discardDistance) continue;
 
-    for (int row = 0; row < model()->rowCount(); ++row) {
-        QModelIndex index = model()->index(row, 0);
-        KFileItem item = fileItemForIndex(index);
-        QUrl url = item.url();
-
-        // Filter out remote items if necessary
-        if (!d->mCreateThumbnailsForRemoteUrls && !url.isLocalFile()) {
-            continue;
-        }
-
-        // Filter out archives
-        MimeTypeUtils::Kind kind = MimeTypeUtils::fileItemKind(item);
-        if (kind == MimeTypeUtils::KIND_ARCHIVE) {
-            continue;
-        }
-
-        // Immediately update modified items
+        const KFileItem item = fileItemForIndex(index);
+        const QUrl url = item.url();
+        if (!d->mCreateThumbnailsForRemoteUrls && !url.isLocalFile()) continue;
+        const auto kind = MimeTypeUtils::fileItemKind(item);
+        if (kind == MimeTypeUtils::KIND_ARCHIVE) continue;
         if (d->mDocumentInfoProvider && d->mDocumentInfoProvider->isModified(url)) {
             d->updateThumbnailForModifiedDocument(index);
             continue;
         }
+        const auto it = d->mThumbnailForUrl.constFind(url);
+        if (it != d->mThumbnailForUrl.constEnd() && it.value().isGroupPixAdaptedForSize(d->mThumbnailSize.height())) continue;
 
-        ThumbnailForUrl::ConstIterator it = d->mThumbnailForUrl.constFind(url);
-
-        // Compute distance
-        int distance;
-        const QRect itemRect = visualRect(index);
-        if (itemRect.intersected(visibleRect).isValid()) {
-            // Item is visible, order thumbnails from left to right, top to bottom
-            // Distance is computed so that it is between 0 and visibleSurface
-            distance = itemRect.top() * visibleRect.width() + itemRect.left();
-            // Make sure directory thumbnails are generated after image thumbnails:
-            // Distance is between visibleSurface and 2 * visibleSurface
-            if (kind == MimeTypeUtils::KIND_DIR) {
-                distance = distance + visibleSurface;
-            }
-        } else {
-            // Calculate how far away the thumbnail is to determine if it could
-            // become visible soon.
-            qreal itemDistance = (itemRect.center() - origin).manhattanLength();
-
-            if (itemDistance < discardDistance) {
-                // Item is not visible but within an area that may potentially
-                // become visible soon, order thumbnails according to distance
-                // Start at 2 * visibleSurface to ensure invisible thumbnails are
-                // generated *after* visible thumbnails
-                distance = 2 * visibleSurface + itemDistance;
-            } else {
-                // Discard thumbnails that are too far away to prevent large
-                // directories from consuming massive amounts of RAM.
-                if (it != d->mThumbnailForUrl.constEnd()) {
-                    // Thumbnail exists for this item, discard it.
-                    const QUrl url = item.url();
-                    d->mThumbnailForUrl.remove(url);
-                    d->mSmoothThumbnailQueue.removeAll(url);
-                    d->mThumbnailProvider->removeItems({item});
-                }
-                continue;
-            }
-        }
-
-        // Filter out items which already have a thumbnail
-        if (it != d->mThumbnailForUrl.constEnd() && it.value().isGroupPixAdaptedForSize(d->mThumbnailSize.height())) {
-            continue;
-        }
-
-        // Add the item to our map
+        int distance = visible ? itemRect.top() * visibleRect.width() + itemRect.left()
+                               : 2 * visibleSurface + itemDistance;
+        if (visible && kind == MimeTypeUtils::KIND_DIR) distance += visibleSurface;
         itemMap.insert(distance, item);
-
-        // Insert the thumbnail in mThumbnailForUrl, so that
-        // setThumbnail() can find the item to update
         if (it == d->mThumbnailForUrl.constEnd()) {
-            Thumbnail thumbnail = Thumbnail(QPersistentModelIndex(index), item.time(KFileItem::ModificationTime));
-            d->mThumbnailForUrl.insert(url, thumbnail);
+            d->mThumbnailForUrl.insert(url, Thumbnail(QPersistentModelIndex(index), item.time(KFileItem::ModificationTime)));
         }
     }
 

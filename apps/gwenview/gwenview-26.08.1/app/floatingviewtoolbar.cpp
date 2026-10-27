@@ -24,6 +24,8 @@
 #include <QSignalBlocker>
 #include <QStyle>
 #include <QToolButton>
+#include <QToolBar>
+#include <QScrollBar>
 #include <QVariantAnimation>
 
 namespace Gwenview {
@@ -68,11 +70,11 @@ QImage blurBackdrop(QImage image)
     return image;
 }
 
-void paintGlass(QPainter &painter, QWidget *widget, const ToolbarBackdrop &backdrop)
+void paintGlass(QPainter &painter, QWidget *widget, const ToolbarBackdrop &backdrop, QRectF bounds = QRectF())
 {
     painter.setRenderHint(QPainter::Antialiasing);
     const auto palette = widget->palette();
-    const QRectF bounds = QRectF(widget->rect()).adjusted(1, 1, -1, -1);
+    if (bounds.isEmpty()) bounds = QRectF(widget->rect()).adjusted(1, 1, -1, -1);
     const qreal radius = bounds.height() / 2;
     if (!backdrop.image.isNull()) {
         QPainterPath clip;
@@ -87,23 +89,22 @@ void paintGlass(QPainter &painter, QWidget *widget, const ToolbarBackdrop &backd
     QColor tint = palette.color(QPalette::Window);
     const bool dark = tint.lightness() < 128;
     QLinearGradient body(bounds.topLeft(), bounds.bottomLeft());
-    tint.setAlpha(dark ? 185 : 170);
+    tint.setAlpha(dark ? 205 : 195);
     body.setColorAt(0, tint);
-    tint.setAlpha(dark ? 155 : 140);
+    tint.setAlpha(dark ? 185 : 175);
     body.setColorAt(1, tint);
-    painter.setPen(QPen(QColor(0, 0, 0, dark ? 95 : 35), 1));
+    painter.setPen(QPen(QColor(0, 0, 0, dark ? 75 : 26), 1));
     painter.setBrush(body);
     painter.drawRoundedRect(bounds, radius, radius);
 
     QLinearGradient sheen(bounds.topLeft(), bounds.bottomLeft());
-    sheen.setColorAt(0, QColor(255, 255, 255, dark ? 28 : 55));
-    sheen.setColorAt(0.48, QColor(255, 255, 255, 12));
-    sheen.setColorAt(0.52, QColor(255, 255, 255, 0));
-    sheen.setColorAt(1, QColor(255, 255, 255, dark ? 10 : 32));
+    sheen.setColorAt(0, QColor(255, 255, 255, dark ? 20 : 40));
+    sheen.setColorAt(0.6, QColor(255, 255, 255, 0));
+    sheen.setColorAt(1, QColor(255, 255, 255, dark ? 5 : 18));
     QLinearGradient rim(bounds.topLeft(), bounds.bottomLeft());
-    rim.setColorAt(0, QColor(255, 255, 255, dark ? 65 : 130));
+    rim.setColorAt(0, QColor(255, 255, 255, dark ? 45 : 100));
     rim.setColorAt(0.5, QColor(255, 255, 255, 30));
-    rim.setColorAt(1, QColor(255, 255, 255, dark ? 24 : 65));
+    rim.setColorAt(1, QColor(255, 255, 255, dark ? 16 : 45));
     painter.setPen(QPen(QBrush(rim), 1));
     painter.setBrush(sheen);
     painter.drawRoundedRect(bounds.adjusted(1, 1, -1, -1), radius - 1, radius - 1);
@@ -119,14 +120,17 @@ public:
         hide();
     }
     QRectF panel;
+    QList<QRectF> pills;
     QRectF toggle;
     qreal toggleOpacity = 0;
 protected:
     void paintEvent(QPaintEvent *) override
     {
         QPainter painter(this);
-        paintFloatingShadow(painter, panel, 22, palette(), true);
-        paintFloatingShadow(painter, toggle, 22, palette(), true, toggleOpacity);
+        const qreal weight = palette().color(QPalette::Window).lightness() < 128 ? 0.8 : 0.6;
+        paintFloatingShadow(painter, panel, 22, palette(), true, weight);
+        for (const QRectF &pill : pills) paintFloatingShadow(painter, pill, 22, palette(), true, weight);
+        paintFloatingShadow(painter, toggle, 22, palette(), true, toggleOpacity * weight);
     }
 };
 
@@ -134,13 +138,19 @@ class ToolbarSurface : public QWidget {
 public:
     ToolbarSurface(QWidget *parent, const QSharedPointer<ToolbarBackdrop> &backdrop)
         : QWidget(parent), mBackdrop(backdrop) {}
+    bool grouped = false;
+    QList<QRectF> pills;
 private:
     QSharedPointer<ToolbarBackdrop> mBackdrop;
 protected:
     void paintEvent(QPaintEvent *) override
     {
         QPainter painter(this);
-        paintGlass(painter, this, *mBackdrop);
+        if (grouped) {
+            for (const QRectF &pill : pills) paintGlass(painter, this, *mBackdrop, pill);
+        } else {
+            paintGlass(painter, this, *mBackdrop);
+        }
     }
 };
 
@@ -228,6 +238,7 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     // The clipped scroll area lets every native control remain reachable even
     // when the image pane is too narrow to fit the entire toolbar in one row.
     mSurface = new ToolbarSurface(this, mBackdrop);
+    static_cast<ToolbarSurface *>(mSurface)->grouped = true;
     mSurface->hide();
     mPanel = new QScrollArea(mSurface);
     mPanel->setObjectName(position == TopRight ? QStringLiteral("mainToolbarFlyout") : QStringLiteral("imageToolbarFlyout"));
@@ -236,13 +247,32 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     mPanel->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mPanel->setWidget(controls);
+    connect(mPanel->horizontalScrollBar(), &QScrollBar::valueChanged, this, [this] {
+        updatePillGeometry(); updateShadow();
+    });
     mPanel->setAlignment(Qt::AlignVCenter);
     mPanel->viewport()->setBackgroundRole(QPalette::Window);
     mControls->setBackgroundRole(QPalette::Window);
     mNativeStyleSheet = mControls->styleSheet();
+    for (auto button : controls->findChildren<QToolButton *>()) {
+        if (button->property("floatingPillGroup").toInt() == 1)
+            mNativeButtonMetrics.insert(button, {button->toolButtonStyle(), button->iconSize()});
+    }
     for (auto layout : mControls->findChildren<QLayout *>()) {
         mNativeLayoutSpacing.insert(layout, layout->spacing());
         layout->setSpacing(6);
+    }
+    // The status bar already separates its logical groups with stretch items.
+    // Reserve actual air between the floating pills, then restore those items
+    // exactly when KDE docks the original controls again.
+    if (position == BottomRight && controls->layout()) {
+        for (int i = 0; i < controls->layout()->count(); ++i) {
+            if (auto spacer = controls->layout()->itemAt(i)->spacerItem()) {
+                mNativeSpacers.insert(spacer, {spacer->sizeHint(), spacer->sizePolicy()});
+                spacer->changeSize(20, 0, QSizePolicy::Fixed, QSizePolicy::Minimum);
+            }
+        }
+        controls->layout()->invalidate();
     }
     mPanel->hide();
     mToggle = new ToolbarButton(this, mBackdrop);
@@ -305,7 +335,10 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     });
     mThemeTimer = new QTimer(this);
     mThemeTimer->setSingleShot(true);
-    connect(mThemeTimer, &QTimer::timeout, this, &FloatingViewToolbar::refreshTheme);
+    connect(mThemeTimer, &QTimer::timeout, this, [this] {
+        if (mThemeDirty) refreshTheme();
+        else refreshIcons();
+    });
     // ApplicationPaletteChange reaches top-level windows even when a child has
     // an explicit palette, so listen at the application instead of the viewer.
     qApp->installEventFilter(this);
@@ -329,6 +362,14 @@ void FloatingViewToolbar::updateShadow()
     shadow->toggle = QRectF(mToggle->geometry()).adjusted(1, 1, -1, -1).translated(padding);
     shadow->panel = mProgress > 0
         ? QRectF(mSurface->geometry().intersected(rect())).adjusted(1, 1, -1, -1).translated(padding) : QRectF();
+    shadow->pills.clear();
+    {
+        shadow->panel = QRectF();
+        for (const QRectF &pill : static_cast<ToolbarSurface *>(mSurface)->pills) {
+            const QRectF visible = pill.translated(mSurface->pos()).intersected(QRectF(rect()));
+            if (!visible.isEmpty()) shadow->pills.append(visible.translated(padding));
+        }
+    }
     shadow->toggleOpacity = mToggle->property("revealOpacity").toReal();
     shadow->setVisible(isVisible() && !mControlsDocked && (mProgress > 0 || shadow->toggleOpacity > 0));
     shadow->stackUnder(this);
@@ -372,16 +413,27 @@ void FloatingViewToolbar::setControlsDocked(QWidget *parent)
             if (!original.name().isEmpty()) original = QIcon::fromTheme(original.name(), original);
             button->setIcon(original);
         }
+        for (auto it = mNativeButtonMetrics.cbegin(); it != mNativeButtonMetrics.cend(); ++it) {
+            it.key()->setToolButtonStyle(it.value().first);
+            it.key()->setIconSize(it.value().second);
+        }
         mOriginalIcons.clear();
         mThemedIconKeys.clear();
+        mThemedIcons.clear();
         for (auto it = mNativeLayoutSpacing.cbegin(); it != mNativeLayoutSpacing.cend(); ++it)
             it.key()->setSpacing(it.value());
+        for (auto it = mNativeSpacers.cbegin(); it != mNativeSpacers.cend(); ++it)
+            it.key()->changeSize(it.value().first.width(), it.value().first.height(),
+                                 it.value().second.horizontalPolicy(), it.value().second.verticalPolicy());
+        mControls->layout()->invalidate();
         parent->layout()->addWidget(mControls);
         mControls->show();
     } else {
         mControls->parentWidget()->layout()->removeWidget(mControls);
         mPanel->setWidget(mControls);
         for (auto layout : mControls->findChildren<QLayout *>()) layout->setSpacing(6);
+        for (auto spacer : mNativeSpacers.keys()) spacer->changeSize(20, 0, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        mControls->layout()->invalidate();
         refreshTheme();
         mControls->show();
         show();
@@ -461,15 +513,17 @@ bool FloatingViewToolbar::eventFilter(QObject *object, QEvent *event)
     if (event->type() == QEvent::ApplicationPaletteChange || event->type() == QEvent::ApplicationFontChange
         || (object == window() && (event->type() == QEvent::ThemeChange || event->type() == QEvent::StyleChange))
         || (event->type() == QEvent::ActionChanged && qobject_cast<QToolButton *>(object)
-            && isAncestorOf(static_cast<QWidget *>(object)))) {
+            && isAncestorOf(static_cast<QWidget *>(object))
+            && static_cast<QToolButton *>(object)->icon().cacheKey() != mThemedIconKeys.value(static_cast<QToolButton *>(object)))) {
         // Defer until Qt and the platform theme finish updating their palettes
         // and actions. Repeated notifications coalesce into one refresh.
+        if (event->type() != QEvent::ActionChanged) mThemeDirty = true;
         if (!mThemeTimer->isActive()) mThemeTimer->start();
     }
     auto view = qobject_cast<QGraphicsView *>(mViewer);
     // Capture on the next event turn, never recursively from a viewport paint.
     if (view && object == view->viewport() && event->type() == QEvent::Paint
-        && isVisible() && !mBackdropTimer->isActive()) mBackdropTimer->start();
+        && needsBackdrop() && !mBackdropTimer->isActive()) mBackdropTimer->start();
     if ((object == mViewer && (event->type() == QEvent::Resize || event->type() == QEvent::Show))
         || (object == mControls && event->type() == QEvent::LayoutRequest)
         || (object == mControls && event->type() == QEvent::StyleChange)) {
@@ -503,16 +557,17 @@ void FloatingViewToolbar::updateGeometryAndMask()
     const QSize wanted = mControls->sizeHint().expandedTo(mControls->minimumSizeHint());
     const int available = qMax(1, mViewer->width() - 2 * EdgeMargin - ButtonSize - Gap);
     const int fullWidth = qMin(wanted.width() + 2 * PanelHorizontalInset, available);
-    const int height = ButtonSize;
+    const bool overflow = wanted.width() + 2 * PanelHorizontalInset > available;
+    const int height = ButtonSize + (overflow ? mPanel->horizontalScrollBar()->sizeHint().height() : 0);
     const int top = mPosition == TopRight ? EdgeMargin : mViewer->height() - EdgeMargin - height;
     mCaptureRect = QRect(mViewer->width() - EdgeMargin - fullWidth - Gap - ButtonSize,
                          top, fullWidth + Gap + ButtonSize, height).adjusted(-24, -24, 24, 24);
-    if (mCaptureRect != mBackdrop->rect && !mBackdropTimer->isActive()) mBackdropTimer->start();
+    if (needsBackdrop() && mCaptureRect != mBackdrop->rect && !mBackdropTimer->isActive()) mBackdropTimer->start();
     mControls->resize(wanted.width(), wanted.height());
     const int revealed = qRound(fullWidth * mProgress);
     const int width = ButtonSize + (revealed > 0 ? Gap + revealed : 0);
     setGeometry(qMax(0, mViewer->width() - EdgeMargin - width), qMax(0, top), width, height);
-    mToggle->move(width - ButtonSize, (height - ButtonSize) / 2);
+    mToggle->move(width - ButtonSize, 0);
     // Move the full panel leftward as it emerges from behind the fixed button.
     mSurface->setGeometry(revealed - fullWidth, 0, fullWidth, height);
     mPanel->setGeometry(PanelHorizontalInset, PanelVerticalInset,
@@ -525,13 +580,67 @@ void FloatingViewToolbar::updateGeometryAndMask()
     mToggle->raise();
     raise();
     updateToggleReveal();
+    updatePillGeometry();
     updateShadow();
+}
+
+void FloatingViewToolbar::updatePillGeometry()
+{
+    auto toolbar = qobject_cast<QToolBar *>(mControls);
+    auto surface = static_cast<ToolbarSurface *>(mSurface);
+    QList<QRectF> pills;
+    QRect group;
+    if (mControls->layout()) mControls->layout()->activate();
+    const QPoint origin = mControls->mapTo(mSurface, QPoint());
+    auto append = [&] {
+        if (group.isEmpty()) return;
+        QRectF pill(group.translated(origin));
+        pill.setTop(1); pill.setHeight(ButtonSize - 2);
+        pill.adjust(-6, 0, 6, 0);
+        pill = pill.intersected(QRectF(mSurface->rect()));
+        if (!pill.isEmpty()) pills.append(pill);
+        group = QRect();
+    };
+    if (toolbar) {
+        for (auto action : toolbar->actions()) {
+            if (action->isSeparator()) { append(); continue; }
+            if (!action->isVisible()) continue;
+            if (auto widget = toolbar->widgetForAction(action); widget && !widget->isHidden())
+                group = group.united(toolbar->actionGeometry(action));
+        }
+    } else if (auto layout = mControls->layout()) {
+        int previousGroup = -1;
+        for (int i = 0; i < layout->count(); ++i) {
+            auto widget = layout->itemAt(i)->widget();
+            if (!widget || widget->isHidden()) continue;
+            const int family = widget->property("floatingPillGroup").toInt();
+            if (previousGroup != -1 && family != previousGroup) append();
+            group = group.united(widget->geometry());
+            previousGroup = family;
+        }
+    }
+    append();
+    if (surface->pills != pills) { surface->pills = pills; surface->update(); }
+    // Separate pills should also behave as separate floating hit areas.
+    QPainterPath hitAreas;
+    hitAreas.addEllipse(QRectF(mToggle->geometry()));
+    for (const QRectF &pill : pills)
+        hitAreas.addRoundedRect(pill.translated(mSurface->pos()), 21, 21);
+    auto scroll = mPanel->horizontalScrollBar();
+    if (scroll->isVisible()) hitAreas.addRect(QRectF(scroll->mapTo(this, QPoint()), scroll->size()));
+    const QRegion region = QRegion(hitAreas.toFillPolygon().toPolygon()).intersected(rect());
+    if (mask() != region) setMask(region);
 }
 
 void FloatingViewToolbar::refreshTheme()
 {
     if (mControlsDocked) return;
+    mThemeDirty = false;
     // Keep image-background choices separate from the system control palette.
+    for (auto button : mNativeButtonMetrics.keys()) {
+        button->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        button->setIconSize(QSize(22, 22));
+    }
     const QPalette system = qApp->palette();
     setPalette(system);
     mSurface->setPalette(system);
@@ -550,11 +659,11 @@ void FloatingViewToolbar::refreshTheme()
     // running application switches between light and dark system schemes.
     const QColor foreground = controls.color(QPalette::ButtonText);
     const QColor background = controls.color(QPalette::Button);
-    const QString css = QStringLiteral(R"(
+    QString css = QStringLiteral(R"(
         QToolBar { background: transparent; border: none; padding: 0px; spacing: 6px; }
         QToolBar::separator { background: %1; width: 1px; margin: 6px 2px; }
         QToolButton {
-            min-height: 26px; max-height: 26px;
+            min-height: 28px; max-height: 28px;
             border: 1px solid %1; border-radius: 14px;
             background: %2; padding: 0px 9px; color: %3;
         }
@@ -580,6 +689,18 @@ void FloatingViewToolbar::refreshTheme()
            controls.color(QPalette::Highlight).name(), controls.color(QPalette::HighlightedText).name(),
            controls.color(QPalette::Disabled, QPalette::ButtonText).name(),
            mixedColor(background, foreground, 0.05).name(), controls.color(QPalette::Base).name());
+    {
+        css += QStringLiteral(R"(
+            QToolBar { spacing: 3px; }
+            QToolBar::separator { background: transparent; width: 16px; margin: 0px; }
+            QToolButton { background: transparent; border: 1px solid transparent; border-radius: 15px; padding: 0px 8px; }
+            QToolButton:hover { background: %1; border-color: transparent; }
+            QToolButton:checked, QToolButton:pressed { background: %2; border-color: %2; color: %3; }
+            QToolButton:focus { border-color: %2; }
+            QToolButton:disabled { background: transparent; border-color: transparent; }
+        )").arg(mixedColor(background, foreground, 0.10).name(), controls.color(QPalette::Highlight).name(),
+                controls.color(QPalette::HighlightedText).name());
+    }
     if (mControls->styleSheet() != css) mControls->setStyleSheet(css);
     // No combo-box stylesheet or custom arrow: the field and popup are drawn
     // by the system style, with opaque theme surfaces and current text colors.
@@ -588,21 +709,7 @@ void FloatingViewToolbar::refreshTheme()
         combo->view()->setPalette(controls);
         combo->view()->window()->setPalette(controls);
     }
-    for (auto button : findChildren<QToolButton *>()) {
-        QIcon source;
-        if (button->defaultAction()) {
-            source = button->defaultAction()->icon();
-        } else {
-            if (!mOriginalIcons.contains(button) || button->icon().cacheKey() != mThemedIconKeys.value(button))
-                mOriginalIcons.insert(button, button->icon());
-            source = mOriginalIcons.value(button);
-        }
-        if (!source.name().isEmpty()) source = QIcon::fromTheme(source.name(), source);
-        if (!source.isNull()) {
-            button->setIcon(QIcon(new ToolbarIconEngine(source, controls, button != mToggle)));
-            mThemedIconKeys.insert(button, button->icon().cacheKey());
-        }
-    }
+    refreshIcons(true);
     mPanel->setAutoFillBackground(false);
     mPanel->viewport()->setAutoFillBackground(false);
     mControls->setAutoFillBackground(false);
@@ -611,10 +718,43 @@ void FloatingViewToolbar::refreshTheme()
     mToggle->update();
 }
 
+// QAction state changes can reset a button's icon even when its artwork has
+// not changed. Reuse its tinted icon without restyling or laying out the bar again.
+void FloatingViewToolbar::refreshIcons(bool force)
+{
+    if (mControlsDocked) return;
+    const QPalette controls = mControls->palette();
+    for (auto button : findChildren<QToolButton *>()) {
+        const QIcon current = button->icon();
+        if (!force && current.cacheKey() == mThemedIconKeys.value(button)) continue;
+        QIcon source = button->defaultAction() ? button->defaultAction()->icon()
+            : current.cacheKey() == mThemedIconKeys.value(button) ? mOriginalIcons.value(button) : current;
+        if (force && !source.name().isEmpty()) source = QIcon::fromTheme(source.name(), source);
+        // KDE's thumbnail toggle is text-only. Supply an icon only for its
+        // floating presentation; its original action and docked look stay intact.
+        if (source.isNull() && button->defaultAction()
+            && button->defaultAction()->objectName() == QLatin1String("toggle_thumbnailbar"))
+            source = QIcon::fromTheme(QStringLiteral("view-preview"), style()->standardIcon(QStyle::SP_FileDialogContentsView));
+        if (source.isNull()) continue;
+        if (force || !mThemedIcons.contains(button) || source.cacheKey() != mOriginalIcons.value(button).cacheKey()) {
+            mOriginalIcons.insert(button, source);
+            mThemedIcons.insert(button, QIcon(new ToolbarIconEngine(source, controls, button != mToggle)));
+        }
+        button->setIcon(mThemedIcons.value(button));
+        mThemedIconKeys.insert(button, button->icon().cacheKey());
+    }
+}
+
+bool FloatingViewToolbar::needsBackdrop() const
+{
+    return !mControlsDocked && isVisible()
+        && (mProgress > 0 || mToggle->property("revealOpacity").toReal() > 0);
+}
+
 void FloatingViewToolbar::refreshBackdrop()
 {
     auto view = qobject_cast<QGraphicsView *>(mViewer);
-    if (!view || !isVisible() || mCaptureRect.isEmpty()) return;
+    if (!view || !needsBackdrop() || mCaptureRect.isEmpty()) return;
     const QRect capture = mCaptureRect.intersected(QRect(view->viewport()->mapTo(mViewer, QPoint()), view->viewport()->size()));
     if (capture.isEmpty()) return;
     QImage image(QSize(qMax(1, capture.width() / 4), qMax(1, capture.height() / 4)), QImage::Format_RGB32);

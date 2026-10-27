@@ -582,32 +582,32 @@
   "actions/16/application-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/16/canvasmenu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/16/hamburger-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/16/open-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/16/open-menu-symbolic.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/16/xfce-wm-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/16/overflow-menu.svg": {
     "symbol": "more_horiz",
@@ -5397,32 +5397,32 @@
   "actions/22/application-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "daaed053589418364318f9b509e235fcf9849c02775401bd649f64e85adec428"
+    "sha256": "9a6987dccc430b60897638241f4bd1e32078768ef898e9e04ca2f521454cb1f8"
   },
   "actions/22/canvasmenu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "daaed053589418364318f9b509e235fcf9849c02775401bd649f64e85adec428"
+    "sha256": "9a6987dccc430b60897638241f4bd1e32078768ef898e9e04ca2f521454cb1f8"
   },
   "actions/22/hamburger-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "daaed053589418364318f9b509e235fcf9849c02775401bd649f64e85adec428"
+    "sha256": "9a6987dccc430b60897638241f4bd1e32078768ef898e9e04ca2f521454cb1f8"
   },
   "actions/22/open-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "daaed053589418364318f9b509e235fcf9849c02775401bd649f64e85adec428"
+    "sha256": "9a6987dccc430b60897638241f4bd1e32078768ef898e9e04ca2f521454cb1f8"
   },
   "actions/22/open-menu-symbolic.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "daaed053589418364318f9b509e235fcf9849c02775401bd649f64e85adec428"
+    "sha256": "9a6987dccc430b60897638241f4bd1e32078768ef898e9e04ca2f521454cb1f8"
   },
   "actions/22/xfce-wm-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "daaed053589418364318f9b509e235fcf9849c02775401bd649f64e85adec428"
+    "sha256": "9a6987dccc430b60897638241f4bd1e32078768ef898e9e04ca2f521454cb1f8"
   },
   "actions/22/overflow-menu.svg": {
     "symbol": "more_horiz",
@@ -10302,32 +10302,32 @@
   "actions/24/application-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "dc424394a983da0d34e2776e484a7b6d29b75f3ce5f315afc76d61644495d3b4"
+    "sha256": "f99187f55e76dab6d6e5111a2e62dd6f3c99027b44e8a31677fc8e0bef5c852f"
   },
   "actions/24/canvasmenu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "dc424394a983da0d34e2776e484a7b6d29b75f3ce5f315afc76d61644495d3b4"
+    "sha256": "f99187f55e76dab6d6e5111a2e62dd6f3c99027b44e8a31677fc8e0bef5c852f"
   },
   "actions/24/hamburger-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "dc424394a983da0d34e2776e484a7b6d29b75f3ce5f315afc76d61644495d3b4"
+    "sha256": "f99187f55e76dab6d6e5111a2e62dd6f3c99027b44e8a31677fc8e0bef5c852f"
   },
   "actions/24/open-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "dc424394a983da0d34e2776e484a7b6d29b75f3ce5f315afc76d61644495d3b4"
+    "sha256": "f99187f55e76dab6d6e5111a2e62dd6f3c99027b44e8a31677fc8e0bef5c852f"
   },
   "actions/24/open-menu-symbolic.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "dc424394a983da0d34e2776e484a7b6d29b75f3ce5f315afc76d61644495d3b4"
+    "sha256": "f99187f55e76dab6d6e5111a2e62dd6f3c99027b44e8a31677fc8e0bef5c852f"
   },
   "actions/24/xfce-wm-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "dc424394a983da0d34e2776e484a7b6d29b75f3ce5f315afc76d61644495d3b4"
+    "sha256": "f99187f55e76dab6d6e5111a2e62dd6f3c99027b44e8a31677fc8e0bef5c852f"
   },
   "actions/24/overflow-menu.svg": {
     "symbol": "more_horiz",
@@ -15207,27 +15207,27 @@
   "actions/32/application-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "da12024c6ecefb09fa367dac18c077f7561d2d34bdfd11d5d0af50736033903e"
+    "sha256": "d8a7fcddf623adf2c1c9ea785c252e8194affc0e70320a5627114a1ca4b8bf53"
   },
   "actions/32/canvasmenu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "da12024c6ecefb09fa367dac18c077f7561d2d34bdfd11d5d0af50736033903e"
+    "sha256": "d8a7fcddf623adf2c1c9ea785c252e8194affc0e70320a5627114a1ca4b8bf53"
   },
   "actions/32/hamburger-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "da12024c6ecefb09fa367dac18c077f7561d2d34bdfd11d5d0af50736033903e"
+    "sha256": "d8a7fcddf623adf2c1c9ea785c252e8194affc0e70320a5627114a1ca4b8bf53"
   },
   "actions/32/open-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "da12024c6ecefb09fa367dac18c077f7561d2d34bdfd11d5d0af50736033903e"
+    "sha256": "d8a7fcddf623adf2c1c9ea785c252e8194affc0e70320a5627114a1ca4b8bf53"
   },
   "actions/32/xfce-wm-menu.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "da12024c6ecefb09fa367dac18c077f7561d2d34bdfd11d5d0af50736033903e"
+    "sha256": "d8a7fcddf623adf2c1c9ea785c252e8194affc0e70320a5627114a1ca4b8bf53"
   },
   "actions/32/overflow-menu.svg": {
     "symbol": "more_horiz",
@@ -19942,27 +19942,27 @@
   "actions/symbolic/application-menu-symbolic.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/symbolic/canvasmenu-symbolic.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/symbolic/hamburger-menu-symbolic.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/symbolic/open-menu-symbolic.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/symbolic/xfce-wm-menu-symbolic.svg": {
     "symbol": "menu",
     "role": "Text",
-    "sha256": "4efdf7e8e2ebe0f9d2a9f0c1b32f358925f352acb0b335c0c0139f199fb32176"
+    "sha256": "c978f67674775ead7db046fccb6ea9a8b03f817f7a163ec78004e694a1b693f2"
   },
   "actions/symbolic/overflow-menu-symbolic.svg": {
     "symbol": "more_horiz",

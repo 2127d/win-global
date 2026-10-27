@@ -157,8 +157,14 @@ def symbolic_name(name):
 @lru_cache(maxsize=None)
 def svg(symbol, size, foreground, role='Text'):
     optical = 20 if size <= 22 else 24
-    authored = symbol.startswith('sequoia_') or symbol in SOFT_CONTROLS
-    if authored:
+    authored = symbol == 'menu' or symbol.startswith('sequoia_') or symbol in SOFT_CONTROLS
+    if symbol == 'menu':
+        # Taller classic: retain equal rounded strokes with more vertical presence.
+        paths = ('<g fill="none" stroke="currentColor" stroke-width="1.8" '
+                 'stroke-linecap="round" stroke-linejoin="round">'
+                 '<path d="M4 5.5h16M4 12h16M4 18.5h16"/></g>')
+        viewbox, cx, cy = '0 0 24 24', 12, 12
+    elif authored:
         paths = state_geometry('sequoia_soft_'+SOFT_CONTROLS[symbol] if symbol in SOFT_CONTROLS else symbol)
         viewbox, cx, cy = '0 0 24 24', 12, 12
     else:

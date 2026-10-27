@@ -99,6 +99,7 @@ private:
     FullScreenToolBar *mImageToolBar;
     QBoxLayout *mControlLayout = nullptr;
     ThumbnailBarView *mThumbnailBar;
+    QWidget *mThumbnailSurface;
     QLabel *mInformationLabel;
     QLabel *mDocumentCountLabel;
     QWidget *mInformationContainer;

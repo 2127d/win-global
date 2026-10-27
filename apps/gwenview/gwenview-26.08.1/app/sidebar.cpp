@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QTextLayout>
 #include <QScrollBar>
 #include <QTimer>
+#include <QPointer>
+#include <QVariantAnimation>
 #include <QMenu>
 #include <QScrollArea>
 #include <QStackedLayout>
@@ -508,7 +510,89 @@ public:
         tabBar()->setDrawBase(false);
         tabBar()->setAutoFillBackground(false);
         setTabPosition(QTabWidget::South);
+        mSlide = new QVariantAnimation(this);
+        mSlide->setObjectName(QStringLiteral("sidebarSlideAnimation"));
+        mSlide->setDuration(140);
+        mSlide->setEasingCurve(QEasingCurve::OutCubic);
+        mSlide->setStartValue(0.0);
+        mSlide->setEndValue(1.0);
+        connect(mSlide, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
+            if (!mIncoming || !mOutgoing) return;
+            const int shift = qRound(mPageGeometry.width() * value.toReal());
+            mOutgoing->move(mPageGeometry.topLeft() - QPoint(mDirection * shift, 0));
+            mIncoming->move(mPageGeometry.topLeft() + QPoint(mDirection * (mPageGeometry.width() - shift), 0));
+        });
+        connect(mSlide, &QVariantAnimation::finished, this, [this] { finishSlide(); });
+        connect(this, &QTabWidget::currentChanged, this, [this](int index) { slideTo(index); });
     }
+protected:
+    void showEvent(QShowEvent *event) override
+    {
+        finishSlide();
+        QTabWidget::showEvent(event);
+        mLastPage = currentWidget();
+    }
+    void hideEvent(QHideEvent *event) override
+    {
+        finishSlide();
+        QTabWidget::hideEvent(event);
+    }
+    void resizeEvent(QResizeEvent *event) override
+    {
+        finishSlide();
+        QTabWidget::resizeEvent(event);
+    }
+    void changeEvent(QEvent *event) override
+    {
+        if (event->type() == QEvent::StyleChange || event->type() == QEvent::LayoutDirectionChange)
+            finishSlide();
+        QTabWidget::changeEvent(event);
+    }
+private:
+    void finishSlide()
+    {
+        if (!mSlide) return;
+        mSlide->stop();
+        if (mOutgoing) {
+            mOutgoing->setAttribute(Qt::WA_TransparentForMouseEvents, mOutgoingMouseTransparent);
+            if (mOutgoing != currentWidget()) mOutgoing->hide();
+            mOutgoing->move(mPageGeometry.topLeft());
+        }
+        if (mIncoming) mIncoming->move(mPageGeometry.topLeft());
+        mOutgoing.clear();
+        mIncoming.clear();
+    }
+    void slideTo(int index)
+    {
+        // Retarget immediately on rapid clicks; never queue transitions.
+        finishSlide();
+        QWidget *previous = mLastPage;
+        QWidget *next = widget(index);
+        mLastPage = next;
+        if (!previous || !next || previous == next || !isVisible()
+            || style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, this) == 0) return;
+        mPageGeometry = next->geometry();
+        if (mPageGeometry.isEmpty()) return;
+        mDirection = index > indexOf(previous) ? 1 : -1;
+        if (isRightToLeft()) mDirection = -mDirection;
+        mOutgoing = previous;
+        mIncoming = next;
+        mOutgoingMouseTransparent = previous->testAttribute(Qt::WA_TransparentForMouseEvents);
+        previous->setAttribute(Qt::WA_TransparentForMouseEvents);
+        previous->setGeometry(mPageGeometry);
+        previous->show();
+        next->move(mPageGeometry.topLeft() + QPoint(mDirection * mPageGeometry.width(), 0));
+        next->raise();
+        // Live pages remain clipped by their stack; the footer never moves.
+        mSlide->start();
+    }
+    QVariantAnimation *mSlide = nullptr;
+    QPointer<QWidget> mLastPage;
+    QPointer<QWidget> mOutgoing;
+    QPointer<QWidget> mIncoming;
+    QRect mPageGeometry;
+    int mDirection = 1;
+    bool mOutgoingMouseTransparent = false;
 };
 
 struct SideBarPrivate {

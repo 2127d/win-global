@@ -63,9 +63,14 @@ public:
         setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         mLayout->setContentsMargins(0, 0, 0, 0); mLayout->setSpacing(3);
     }
-    void addAction(QAction *action) { mLayout->addWidget(new FullScreenButton(action, this)); }
-    void addSeparator() { mLayout->addSpacing(6); }
+    void addAction(QAction *action)
+    {
+        if (!mPill) { mPill = new FullScreenPill(this); mLayout->addWidget(mPill); }
+        mPill->layout()->addWidget(new FullScreenButton(action, mPill));
+    }
+    void addSeparator() { mPill = nullptr; }
 private:
+    FullScreenPill *mPill = nullptr;
     QHBoxLayout *mLayout;
 };
 
@@ -128,6 +133,7 @@ void FullScreenContent::init(KActionCollection *actionCollection, QWidget *autoH
 
     // mContent
     mContent = new FullScreenSurface;
+    static_cast<FullScreenSurface *>(mContent)->setFloating(false);
     mContent->setObjectName(QStringLiteral("fullscreenSurface"));
     mContent->setMaximumWidth(1200);
     mContent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -139,13 +145,17 @@ void FullScreenContent::init(KActionCollection *actionCollection, QWidget *autoH
 
     mToolBar = new FullScreenToolBar(mContent);
     mToolBar->setObjectName(QStringLiteral("fullscreenNavigation"));
-    for (const char *name : {"toggle_sidebar", "browse", "go_previous", "toggle_slideshow", "go_next"})
+    for (const char *name : {"toggle_sidebar", "browse", "go_previous", "toggle_slideshow", "go_next"}) {
+        if (qstrcmp(name, "go_previous") == 0) mToolBar->addSeparator();
         mToolBar->addAction(actionCollection->action(QString::fromLatin1(name)));
+    }
 
     mImageToolBar = new FullScreenToolBar(mContent);
     mImageToolBar->setObjectName(QStringLiteral("fullscreenImageControls"));
-    for (const char *name : {"view_zoom_out", "view_zoom_in", "view_zoom_to_fit", "view_actual_size", "rotate_left", "rotate_right"})
+    for (const char *name : {"view_zoom_out", "view_zoom_in", "view_zoom_to_fit", "view_actual_size", "rotate_left", "rotate_right"}) {
+        if (qstrcmp(name, "rotate_left") == 0) mImageToolBar->addSeparator();
         mImageToolBar->addAction(actionCollection->action(QString::fromLatin1(name)));
+    }
 
     mInformationLabel = new QLabel;
     mInformationLabel->setObjectName(QStringLiteral("fullscreenImageInformation"));
@@ -171,18 +181,29 @@ void FullScreenContent::init(KActionCollection *actionCollection, QWidget *autoH
     mInformationContainer = new QWidget;
     auto header = new QHBoxLayout(mInformationContainer);
     header->setContentsMargins(0, 0, 0, 0); header->setSpacing(8);
-    header->addWidget(mInformationLabel, 1);
-    header->addWidget(mDocumentCountLabel);
+    auto informationPill = new FullScreenPill(mInformationContainer);
+    informationPill->setObjectName(QStringLiteral("fullscreenInformationPill"));
+    auto informationLayout = static_cast<QHBoxLayout *>(informationPill->layout());
+    informationLayout->setSpacing(12);
+    informationLayout->addWidget(mInformationLabel, 1);
+    informationLayout->addWidget(mDocumentCountLabel);
+    header->addWidget(informationPill, 1);
     header->addWidget(mRightToolBar);
 
     mThumbnailBar = new ThumbnailBarView(mContent);
+    mThumbnailSurface = new FullScreenSurface(mContent);
+    mThumbnailSurface->setObjectName(QStringLiteral("fullscreenPreviewSurface"));
+    static_cast<FullScreenSurface *>(mThumbnailSurface)->setHorizontalInset(6);
+    auto previewLayout = new QVBoxLayout(mThumbnailSurface);
+    previewLayout->setContentsMargins(14, 16, 14, 24);
+    previewLayout->addWidget(mThumbnailBar);
     mThumbnailBar->setObjectName(QStringLiteral("fullscreenThumbnails"));
     mThumbnailBar->setThumbnailScaleMode(ThumbnailView::ScaleToSquare);
     mThumbnailBar->setItemDelegate(new FullScreenThumbnailDelegate(mThumbnailBar));
     mThumbnailBar->setSelectionMode(QAbstractItemView::ExtendedSelection);
     mThumbnailBar->setFrameShape(QFrame::NoFrame);
     mThumbnailBar->setAccessibleName(i18n("Full screen images"));
-    mMinimumThumbnailBarHeight = 60;
+    mMinimumThumbnailBarHeight = 104;
     connect(mThumbnailBar, &ThumbnailBarView::rowsInsertedSignal, this, &FullScreenContent::updateDocumentCountLabel);
     connect(mThumbnailBar, &ThumbnailBarView::rowsRemovedSignal, this, &FullScreenContent::updateDocumentCountLabel);
     connect(mThumbnailBar, &ThumbnailBarView::indexActivated, this, &FullScreenContent::updateDocumentCountLabel);
@@ -292,7 +313,7 @@ void FullScreenContent::updateLayout()
 {
     if (!mContent->layout()) {
         auto layout = new QVBoxLayout(mContent);
-        layout->setContentsMargins(26, 18, 26, 28); layout->setSpacing(6);
+        layout->setContentsMargins(8, 0, 8, 0); layout->setSpacing(0);
         layout->addWidget(mInformationContainer);
         mControlLayout = new QBoxLayout(QBoxLayout::LeftToRight);
         mControlLayout->setSpacing(6);
@@ -300,15 +321,18 @@ void FullScreenContent::updateLayout()
         mControlLayout->addStretch();
         mControlLayout->addWidget(mImageToolBar, 0, Qt::AlignRight);
         layout->addLayout(mControlLayout);
-        layout->addWidget(mThumbnailBar);
+        layout->addWidget(mThumbnailSurface);
     }
     const int width = qMin(1200, mAutoHideContainer->parentWidget()->width());
-    const bool compact = width < 560;
+    const bool compact = width < mToolBar->sizeHint().width() + mImageToolBar->sizeHint().width() + 22;
     mControlLayout->setDirection(compact ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight);
     mControlLayout->setAlignment(mImageToolBar, compact ? Qt::AlignLeft : Qt::AlignRight);
     const int availableHeight = mAutoHideContainer->parentWidget()->height();
-    const int height = qBound(mMinimumThumbnailBarHeight, GwenviewConfig::fullScreenBarHeight(), qMax(60, qMin(160, availableHeight / 4)));
+    const int preferredHeight = GwenviewConfig::fullScreenBarHeight() > 0 ? GwenviewConfig::fullScreenBarHeight() : 120;
+    const int height = qBound(mMinimumThumbnailBarHeight, preferredHeight,
+                              qMax(mMinimumThumbnailBarHeight, qMin(180, availableHeight / 4)));
     mThumbnailBar->setFixedHeight(height);
+    mThumbnailSurface->setVisible(GwenviewConfig::showFullScreenThumbnails());
     mThumbnailBar->setVisible(GwenviewConfig::showFullScreenThumbnails());
     mContent->setFixedWidth(width);
     mContent->layout()->activate();
@@ -409,7 +433,7 @@ void FullScreenContent::showOptionsMenu()
     if (mViewPageVisible) {
         widget->mShowThumbnailsCheckBox->setChecked(GwenviewConfig::showFullScreenThumbnails());
         widget->mHeightSlider->setMinimum(mMinimumThumbnailBarHeight);
-        widget->mHeightSlider->setValue(GwenviewConfig::fullScreenBarHeight());
+        widget->mHeightSlider->setValue(mThumbnailBar->height());
         connect(widget->mShowThumbnailsCheckBox, &QAbstractButton::toggled, this, &FullScreenContent::slotShowThumbnailsToggled);
         connect(widget->mHeightSlider, &QAbstractSlider::valueChanged, this, &FullScreenContent::setFullScreenBarHeight);
     }
@@ -457,6 +481,7 @@ void FullScreenContent::slotShowThumbnailsToggled(bool value)
 {
     GwenviewConfig::setShowFullScreenThumbnails(value);
     GwenviewConfig::self()->save();
+    mThumbnailSurface->setVisible(value);
     mThumbnailBar->setVisible(value);
     updateLayout();
 
@@ -470,7 +495,7 @@ void FullScreenContent::slotViewModeActionToggled(bool value)
 
 void FullScreenContent::setupThumbnailBarStyleSheet()
 {
-    const QPalette pal = mGvCore->palette(GvCore::FullScreenPalette);
+    const QPalette pal = mGvCore->palette(GvCore::NormalPalette);
     mContent->setPalette(pal);
     QPalette countPalette = pal;
     QColor secondary = pal.color(QPalette::WindowText); secondary.setAlpha(200);

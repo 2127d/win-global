@@ -1,0 +1,6 @@
+dbus-daemon[29]: [session uid=1000 pid=29 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=30 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[29]: [session uid=1000 pid=29 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=30 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[29]: [session uid=1000 pid=29 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+PERF: normal 2048-image gallery refresh max 0.578 ms; scrolling heartbeat max 18 ms
+PERF: fullscreen 2048-image gallery refresh max 0.584 ms; scrolling heartbeat max 18 ms
+PASS: large-folder normal/fullscreen pixel and wheel scrolling, endpoints, and larger fullscreen image strip

@@ -66,10 +66,18 @@ control groups. The groups stack in a narrow image pane. Native previous/next,
 slideshow, zoom, fit, actual size, rotation, sidebar, Browse and exit actions keep
 their shortcuts and enabled states. Icons follow the fullscreen palette, and
 thumbnail previews have rounded corners and visible selection borders. The
-optional thumbnail row spans the panel, with its preferred height bounded by
-available screen space. A pin keeps controls visible; otherwise the top edge
+optional thumbnail row spans the panel, defaults to 120px, and keeps at least
+104px of height so selection controls and the scrollbar leave a usable preview.
+Its preferred height is bounded by available screen space. A pin keeps controls visible; otherwise the top edge
 reveals them, and keyboard focus, menus and dialogs protect ongoing interaction.
 Fullscreen exit cancels hiding and restores the cursor, including rapid toggles.
+
+Thumbnail loading checks the visible/prefetch region before fetching file details,
+retains a bounded nearby cache, and starts queued work after 80ms. Browser grids
+and the fullscreen strip preserve touchpad pixel deltas. Direct scrolling stops
+the strip's selection-centering animation instead of competing with it.
+`tools/verify-gwenview.py --thumbnail-scroll` exercises a 2,048-image folder in
+normal and fullscreen modes, including scroll endpoints and the enlarged strip.
 
 Fullscreen Browse uses the same floating surfaces and action buttons as the
 fullscreen image view. Its navigation panel contains the folder title, native
@@ -92,7 +100,7 @@ Three equal footer tabs show their icons above **Recent**, **Information**,
 and **Tools** labels when space permits, switching to centered icons with tooltips
 when the sidebar is narrow. The Recent history symbol is drawn independently of
 the installed icon theme, and shortcut mnemonic markers are never displayed. The selected tab has a softly raised capsule, with a visible
-keyboard focus ring. The sidebar anchors the footer while the page content scrolls. Before opening an image, Information
+keyboard focus ring. The sidebar anchors the footer while the page content scrolls. Page changes slide horizontally for 140ms with an ease-out; the footer remains fixed, rapid changes retarget immediately, and disabled desktop animations switch instantly. Before opening an image, Information
 and Tools explain what they will show; opening an image reveals the native
 metadata and operations. Returning to the welcome page restores these empty
 states, so stale image details are never presented as current.
@@ -136,9 +144,19 @@ auto-hiding pill for that bar in image view. Checking it again restores the
 native layout, spacing, palette, icons, and control styling. The choices persist
 across restarts using Gwenview's existing settings.
 
-The top-right pill expands left and shares the native toolbar's actions,
-including their menus, shortcuts, and enabled states. It follows toolbar
-customization while omitting layout-only spacers. Floating icon buttons hide
+Switching between Browse and image view uses a quick 140 ms slide. Each page is
+captured once, so animation frames move cached images without repeatedly painting
+the thumbnail grid. The destination becomes active immediately; further input
+cancels even a pending transition, rapid switches never queue, and disabled desktop
+animations switch directly.
+
+The top-right toggle expands left into separate floating glass pills. Adjacent
+navigation arrows share a pill, with view modes, editing tools, and window controls
+grouped separately. The pills share the native toolbar's actions, menus, shortcuts,
+and enabled states. Customization preserves action order, explicit separators,
+and embedded widget controls while omitting layout-only spacers. Empty gaps pass
+clicks through to the image. Narrow layouts scroll horizontally with enough height
+for both the controls and scrollbar. Floating icon buttons hide
 the extra dropdown-arrow indicator while keeping their menus available. Start and Browse keep KDE's
 normal toolbar visibility preference and hide the image-view pill. Returning to
 image view restores the pill collapsed if the native toolbar remains hidden.
@@ -170,24 +188,37 @@ background choices remain available. Fullscreen retains its edge-to-edge view.
 With **Show Status Bar** unchecked, the bottom controls become a floating
 control at the lower right of the image area. It starts as a circular toolbar
 button. Clicking expands the native controls to the left with a 220 ms animation; clicking again collapses them.
-The expanded panel matches the toggle's 44-pixel height and circular end radius.
-The panel and toggle share a blurred glass finish with a soft vertical
-sheen and a highlighted rim, adapting to light and dark palettes. The image
-scene behind both pieces is sampled and blurred separately from the controls,
-refreshing as images, zoom, or the viewing area change. Controls have consistent
-gaps. Buttons use opaque theme-colored fills and defined borders, with
-accent-colored selected states and distinct hover and disabled appearances.
-Buttons use inset pill corners to follow the toolbar capsule; the zoom track
+The expanded controls form three separate floating pills: sidebar/thumbnail
+visibility, image count or comparison synchronization, and Fit/zoom/scale.
+Each matches the main toolbar's 44-pixel rhythm, rounded ends, and soft shadow.
+The panel toggles use matching 22-pixel icons with descriptive tooltips while
+floating; docking restores their original native labels and icon sizes.
+Clear gaps pass clicks through to the image. Both bars and their toggles share
+a restrained blurred glass finish, a smooth highlight, and a fine rim that
+adapt to light and dark palettes. The image
+scene behind the pills is sampled and blurred separately from the controls,
+refreshing as images, zoom, or the viewing area change. Fully faded controls
+skip backdrop rendering. Action-state updates reuse tinted icons without
+restyling the whole toolbar, and browser layout notifications are combined
+into one update per event-loop turn. Controls have consistent gaps. Transparent
+resting buttons let the glass read as one surface per group, with quiet hover
+fills, accent-colored selections, and visible keyboard focus. Buttons use
+rounded inset corners that follow their enclosing pill; the zoom track
 and thumb are rounded as well. The editable zoom dropdown, arrow, and popup
-use the native system style. Toolbar text, control surfaces, and monochrome
+use the native system style. Browsing the zoom presets with the wheel, pointer,
+or keyboard leaves the image scale unchanged until a click or Enter commits a
+selection; Escape dismisses the list without resetting the scale. This applies
+to both the native status bar and the floating controls.
+Toolbar text, control surfaces, and monochrome
 icons refresh on system theme changes without restarting, including disabled
 and selected states and an already-open zoom menu. Repeated clicks and mid-animation reversals preserve the slide;
 disabled desktop animations switch directly to the requested state.
 Zoom, Fit, image count, sidebar, thumbnails, and comparison synchronization use
 the existing controls. Opening the toolbar does not resize the image. A narrow
-pane can scroll the controls horizontally. Checking **Show Status Bar** moves
+pane can scroll the controls horizontally, reserving a separate scrollbar row
+so it never overlaps the controls. Checking **Show Status Bar** moves
 the same controls back below the image and removes the pill styling, reserving
-normal layout space for the native bar.
+normal layout space and restoring its original stretch spacing.
 The Bird's Eye View navigation box is hidden by default when zoomed in, keeping
 the area behind the floating toolbar clear. It can still be enabled from the
 View menu.
