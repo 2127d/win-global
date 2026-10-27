@@ -21,7 +21,7 @@ def main():
         for relative in ('themes/application-style/SequoiaEleven/CMakeLists.txt',
                          'themes/plasma/Splash.qml', 'widgets/plasmoids/org.sequoia.startmenu/metadata.json',
                          'desktop/taskbar/CMakeLists.txt', 'tools/project_paths.py', 'docs/DEPLOYMENT.md',
-                         'install.sh', 'install-gui.py', 'uninstall-gui.py'):
+                         'install.sh', 'install-gui.py', 'uninstall-gui.py', 'tools/gtk_icons.py'):
             assert (project / relative).is_file(), relative
         for name in ('settings', 'gwenview', 'kcalc'):
             assert list((project / 'apps' / name).glob('*/CMakeLists.txt')), name
@@ -41,7 +41,7 @@ def main():
         env['DBUS_SESSION_BUS_ADDRESS'] = 'unix:path=' + str(base / 'no-live-session')
         for name in ('DISPLAY', 'WAYLAND_DISPLAY', 'LD_PRELOAD', 'QT_PLUGIN_PATH', 'QML_IMPORT_PATH', 'PYTHONPATH'):
             env.pop(name, None)
-        for script in ('verify-theme-installer.py', 'verify-installer-gui.py',
+        for script in ('verify-gtk-icons.py', 'verify-theme-installer.py', 'verify-installer-gui.py',
                        'verify-uninstaller-gui.py', 'verify-desktop-layout.py'):
             subprocess.run(['python3', str(project / 'tools' / script)], cwd=base,
                            env=env, check=True, timeout=900)

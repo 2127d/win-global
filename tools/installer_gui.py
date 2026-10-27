@@ -241,8 +241,12 @@ class InstallerWindow(QMainWindow):
                         'Changed installed theme files are backed up, then replaced. Backup locations appear in the log.',
                         'Plasma shell restarts after all selected components and app makeovers finish installing.',
                         ('Animation kit: saves a restorable snapshot, applies Your palette and restarts Plasma. Panel layout is preserved.'
-                         if 'animation-kit' in components else 'Existing components are preserved. Desktop settings and panel layout stay as they are.'),
+                         if 'animation-kit' in components else 'Existing components and panel layout are preserved.'),
                         'Remove themes or app makeovers with ./uninstall-gui.py.']
+            if 'icons' in components:
+                summary += ['', 'GTK icons: Adwaita for native and Flatpak apps, including GTK 3. KDE keeps Sequoia Tahoe icons.',
+                            'Automatic KDE-to-GTK appearance syncing is disabled. Removing Icons restores the saved preferences.',
+                            'Restart GTK apps after installation; log out/back in if X11 icons remain cached.']
             if not self.login_available and self.global_box.isChecked():
                 summary += ['', 'Login screen omitted: Plasma Login Manager is not installed.']
             self.review.setPlainText('\n'.join(summary))

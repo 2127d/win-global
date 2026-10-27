@@ -17,7 +17,7 @@ COMPONENTS = {
     'decorations': ('Window decorations', 'Rounded title bars and window buttons.'),
     'plasma-style': ('Plasma style', 'Panel, widget and switch artwork.'),
     'colors': ('Color schemes', 'Light and dark, solid and transparent palettes.'),
-    'icons': ('Icons', 'The complete Sequoia Tahoe icon family.'),
+    'icons': ('Icons', 'Sequoia Tahoe for KDE; default Adwaita icons for native and Flatpak GTK apps. Disables KDE-to-GTK appearance syncing; removal restores it.'),
     'wallpaper': ('Wallpaper', 'Adaptive light and dark wallpaper.'),
     'fonts': ('Fonts', 'Adwaita Sans and Nunito.'),
     'widgets': ('Desktop widgets', 'Custom tray, trash, animated task manager, Start Menu, Downloads Stack, Dock Separator, Kpple Menu and Window Title Fork.'),
@@ -164,7 +164,8 @@ def packages_for(distro, components, apps=()):
     if 'login' in selected:
         packages += ['plasma-nm', 'plasma-pa']
     if 'icons' in selected:
-        packages += ['gtk-update-icon-cache']
+        packages += ['gtk-update-icon-cache', 'adwaita-icon-theme', 'gsettings-desktop-schemas',
+                     'libglib2.0-bin' if distro in ('ubuntu', 'debian') else 'glib2']
     if 'quick-style' in selected or 'lockscreen' in selected:
         packages += GUI_PACKAGES[distro] + ['plasma-workspace']
     if 'animation-kit' in selected:

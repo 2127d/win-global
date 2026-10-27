@@ -225,6 +225,18 @@ adaptive wallpaper and, when supported, the custom Plasma Login screen. Native p
 assets are shared system files; the remaining theme
 files and application launchers are installed for the current account.
 
+The **Icons** component also sets the shared GTK icon preference to **Adwaita**
+for native and Flatpak GTK applications, including GTK 3. KDE applications retain
+Sequoia Tahoe icons. To prevent KDE from overwriting this preference at login or
+when applying a Global Theme, the installer disables KDE’s GTK appearance-sync
+module. Future KDE font/color/theme changes will no longer automatically sync to
+GTK. The original preferences are saved and restored when Icons is uninstalled;
+subsequent explicit user edits are preserved. Restart GTK apps after installation,
+and log out/back in if X11 applications retain cached icons. App-provided artwork
+and explicit per-app icon overrides can still take precedence. No per-Flatpak
+workaround or app list is required, so newly installed GTK Flatpaks use the same
+shared preference. Alternate prefixes and system roots never activate this change.
+
 The Desktop widgets component installs missing Start Menu, Downloads Stack, Dock
 Separator, Kpple Menu and Window Title Fork packages. Separately installed copies
 are preserved through installation, refresh and removal. It also builds the
@@ -870,8 +882,9 @@ in software-rendered previews. The decoration preview engine uses its own sample
 button arrangement; activation places close/minimize/maximize on the left.
 
 The compiled application plugin styles native Qt 6 widgets; the optional Quick
-extension covers the shared QML components described above. Qt 5, GTK, browser content,
-Electron apps, and sandboxed Flatpaks may use their own styles and icons.
+extension covers the shared QML components described above. GTK uses its default
+Adwaita icons when the Icons component is installed. Qt 5, browser content,
+Electron apps, and applications with explicit overrides may use their own styles and icons.
 The optional apply script selects Sequoia Tahoe icons and applies the bundled
 wallpaper unless `--keep-wallpaper` is supplied. See [validation history](docs/VALIDATION.md) for verified behavior.
 

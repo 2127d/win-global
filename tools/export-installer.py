@@ -39,6 +39,10 @@ INTRO = '''SEQUOIA ELEVEN — INSTALLER
    KWin effect for Plasma 6.7+, with Weather integration for embedded dialogs.
    It is independent of the Animation kit and requires administrator permission
    for its shared plugin. Remove it using the matching uninstaller checkbox.
+   The Icons component keeps native and Flatpak GTK apps on default Adwaita
+   icons (including GTK 3), while KDE uses Sequoia Tahoe. Automatic KDE-to-GTK
+   appearance syncing is disabled; removing Icons restores the saved settings.
+   Restart GTK apps after installation; log out/in if X11 keeps cached icons.
 5. In System Settings > Colors & Themes > Global Theme, select Sequoia Eleven.
    Enable Desktop layout to recreate the included top bar and bottom dock.
    Leave it unchecked to preserve existing panels and desktop widgets.

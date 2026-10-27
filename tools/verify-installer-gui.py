@@ -109,6 +109,14 @@ class WizardTests(unittest.TestCase):
         self.assertEqual(window.selection(), (['widgets'], []))
         self.assertTrue(window.component_boxes['icons'].isEnabled())
 
+    def test_review_explains_gtk_icon_defaults(self):
+        self.window.advance()
+        self.window.advance()
+        review = self.window.review.toPlainText()
+        self.assertIn('Adwaita', review)
+        self.assertIn('KDE-to-GTK', review)
+        self.assertNotIn('Desktop settings and panel layout stay as they are', review)
+
     def test_unavailable_login_is_omitted(self):
         self.window.login_available = False
         self.window.sync()
@@ -287,7 +295,8 @@ class PlatformTests(unittest.TestCase):
                 patch.object(platform.subprocess, 'run', side_effect=query), \
                 patch.object(platform, 'run') as install:
             platform.install_dependencies('debian', ['fonts', 'icons'])
-            install.assert_called_once_with(['sudo', 'apt-get', 'install', '-y', 'gtk-update-icon-cache'])
+            install.assert_called_once_with(['sudo', 'apt-get', 'install', '-y', 'adwaita-icon-theme',
+                                             'gsettings-desktop-schemas', 'gtk-update-icon-cache', 'libglib2.0-bin'])
 
     def test_paths_and_askpass(self):
         self.assertEqual(platform.native_layout('arch'), ('lib', 'lib/qt6/plugins'))

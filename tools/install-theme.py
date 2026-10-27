@@ -20,6 +20,7 @@ import widget_payload
 import shell_overrides
 import motion_install
 import modal_dimming
+import gtk_icons
 from login_payload import FILES as LOGIN_FILES, stage as stage_login
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -341,10 +342,13 @@ def main():
     if action == 'install':
         print('Modified installed theme files will be backed up before replacement; backup paths appear in the log.')
     print('Desktop widgets include the custom tray, trash, animated task manager and layout widgets. '
-          'Desktop settings change when you apply a theme/layout or opt into the Animation kit. The login theme takes effect after reboot.')
+          'Desktop settings change when you apply a theme/layout, install Icons, or opt into the Animation kit. The login theme takes effect after reboot.')
     if 'animation-kit' in args.components:
         print('Animation kit: ' + ('capture a restorable snapshot, apply Motion Lab’s Your palette and restart Plasma.'
                                    if action == 'install' else 'restore the pre-installation animation settings and files.'))
+    if 'icons' in args.components:
+        print('GTK icons: use Adwaita for native/Flatpak GTK apps, including GTK 3; disable KDE-to-GTK appearance syncing. '
+              'Uninstalling Icons restores the saved preferences. Alternate prefixes/system roots do not change desktop settings.')
     if args.plan:
         if args.action == 'install' and not args.skip_deps:
             if args.distro not in DISTROS:
@@ -390,9 +394,13 @@ def perform(args):
             system_action('check', args)
         if 'modal-dimming' in args.components:
             modal_dimming.check_restore(args.prefix)
+        if 'icons' in args.components and gtk_icons.live_install(args.prefix, args.system_root):
+            gtk_icons.check_restore(args.prefix)
         if args.check:
             print('Removal checks passed.')
             return
+        if 'icons' in args.components and gtk_icons.live_install(args.prefix, args.system_root):
+            gtk_icons.restore(args.prefix)
         if 'modal-dimming' in args.components:
             modal_dimming.restore(args.prefix)
         if motion_backup:
@@ -455,6 +463,8 @@ def perform(args):
         live_prefix = Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share').absolute()
         if args.prefix == live_prefix:
             modal_dimming.activate(args.prefix)
+    if 'icons' in components and gtk_icons.live_install(args.prefix, args.system_root):
+        gtk_icons.activate(args.prefix)
     refresh(args.prefix)
     print('Installed. Select the installed theme components in System Settings. '
           'Close and reopen applications to load their new style. '
