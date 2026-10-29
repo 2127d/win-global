@@ -5,25 +5,23 @@
 #include <QToolButton>
 #include <QHBoxLayout>
 #include <QLinearGradient>
+#include <QImage>
 #include <KLocalizedString>
 
 namespace Gwenview {
-inline void paintControlPill(QPainter &painter, const QRectF &bounds, const QPalette &palette)
+inline void paintControlPill(QPainter &painter, const QRectF &bounds, const QPalette &palette, QWidget *widget, qreal radius = 22)
 {
     const bool dark = palette.color(QPalette::Window).lightness() < 128;
-    paintFloatingShadow(painter, bounds, 22, palette, true, dark ? 0.8 : 0.6);
-    painter.setRenderHint(QPainter::Antialiasing);
-    QLinearGradient fill(bounds.topLeft(), bounds.bottomLeft());
-    fill.setColorAt(0, palette.color(QPalette::Window).lighter(dark ? 113 : 102));
-    fill.setColorAt(1, palette.color(QPalette::Window));
-    painter.setBrush(fill);
-    painter.setPen(QPen(QColor(0, 0, 0, dark ? 75 : 26), 1));
-    painter.drawRoundedRect(bounds, 22, 22);
-    QLinearGradient rim(bounds.topLeft(), bounds.bottomLeft());
-    rim.setColorAt(0, QColor(255, 255, 255, dark ? 45 : 100));
-    rim.setColorAt(1, QColor(255, 255, 255, dark ? 16 : 45));
-    painter.setBrush(Qt::NoBrush); painter.setPen(QPen(QBrush(rim), 1));
-    painter.drawRoundedRect(bounds.adjusted(1, 1, -1, -1), 21, 21);
+    paintFloatingShadow(painter, bounds, radius, palette, true, dark ? 0.8 : 0.6);
+    QImage backdrop;
+    QRectF target;
+    for (auto source = widget; source; source = source->parentWidget()) {
+        backdrop = source->property("floatingBackdropImage").value<QImage>();
+        if (backdrop.isNull()) continue;
+        target = source->property("floatingBackdropRect").toRect().translated(-widget->mapTo(source, QPoint()));
+        break;
+    }
+    paintPillSurface(painter, bounds, radius, palette, backdrop, target);
 }
 
 // A 44px surface with space around it for a soft shadow.
@@ -42,7 +40,7 @@ protected:
     void paintEvent(QPaintEvent *) override
     {
         QPainter painter(this);
-        paintControlPill(painter, QRectF(rect()).adjusted(6, 6, -6, -10), palette());
+        paintControlPill(painter, QRectF(rect()).adjusted(6, 6, -6, -10), palette(), this);
     }
 };
 
@@ -95,7 +93,7 @@ protected:
 class FullScreenSurface : public QWidget
 {
 public:
-    using QWidget::QWidget;
+    explicit FullScreenSurface(QWidget *parent = nullptr) : QWidget(parent) { setProperty("floatingControlSurface", true); }
     void setFloating(bool floating) { mFloating = floating; update(); }
     void setFloatingParts(const QList<QWidget *> &parts) { mParts = parts; update(); }
     void setHorizontalInset(int inset) { mHorizontalInset = inset; update(); }
@@ -106,14 +104,16 @@ protected:
         QPainter painter(this);
         if (!mParts.isEmpty()) {
             for (auto part : mParts) {
-                if (part->isVisible())
-                    paintControlPill(painter, QRectF(part->mapTo(this, QPoint()), part->size()).adjusted(-6, -4, 6, 4), palette());
+                if (part->isVisible()) {
+                    const QRectF bounds(part->mapTo(this, QPoint()), part->size());
+                    paintControlPill(painter, part->property("floatingControlPill").toBool()
+                        ? bounds.adjusted(6, 6, -6, -10) : bounds.adjusted(6, -4, -6, 4), palette(), this);
+                }
             }
             return;
         }
         const QRectF bounds = QRectF(rect()).adjusted(mHorizontalInset, 10, -mHorizontalInset, -18);
-        paintFloatingShadow(painter, bounds, 16, palette(), true);
-        paintFloatingPanel(painter, bounds, palette(), false);
+        paintControlPill(painter, bounds, palette(), this, 16);
     }
 private:
     QList<QWidget *> mParts;

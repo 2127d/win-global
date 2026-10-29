@@ -107,6 +107,8 @@ public:
      */
     DocumentView *documentView() const;
 
+    void prepareImageSlide(int direction);
+
     QToolButton *toggleSideBarButton() const;
 
     void showMessageWidget(QGraphicsWidget *, Qt::Alignment align = Qt::AlignHCenter | Qt::AlignTop);

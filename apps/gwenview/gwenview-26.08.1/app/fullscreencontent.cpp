@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 #include <QPainter>
 #include <QScreen>
 #include "fullscreencontrols.h"
+#include "fullscreenbackdrop.h"
 
 // KF
 #include <KActionCollection>
@@ -140,6 +141,8 @@ void FullScreenContent::init(KActionCollection *actionCollection, QWidget *autoH
     mContent->setAutoFillBackground(false);
     EventWatcher::install(mContent, QEvent::Show, this, SLOT(updateCurrentUrlWidgets()));
     layout->addWidget(mContent, 0, Qt::AlignHCenter);
+    if (auto viewer = autoHideParentWidget->findChild<QGraphicsView *>(QStringLiteral("roundedImageViewer")))
+        new FullScreenBackdrop(mContent, viewer, mAutoHideContainer);
 
     createOptionsAction();
 

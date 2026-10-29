@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "floatingsurface.h"
+#include "backdropblur.h"
 #include "floatingviewtoolbar.h"
 #include <KLocalizedString>
 #include <QApplication>
@@ -18,6 +19,7 @@
 #include <QIcon>
 #include <QLayout>
 #include <QLinearGradient>
+#include <QLineEdit>
 #include <QPainter>
 #include <QPainterPath>
 #include <QScrollArea>
@@ -41,73 +43,13 @@ constexpr int Gap = 6;
 constexpr int PanelHorizontalInset = 8;
 constexpr int PanelVerticalInset = 6;
 
-// Three separable box passes approximate a Gaussian. The capture is sampled at
-// quarter resolution, so this stays inexpensive even during image animation.
-QImage blurBackdrop(QImage image)
-{
-    constexpr int radius = 2;
-    constexpr int samples = 2 * radius + 1;
-    for (int pass = 0; pass < 3; ++pass) {
-        for (bool horizontal : {true, false}) {
-            QImage result(image.size(), image.format());
-            for (int y = 0; y < image.height(); ++y) {
-                auto out = reinterpret_cast<QRgb *>(result.scanLine(y));
-                for (int x = 0; x < image.width(); ++x) {
-                    int red = 0, green = 0, blue = 0;
-                    for (int offset = -radius; offset <= radius; ++offset) {
-                        const QRgb pixel = image.pixel(qBound(0, x + (horizontal ? offset : 0), image.width() - 1),
-                                                       qBound(0, y + (horizontal ? 0 : offset), image.height() - 1));
-                        red += qRed(pixel);
-                        green += qGreen(pixel);
-                        blue += qBlue(pixel);
-                    }
-                    out[x] = qRgb(red / samples, green / samples, blue / samples);
-                }
-            }
-            image = result;
-        }
-    }
-    return image;
-}
-
 void paintGlass(QPainter &painter, QWidget *widget, const ToolbarBackdrop &backdrop, QRectF bounds = QRectF())
 {
     painter.setRenderHint(QPainter::Antialiasing);
-    const auto palette = widget->palette();
     if (bounds.isEmpty()) bounds = QRectF(widget->rect()).adjusted(1, 1, -1, -1);
-    const qreal radius = bounds.height() / 2;
-    if (!backdrop.image.isNull()) {
-        QPainterPath clip;
-        clip.addRoundedRect(bounds, radius, radius);
-        painter.save();
-        painter.setClipPath(clip);
-        painter.setRenderHint(QPainter::SmoothPixmapTransform);
-        const QPoint origin = widget->mapTo(backdrop.viewer, QPoint());
-        painter.drawImage(QRectF(backdrop.rect.translated(-origin)), backdrop.image);
-        painter.restore();
-    }
-    QColor tint = palette.color(QPalette::Window);
-    const bool dark = tint.lightness() < 128;
-    QLinearGradient body(bounds.topLeft(), bounds.bottomLeft());
-    tint.setAlpha(dark ? 205 : 195);
-    body.setColorAt(0, tint);
-    tint.setAlpha(dark ? 185 : 175);
-    body.setColorAt(1, tint);
-    painter.setPen(QPen(QColor(0, 0, 0, dark ? 75 : 26), 1));
-    painter.setBrush(body);
-    painter.drawRoundedRect(bounds, radius, radius);
-
-    QLinearGradient sheen(bounds.topLeft(), bounds.bottomLeft());
-    sheen.setColorAt(0, QColor(255, 255, 255, dark ? 20 : 40));
-    sheen.setColorAt(0.6, QColor(255, 255, 255, 0));
-    sheen.setColorAt(1, QColor(255, 255, 255, dark ? 5 : 18));
-    QLinearGradient rim(bounds.topLeft(), bounds.bottomLeft());
-    rim.setColorAt(0, QColor(255, 255, 255, dark ? 45 : 100));
-    rim.setColorAt(0.5, QColor(255, 255, 255, 30));
-    rim.setColorAt(1, QColor(255, 255, 255, dark ? 16 : 45));
-    painter.setPen(QPen(QBrush(rim), 1));
-    painter.setBrush(sheen);
-    painter.drawRoundedRect(bounds.adjusted(1, 1, -1, -1), radius - 1, radius - 1);
+    const QPoint origin = widget->mapTo(backdrop.viewer, QPoint());
+    paintPillSurface(painter, bounds, bounds.height() / 2, widget->palette(),
+                     backdrop.image, QRectF(backdrop.rect.translated(-origin)), true);
 }
 
 class ToolbarShadow : public QWidget {
@@ -131,6 +73,16 @@ protected:
         paintFloatingShadow(painter, panel, 22, palette(), true, weight);
         for (const QRectF &pill : pills) paintFloatingShadow(painter, pill, 22, palette(), true, weight);
         paintFloatingShadow(painter, toggle, 22, palette(), true, toggleOpacity * weight);
+        const qreal progress = property("rippleProgress").toReal();
+        if (progress > 0 && progress < 1) {
+            painter.setRenderHint(QPainter::Antialiasing);
+            QColor accent = palette().color(QPalette::Highlight);
+            accent.setAlphaF(0.9 * (1 - progress * progress) * toggleOpacity);
+            painter.setBrush(Qt::NoBrush);
+            painter.setPen(QPen(accent, 2.0));
+            const qreal radius = 6 + progress * 30;
+            painter.drawEllipse(toggle.center(), radius, radius);
+        }
     }
 };
 
@@ -151,15 +103,35 @@ protected:
         } else {
             paintGlass(painter, this, *mBackdrop);
         }
+        for (auto combo : findChildren<QComboBox *>()) {
+            if (combo->isVisible() && combo->property("floatingZoomPill").toBool()) {
+                const QRectF field(combo->mapTo(this, QPoint()), combo->size());
+                paintFloatingShadow(painter, field, field.height() / 2, palette(), false, 1.5);
+            }
+        }
     }
 };
 
 class ToolbarButton : public QToolButton {
 public:
     ToolbarButton(QWidget *parent, const QSharedPointer<ToolbarBackdrop> &backdrop)
-        : QToolButton(parent), mBackdrop(backdrop) {}
+        : QToolButton(parent), mBackdrop(backdrop), mRipple(new QVariantAnimation(this))
+    {
+        mRipple->setObjectName(QStringLiteral("toolbarToggleRipple"));
+        mRipple->setDuration(320);
+        mRipple->setStartValue(0.0);
+        mRipple->setEndValue(1.0);
+        mRipple->setEasingCurve(QEasingCurve::Linear);
+        connect(mRipple, &QVariantAnimation::valueChanged, this, [this] { update(); });
+        connect(this, &QToolButton::pressed, this, [this] {
+            mRipple->stop();
+            if (style()->styleHint(QStyle::SH_Widget_Animation_Duration) != 0) mRipple->start();
+            update();
+        });
+    }
 private:
     QSharedPointer<ToolbarBackdrop> mBackdrop;
+    QVariantAnimation *mRipple;
 protected:
     void paintEvent(QPaintEvent *) override
     {
@@ -167,11 +139,25 @@ protected:
         painter.setOpacity(property("revealOpacity").toReal());
         paintGlass(painter, this, *mBackdrop);
         if (isChecked() || underMouse() || hasFocus() || isDown()) {
-            QColor tint = palette().color(QPalette::Highlight);
-            tint.setAlpha(isDown() ? 70 : isChecked() || hasFocus() ? 45 : 24);
+            QColor tint = palette().color(QPalette::ButtonText);
+            tint.setAlpha(underMouse() ? 16 : 10);
             painter.setPen(Qt::NoPen);
             painter.setBrush(tint);
             painter.drawEllipse(QRectF(rect()).adjusted(2, 2, -2, -2));
+        }
+        if (mRipple->state() == QAbstractAnimation::Running) {
+            const qreal progress = mRipple->currentValue().toReal();
+            painter.save();
+            QPainterPath clip;
+            clip.addEllipse(QRectF(rect()).adjusted(2, 2, -2, -2));
+            painter.setClipPath(clip);
+            QColor accent = palette().color(QPalette::Highlight);
+            painter.setBrush(Qt::NoBrush);
+            accent.setAlphaF(0.9 * (1 - progress * progress));
+            painter.setPen(QPen(accent, 2.0));
+            const qreal radius = 6 + progress * 30;
+            painter.drawEllipse(QRectF(rect()).center(), radius, radius);
+            painter.restore();
         }
         if (hasFocus()) {
             painter.setPen(QPen(palette().color(QPalette::Highlight), 1.5));
@@ -287,6 +273,14 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     // clipped sliding panel without changing any control or image hit areas.
     mShadow = new ToolbarShadow(viewer);
     mShadow->setObjectName(position == TopRight ? QStringLiteral("mainToolbarShadow") : QStringLiteral("imageToolbarShadow"));
+    auto ripple = mToggle->findChild<QVariantAnimation *>(QStringLiteral("toolbarToggleRipple"));
+    connect(ripple, &QVariantAnimation::valueChanged, mShadow, [this](const QVariant &progress) {
+        mShadow->setProperty("rippleProgress", progress);
+        mShadow->update();
+    });
+    connect(ripple, &QVariantAnimation::stateChanged, mShadow, [this](QAbstractAnimation::State state) {
+        if (state == QAbstractAnimation::Stopped) { mShadow->setProperty("rippleProgress", 1.0); mShadow->update(); }
+    });
     mRevealAnimation = new QVariantAnimation(this);
     mRevealAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     connect(mRevealAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
@@ -405,6 +399,8 @@ void FloatingViewToolbar::setControlsDocked(QWidget *parent)
         mControls->setPalette(QPalette());
         for (auto child : mControls->findChildren<QWidget *>()) child->setPalette(QPalette());
         for (auto combo : mControls->findChildren<QComboBox *>()) {
+            combo->setProperty("floatingZoomPill", false);
+            combo->update();
             combo->view()->setPalette(QPalette());
             combo->view()->window()->setPalette(QPalette());
         }
@@ -535,16 +531,6 @@ bool FloatingViewToolbar::eventFilter(QObject *object, QEvent *event)
 
 void FloatingViewToolbar::updateGeometryAndMask()
 {
-    // The bottom island owns the viewer mask; the top copy only positions itself.
-    if (mPosition == BottomRight) {
-        if (mFullScreen) {
-            mViewer->clearMask();
-        } else {
-            QPainterPath outline;
-            outline.addRoundedRect(QRectF(mViewer->rect()), 16, 16);
-            mViewer->setMask(QRegion(outline.toFillPolygon().toPolygon()));
-        }
-    }
     // The native layout owns control size and styling while docked.
     if (mControlsDocked) return;
     mControls->ensurePolished();
@@ -623,9 +609,11 @@ void FloatingViewToolbar::updatePillGeometry()
     if (surface->pills != pills) { surface->pills = pills; surface->update(); }
     // Separate pills should also behave as separate floating hit areas.
     QPainterPath hitAreas;
-    hitAreas.addEllipse(QRectF(mToggle->geometry()));
+    // The mask is for input routing only. Leave a small transparent fringe
+    // around painted curves so its integer polygon cannot cut off antialiasing.
+    hitAreas.addEllipse(QRectF(mToggle->geometry()).adjusted(-2, -2, 2, 2));
     for (const QRectF &pill : pills)
-        hitAreas.addRoundedRect(pill.translated(mSurface->pos()), 21, 21);
+        hitAreas.addRoundedRect(pill.translated(mSurface->pos()).adjusted(-2, -2, 2, 2), 23, 23);
     auto scroll = mPanel->horizontalScrollBar();
     if (scroll->isVisible()) hitAreas.addRect(QRectF(scroll->mapTo(this, QPoint()), scroll->size()));
     const QRegion region = QRegion(hitAreas.toFillPolygon().toPolygon()).intersected(rect());
@@ -698,14 +686,22 @@ void FloatingViewToolbar::refreshTheme()
             QToolButton:checked, QToolButton:pressed { background: %2; border-color: %2; color: %3; }
             QToolButton:focus { border-color: %2; }
             QToolButton:disabled { background: transparent; border-color: transparent; }
+            QComboBox QLineEdit { background: transparent; border: none; }
         )").arg(mixedColor(background, foreground, 0.10).name(), controls.color(QPalette::Highlight).name(),
                 controls.color(QPalette::HighlightedText).name());
     }
     if (mControls->styleSheet() != css) mControls->setStyleSheet(css);
-    // No combo-box stylesheet or custom arrow: the field and popup are drawn
-    // by the system style, with opaque theme surfaces and current text colors.
+    // The floating field paints a capsule using native edit/arrow geometry.
+    // Its popup keeps the system style and current palette.
     for (auto child : mControls->findChildren<QWidget *>()) child->setPalette(controls);
     for (auto combo : mControls->findChildren<QComboBox *>()) {
+        combo->setProperty("floatingZoomPill", true);
+        if (auto editor = combo->lineEdit()) {
+            QPalette editorPalette = controls;
+            editorPalette.setColor(QPalette::Base, Qt::transparent);
+            editor->setPalette(editorPalette);
+        }
+        combo->update();
         combo->view()->setPalette(controls);
         combo->view()->window()->setPalette(controls);
     }

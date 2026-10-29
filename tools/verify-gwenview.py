@@ -7,6 +7,7 @@ import shlex
 import signal
 import subprocess
 import tempfile
+import sys
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,18 +19,43 @@ parser.add_argument('--browser-preview', action='store_true')
 parser.add_argument('--fullscreen-preview', action='store_true')
 parser.add_argument('--fullscreen-browser-preview', action='store_true')
 parser.add_argument('--thumbnail-scroll', action='store_true')
+parser.add_argument('--image-slide', action='store_true')
+parser.add_argument('--panel-edges', action='store_true')
+parser.add_argument('--popup-preview', action='store_true')
+parser.add_argument('--blur-disabled', action='store_true', help='Disable Blur only inside the private test compositor.')
+parser.add_argument('--global-menu', action='store_true', help='Check Gwenview exports through the real private Plasma global-menu widget.')
+parser.add_argument('--native-menus', action='store_true', help='Test actual popup grabs with real input on private KWin.')
+parser.add_argument('--popup-lifecycle', action='store_true', help='Stress native popup hide/show and surface destruction.')
 parser.add_argument('--dark', action='store_true')
 parser.add_argument('--transparent', action='store_true')
 parser.add_argument('--vertical-thumbnails', action='store_true')
 parser.add_argument('--debug', action='store_true')
+parser.add_argument('--wayland-socket', type=Path, help='Use an isolated Wayland compositor instead of offscreen Qt.')
 args = parser.parse_args()
+if args.global_menu: args.native_menus = True
+if args.native_menus: args.popup_lifecycle = True
+if args.popup_lifecycle: args.popup_preview = True
 helper = ROOT / '.staging/verify-gwenview.so'
 flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets', 'Qt6Test'], text=True))
+if args.native_menus:
+    flags += shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6DBus'], text=True))
+    flags += ['-DGWENVIEW_NATIVE_MENU_INPUT']
+    ei = subprocess.run(['pkg-config', '--cflags', '--libs', 'libei-1.0'], capture_output=True, text=True)
+    if ei.returncode == 0:
+        flags += shlex.split(ei.stdout)
+    elif (ROOT / '.staging/test-sdk/libei.h').is_file():
+        flags += ['-I' + str(ROOT / '.staging/test-sdk'), '-l:libei.so.1']
+    else:
+        raise RuntimeError('The private Wayland input test requires libei headers.')
 subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/verify-gwenview.cpp'), '-o', str(helper), *flags], check=True)
-output = ROOT / ('preview/gwenview-' + ('thumbnail-scroll-' if args.thumbnail_scroll else 'fullscreen-browser-' if args.fullscreen_browser_preview else 'fullscreen-' if args.fullscreen_preview else 'browser-' if args.browser_preview else 'welcome-' if args.welcome_preview else 'sidebar-') + ('dark' if args.dark else 'light') + ('-transparent' if args.transparent else '') if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll else 'preview/gwenview'); output.mkdir(exist_ok=True)
+output = ROOT / ('preview/gwenview-' + ('popups-' if args.popup_preview else 'panel-edges-' if args.panel_edges else 'image-slide-' if args.image_slide else 'thumbnail-scroll-' if args.thumbnail_scroll else 'fullscreen-browser-' if args.fullscreen_browser_preview else 'fullscreen-' if args.fullscreen_preview else 'browser-' if args.browser_preview else 'welcome-' if args.welcome_preview else 'sidebar-') + ('dark' if args.dark else 'light') + ('-transparent' if args.transparent else '') if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll or args.image_slide or args.panel_edges or args.popup_preview else 'preview/gwenview'); output.mkdir(exist_ok=True)
 with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging') as temp:
     base = Path(temp)
-    env = dict(os.environ)
+    env = dict(os.environ, KCOREADDONS_NO_XDG_DESKTOP_PORTAL='1', QT_NO_XDG_DESKTOP_PORTAL='1')
+    if args.global_menu: env['SEQUOIA_GWENVIEW_GLOBAL_MENU'] = '1'
+    env['SEQUOIA_GWENVIEW_THEMES'] = str(ROOT / 'themes/color-schemes')
+    env['SEQUOIA_GWENVIEW_MATERIAL'] = 'transparent' if args.transparent else 'solid'
+    env['SEQUOIA_GWENVIEW_TEST_BLUR'] = '0' if args.blur_disabled else '1'
     for kind in ('CONFIG', 'DATA', 'CACHE', 'STATE', 'RUNTIME'):
         path = base / kind.lower(); path.mkdir(mode=0o700)
         env[f'XDG_{kind}_HOME' if kind != 'RUNTIME' else 'XDG_RUNTIME_DIR'] = str(path)
@@ -38,11 +64,11 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
         Image.new('RGB',(120,80),color).save(folder / 'picture.png')
     env.update(QT_QPA_PLATFORM='offscreen', QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion',
                LD_PRELOAD=str(helper), SEQUOIA_GWENVIEW_VERIFY=str(output), SEQUOIA_GWENVIEW_FIXTURES=str(base), LC_ALL='C.UTF-8')
-    if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll:
+    if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll or args.image_slide or args.panel_edges or args.popup_preview:
         fixtures = [('one', (420,180), '#5783ad'), ('two', (180,420), '#e79463'),
                     ('three', (300,300), '#82a989'), ('four', (800,100), '#b497cd'),
                     ('five', (100,800), '#d1b369'), ('six', (90,60), '#729eaa')]
-        if args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll:
+        if args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll or args.image_slide or args.panel_edges or args.popup_preview:
             gallery = base / 'Gallery'; gallery.mkdir()
             (gallery / 'Empty folder').mkdir()
             for index in range(2048 if args.thumbnail_scroll else 12):
@@ -72,8 +98,17 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
         (base / 'config/kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{mode}{variant}.colors').read_text())
         env.update(QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='SequoiaEleven',
                    QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'))
-    for mode in (('thumbnail-scroll',) if args.thumbnail_scroll else ('fullscreen-browser',) if args.fullscreen_browser_preview else ('fullscreen',) if args.fullscreen_preview else ('browser', 'browser-restart') if args.browser_preview else ('welcome', 'welcome-restart', 'welcome-cleared') if args.welcome_preview else ('sidebar', 'bars-restart', 'bars-native-restart') if args.sidebar_preview else ('fresh', 'restart', 'disabled')):
-        env['SEQUOIA_GWENVIEW_MODE'] = mode
+    if args.wayland_socket:
+        env.update(QT_QPA_PLATFORM='wayland', WAYLAND_DISPLAY=str(args.wayland_socket.resolve()))
+    if args.image_slide:
+        large = base / 'Large'; large.mkdir()
+        for number, color in enumerate(('#5783ad', '#e79463', '#82a989')):
+            picture = Image.new('RGB', (8000, 6000), color)
+            draw = ImageDraw.Draw(picture)
+            draw.ellipse((2000, 1200, 6000, 4800), fill='#f4eee2')
+            picture.save(large / f'large-{number}.jpg', quality=90)
+    for mode in (('popups',) if args.popup_preview else ('panel-edges',) if args.panel_edges else ('image-slide',) if args.image_slide else ('thumbnail-scroll',) if args.thumbnail_scroll else ('fullscreen-browser',) if args.fullscreen_browser_preview else ('fullscreen',) if args.fullscreen_preview else ('browser', 'browser-restart') if args.browser_preview else ('welcome', 'welcome-restart', 'welcome-cleared') if args.welcome_preview else ('sidebar', 'bars-restart', 'bars-native-restart') if args.sidebar_preview else ('fresh', 'restart', 'disabled')):
+        env['SEQUOIA_GWENVIEW_MODE'] = 'global-menu' if args.global_menu else 'popup-lifecycle' if args.popup_lifecycle else mode
         if mode == 'disabled':
             config = base / 'config/gwenviewrc'
             text = config.read_text()
@@ -86,10 +121,12 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
         application = [str(args.binary.resolve())]
         if args.debug:
             application = ['gdb', '--batch', '-ex', 'set debuginfod enabled off', '-ex', 'run', '-ex', 'bt 35', '--args', *application]
+        if args.native_menus:
+            application = [sys.executable, str(ROOT / 'tools/run-gwenview-compositor.py'), *application]
         with (output / f'{mode}.log').open('w') as log:
             process = subprocess.Popen(['dbus-run-session', '--', *application], env=env, stdout=log, stderr=log, text=True, start_new_session=True)
             try:
-                process.wait(timeout=60)
+                process.wait(timeout=200 if args.popup_lifecycle else 60)
             finally:
                 try: os.killpg(process.pid, signal.SIGTERM)
                 except ProcessLookupError: pass
@@ -100,7 +137,7 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
 
 print(f'PASS: Gwenview GUI checks; captures in {output}')
 
-if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll: raise SystemExit(0)
+if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll or args.image_slide or args.panel_edges or args.popup_preview: raise SystemExit(0)
 
 # Check installation/removal and package-upgrade fallback outside the live account.
 import importlib.util

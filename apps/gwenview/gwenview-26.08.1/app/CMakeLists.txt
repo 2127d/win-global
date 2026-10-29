@@ -106,6 +106,7 @@ target_link_libraries(gwenview
     KF6::ItemModels
     KF6::WidgetsAddons
     KF6::GuiAddons
+    KF6::WindowSystem
     KF6::Crash
     gwenviewlib
     )

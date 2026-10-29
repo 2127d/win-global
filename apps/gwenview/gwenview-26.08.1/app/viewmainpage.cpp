@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
 #include "floatingsurface.h"
+#include "smoothviewercorners.h"
 #include "viewmainpage.h"
 #include "floatingviewtoolbar.h"
 #include "config-gwenview.h"
@@ -164,6 +165,7 @@ struct ViewMainPagePrivate {
         mStatusBarContainer->setObjectName(QStringLiteral("imageToolbarControls"));
         mStatusBarContainer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         mToggleSideBarButton = new StatusBarToolButton;
+        mToggleSideBarButton->setObjectName(QStringLiteral("imageSidebarToggle"));
         mToggleThumbnailBarButton = new StatusBarToolButton;
         mZoomWidget = new ZoomWidget;
         mToggleSideBarButton->setProperty("floatingPillGroup", 1);
@@ -202,7 +204,10 @@ struct ViewMainPagePrivate {
         adapterContainerLayout->setContentsMargins(0, 0, 0, 0);
         adapterContainerLayout->setSpacing(0);
         mDocumentViewContainer = new DocumentViewContainer;
-        mDocumentViewContainer->setAutoFillBackground(true);
+        mDocumentViewContainer->setAutoFillBackground(false);
+        mDocumentViewContainer->setAttribute(Qt::WA_OpaquePaintEvent, false);
+        mDocumentViewContainer->viewport()->setAutoFillBackground(false);
+        mDocumentViewContainer->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, false);
         mDocumentViewContainer->setBackgroundRole(QPalette::Base);
         adapterContainerLayout->addWidget(mDocumentViewContainer);
         adapterContainerLayout->addWidget(mToolContainer);
@@ -241,6 +246,7 @@ struct ViewMainPagePrivate {
         viewMainPageLayout->setSpacing(0);
         viewMainPageLayout->addWidget(mThumbnailSplitter);
         mDocumentViewContainer->setObjectName(QStringLiteral("roundedImageViewer"));
+        mDocumentViewContainer->setGraphicsEffect(new SmoothViewerCorners(mDocumentViewContainer));
         mDocumentViewContainer->installEventFilter(q);
         mThumbnailBarIsland->installEventFilter(q);
         mFloatingToolbar = new FloatingViewToolbar(mStatusBarContainer, mDocumentViewContainer);
@@ -396,6 +402,7 @@ struct ViewMainPagePrivate {
             palette.setColor(QPalette::Base, surface);
         }
         mDocumentViewContainer->applyPalette(palette);
+        mDocumentViewContainer->setBackgroundBrush(palette.brush(QPalette::Base));
         setupThumbnailBarStyleSheet();
     }
 
@@ -540,8 +547,8 @@ void ViewMainPage::setStatusBarVisible(bool visible)
 {
     d->mFloatingToolbar->setControlsDocked(visible ? this : nullptr);
     const int margins = style()->pixelMetric(QStyle::PM_ToolBarItemMargin) + style()->pixelMetric(QStyle::PM_ToolBarFrameWidth);
-    d->mStatusBarContainer->layout()->setContentsMargins(visible ? margins : qMax(10, margins), visible ? margins : 0,
-                                                       visible ? margins : qMax(10, margins), visible ? margins : 0);
+    d->mStatusBarContainer->layout()->setContentsMargins(visible ? margins : 0, visible ? margins : 0,
+                                                       visible ? margins : 0, visible ? margins : 0);
 }
 
 FloatingViewToolbar *ViewMainPage::createMainToolbar(QWidget *controls)
@@ -553,6 +560,7 @@ void ViewMainPage::setFullScreenMode(bool fullScreenMode)
 {
     layout()->setContentsMargins(fullScreenMode ? 0 : FloatingPanelInset, fullScreenMode ? 0 : FloatingPanelInset, fullScreenMode ? 0 : FloatingPanelInset, fullScreenMode ? 0 : FloatingPanelInset);
     d->mFloatingToolbar->setFullScreen(fullScreenMode);
+    d->mDocumentViewContainer->graphicsEffect()->setEnabled(!fullScreenMode);
     if (fullScreenMode) {
         d->mThumbnailBarIsland->setVisible(false);
     } else {
@@ -673,6 +681,12 @@ RasterImageView *ViewMainPage::imageView() const
 DocumentView *ViewMainPage::documentView() const
 {
     return d->currentView();
+}
+
+void ViewMainPage::prepareImageSlide(int direction)
+{
+    if (isVisible() && d->mDocumentViews.size() == 1 && !d->mSlideShow->isRunning())
+        d->mDocumentViewContainer->prepareImageSlide(direction);
 }
 
 void ViewMainPage::openUrl(const QUrl &url)

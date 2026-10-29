@@ -1,4 +1,18 @@
-dbus-daemon[129]: [session uid=1000 pid=129 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=130 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[129]: [session uid=1000 pid=129 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=130 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[129]: [session uid=1000 pid=129 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+dbus-daemon[60576]: [session uid=1000 pid=60576 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=60577 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[60576]: [session uid=1000 pid=60576 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=60577 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[60576]: [session uid=1000 pid=60576 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+NAV: KDEPrivate::KUrlNavigatorPlacesSelector hidden=0 hint=36 min=0 actual=36 text=
+NAV: KDEPrivate::KUrlNavigatorSchemeCombo hidden=1 hint=16 min=0 actual=100 text=
+NAV: KDEPrivate::KUrlNavigatorDropDownButton hidden=0 hint=19 min=0 actual=19 text=
+NAV: KDEPrivate::KUrlNavigatorButton hidden=0 hint=64 min=49 actual=60 text=Home
+NAV: KDEPrivate::KUrlNavigatorButton hidden=0 hint=79 min=65 actual=75 text=sandbox
+NAV: KDEPrivate::KUrlNavigatorButton hidden=0 hint=91 min=78 actual=88 text=win-global
+NAV: KDEPrivate::KUrlNavigatorButton hidden=0 hint=76 min=63 actual=72 text=.staging
+NAV: KDEPrivate::KUrlNavigatorButton hidden=0 hint=183 min=150 actual=179 text=gwenview-test-_py4ahmu
+NAV: KDEPrivate::KUrlNavigatorButton hidden=0 hint=57 min=57 actual=57 text=Gallery
+NAV: KUrlComboBox hidden=1 hint=89 min=0 actual=100 text=
+NAV: QWidget hidden=0 hint=6 min=0 actual=6 text=
+NAV: KDEPrivate::KUrlNavigatorToggleButton hidden=0 hint=20 min=20 actual=20 text=
+PASS: breadcrumb expansion/shrink, left anchoring, rapid reversal, sidebar resizing and reduced motion
+PASS: folder slide direction/cache, immediate scrolling, rapid changes, sidebar resize, reduced motion and breadcrumb field capsule
 PASS: fullscreen browser floating surfaces, sidebar resizing, menus, filters, folder history, location editing, thumbnail zoom, view transitions and exit restoration

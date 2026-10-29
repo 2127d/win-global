@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 // Local
 #include "mainwindow.h"
+#include "floatingpopups.h"
 #include <lib/about.h>
 #include <lib/gwenviewconfig.h>
 
@@ -205,6 +206,8 @@ int main(int argc, char *argv[])
     QApplication::setStyle(QStringLiteral("breeze"));
 #endif
 #endif
+
+    new Gwenview::FloatingPopups(&app);
 
     KLocalizedString::setApplicationDomain("gwenview");
     QScopedPointer<KAboutData> aboutData(Gwenview::createAboutData(QStringLiteral("gwenview"), /* component name */

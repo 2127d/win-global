@@ -98,6 +98,8 @@ private:
     KService::List mServiceList;
     KNewFileMenu *mNewFileMenu;
     bool mInTrash;
+    int mPluggedFileActionList = -1;
+    QStringList mOpenWithMenuKey;
 };
 
 } // namespace

@@ -10,6 +10,8 @@
 #include <QLineEdit>
 #include <QSignalBlocker>
 #include <QWheelEvent>
+#include <QPainter>
+#include <QStyleOptionComboBox>
 
 #include <cmath>
 
@@ -188,6 +190,7 @@ ZoomComboBox::ZoomComboBox(QWidget *parent)
     // is scrolling. Commit only on activation (click or Enter), like a normal
     // combo box; cancelling then leaves the current scale untouched.
     view()->installEventFilter(this);
+    lineEdit()->installEventFilter(this);
     connect(this, qOverload<int>(&ZoomComboBox::activated), this, &ZoomComboBox::activateAndChangeZoomTo);
 }
 
@@ -243,19 +246,19 @@ void ZoomComboBox::setMinimum(qreal minimum)
         return;
     }
     d->validator->setMinimum(minimum);
-    setValue(qMax(minimum, d->value));
-    // Generate zoom presets below 100%
-    // FIXME: combobox value gets reset to last index value when this code runs
-    const int zoomToFillActionIndex = findData(QVariant::fromValue(d->mZoomToFillAction));
-    const int actualSizeActionIndex = findData(QVariant::fromValue(d->mActualSizeAction));
-    for (int i = actualSizeActionIndex - 1; i > zoomToFillActionIndex; --i) {
-        removeItem(i);
+    const QSignalBlocker blocker(this);
+    // Presets are descending. Always insert below 100% at the same position;
+    // decrementing the insertion index interleaves them with the larger scales.
+    for (int i = count() - 1; i >= 0; --i) {
+        if (!itemData(i).value<QAction *>() && itemData(i).toReal() < 1.0) removeItem(i);
     }
-    qreal value = minimum * 2; // The minimum zoom value itself is already available through "fit".
-    for (int i = zoomToFillActionIndex; value < 1.0; --i) {
-        insertItem(i, textFromValue(value), QVariant::fromValue(value));
-        value *= 2;
+    const int insertion = findData(QVariant::fromValue(d->mActualSizeAction)) + 1;
+    for (qreal value = minimum * 2; value > 0 && value < 1.0; value *= 2) {
+        insertItem(insertion, textFromValue(value), QVariant::fromValue(value));
     }
+    d->value = qMax(minimum, d->value);
+    updateCurrentIndex();
+    updateDisplayedText();
 }
 
 qreal ZoomComboBox::maximum() const
@@ -271,22 +274,17 @@ void ZoomComboBox::setMaximum(qreal maximum)
         return;
     }
     d->validator->setMaximum(maximum);
-    setValue(qMin(d->value, maximum));
-    // Generate zoom presets above 100%
-    // NOTE: This probably has the same problem as setMinimum(),
-    // but the problem is never encountered since max zoom doesn't actually change
-    const int actualSizeActionIndex = findData(QVariant::fromValue(d->mActualSizeAction));
-    for (int i = actualSizeActionIndex - 1; i >= 0; i--) {
-        removeItem(i);
+    const QSignalBlocker blocker(this);
+    for (int i = count() - 1; i >= 0; --i) {
+        if (!itemData(i).value<QAction *>() && itemData(i).toReal() > 1.0) removeItem(i);
     }
-    qreal value = 2.0;
-    while (value < maximum) {
+    for (qreal value = 2.0; value < maximum; value *= 2) {
         insertItem(0, textFromValue(value), QVariant::fromValue(value));
-        value *= 2;
     }
-    if (fuzzyGreaterEqual(value, maximum)) {
-        insertItem(0, textFromValue(maximum), QVariant::fromValue(maximum));
-    }
+    if (maximum > 1.0) insertItem(0, textFromValue(maximum), QVariant::fromValue(maximum));
+    d->value = qMin(d->value, maximum);
+    updateCurrentIndex();
+    updateDisplayedText();
 }
 
 qreal ZoomComboBox::valueFromText(const QString &text, bool *ok) const
@@ -347,6 +345,10 @@ void Gwenview::ZoomComboBox::showPopup()
 
 bool ZoomComboBox::eventFilter(QObject *watched, QEvent *event)
 {
+    if (watched == lineEdit() && event->type() == QEvent::Wheel && !view()->isVisible()) {
+        wheelEvent(static_cast<QWheelEvent *>(event));
+        return true;
+    }
     if (watched == view()) {
         switch (event->type()) {
         case QEvent::ShortcutOverride: {
@@ -404,14 +406,50 @@ void ZoomComboBox::keyPressEvent(QKeyEvent *event)
 
 void ZoomComboBox::wheelEvent(QWheelEvent *event)
 {
-    updateCurrentIndex();
-    if (currentIndex() != -1) {
-        // Everything should work as expected.
+    Q_D(ZoomComboBox);
+    if (view()->isVisible()) {
         QComboBox::wheelEvent(event);
         return;
     }
+    // Accumulate high-resolution wheels/trackpads. A direction reversal starts
+    // a fresh step, rather than spending the first gesture cancelling residue.
+    const bool pixels = event->angleDelta().y() == 0 && event->pixelDelta().y() != 0;
+    const int delta = pixels ? event->pixelDelta().y() : event->angleDelta().y();
+    if (event->phase() == Qt::ScrollBegin || pixels != d->wheelUsesPixels || delta * d->wheelRemainder < 0)
+        d->wheelRemainder = 0;
+    d->wheelUsesPixels = pixels;
+    d->wheelRemainder += delta;
+    const int threshold = pixels ? 40 : 120;
+    const int steps = d->wheelRemainder / threshold;
+    d->wheelRemainder %= threshold;
+    for (int i = 0; i < qMin(qAbs(steps), count()); ++i) moveCurrentIndex(steps < 0);
+    if (event->phase() == Qt::ScrollEnd) d->wheelRemainder = 0;
+    event->accept();
+}
 
-    moveCurrentIndex(event->angleDelta().y() < 0);
+void ZoomComboBox::paintEvent(QPaintEvent *event)
+{
+    if (!property("floatingZoomPill").toBool()) {
+        QComboBox::paintEvent(event);
+        return;
+    }
+    // Keep the native editable field and arrow hit geometry, but give the
+    // floating variant a continuous capsule instead of the style's square edge.
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    const QRectF bounds = QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5);
+    const bool dark = palette().color(QPalette::Button).lightness() < 128;
+    painter.setBrush(palette().color(QPalette::Button));
+    painter.setPen(QPen(hasFocus() || lineEdit()->hasFocus() ? palette().color(QPalette::Highlight)
+                        : QColor(0, 0, 0, dark ? 85 : 32), 1));
+    painter.drawRoundedRect(bounds, bounds.height() / 2, bounds.height() / 2);
+    QStyleOptionComboBox option;
+    initStyleOption(&option);
+    const QRect arrow = style()->subControlRect(QStyle::CC_ComboBox, &option, QStyle::SC_ComboBoxArrow, this);
+    const QPointF center = arrow.center();
+    painter.setPen(QPen(palette().color(isEnabled() ? QPalette::Active : QPalette::Disabled, QPalette::ButtonText),
+                        1.3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.drawPolyline(QPolygonF{center + QPointF(-3.5, -1.5), center + QPointF(0, 2), center + QPointF(3.5, -1.5)});
 }
 
 void ZoomComboBox::updateCurrentIndex()
@@ -439,49 +477,32 @@ void ZoomComboBox::updateCurrentIndex()
     }
 }
 
-void ZoomComboBox::moveCurrentIndex(bool moveUp)
+void ZoomComboBox::moveCurrentIndex(bool decrease)
 {
-    // There is no exact match for the current zoom value in the
-    // ComboBox. We need to find the closest matches, so scrolling
-    // works as expected.
     Q_D(ZoomComboBox);
-
-    int newIndex;
-    if (moveUp) {
-        // switch to a larger item
-        newIndex = count() - 1;
-        for (int i = 2; i < newIndex; ++i) {
-            const QVariant data = itemData(i);
-            qreal value;
-            if (data.value<QAction *>() == d->mActualSizeAction) {
-                value = 1;
-            } else {
-                value = data.value<qreal>();
-            }
-            if (value > d->value) {
-                newIndex = i;
-                break;
-            }
-        }
-    } else {
-        // switch to a smaller item
-        newIndex = 1;
-        for (int i = count() - 1; i > newIndex; --i) {
-            const QVariant data = itemData(i);
-            qreal value;
-            if (data.value<QAction *>() == d->mActualSizeAction) {
-                value = 1;
-            } else {
-                value = data.value<qreal>();
-            }
-            if (value < d->value) {
-                newIndex = i;
-                break;
-            }
+    // Compare actual scale values, not rounded labels or action indices. Fit
+    // and Fill can resolve to arbitrary percentages, and the image may clamp
+    // a requested scale; neither should send the next wheel step backwards.
+    int next = -1;
+    qreal closest = decrease ? -1 : maximum() + 1;
+    const qreal tolerance = qMax(qreal(1e-8), qAbs(d->value) * 1e-6);
+    for (int i = 0; i < count(); ++i) {
+        const auto action = itemData(i).value<QAction *>();
+        if (action && action != d->mActualSizeAction) continue;
+        const qreal scale = action ? 1.0 : itemData(i).toReal();
+        if (scale < minimum() || scale > maximum()) continue;
+        if (decrease ? scale < d->value - tolerance && scale > closest
+                     : scale > d->value + tolerance && scale < closest) {
+            next = i;
+            closest = scale;
         }
     }
-    setCurrentIndex(newIndex);
-    Q_EMIT activated(newIndex);
+    if (next < 0 && decrease && d->value > minimum() + tolerance)
+        next = findData(QVariant::fromValue(d->mZoomToFitAction));
+    if (next < 0) return;
+    setCurrentIndex(next);
+    Q_EMIT activated(next);
+    updateDisplayedText();
 }
 
 void ZoomComboBox::changeZoomTo(int index)

@@ -1,6 +1,10 @@
-dbus-daemon[158]: [session uid=1000 pid=158 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=159 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[158]: [session uid=1000 pid=158 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=159 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[158]: [session uid=1000 pid=158 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
-PERF: normal 2048-image gallery refresh max 0.517 ms; scrolling heartbeat max 12 ms
-PERF: fullscreen 2048-image gallery refresh max 0.534 ms; scrolling heartbeat max 17 ms
+dbus-daemon[21376]: [session uid=1000 pid=21376 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=21377 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[21376]: [session uid=1000 pid=21376 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=21377 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[21376]: [session uid=1000 pid=21376 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+PERF: normal 2048-image folder navigation request 7 ms; slide heartbeat max 15 ms
+PERF: normal 2048-image gallery refresh max 0.644 ms; scrolling heartbeat max 12 ms
+PERF: normal 2048-image sidebar slide heartbeat max 17 ms
+PERF: fullscreen 2048-image folder navigation request 6 ms; slide heartbeat max 17 ms
+PERF: fullscreen 2048-image gallery refresh max 0.521 ms; scrolling heartbeat max 11 ms
+PERF: fullscreen 2048-image sidebar slide heartbeat max 16 ms
 PASS: large-folder normal/fullscreen pixel and wheel scrolling, endpoints, and larger fullscreen image strip

@@ -49,6 +49,8 @@ public:
     QAction *mZoomToFillAction = nullptr;
     QAction *mActualSizeAction = nullptr;
 
+    int wheelRemainder = 0;
+    bool wheelUsesPixels = false;
     qreal value = 1.0;
     ZoomValidator *validator = nullptr;
     int lastSelectedIndex = 0;

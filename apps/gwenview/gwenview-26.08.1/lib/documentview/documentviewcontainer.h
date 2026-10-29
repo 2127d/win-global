@@ -62,6 +62,9 @@ public:
      */
     void deleteView(DocumentView *view);
 
+    // Prepare a brief viewport-only transition for explicit image navigation.
+    void prepareImageSlide(int direction);
+
     /**
      * Immediately delete all views
      */

@@ -189,7 +189,7 @@ FileOpsContextManagerItem::FileOpsContextManagerItem(ContextManager *manager,
 
     mOpenWithAction = file->addAction(QStringLiteral("file_open_with"));
     mOpenWithAction->setText(i18n("Open With"));
-    mOpenWithAction->setIcon(QIcon::fromTheme(QStringLiteral("system-run")));
+    mOpenWithAction->setIcon(QIcon::fromTheme(QStringLiteral("system-run-symbolic")));
     auto menu = new QMenu;
     mOpenWithAction->setMenu(menu);
     connect(menu, &QMenu::aboutToShow, this, &FileOpsContextManagerItem::populateOpenMenu);
@@ -244,9 +244,16 @@ void FileOpsContextManagerItem::updateActions()
     mCreateFolderAction->setEnabled(dirUrlIsValid);
     mShowPropertiesAction->setEnabled(dirUrlIsValid || urlIsValid);
 
-    mXMLGUIClient->unplugActionList(QStringLiteral("file_action_list"));
-    QList<QAction *> &list = mInTrash ? mTrashFileActionList : mRegularFileActionList;
-    mXMLGUIClient->plugActionList(QStringLiteral("file_action_list"), list);
+    // Selection changes only change enabled states. Re-exporting the same
+    // commands as remove/add on every image races Plasma's asynchronous menu
+    // importer and can leave duplicate stale commands in an open global menu.
+    const int listKind = mInTrash ? 1 : 0;
+    if (mPluggedFileActionList != listKind) {
+        mXMLGUIClient->unplugActionList(QStringLiteral("file_action_list"));
+        const auto &list = mInTrash ? mTrashFileActionList : mRegularFileActionList;
+        mXMLGUIClient->plugActionList(QStringLiteral("file_action_list"), list);
+        mPluggedFileActionList = listKind;
+    }
 
     updateSideBarContent();
 }
@@ -371,9 +378,15 @@ void FileOpsContextManagerItem::createFolder()
 void FileOpsContextManagerItem::populateOpenMenu()
 {
     QMenu *openMenu = mOpenWithAction->menu();
-    qDeleteAll(openMenu->actions());
-
     updateServiceList();
+    QStringList key;
+    for (const auto &service : std::as_const(mServiceList))
+        key << service->storageId() << service->name() << service->icon();
+    // Keep QAction identity stable for the global-menu exporter while the
+    // associated application list is unchanged (the usual repeated opening).
+    if (!openMenu->isEmpty() && key == mOpenWithMenuKey) return;
+    mOpenWithMenuKey = key;
+    openMenu->clear();
 
     int idx = -1;
     for (const KService::Ptr &service : qAsConst(mServiceList)) {
@@ -388,7 +401,7 @@ void FileOpsContextManagerItem::populateOpenMenu()
     }
 
     openMenu->addSeparator();
-    QAction *action = openMenu->addAction(QIcon::fromTheme(QStringLiteral("system-run")), i18n("Other Application..."));
+    QAction *action = openMenu->addAction(QIcon::fromTheme(QStringLiteral("system-run-symbolic")), i18n("Other Application..."));
     action->setData(-1);
 }
 

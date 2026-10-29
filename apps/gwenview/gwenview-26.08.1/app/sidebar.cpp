@@ -625,7 +625,11 @@ void SideBar::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
     QPainter painter(this);
-    paintFloatingPanel(painter, QRectF(rect()).adjusted(FloatingPanelInset, FloatingPanelInset, -FloatingPanelInset, -FloatingPanelInset), palette());
+    const int slidingWidth = property("sidebarSlideWidth").toInt();
+    const int panelWidth = slidingWidth > 0 ? slidingWidth : width();
+    const int offset = isRightToLeft() ? 0 : width() - panelWidth;
+    const QRectF panel(offset, 0, panelWidth, height());
+    paintFloatingPanel(painter, panel.adjusted(FloatingPanelInset, FloatingPanelInset, -FloatingPanelInset, -FloatingPanelInset), palette());
 }
 
 QSize SideBar::sizeHint() const

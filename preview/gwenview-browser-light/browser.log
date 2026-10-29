@@ -1,4 +1,7 @@
-dbus-daemon[214]: [session uid=1000 pid=214 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=215 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[214]: [session uid=1000 pid=214 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=215 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[214]: [session uid=1000 pid=214 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+dbus-daemon[59611]: [session uid=1000 pid=59611 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=59612 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[59611]: [session uid=1000 pid=59611 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=59612 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[59611]: [session uid=1000 pid=59611 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+BREADCRUMB: wide=626 current=357 target=152 running=2
+PASS: breadcrumb expansion/shrink, left anchoring, rapid reversal, sidebar resizing and reduced motion
+PASS: folder slide direction/cache, immediate scrolling, rapid changes, sidebar resize, reduced motion and breadcrumb field capsule
 PASS: browser header, sorting, hidden files, details, selection, adaptive filters, empty states, narrow layout, thumbnail fitting, fullscreen and activation

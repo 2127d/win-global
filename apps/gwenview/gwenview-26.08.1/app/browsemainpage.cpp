@@ -28,11 +28,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 #include <QDropEvent>
 #include <QMenu>
 #include <QPainter>
+#include "folderslide.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QTimer>
+#include <QVariantAnimation>
 #include <QResizeEvent>
 #include <QSignalBlocker>
 #include <QStyleOptionViewItem>
@@ -50,6 +52,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 #include <KLocalizedString>
 #include <KUrlMimeData>
 #include <KUrlNavigator>
+#include <QDir>
 
 // Local
 #include <fileoperations.h>
@@ -73,15 +76,134 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 
 namespace Gwenview
 {
+class BrowseLocationIsland : public QWidget
+{
+public:
+    explicit BrowseLocationIsland(QWidget *parent) : QWidget(parent), mAnimation(new QVariantAnimation(this))
+    {
+        mAnimation->setObjectName(QStringLiteral("breadcrumbWidthAnimation"));
+        mAnimation->setDuration(140);
+        mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) { applyWidth(value.toInt()); });
+    }
+    QSize sizeHint() const override { return QSize(mWidth, QWidget::sizeHint().height()); }
+    QSize minimumSizeHint() const override { return QSize(80, QWidget::minimumSizeHint().height()); }
+
+    void setPathWidth(int preferred, int available, const QUrl &url, bool editable, bool fullscreen)
+    {
+        available = qMax(80, available);
+        const int target = qBound(80, preferred, available);
+        const bool navigate = mInitialized && target != mTarget && !editable && !mEditable;
+        const bool layoutChanged = available != mAvailable || editable != mEditable || fullscreen != mFullscreen;
+        mUrl = url; mAvailable = available; mEditable = editable; mFullscreen = fullscreen;
+        mInitialized = true;
+        setProperty("pathTargetWidth", target);
+        // Listing/selection updates must not restart the same animation. A
+        // sidebar resize or location-editing change takes precedence immediately.
+        if (!layoutChanged && target == mTarget) return;
+        mTarget = target;
+        const int current = width();
+        mAnimation->stop();
+        if (!navigate || layoutChanged || !isVisible() || qAbs(current - target) < 2
+            || style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, this) == 0) {
+            applyWidth(target);
+            return;
+        }
+        applyWidth(current);
+        {
+            const QSignalBlocker blocker(mAnimation);
+            mAnimation->setStartValue(current);
+            mAnimation->setEndValue(target);
+        }
+        mAnimation->start();
+    }
+protected:
+    void hideEvent(QHideEvent *event) override
+    {
+        mAnimation->stop();
+        if (mInitialized) applyWidth(mTarget);
+        QWidget::hideEvent(event);
+    }
+private:
+    void applyWidth(int width)
+    {
+        if (mWidth == width && maximumWidth() == width) return;
+        mWidth = width;
+        setProperty("pathPreferredWidth", width);
+        setMaximumWidth(width);
+        updateGeometry();
+        // Fullscreen paints the island and its shadow on the shared parent.
+        if (parentWidget()) parentWidget()->update();
+    }
+    QVariantAnimation *mAnimation;
+    int mWidth = 160, mTarget = -1, mAvailable = -1;
+    QUrl mUrl;
+    bool mInitialized = false, mEditable = false, mFullscreen = false;
+};
+
 class BrowseUrlNavigator : public KUrlNavigator
 {
 public:
     using KUrlNavigator::KUrlNavigator;
+    int preferredPathWidth() const
+    {
+        if (isUrlEditable()) return QWIDGETSIZE_MAX;
+        // Measure the actual native controls, including ancestors currently
+        // collapsed by a narrow window. Parsing the URL overcounts hidden root
+        // segments and misses places labels, bold text and style padding.
+        int width = 0;
+        auto row = layout();
+        if (!row) return 160;
+        int lastPathButton = -1;
+        for (int i = 0; i < row->count(); ++i) {
+            auto child = row->itemAt(i)->widget();
+            if (child && !child->isHidden() && QByteArray(child->metaObject()->className()).endsWith("::KUrlNavigatorButton"))
+                lastPathButton = i;
+        }
+        for (int i = 0; i < row->count(); ++i) {
+            auto item = row->itemAt(i);
+            auto child = item->widget();
+            if (!child) { width += item->sizeHint().width(); continue; }
+            const QByteArray type = child->metaObject()->className();
+            if (type.endsWith("::KUrlNavigatorButton")) {
+                // KIO hides old trailing buttons before deleteLater. Include
+                // collapsed ancestors, but never those obsolete descendants.
+                if (i <= lastPathButton) width += qMax(child->minimumWidth(), child->sizeHint().width());
+            }
+            else if (!child->isHidden() && !type.endsWith("::KUrlNavigatorDropDownButton"))
+                width += qMax(child->minimumWidth(), child->sizeHint().width());
+        }
+        return qMax(80, width + row->contentsMargins().left() + row->contentsMargins().right());
+    }
     QSize minimumSizeHint() const override
     {
         // KUrlNavigator can collapse breadcrumbs, but its preferred minimum
         // otherwise keeps the outer window as wide as the entire path.
         return QSize(80, KUrlNavigator::minimumSizeHint().height());
+    }
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override
+    {
+        // KIO 6 intercepts its own Paint events for ABI compatibility and calls
+        // KUrlNavigator::paintEvent directly, bypassing subclass overrides.
+        if (watched == this && event->type() == QEvent::Paint) {
+            paintEvent(static_cast<QPaintEvent *>(event));
+            return true;
+        }
+        return KUrlNavigator::eventFilter(watched, event);
+    }
+    void paintEvent(QPaintEvent *) override
+    {
+        if (isUrlEditable()) return; // The native location editor owns its field.
+        // Draw the actual field as a capsule instead of clipping the system
+        // style's inset rectangular line-edit frame at the island's corners.
+        QPainter painter(this); painter.setRenderHint(QPainter::Antialiasing);
+        const QRectF field = QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5);
+        QColor edge = palette().color(QPalette::WindowText); edge.setAlpha(24);
+        auto focus = qApp->focusWidget();
+        if (focus == this || (focus && isAncestorOf(focus))) edge = palette().color(QPalette::Highlight);
+        painter.setPen(QPen(edge, 1)); painter.setBrush(palette().brush(QPalette::AlternateBase));
+        painter.drawRoundedRect(field, field.height() / 2, field.height() / 2);
     }
 };
 
@@ -183,7 +305,10 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         q->layout()->setSpacing(8);
         q->setAutoFillBackground(false);
 
-        mStatusBarContainer->layout()->setContentsMargins(0, 6, 0, 0);
+        mStatusBarContainer->layout()->setContentsMargins(0, 6, 0, 2);
+        mToggleSideBarButton->setMinimumSize(36, 32);
+        mToggleSideBarButton->setIconSize(QSize(22, 22));
+        mToggleSideBarButton->setFocusPolicy(Qt::TabFocus);
         mStatusBarContainer->layout()->setSpacing(8);
         mThumbnailSlider->setMinimumWidth(100);
         mThumbnailSlider->setMaximumWidth(180);
@@ -216,7 +341,10 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         for (auto button : {mSortButton, mDetailsButton, static_cast<QToolButton *>(mAddFilterButton)}) {
             button->setPopupMode(QToolButton::InstantPopup); button->setAutoRaise(true);
             button->setMinimumHeight(34); button->setIconSize(QSize(18, 18));
-            button->setFocusPolicy(Qt::StrongFocus);
+            // Keep keyboard focus via Tab without leaving a mouse-click focus
+            // highlight behind after an instant-popup menu closes.
+            button->setFocusPolicy(Qt::TabFocus);
+            button->installEventFilter(q);
             headerLayout->addWidget(button);
         }
         mAddFilterButton->setText(i18n("Filters")); mAddFilterButton->setToolTip(i18n("Filter images by name, date, rating, tags or dimensions"));
@@ -256,18 +384,31 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
 
         // mUrlNavigator (use stupid layouting code because KUrlNavigator ctor
         // can't be used directly from Designer)
+        auto originalLocation = mUrlNavigatorContainer;
+        mUrlNavigatorContainer = new BrowseLocationIsland(originalLocation->parentWidget());
+        mUrlNavigatorContainer->setObjectName(originalLocation->objectName());
+        mUrlNavigatorContainer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+        delete horizontalLayout_2->replaceWidget(originalLocation, mUrlNavigatorContainer);
+        delete originalLocation;
         mFilePlacesModel = new KFilePlacesModel(q);
         mUrlNavigator = new BrowseUrlNavigator(mFilePlacesModel, QUrl(), mUrlNavigatorContainer);
+        mUrlNavigator->setAutoFillBackground(false);
         mUrlNavigatorContainer->setAutoFillBackground(false);
         mUrlNavigatorContainer->setBackgroundRole(QPalette::Mid);
         mUrlNavigatorContainer->setContentsMargins(4, 3, 4, 3);
         mUrlNavigator->setMinimumWidth(0);
         mUrlNavigator->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
         mUrlNavigator->setAccessibleName(i18n("Folder location"));
+        mUrlNavigator->setObjectName(QStringLiteral("browseBreadcrumb"));
+        auto folderSlide = new FolderSlide(mThumbnailView, q);
+        QObject::connect(mUrlNavigator, &KUrlNavigator::urlChanged, q, [this, folderSlide](const QUrl &url) {
+            folderSlide->navigate(url, mUrlNavigator->historyIndex());
+        });
         QObject::connect(mUrlNavigator, &KUrlNavigator::urlChanged, q, [this] {
             schedulePresentationUpdate();
             QTimer::singleShot(0, q, [this] { updateControlIcons(); });
         });
+        QObject::connect(mUrlNavigator, &KUrlNavigator::editableStateChanged, q, [this] { schedulePresentationUpdate(); });
         auto layout = new QVBoxLayout(mUrlNavigatorContainer);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(mUrlNavigator);
@@ -286,8 +427,12 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         chromeLayout->addWidget(mHeader);
         q->layout()->removeItem(horizontalLayout_2);
         chromeLayout->addLayout(horizontalLayout_2);
+        horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
+        horizontalLayout_2->setSpacing(3);
+        horizontalLayout_2->setAlignment(Qt::AlignLeft);
         delete mFullScreenToolBar; mFullScreenToolBar = nullptr;
         delete mFullScreenToolBar2; mFullScreenToolBar2 = nullptr;
+        horizontalLayout_2->addStretch(1);
 
         mGallery = new BrowseGallerySurface(q);
         mGallery->setObjectName(QStringLiteral("fullscreenBrowseGallery"));
@@ -349,6 +494,13 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
             mHistoryForward->setEnabled(mUrlNavigator->historyIndex() > 0);
         }
         const bool stacked = mFullScreen && q->width() < 760;
+        const int available = mChrome->contentsRect().width() - mChrome->layout()->contentsMargins().left()
+            - mChrome->layout()->contentsMargins().right()
+            - (mFullScreen && !stacked && mFullScreenNavigation ? mFullScreenNavigation->sizeHint().width() + 3 : 0);
+        const int preferred = mUrlNavigator->isUrlEditable() ? qMax(80, available)
+            : static_cast<BrowseUrlNavigator *>(mUrlNavigator)->preferredPathWidth() + (mFullScreen ? 24 : 8);
+        static_cast<BrowseLocationIsland *>(mUrlNavigatorContainer)->setPathWidth(
+            preferred, available, mUrlNavigator->locationUrl(), mUrlNavigator->isUrlEditable(), mFullScreen);
         horizontalLayout_2->setDirection(stacked ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight);
         if (mFullScreenNavigation) horizontalLayout_2->setAlignment(mFullScreenNavigation, Qt::AlignLeft);
         const bool compact = q->width() < (mFullScreen ? 640 : 560);
@@ -632,7 +784,7 @@ struct BrowseMainPagePrivate : public Ui_BrowseMainPage {
         mUrlNavigatorContainer->setAutoFillBackground(false);
         const QColor edge = q->palette().color(QPalette::WindowText);
         mUrlNavigatorContainer->setStyleSheet(QStringLiteral(
-            "QWidget#mUrlNavigatorContainer { border: 1px solid rgba(%1,%2,%3,22); border-radius: 10px; }")
+            "QWidget#mUrlNavigatorContainer { border: 1px solid rgba(%1,%2,%3,22); border-radius: 18px; }")
             .arg(edge.red()).arg(edge.green()).arg(edge.blue()));
         updateControlIcons();
         q->update();
@@ -748,6 +900,12 @@ bool BrowseMainPage::eventFilter(QObject *watched, QEvent *event)
     if ((watched == d->mThumbnailView->viewport() && event->type() == QEvent::Resize)
         || (watched == d->mFilterFrame && (event->type() == QEvent::ShowToParent || event->type() == QEvent::HideToParent)))
         d->schedulePresentationUpdate();
+    if ((watched == d->mSortButton || watched == d->mDetailsButton || watched == d->mAddFilterButton)
+        && event->type() == QEvent::Leave) {
+        auto button = static_cast<QToolButton *>(watched);
+        button->setAttribute(Qt::WA_UnderMouse, false);
+        button->update();
+    }
     // Leave fullscreen when not viewing an image
     if (d->mFullScreen && event->type() == QEvent::ShortcutOverride) {
         const QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
@@ -904,8 +1062,11 @@ void BrowseMainPage::setFullScreenMode(bool fullScreen)
     layout()->setContentsMargins(margin, margin, margin, margin);
     layout()->setSpacing(fullScreen ? 0 : 8);
     d->applyPalette(fullScreen);
-    d->mUrlNavigatorContainer->setContentsMargins(4, 3, 4, 3);
-    d->mUrlNavigatorContainer->setMaximumHeight(fullScreen ? 36 : QWIDGETSIZE_MAX);
+    d->mUrlNavigatorContainer->setContentsMargins(fullScreen ? QMargins(12, 11, 12, 15) : QMargins(4, 3, 4, 3));
+    d->mUrlNavigatorContainer->setProperty("floatingControlPill", fullScreen);
+    d->mHeader->layout()->setContentsMargins(fullScreen ? 12 : 0, 0, fullScreen ? 12 : 0, 0);
+    d->mUrlNavigatorContainer->setMinimumHeight(fullScreen ? 60 : 0);
+    d->mUrlNavigatorContainer->setMaximumHeight(fullScreen ? 60 : QWIDGETSIZE_MAX);
     d->updateContextBarActions();
     if (fullScreen && !d->mFullScreenNavigation) d->setupFullScreenToolBar();
     if (d->mFullScreenNavigation) {
@@ -914,7 +1075,7 @@ void BrowseMainPage::setFullScreenMode(bool fullScreen)
     }
     d->mChrome->setFloating(fullScreen);
     d->mGallery->setFloating(fullScreen);
-    d->mChrome->layout()->setContentsMargins(fullScreen ? QMargins(FloatingPanelPadding, 18, FloatingPanelPadding, 20) : QMargins());
+    d->mChrome->layout()->setContentsMargins(fullScreen ? QMargins(3, 18, 3, 20) : QMargins());
     const int galleryPadding = fullScreen ? FloatingPanelPadding : 0;
     d->mGallery->layout()->setContentsMargins(galleryPadding, galleryPadding, galleryPadding, galleryPadding);
     d->mToggleSideBarButton->setVisible(!fullScreen);

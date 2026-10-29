@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 */
 // Self
 #include "documentviewcontainer.h"
+#include "imageslide.h"
 
 // Local
 #include "gwenview_lib_debug.h"
@@ -49,6 +50,7 @@ struct DocumentViewContainerPrivate {
     DocumentViewSet mAddedViews;
     DocumentViewSet mRemovedViews;
     QTimer *mLayoutUpdateTimer = nullptr;
+    ImageSlide *mImageSlide = nullptr;
 
     void scheduleLayoutUpdate()
     {
@@ -91,6 +93,7 @@ DocumentViewContainer::DocumentViewContainer(QWidget *parent)
     }
 #endif
     setScene(d->mScene);
+    d->mImageSlide = new ImageSlide(this);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     setFrameStyle(QFrame::NoFrame);
@@ -107,6 +110,10 @@ DocumentViewContainer::DocumentViewContainer(QWidget *parent)
 
 DocumentViewContainer::~DocumentViewContainer()
 {
+    // Disconnect document callbacks before QGraphicsView tears down its scene
+    // and viewport; QObject's automatic child cleanup happens too late here.
+    d->mImageSlide->finish();
+    delete d->mImageSlide;
     delete d;
 }
 
@@ -115,6 +122,7 @@ DocumentView *DocumentViewContainer::createView()
     auto view = new DocumentView(d->mScene);
     view->setPalette(palette());
     d->mAddedViews << view;
+    d->mImageSlide->watch(view);
     view->show();
     connect(view, &DocumentView::fadeInFinished, this, &DocumentViewContainer::slotFadeInFinished);
     d->scheduleLayoutUpdate();
@@ -130,6 +138,11 @@ DocumentView *DocumentViewContainer::createView()
     }
 
     return view;
+}
+
+void DocumentViewContainer::prepareImageSlide(int direction)
+{
+    if (GwenviewConfig::animationMethod() != DocumentView::NoAnimation) d->mImageSlide->prepare(direction);
 }
 
 void DocumentViewContainer::deleteView(DocumentView *view)
@@ -152,6 +165,7 @@ void DocumentViewContainer::updateSetup(DocumentView *view)
 
 void DocumentViewContainer::reset()
 {
+    d->mImageSlide->finish();
     d->resetSet(&d->mViews);
     d->resetSet(&d->mAddedViews);
     d->resetSet(&d->mRemovedViews);
@@ -183,7 +197,7 @@ void DocumentViewContainer::updateLayout()
     QList<DocumentView *> views = (d->mViews | d->mAddedViews).values();
     std::sort(views.begin(), views.end(), viewLessThan);
 
-    bool animated = GwenviewConfig::animationMethod() != DocumentView::NoAnimation;
+    bool animated = GwenviewConfig::animationMethod() != DocumentView::NoAnimation && !d->mImageSlide->active();
     bool crossFade = d->mAddedViews.count() == 1 && d->mRemovedViews.count() == 1;
 
     if (animated && crossFade) {

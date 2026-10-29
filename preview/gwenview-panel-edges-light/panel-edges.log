@@ -1,0 +1,2 @@
+dbus-daemon[20448]: [session uid=1000 pid=20448 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=20449 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+PASS: panel edge capture

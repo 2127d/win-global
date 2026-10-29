@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 */
 #include "mainwindow.h"
+#include "sidebarmotion.h"
 #include <config-gwenview.h>
 
 // Qt
@@ -178,8 +179,8 @@ protected:
         QColor background = palette().color(QPalette::Window); background.setAlpha(255);
         painter.fillRect(rect(), background);
         const int shift = qRound(width() * progress);
-        painter.drawPixmap(QPoint(-direction * shift, 0), from);
-        painter.drawPixmap(QPoint(direction * (width() - shift), 0), to);
+        painter.drawPixmap(QRect(QPoint(-direction * shift, 0), size()), from);
+        painter.drawPixmap(QRect(QPoint(direction * (width() - shift), 0), size()), to);
     }
 };
 
@@ -227,7 +228,7 @@ public:
     {
         if (page == currentWidget()) return;
         const int oldIndex = currentIndex(), newIndex = indexOf(page);
-        const bool animate = isVisible() && oldIndex >= 0 && oldIndex < 2 && newIndex >= 0 && newIndex < 2
+        const bool animate = isVisible() && oldIndex >= 0 && newIndex >= 0
             && style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, this) > 0;
         QPixmap before;
         if (animate) before = mOverlay->isVisible() ? mOverlay->grab() : currentWidget()->grab();
@@ -236,7 +237,8 @@ public:
         setCurrentWidget(page);
         if (!animate) { mTarget.clear(); return; }
         mOverlay->from = before;
-        mOverlay->direction = (newIndex > oldIndex ? 1 : -1) * (isRightToLeft() ? -1 : 1);
+        const auto order = [](int index) { return index == 2 ? 0 : index + 1; }; // Home, Browse, View
+        mOverlay->direction = (order(newIndex) > order(oldIndex) ? 1 : -1) * (isRightToLeft() ? -1 : 1);
         mCapture->start();
     }
     QSize minimumSizeHint() const override
@@ -246,7 +248,14 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event) override
     {
-        if (mAnimation->state() == QAbstractAnimation::Running) finishSlide();
+        if (mAnimation->state() == QAbstractAnimation::Running) {
+            auto sidebar = window()->findChild<QWidget *>(QStringLiteral("sidebarIsland"));
+            // Home reveals the sidebar at the same time. Keep moving the two
+            // cached frames as it slides, instead of cancelling Home's entrance.
+            if (sidebar && sidebar->property("sidebarSlideWidth").toInt() > 0) {
+                mOverlay->setGeometry(rect()); mOverlay->update();
+            } else finishSlide();
+        }
         QStackedWidget::resizeEvent(event);
     }
     void hideEvent(QHideEvent *event) override { finishSlide(); QStackedWidget::hideEvent(event); }
@@ -300,6 +309,7 @@ struct MainWindow::Private {
     GvCore *mGvCore = nullptr;
     MainWindow *q = nullptr;
     QSplitter *mCentralSplitter = nullptr;
+    SidebarMotion *mSidebarMotion = nullptr;
     QWidget *mContentWidget = nullptr;
     ViewMainPage *mViewMainPage = nullptr;
     KUrlNavigator *mUrlNavigator = nullptr;
@@ -1112,7 +1122,7 @@ struct MainWindow::Private {
 
     void saveSplitterConfig()
     {
-        if (mSideBar->isVisible()) {
+        if (mSideBar->isVisible() && (!mSidebarMotion || !mSidebarMotion->isRunning())) {
             GwenviewConfig::setSideBarSplitterSizes(mCentralSplitter->sizes());
         }
     }
@@ -1466,7 +1476,7 @@ void MainWindow::showStartMainPage()
     d->saveSplitterConfig();
     d->mSideBar->setCurrentPage(QStringLiteral("recent"));
     toggleSideBar(true);
-    d->mViewStackedWidget->setCurrentWidget(d->mStartMainPage);
+    d->mViewStackedWidget->transitionTo(d->mStartMainPage);
     d->updateMainToolbar();
 
     d->updateActions();
@@ -1612,15 +1622,15 @@ void MainWindow::toggleSideBar(bool visible)
     d->mToggleSideBarAction->setChecked(visible);
     d->mToggleOperationsSideBarAction->setChecked(visible && d->mSideBar->currentPage() == QLatin1String("operations"));
     d->saveSideBarVisibility(visible);
-    d->mSideBar->setVisible(visible);
+    const QList<QToolButton *> buttonList{d->mBrowseMainPage->toggleSideBarButton(), d->mViewMainPage->toggleSideBarButton()};
+    if (!d->mSidebarMotion)
+        d->mSidebarMotion = new SidebarMotion(d->mCentralSplitter, d->mSideBar, d->mToggleSideBarAction, buttonList);
+    const bool animate = sender() == d->mToggleSideBarAction || sender() == d->mToggleOperationsSideBarAction;
+    d->mSidebarMotion->setVisible(visible, animate);
 
-    const QString iconName = QApplication::isRightToLeft() ? (visible ? "sidebar-collapse-right" : "sidebar-expand-right")
-                                                           : (visible ? "sidebar-collapse-left" : "sidebar-expand-left");
     const QString toolTip = visible ? i18nc("@info:tooltip", "Hide sidebar") : i18nc("@info:tooltip", "Show sidebar");
 
-    const QList<QToolButton *> buttonList{d->mBrowseMainPage->toggleSideBarButton(), d->mViewMainPage->toggleSideBarButton()};
     for (auto button : buttonList) {
-        button->setIcon(QIcon::fromTheme(iconName));
         button->setToolTip(toolTip);
     }
 }
@@ -1756,11 +1766,13 @@ void MainWindow::goToPrevious()
             || (GwenviewConfig::navigationEndNotification() == SlideShow::WarnOnSlideshow && !d->mSlideShow->isRunning() && !d->mFullScreenAction->isChecked())
             || d->hudButtonBox)) {
         if (GwenviewConfig::wrapAfterLast()) {
+            d->mViewMainPage->prepareImageSlide(-1);
             d->goToLastDocument();
         }
     } else if (!previousIndex.isValid()) {
         showFirstDocumentReached();
     } else {
+        d->mViewMainPage->prepareImageSlide(-1);
         d->goTo(-1);
     }
 }
@@ -1785,11 +1797,13 @@ void MainWindow::goToNext()
             || (GwenviewConfig::navigationEndNotification() == SlideShow::WarnOnSlideshow && !d->mSlideShow->isRunning() && !d->mFullScreenAction->isChecked())
             || d->hudButtonBox)) {
         if (GwenviewConfig::wrapAfterLast()) {
+            d->mViewMainPage->prepareImageSlide(1);
             d->goToFirstDocument();
         }
     } else if (!nextIndex.isValid()) {
         showLastDocumentReached();
     } else {
+        d->mViewMainPage->prepareImageSlide(1);
         d->goTo(1);
     }
 }

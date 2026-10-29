@@ -63,7 +63,10 @@ between the viewer and thumbnail strip and a 6px floating-control gap.
 Fullscreen image controls use separate floating pills for the description/count,
 view controls, navigation/slideshow, zoom, rotation, and pin/options/exit. Soft
 shadows, fine rims, 44px surfaces and rounded selection states match the normal
-floating bars. The groups stack in a narrow image pane. Native previous/next,
+floating bars. A shared, quarter-resolution scene capture adds blur behind the
+fullscreen islands and preview tray without blurring their text, icons or image
+previews. Captures coalesce at 32ms, stop offscreen, and reuse unchanged frames
+instead of repainting continuously. The groups stack in a narrow image pane. Native previous/next,
 slideshow, zoom, fit, actual size, rotation, sidebar, Browse and exit actions keep
 their shortcuts and enabled states. Controls, sidebar and dialogs retain the
 desktop's light/dark palette; the image canvas keeps its fullscreen background.
@@ -82,7 +85,28 @@ the strip's selection-centering animation instead of competing with it.
 normal and fullscreen modes, including scroll endpoints and the enlarged strip.
 
 Fullscreen Browse uses the same floating surfaces and action buttons as the
-fullscreen image view. Separate title and location surfaces accompany grouped
+fullscreen image view. Navigation islands align with the header's left edge,
+with the location island directly beside them or on a separate left-aligned row
+when narrow. The breadcrumb uses the same 44px pill surface and shadow space as
+the neighboring controls, with its inner field vertically centered. Its background
+has capsule ends. Its island sizes to
+the path, grows with deeper locations, and caps at the available width; editing
+with F6 temporarily uses the full available space. Normal Browse uses the same
+rounded, content-sized breadcrumb field. Folder navigation animates the island's
+width for 140ms with an ease-out curve and a fixed left edge. Rapid navigation
+retargets from the current width. Sidebar/window resizing and F6 editing take
+precedence immediately; hidden islands and disabled desktop motion skip the
+animation. The row height stays fixed throughout. The navigator paints the inner
+text field itself as a capsule, with a theme-colored surface and focus rim,
+instead of clipping a rectangular native frame.
+
+Folder navigation in normal and fullscreen Browse adds a 140ms, 28px gallery
+slide. Parent/back navigation reverses its direction, including RTL layouts.
+Only one viewport-sized frame is retained during the transition; directory
+listing and thumbnail delivery continue, with no per-frame thumbnail painting
+or whole-folder capture. The effect is disabled and its frame released when
+finished. Clicks, keys, scrolling, resizing, leaving Browse and reduced-motion
+settings bypass or dismiss the slide immediately. Separate title and location surfaces accompany grouped
 view and folder-navigation pills. Its navigation area contains the folder title, native
 Sort/View/Filters menus, a persistent sidebar toggle, View, folder Back/Forward,
 Up, and Exit Fullscreen. Folder history uses KUrlNavigator and also accepts
@@ -99,6 +123,14 @@ states and balanced margins follow the active theme. Opening uses a 140ms
 slide/fade of one cached frame inside the native window, so it also works on
 Wayland without moving the window. Input cancels the entrance immediately;
 resizing/closing clears it, and disabled desktop animation skips it entirely.
+
+Sidebar show/hide uses a coordinated 180ms ease-out. The sidebar outline in the
+button stays steady while its chevron folds smoothly to the new direction.
+The sidebar's live contents move at their full width, so its text and footer
+do not compress and opening never waits for a screenshot capture. Rapid clicks reverse from the current
+position. Completed toggles preserve the preferred width and native splitter
+constraints; resizing and mode changes finish immediately. Reduced-motion
+settings skip the slide. Both layout directions are supported.
 
 The sidebar has a live recent-image count and an overflow menu for choosing a
 thumbnail grid or a list with filenames and parent folders. That view preference
@@ -154,11 +186,25 @@ auto-hiding pill for that bar in image view. Checking it again restores the
 native layout, spacing, palette, icons, and control styling. The choices persist
 across restarts using Gwenview's existing settings.
 
-Switching between Browse and image view uses a quick 140 ms slide. Each page is
+Switching among Home, Browse and image view uses a quick 140 ms slide. Each page is
 captured once, so animation frames move cached images without repeatedly painting
 the thumbnail grid. The destination becomes active immediately; further input
 cancels even a pending transition, rapid switches never queue, and disabled desktop
-animations switch directly.
+animations switch directly. Home's slide continues while its sidebar opens,
+resizing the cached frames instead of recapturing or cancelling the transition.
+
+Toolbar arrows and Left/Right image navigation slide for 140ms in normal and
+fullscreen view, with direction reversed for Previous and RTL layouts. The old
+frame stays visible until the next image is ready. Two viewport-sized snapshots
+are captured once; animation frames do not decode, rescale or repaint the source
+image. The native viewport geometry and floating controls remain unchanged.
+Rapid navigation replaces the pending slide, while interaction, sidebar/window
+resizing and leaving the viewer dismiss it immediately. Slow loads return to the
+native loading indicator after 600ms. Reduced motion skips the transition; compare
+mode, slideshow playback and the legacy OpenGL animation mode retain native
+behavior. `tools/verify-gwenview.py --image-slide` checks toolbar/keyboard navigation,
+48-megapixel images, cached frame bounds, responsiveness, rapid changes and sidebar
+resizing in both modes; add `--dark` for the dark palette.
 
 The top-right toggle expands left into separate floating glass pills. Adjacent
 navigation arrows share a pill, with view modes, editing tools, and window controls
@@ -173,6 +219,71 @@ image view restores the pill collapsed if the native toolbar remains hidden.
 Fullscreen hides the main toolbar and its pill; leaving fullscreen restores the
 previous choice. Spotlight retains its floating controls and restores the
 previous bars when leaving that mode.
+
+Dropdown menus, context menus and submenus use the same cached rounded surface
+and soft floating shadow in normal and fullscreen views. Their native actions,
+checkmarks, separators, shortcuts, keyboard handling and widget controls remain
+intact. Combo popup padding is included in its minimum width so zoom percentages
+stay readable; the native list still owns scrolling and selection. Menus follow
+the desktop palette, including live palette changes, and avoid a duplicate system
+shadow. A 120ms eased slide presents a single cached popup frame without
+moving native hit targets. Mouse movement, clicks, keyboard navigation and wheel
+input reveal the live menu immediately; closing clears pending animation, and
+reduced motion skips it. Menus follow SequoiaEleven's native material rules:
+Transparent variants use the desktop Base color at 80% opacity; Solid variants
+use 100%. The material remains constant during animation and Share-menu refreshes,
+and live desktop palette changes apply to all popup types and palette groups.
+Combo views do not paint a second background over their container's material.
+
+Transparent menus request native compositor blur inside the rounded body only.
+The region follows the brief opening slide and excludes the shadow gutters, so
+there is no rectangular blur halo. Plasma's Blur desktop effect owns its enabled
+state and strength; Gwenview neither changes those settings nor substitutes an
+opaque or software-blurred background when the effect is disabled. Solid menus
+use a nonempty off-surface region to retain KDE's surface-destruction tracking.
+Do not replace this with `enableBlurBehind(false)`: KWindowSystem 6.31's Wayland
+backend drops its lifetime watcher, then retains a new effect object for the old
+surface, causing a fatal protocol error on reopening. An empty region means
+whole-window blur and must also be avoided. Fullscreen control-pill blur is unchanged.
+Monochrome theme menu icons follow the text color while colored icons and
+background-color previews retain their original appearance. Sidebar buttons show a 320ms expanding accent outline above the controls;
+the wave is input-transparent, restarts on repeated clicks, and skips reduced
+motion. `tools/verify-gwenview.py --popup-preview` checks real dropdowns, context
+menus, submenus, cached entrance frames, immediate input, reduced motion, native
+blur requests, zoom scrolling and the visible sidebar ripple in both view modes;
+add `--dark` for the dark palette and `--transparent` to exercise the transparent
+desktop theme with translucent menu backgrounds and bounded blur. `--popup-lifecycle` walks the populated
+menu catalog and nested menus repeatedly, refreshes Share entries while open,
+changes its inherited palette mid-opening, and repeats zoom, context/submenus and
+fullscreen settings. It checks theme opacity and the blur region during and after entrance in both
+normal and fullscreen modes.
+
+`--native-menus` runs that same audit against actual Wayland popups and pointer
+grabs on a private KWin compositor, using EIS input restricted to the isolated
+session. It needs the existing libei test SDK (or development headers), KWin and
+Qt DBus. `--blur-disabled` starts only that private compositor with Blur off.
+The test queries the effect's actual loaded state and toggles it off/on while
+Share is open, checking that opacity does not change and no protocol error occurs.
+No live desktop input, system-settings changes, or sharing actions are sent. The older focused
+`--popup-lifecycle --wayland-socket /absolute/socket` test remains available: it
+uses tool-role menus and seeded blur requests to reproduce the KWindowSystem
+surface-lifetime failure, independent of pointer-grab handling.
+
+Normal toolbar/status pills and fullscreen image/Browse islands share one smooth
+surface renderer. Decorative glass, rims and shadows resolve from twice the
+device resolution and are cached, including at fractional desktop scaling. Text,
+icons and previews remain native and sharp. Shadow interiors use soft alpha
+erasure; normal toolbar input masks leave room for the antialiased edge while
+keeping gaps between groups clickable. `tools/verify-floating-surfaces.cpp`
+checks edge coverage, shadow transparency and cache reuse at 100%, 125%, 150%
+and 200% scaling in both palettes. Sidebar and normal thumbnail panels use the
+same cached surface treatment. The image viewer keeps its native-resolution
+pixels and smooths only four small corner tiles; its viewport paints the image
+background explicitly so transparent corners reveal the parent and shadow.
+Fullscreen bypasses the corner effect and keeps the full image area. The floating
+status bar removes its extra end padding, matching the toolbar's 8px visible gap
+to the toggle. `--panel-edges` checks the actual viewer's alpha edge and parent
+background in the GUI.
 
 Floating surfaces follow the Weather makeover's elevation treatment: soft,
 downward shadows, restrained borders, and calmer glass highlights. Toolbar
@@ -214,11 +325,20 @@ into one update per event-loop turn. Controls have consistent gaps. Transparent
 resting buttons let the glass read as one surface per group, with quiet hover
 fills, accent-colored selections, and visible keyboard focus. Buttons use
 rounded inset corners that follow their enclosing pill; the zoom track
-and thumb are rounded as well. The editable zoom dropdown, arrow, and popup
-use the native system style. Browsing the zoom presets with the wheel, pointer,
-or keyboard leaves the image scale unchanged until a click or Enter commits a
-selection; Escape dismisses the list without resetting the scale. This applies
-to both the native status bar and the floating controls.
+and thumb are rounded as well. The floating zoom field has fully rounded capsule
+ends and a stronger local shadow, while retaining native editing and arrow hit
+geometry. Docking restores its system styling. The popup retains the system
+style: browsing the open list with the wheel, pointer, or keyboard leaves the
+image scale unchanged until a click or Enter commits a selection; Escape cancels.
+With the list closed, hovering and scrolling steps directly through the full
+percentage range. Presets remain sorted when the fit scale changes, and stepping
+uses actual values rather than rounded labels. Fractional wheel and pixel-only
+trackpad input accumulate into steps. Both the native and floating status bars
+use this behavior; fullscreen's separate zoom controls are unchanged.
+The floating expand/hide toggles use a visible 320ms outline wave in the current
+accent color. The line expands beyond the button into its shadow margin, with no
+filled flash, a quiet resting selection, and a separate keyboard-focus ring. Repeated
+presses restart one animation; disabled desktop motion skips the ripple.
 Toolbar text, control surfaces, and monochrome
 icons refresh on system theme changes without restarting, including disabled
 and selected states and an already-open zoom menu. Repeated clicks and mid-animation reversals preserve the slide;
@@ -288,6 +408,11 @@ library loading, argument forwarding, upgrade fallback, and reversible install.
 Captures and logs are written to `preview/gwenview/`. Sidebar preview checks also
 cover the four toolbar/status-bar combinations, repeated native styling restoration,
 mode changes, and persistence of both native and pill choices across restarts.
+They also scroll the closed zoom field through every preset in both directions,
+exercise fractional wheels, pixel-only trackpads and arbitrary slider scales,
+and check popup cancellation, ripple reversal and reduced-motion activation.
+`tools/verify-zoom-combobox.cpp` additionally exercises preset rebuilding with
+fit scales down to 0.1%, including percentages whose rounded labels coincide.
 
 To capture all three sidebar pages with the project theme:
 
@@ -338,3 +463,23 @@ python3 tools/verify-gwenview.py --fullscreen-browser-preview --dark
 These checks cover control visibility, responsive rows, menus, filtering,
 selection, thumbnail size, folder history, F6 location editing, status-bar
 preferences, sidebar toggling, image/browser transitions and repeated exits.
+
+Live menu material changes watch Plasma palette notifications and atomic
+`kdeglobals` replacements. Existing open/hidden popups refresh together; their
+rounded blur regions follow the chosen material while KWin controls the Blur
+effect. No restart is needed to change themes after loading the updated binary.
+Monochrome command icons are tinted without flattening shaded application icons.
+Browse breadcrumbs measure KDE's actual controls, ignore retired path buttons,
+and preserve their quick width animation. Browse popup buttons retain keyboard
+Tab focus without retaining mouse-click focus; the sidebar toggle uses a 22px
+icon in a minimum 36×32 target.
+
+Selection changes now preserve the global menu's action list and Open With's
+application actions when their contents are unchanged. This avoids redundant
+remove/add exports through Plasma's asynchronous menu importer.
+
+The popup lifecycle check also switches light/dark and solid/transparent themes
+on open Share, Open With and zoom menus, reopens them, checks hidden submenus,
+and verifies stable global-menu command identities. `--global-menu` additionally
+runs the real Plasma widget in a private compositor and audits its imported
+commands while Gwenview changes images and fullscreen state.

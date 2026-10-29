@@ -74,6 +74,7 @@ protected:
      * @see updateCurrentIndex()
      */
     void wheelEvent(QWheelEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     /**
@@ -86,7 +87,7 @@ private:
      */
     void updateCurrentIndex();
 
-    void moveCurrentIndex(bool moveUp);
+    void moveCurrentIndex(bool decrease);
 
 private Q_SLOTS:
     /**
