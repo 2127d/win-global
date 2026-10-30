@@ -1,3 +1,4 @@
+#include <lib/sequoiadesign.h>
 // vim: set tabstop=4 shiftwidth=4 expandtab:
 /*
 Gwenview: an image viewer
@@ -82,8 +83,8 @@ public:
     explicit BrowseLocationIsland(QWidget *parent) : QWidget(parent), mAnimation(new QVariantAnimation(this))
     {
         mAnimation->setObjectName(QStringLiteral("breadcrumbWidthAnimation"));
-        mAnimation->setDuration(140);
-        mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        mAnimation->setDuration(Sequoia::LongDuration);
+        mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) { applyWidth(value.toInt()); });
     }
     QSize sizeHint() const override { return QSize(mWidth, QWidget::sizeHint().height()); }
@@ -226,7 +227,7 @@ public:
         QColor edge = selected || focused ? accent : option.palette.color(QPalette::WindowText);
         edge.setAlpha(selected || focused ? 170 : hovered ? 35 : 16);
         painter->setPen(QPen(edge, selected ? 1.5 : 1)); painter->setBrush(fill);
-        painter->drawRoundedRect(card, 10, 10);
+        painter->drawRoundedRect(card, Sequoia::CardRadius, Sequoia::CardRadius);
         painter->restore();
         auto native = option;
         native.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver | QStyle::State_HasFocus);
@@ -234,7 +235,7 @@ public:
         if (focused) {
             painter->save(); painter->setRenderHint(QPainter::Antialiasing);
             painter->setBrush(Qt::NoBrush); painter->setPen(QPen(accent, 1, Qt::DashLine));
-            painter->drawRoundedRect(card.adjusted(2, 2, -2, -2), 8, 8); painter->restore();
+            painter->drawRoundedRect(card.adjusted(2, 2, -2, -2), Sequoia::CardRadius - 2, Sequoia::CardRadius - 2); painter->restore();
         }
     }
 };

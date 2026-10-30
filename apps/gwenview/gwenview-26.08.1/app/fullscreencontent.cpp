@@ -1,3 +1,4 @@
+#include <lib/sequoiadesign.h>
 // vim: set tabstop=4 shiftwidth=4 expandtab:
 /*
 Gwenview: an image viewer
@@ -91,16 +92,17 @@ public:
         const bool selected = option.state & QStyle::State_Selected;
         const bool focused = option.state & QStyle::State_HasFocus;
         QColor accent = option.palette.color(QPalette::Highlight);
-        QColor fill = accent; fill.setAlpha(selected ? 55 : option.state & QStyle::State_MouseOver ? 25 : 0);
+        QColor fill = Sequoia::alpha(selected ? accent : option.palette.color(QPalette::WindowText),
+                                    selected ? 0.16 : option.state & QStyle::State_MouseOver ? 0.08 : 0);
         painter->setBrush(fill);
         painter->setPen(selected || focused ? QPen(accent, 1.5) : QPen(Qt::NoPen));
-        painter->drawRoundedRect(card, 9, 9);
+        painter->drawRoundedRect(card, Sequoia::CardRadius, Sequoia::CardRadius);
         const QPixmap image = mView->thumbnailForIndex(index);
         if (!image.isNull()) {
             const QRectF inside = card.adjusted(5, 5, -5, -5);
             const QSizeF size = image.deviceIndependentSize().scaled(inside.size(), Qt::KeepAspectRatio);
             const QRectF target(inside.center() - QPointF(size.width() / 2, size.height() / 2), size);
-            QPainterPath clip; clip.addRoundedRect(target, 5, 5); painter->setClipPath(clip);
+            QPainterPath clip; clip.addRoundedRect(target, Sequoia::ControlRadius, Sequoia::ControlRadius); painter->setClipPath(clip);
             painter->setRenderHint(QPainter::SmoothPixmapTransform);
             painter->drawPixmap(target, image, QRectF(image.rect()));
         }
@@ -505,11 +507,11 @@ void FullScreenContent::setupThumbnailBarStyleSheet()
     countPalette.setColor(QPalette::PlaceholderText, secondary);
     mDocumentCountLabel->setPalette(countPalette);
     QColor accent = mGvCore->palette(GvCore::NormalPalette).color(QPalette::Highlight);
-    QColor selected = accent; selected.setAlpha(65);
-    QColor hover = accent; hover.setAlpha(28);
+    QColor selected = Sequoia::alpha(accent, 0.16);
+    QColor hover = Sequoia::alpha(pal.color(QPalette::WindowText), 0.08);
     mThumbnailBar->setStyleSheet(QStringLiteral(
         "QListView { background: transparent; border: none; }"
-        "QListView::item { border: 1px solid transparent; border-radius: 9px; }"
+        "QListView::item { border: 1px solid transparent; border-radius: 22px; }"
         "QListView::item:selected { background: %1; border-color: %2; }"
         "QListView::item:hover:!selected { background: %3; }"
         "QListView::item:focus { border-color: %2; }")

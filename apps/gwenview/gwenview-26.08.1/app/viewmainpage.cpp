@@ -64,6 +64,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <lib/slidecontainer.h>
 #include <lib/slideshow.h>
 #include <lib/statusbartoolbutton.h>
+#include <lib/stylesheetutils.h>
 #include <lib/thumbnailview/thumbnailbarview.h>
 #include <lib/zoommode.h>
 #include <lib/zoomwidget.h>
@@ -71,6 +72,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 namespace Gwenview
 {
 namespace {
+class EditingToolSurface : public SlideContainer
+{
+protected:
+    void paintEvent(QPaintEvent *) override
+    {
+        QPainter painter(this);
+        auto pal = qApp->palette();
+        QColor fill = pal.color(QPalette::Base); fill.setAlpha(255); pal.setColor(QPalette::Window, fill);
+        paintPillSurface(painter, QRectF(rect()).adjusted(.5, 8.5, -.5, -.5), Sequoia::CardRadius, pal);
+    }
+};
 class ThumbnailBarIsland : public QWidget
 {
 public:
@@ -157,9 +169,9 @@ struct ViewMainPagePrivate {
 
     void setupWidgets()
     {
-        mToolContainer = new SlideContainer;
-        mToolContainer->setAutoFillBackground(true);
-        mToolContainer->setBackgroundRole(QPalette::Mid);
+        mToolContainer = new EditingToolSurface;
+        mToolContainer->setObjectName(QStringLiteral("gwenviewEditingTools"));
+
         //--
         mStatusBarContainer = new QWidget;
         mStatusBarContainer->setObjectName(QStringLiteral("imageToolbarControls"));
@@ -273,17 +285,18 @@ struct ViewMainPagePrivate {
             QListView#thumbnailBarView::item {
                 background: transparent;
                 border: 1px solid transparent;
-                border-radius: 8px;
+                border-radius: 12px;
             }
             QListView#thumbnailBarView::item:selected {
-                background: palette(highlight);
+                background: %1;
                 border-color: palette(highlight);
             }
             QListView#thumbnailBarView::item:hover:!selected {
-                background: palette(alternate-base);
+                background: %2;
                 border-color: palette(mid);
             }
-        )"));
+        )").arg(StyleSheetUtils::rgba(Sequoia::alpha(qApp->palette().color(QPalette::Highlight), 0.16)),
+                 StyleSheetUtils::rgba(Sequoia::alpha(qApp->palette().color(QPalette::WindowText), 0.08))));
         mThumbnailBarIsland->update();
     }
 
@@ -848,7 +861,7 @@ void ViewMainPage::paintEvent(QPaintEvent *)
     for (QWidget *panel : {static_cast<QWidget *>(d->mDocumentViewContainer), d->mThumbnailBarIsland}) {
         if (panel->isVisible()) {
             const QRectF bounds(panel->mapTo(this, QPoint()), panel->size());
-            paintFloatingShadow(painter, bounds, 16, qApp->palette());
+            paintFloatingShadow(painter, bounds, Sequoia::SurfaceRadius, qApp->palette());
         }
     }
 }

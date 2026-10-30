@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
 #include "popupsurface.h"
+#include "sequoiawidgetstyle.h"
 #include "buttonripple.h"
 #include "popupmotion.h"
 #include <QAction>
@@ -9,6 +10,7 @@
 #include <QAbstractItemView>
 #include <QFrame>
 #include <QLayout>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QProxyStyle>
 #include <QStyleOption>
@@ -19,10 +21,10 @@
 #include <KConfigGroup>
 
 namespace Gwenview {
-class FloatingMenuStyle : public QProxyStyle
+class FloatingMenuStyle : public SequoiaWidgetStyle
 {
 public:
-    explicit FloatingMenuStyle(const QString &base) : QProxyStyle(base) {}
+    explicit FloatingMenuStyle(const QString &base) : SequoiaWidgetStyle(base) {}
     int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override
     {
         if (qobject_cast<const QMenu *>(widget)) {
@@ -60,13 +62,13 @@ public:
                 if (visible > 0 && colored * 20 < visible && lightest - darkest < 40) {
                     QPainter tint(&glyph); tint.setCompositionMode(QPainter::CompositionMode_SourceIn);
                     const auto group = item->state & State_Enabled ? QPalette::Active : QPalette::Disabled;
-                    tint.fillRect(glyph.rect(), item->palette.color(group, item->state & State_Selected ? QPalette::HighlightedText : QPalette::WindowText));
+                    tint.fillRect(glyph.rect(), item->palette.color(group, QPalette::WindowText));
                     tint.end(); copy.icon = QIcon(glyph);
                 }
-                QProxyStyle::drawControl(element, &copy, painter, widget); return;
+                SequoiaWidgetStyle::drawControl(element, &copy, painter, widget); return;
             }
         }
-        QProxyStyle::drawControl(element, option, painter, widget);
+        SequoiaWidgetStyle::drawControl(element, option, painter, widget);
     }
     void drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter,
                        const QWidget *widget = nullptr) const override
@@ -115,19 +117,30 @@ protected:
         }
         auto widget = qobject_cast<QWidget *>(object);
         if (!widget) return false;
+        if (event->type() == QEvent::ShortcutOverride && static_cast<QKeyEvent *>(event)->key() == Qt::Key_Escape) {
+            for (auto ancestor = widget; ancestor; ancestor = ancestor->parentWidget()) {
+                if (ancestor->inherits("KCommandBar")) {
+                    // Find Action is a child overlay. Reserve Escape for its
+                    // native close handler instead of Gwenview's Browse action.
+                    event->accept(); return true;
+                }
+            }
+        }
         const bool menu = qobject_cast<QMenu *>(widget);
         const bool comboPopup = widget->inherits("QComboBoxPrivateContainer");
-        if ((menu || comboPopup) && widget->property("gwenviewFloatingPopup").toBool()
+        const bool commandPopup = widget->inherits("KCommandBar");
+        if ((menu || comboPopup || commandPopup) && widget->property("gwenviewFloatingPopup").toBool()
             && (event->type() == QEvent::PaletteChange || event->type() == QEvent::StyleChange)) {
             syncPalette(widget); mRefresh.start();
         }
-        if ((menu || comboPopup) && (event->type() == QEvent::Polish || event->type() == QEvent::Show)) {
+        if ((menu || comboPopup || commandPopup) && (event->type() == QEvent::Polish || event->type() == QEvent::Show)) {
             const bool reducedMotion = widget->style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, widget) == 0;
             if (!widget->property("gwenviewFloatingPopup").toBool()) {
                 widget->setProperty("gwenviewFloatingPopup", true);
                 widget->setProperty("_KDE_NET_WM_SKIP_SHADOW", true);
-                widget->setWindowFlag(Qt::NoDropShadowWindowHint);
-                widget->setAttribute(Qt::WA_TranslucentBackground);
+                if (widget->isWindow()) widget->setWindowFlag(Qt::NoDropShadowWindowHint);
+                widget->setAttribute(Qt::WA_TranslucentBackground, widget->isWindow());
+                if (!widget->isWindow()) widget->setAttribute(Qt::WA_NoSystemBackground, false);
                 widget->setAutoFillBackground(false);
                 if (menu) widget->setStyle(mStyle);
                 else {
@@ -149,6 +162,12 @@ protected:
                     combo->view()->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, false);
                 }
             }
+            if (commandPopup) for (auto view : widget->findChildren<QAbstractItemView *>()) {
+                view->setFrameShape(QFrame::NoFrame);
+                view->setAutoFillBackground(false);
+                view->viewport()->setAutoFillBackground(false);
+                view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent, false);
+            }
             // Lazy menus may be re-polished when their actions are rebuilt.
             // Restore our surface style on every opening, not only first use.
             if (menu && widget->style() != mStyle) widget->setStyle(mStyle);
@@ -161,9 +180,13 @@ protected:
         }
         // The desktop style filters combo-container paints before QFrame can
         // draw them. Paint the outer surface here, leaving its native list alone.
-        if (comboPopup && widget->property("gwenviewFloatingPopup").toBool() && event->type() == QEvent::Paint) {
+        if ((comboPopup || commandPopup) && widget->property("gwenviewFloatingPopup").toBool() && event->type() == QEvent::Paint) {
             QPainter painter(widget);
-            painter.setCompositionMode(QPainter::CompositionMode_Source); painter.fillRect(widget->rect(), Qt::transparent);
+            // Child overlays must retain their parent's backing pixels. Source
+            // clearing here cuts a transparent hole through the main window.
+            if (widget->isWindow()) {
+                painter.setCompositionMode(QPainter::CompositionMode_Source); painter.fillRect(widget->rect(), Qt::transparent);
+            }
             painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
             paintPopupSurface(painter, widget); return true;
         }
@@ -184,12 +207,18 @@ private:
     }
     void refreshPopups()
     {
-        for (auto popup : qApp->topLevelWidgets()) {
+        for (auto popup : qApp->allWidgets()) {
+            if (popup->property("gwenviewPolishedDialog").toBool()) {
+                QPalette dialogPalette = mPalette;
+                for (auto group : {QPalette::Active, QPalette::Inactive, QPalette::Disabled})
+                    dialogPalette.setColor(group, QPalette::Mid, Sequoia::alpha(dialogPalette.color(group, QPalette::WindowText), 0.13));
+                if (popup->palette() != dialogPalette) popup->setPalette(dialogPalette);
+            }
             if (!popup->property("gwenviewFloatingPopup").toBool()) continue;
             syncPalette(popup);
             // A style repolish can restore a list viewport background. The
             // outer container is the sole material layer, even while open.
-            if (popup->inherits("QComboBoxPrivateContainer")) {
+            if (popup->inherits("QComboBoxPrivateContainer") || popup->inherits("KCommandBar")) {
                 for (auto view : popup->findChildren<QAbstractItemView *>()) {
                     view->setAutoFillBackground(false);
                     view->viewport()->setAutoFillBackground(false);

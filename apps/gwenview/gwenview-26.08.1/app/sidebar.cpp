@@ -1,3 +1,4 @@
+#include <lib/sequoiadesign.h>
 /*
 Gwenview: an image viewer
 Copyright 2007 Aurélien Gâteau <agateau@kde.org>
@@ -78,7 +79,7 @@ protected:
             p.setBrush(fill);
             accent.setAlpha(hasFocus() ? 180 : 35);
             p.setPen(QPen(accent, hasFocus() ? 1.5 : 1));
-            p.drawRoundedRect(QRectF(rect()).adjusted(1, 1, -1, -1), 9, 9);
+            p.drawRoundedRect(QRectF(rect()).adjusted(1, 1, -1, -1), Sequoia::RowRadius, Sequoia::RowRadius);
         }
         QPixmap pix = icon().pixmap(QSize(18, 18), devicePixelRatioF());
         if (!pix.isNull()) {
@@ -180,10 +181,10 @@ SideBarGroup::SideBarGroup(const QString &title)
 void SideBarGroup::paintEvent(QPaintEvent *)
 {
     QPainter p(this); p.setRenderHint(QPainter::Antialiasing);
-    QColor edge = palette().color(QPalette::WindowText); edge.setAlpha(18);
-    QColor fill = palette().color(QPalette::WindowText); fill.setAlpha(4);
+    QColor edge = Sequoia::border(palette());
+    QColor fill = palette().color(QPalette::Base);
     p.setPen(QPen(edge, 1)); p.setBrush(fill);
-    p.drawRoundedRect(QRectF(rect()).adjusted(.5, .5, -.5, -.5), 12, 12);
+    p.drawRoundedRect(QRectF(rect()).adjusted(.5, .5, -.5, -.5), Sequoia::CardRadius, Sequoia::CardRadius);
 }
 
 SideBarGroup::~SideBarGroup()
@@ -512,8 +513,8 @@ public:
         setTabPosition(QTabWidget::South);
         mSlide = new QVariantAnimation(this);
         mSlide->setObjectName(QStringLiteral("sidebarSlideAnimation"));
-        mSlide->setDuration(140);
-        mSlide->setEasingCurve(QEasingCurve::OutCubic);
+        mSlide->setDuration(Sequoia::LongDuration);
+        mSlide->setEasingCurve(QEasingCurve::InOutQuad);
         mSlide->setStartValue(0.0);
         mSlide->setEndValue(1.0);
         connect(mSlide, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {

@@ -53,7 +53,7 @@ public:
         popup->setGraphicsEffect(mEffect);
         mAnimation = new QVariantAnimation(this);
         mAnimation->setObjectName(QStringLiteral("popupEntranceAnimation"));
-        mAnimation->setDuration(120); mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        mAnimation->setDuration(Sequoia::LongDuration); mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         mAnimation->setStartValue(0.0); mAnimation->setEndValue(1.0);
         connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             mEffect->setProgress(value.toReal()); refreshBlurRegion();
@@ -112,7 +112,7 @@ protected:
         }
         if (!mEffect->isEnabled()) return false;
         auto widget = qobject_cast<QWidget *>(object);
-        if (!widget || widget->window() != mPopup) return false;
+        if (!widget || (widget != mPopup && !mPopup->isAncestorOf(widget))) return false;
         if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease
             || event->type() == QEvent::KeyPress || event->type() == QEvent::Wheel || event->type() == QEvent::TouchBegin) finish();
         if (event->type() == QEvent::MouseMove

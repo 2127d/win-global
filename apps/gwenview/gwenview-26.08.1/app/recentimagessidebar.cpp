@@ -1,3 +1,4 @@
+#include <lib/sequoiadesign.h>
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "recentimagessidebar.h"
 #include "gvcore.h"
@@ -121,10 +122,10 @@ public:
         if (list && (selected || hovered)) {
             QColor fill = option.palette.color(QPalette::Highlight); fill.setAlpha(selected ? 30 : 16);
             painter->setBrush(fill); painter->setPen(Qt::NoPen);
-            painter->drawRoundedRect(row, 10, 10);
+            painter->drawRoundedRect(row, Sequoia::RowRadius, Sequoia::RowRadius);
         }
         const QPixmap preview = mView->thumbnailForIndex(index);
-        QPainterPath clip; clip.addRoundedRect(tile, 7, 7);
+        QPainterPath clip; clip.addRoundedRect(tile, Sequoia::ControlRadius, Sequoia::ControlRadius);
         painter->save();
         painter->setRenderHint(QPainter::SmoothPixmapTransform);
         painter->setClipPath(clip);
@@ -158,12 +159,12 @@ public:
             if (!selected && !focused) accent.setAlpha(100);
             painter->setBrush(Qt::NoBrush);
             painter->setPen(QPen(accent, selected || focused ? 2 : 1));
-            painter->drawRoundedRect(list ? row : tile.adjusted(-1, -1, 1, 1), list ? 10 : 8, list ? 10 : 8);
+            painter->drawRoundedRect(list ? row : tile.adjusted(-1, -1, 1, 1), list ? Sequoia::RowRadius : Sequoia::ControlRadius, list ? Sequoia::RowRadius : Sequoia::ControlRadius);
         }
         if (focused) {
             painter->setPen(QPen(option.palette.color(QPalette::Highlight), 1, Qt::DashLine));
             painter->setBrush(Qt::NoBrush);
-            painter->drawRoundedRect(QRectF(option.rect).adjusted(0.5, 0.5, -0.5, -0.5), 10, 10);
+            painter->drawRoundedRect(QRectF(option.rect).adjusted(0.5, 0.5, -0.5, -0.5), Sequoia::RowRadius, Sequoia::RowRadius);
         }
         painter->restore();
     }
@@ -186,7 +187,7 @@ protected:
             fill.setAlpha(isDown() ? 35 : 20);
             painter.setBrush(fill);
             painter.setPen(hasFocus() ? QPen(palette().color(QPalette::Active, QPalette::Highlight), 1.5) : QPen(Qt::NoPen));
-            painter.drawRoundedRect(QRectF(rect()).adjusted(2, 2, -2, -2), 8, 8);
+            painter.drawRoundedRect(QRectF(rect()).adjusted(2, 2, -2, -2), Sequoia::ControlRadius, Sequoia::ControlRadius);
         }
         painter.setPen(Qt::NoPen);
         painter.setBrush(palette().color(QPalette::ButtonText));

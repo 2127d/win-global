@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
+#include <lib/sequoiadesign.h>
 #include "documentview.h"
 #include <lib/document/document.h>
 #include <QApplication>
@@ -46,8 +47,8 @@ public:
         mFrame = new ImageSlideFrame(view);
         mAnimation = new QVariantAnimation(this);
         mAnimation->setObjectName(QStringLiteral("imageSlideAnimation"));
-        mAnimation->setDuration(140);
-        mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        mAnimation->setDuration(Sequoia::LongDuration);
+        mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         mAnimation->setStartValue(0.0); mAnimation->setEndValue(1.0);
         connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             mFrame->progress = value.toReal(); mFrame->update();

@@ -297,8 +297,10 @@ void FileOpsContextManagerItem::showProperties()
     if (!list.isEmpty() && !KPropertiesDialog::canDisplay(list)) return;
     auto dialog = !list.isEmpty() ? new KPropertiesDialog(list, mGroup)
                                  : new KPropertiesDialog(contextManager()->currentDirUrl(), mGroup);
+    dialog->setObjectName(QStringLiteral("gwenviewPropertiesDialog"));
     if (auto core = mGroup->window()->findChild<GvCore *>()) dialog->setPalette(core->palette(GvCore::NormalPalette));
     polishDialog(dialog);
+    dialog->resize(620, 580);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setModal(true);
     dialog->show();
@@ -433,9 +435,19 @@ void FileOpsContextManagerItem::openWith(QAction *action)
     int idx = action->data().toInt(&ok);
     GV_RETURN_IF_FAIL(ok);
     if (idx != -1) {
+        GV_RETURN_IF_FAIL(idx >= 0 && idx < mServiceList.size());
         service = mServiceList.at(idx);
+    } else {
+        // Keep the chooser inside Gwenview so it shares the dialog material,
+        // motion and modality instead of delegating to an external portal UI.
+        KOpenWithDialog chooser(list, mGroup->window());
+        if (chooser.exec() != QDialog::Accepted) return;
+        service = chooser.service();
+        if (!service) {
+            if (chooser.text().trimmed().isEmpty()) return;
+            service = KService::Ptr(new KService(QString(), chooser.text(), QString()));
+        }
     }
-    // If service is null, ApplicationLauncherJob will invoke the open-with dialog
     auto job = new KIO::ApplicationLauncherJob(service);
     job->setUrls(list);
     job->setUiDelegate(KIO::createDefaultJobUiDelegate(KJobUiDelegate::AutoHandlingEnabled, mGroup));

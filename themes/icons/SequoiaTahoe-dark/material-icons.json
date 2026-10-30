@@ -16469,11 +16469,6 @@
     "role": "Text",
     "sha256": "901fc0235249c3365140df2267c1c2b639c053daa7adb23b6f97add065cef79c"
   },
-  "actions/32/folder-tar.svg": {
-    "symbol": "folder_zip",
-    "role": "Text",
-    "sha256": "2054b81d062c1751429418392e60598e6ef360a14364969075386d9ca4213592"
-  },
   "actions/32/mount-archive.svg": {
     "symbol": "folder_zip",
     "role": "Text",
@@ -16488,11 +16483,6 @@
     "symbol": "folder_shared",
     "role": "Text",
     "sha256": "06c87a4fffcb6d8843ea1b06a8473cc4198261e1e7fa9e18f31123b9dbcca749"
-  },
-  "actions/32/folder-bookmark.svg": {
-    "symbol": "folder_special",
-    "role": "Text",
-    "sha256": "6d8587a9c7f07c6c3cab60a457428e877174542b921180a1b3948ba7deac0b46"
   },
   "actions/32/bookmark-remove.svg": {
     "symbol": "bookmark_remove",
@@ -31738,5 +31728,15 @@
     "symbol": "playlist_play",
     "role": "Text",
     "sha256": "c62e259341f727c202cc56cb2ad7ccf4106c9f6bf333934c05568a03c32c5bc1"
+  },
+  "actions/32/folder-bookmark-symbolic.svg": {
+    "role": "Text",
+    "sha256": "6d8587a9c7f07c6c3cab60a457428e877174542b921180a1b3948ba7deac0b46",
+    "symbol": "folder_special"
+  },
+  "actions/32/folder-tar-symbolic.svg": {
+    "role": "Text",
+    "sha256": "2054b81d062c1751429418392e60598e6ef360a14364969075386d9ca4213592",
+    "symbol": "folder_zip"
   }
 }

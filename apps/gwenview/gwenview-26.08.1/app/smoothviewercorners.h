@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
+#include <lib/sequoiadesign.h>
 #include <QGraphicsEffect>
 #include <QImage>
 #include <QPainter>
@@ -24,7 +25,7 @@ protected:
         const QPixmap source = sourcePixmap(Qt::LogicalCoordinates, &origin, NoPad);
         if (source.isNull()) return;
         const qreal dpr = source.devicePixelRatioF();
-        const int side = qMin(qCeil(17 * dpr), qMin(source.width(), source.height()) / 2);
+        const int side = qMin(qCeil((Sequoia::SurfaceRadius + 1) * dpr), qMin(source.width(), source.height()) / 2);
         if (side < 1) { drawSource(painter); return; }
         const qreal logicalSide = side / dpr;
         const QSizeF size = source.deviceIndependentSize();
@@ -49,7 +50,7 @@ protected:
                 {
                     QPainter alpha(&mask); alpha.setRenderHint(QPainter::Antialiasing);
                     alpha.setPen(Qt::NoPen); alpha.setBrush(Qt::white);
-                    alpha.drawRoundedRect(QRectF(0, 0, logicalSide * 3, logicalSide * 3), 16, 16);
+                    alpha.drawRoundedRect(QRectF(0, 0, logicalSide * 3, logicalSide * 3), Sequoia::SurfaceRadius, Sequoia::SurfaceRadius);
                 }
                 mask = mask.scaled(side, side, Qt::IgnoreAspectRatio, Qt::SmoothTransformation).mirrored(right, bottom);
                 mask.setDevicePixelRatio(dpr);

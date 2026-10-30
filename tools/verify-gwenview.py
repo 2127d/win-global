@@ -22,6 +22,7 @@ parser.add_argument('--thumbnail-scroll', action='store_true')
 parser.add_argument('--image-slide', action='store_true')
 parser.add_argument('--panel-edges', action='store_true')
 parser.add_argument('--popup-preview', action='store_true')
+parser.add_argument('--dialog-preview', action='store_true')
 parser.add_argument('--blur-disabled', action='store_true', help='Disable Blur only inside the private test compositor.')
 parser.add_argument('--global-menu', action='store_true', help='Check Gwenview exports through the real private Plasma global-menu widget.')
 parser.add_argument('--native-menus', action='store_true', help='Test actual popup grabs with real input on private KWin.')
@@ -32,6 +33,7 @@ parser.add_argument('--vertical-thumbnails', action='store_true')
 parser.add_argument('--debug', action='store_true')
 parser.add_argument('--wayland-socket', type=Path, help='Use an isolated Wayland compositor instead of offscreen Qt.')
 args = parser.parse_args()
+if args.dialog_preview: args.popup_preview = True
 if args.global_menu: args.native_menus = True
 if args.native_menus: args.popup_lifecycle = True
 if args.popup_lifecycle: args.popup_preview = True
@@ -48,10 +50,14 @@ if args.native_menus:
     else:
         raise RuntimeError('The private Wayland input test requires libei headers.')
 subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/verify-gwenview.cpp'), '-o', str(helper), *flags], check=True)
-output = ROOT / ('preview/gwenview-' + ('popups-' if args.popup_preview else 'panel-edges-' if args.panel_edges else 'image-slide-' if args.image_slide else 'thumbnail-scroll-' if args.thumbnail_scroll else 'fullscreen-browser-' if args.fullscreen_browser_preview else 'fullscreen-' if args.fullscreen_preview else 'browser-' if args.browser_preview else 'welcome-' if args.welcome_preview else 'sidebar-') + ('dark' if args.dark else 'light') + ('-transparent' if args.transparent else '') if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll or args.image_slide or args.panel_edges or args.popup_preview else 'preview/gwenview'); output.mkdir(exist_ok=True)
+output = ROOT / ('preview/gwenview-' + ('dialogs-' if args.dialog_preview else 'popups-' if args.popup_preview else 'panel-edges-' if args.panel_edges else 'image-slide-' if args.image_slide else 'thumbnail-scroll-' if args.thumbnail_scroll else 'fullscreen-browser-' if args.fullscreen_browser_preview else 'fullscreen-' if args.fullscreen_preview else 'browser-' if args.browser_preview else 'welcome-' if args.welcome_preview else 'sidebar-') + ('dark' if args.dark else 'light') + ('-transparent' if args.transparent else '') if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll or args.image_slide or args.panel_edges or args.popup_preview else 'preview/gwenview'); output.mkdir(exist_ok=True)
 with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging') as temp:
     base = Path(temp)
     env = dict(os.environ, KCOREADDONS_NO_XDG_DESKTOP_PORTAL='1', QT_NO_XDG_DESKTOP_PORTAL='1')
+    if args.dialog_preview:
+        # KDE helpers launched by dialog actions must not reach the live desktop.
+        env.pop('DISPLAY', None)
+        env.pop('WAYLAND_DISPLAY', None)
     if args.global_menu: env['SEQUOIA_GWENVIEW_GLOBAL_MENU'] = '1'
     env['SEQUOIA_GWENVIEW_THEMES'] = str(ROOT / 'themes/color-schemes')
     env['SEQUOIA_GWENVIEW_MATERIAL'] = 'transparent' if args.transparent else 'solid'
@@ -96,6 +102,13 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
         mode = 'Dark' if args.dark else 'Light'
         variant = 'Transparent' if args.transparent else 'Solid'
         (base / 'config/kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{mode}{variant}.colors').read_text())
+        if args.dialog_preview:
+            env['XDG_DATA_DIRS'] = str(ROOT / 'themes') + ':' + os.environ.get('XDG_DATA_DIRS', '/usr/local/share:/usr/share')
+            with (base / 'config/kdeglobals').open('a') as config:
+                config.write('\n[Icons]\nTheme=SequoiaTahoe' + ('-dark' if args.dark else '-light') + '\n')
+        if os.environ.get('SEQUOIA_DIALOG_FILE_PICKER_ONLY'):
+            with (base / 'config/kdeglobals').open('a') as config:
+                config.write('\n[KFileDialog Settings]\nSpeedbar Width=285\nView Style=DetailTree\n')
         env.update(QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='SequoiaEleven',
                    QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'))
     if args.wayland_socket:
@@ -108,7 +121,7 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
             draw.ellipse((2000, 1200, 6000, 4800), fill='#f4eee2')
             picture.save(large / f'large-{number}.jpg', quality=90)
     for mode in (('popups',) if args.popup_preview else ('panel-edges',) if args.panel_edges else ('image-slide',) if args.image_slide else ('thumbnail-scroll',) if args.thumbnail_scroll else ('fullscreen-browser',) if args.fullscreen_browser_preview else ('fullscreen',) if args.fullscreen_preview else ('browser', 'browser-restart') if args.browser_preview else ('welcome', 'welcome-restart', 'welcome-cleared') if args.welcome_preview else ('sidebar', 'bars-restart', 'bars-native-restart') if args.sidebar_preview else ('fresh', 'restart', 'disabled')):
-        env['SEQUOIA_GWENVIEW_MODE'] = 'global-menu' if args.global_menu else 'popup-lifecycle' if args.popup_lifecycle else mode
+        env['SEQUOIA_GWENVIEW_MODE'] = 'dialogs' if args.dialog_preview else 'global-menu' if args.global_menu else 'popup-lifecycle' if args.popup_lifecycle else mode
         if mode == 'disabled':
             config = base / 'config/gwenviewrc'
             text = config.read_text()
@@ -126,7 +139,7 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
         with (output / f'{mode}.log').open('w') as log:
             process = subprocess.Popen(['dbus-run-session', '--', *application], env=env, stdout=log, stderr=log, text=True, start_new_session=True)
             try:
-                process.wait(timeout=200 if args.popup_lifecycle else 60)
+                process.wait(timeout=200 if args.popup_lifecycle or args.dialog_preview else 60)
             finally:
                 try: os.killpg(process.pid, signal.SIGTERM)
                 except ProcessLookupError: pass

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
+#include <lib/sequoiadesign.h>
 #include "buttonripple.h"
 #include <QAction>
 #include <QApplication>
@@ -74,7 +75,7 @@ public:
         }
         mAnimation = new QVariantAnimation(this);
         mAnimation->setObjectName(QStringLiteral("sidebarVisibilityAnimation"));
-        mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) { setPhase(value.toReal()); });
         connect(mAnimation, &QVariantAnimation::finished, this, [this] { finish(); });
         qApp->installEventFilter(this);
@@ -127,7 +128,7 @@ public:
         {
             const QSignalBlocker blocker(mAnimation);
             mAnimation->setStartValue(start); mAnimation->setEndValue(visible ? 1.0 : 0.0);
-            mAnimation->setDuration(qMax(1, qRound(180 * qAbs((visible ? 1.0 : 0.0) - start))));
+            mAnimation->setDuration(qMax(1, qRound(Sequoia::LongDuration * qAbs((visible ? 1.0 : 0.0) - start))));
             mAnimation->setCurrentTime(0);
         }
         mAnimation->start();

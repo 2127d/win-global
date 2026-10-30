@@ -93,7 +93,7 @@ for name in ('SequoiaTahoe', 'SequoiaTahoe-light', 'SequoiaTahoe-dark'):
         assert identity in material['protected_identities'][name]
     # A scalable Actions glyph must not override large Documents/Desktop
     # folders. Preserve separate compact artwork, including at high DPI.
-    for place in ('folder-documents', 'user-desktop'):
+    for place in ('folder-documents', 'user-desktop', 'folder-tar', 'folder-bookmark'):
         for size in (16,22,24,32,48,64,128):
             folder = str(size) if size < 32 else 'scalable'
             source = ROOT/'themes/icons'/name/'places'/folder/(place+'.svg')

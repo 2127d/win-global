@@ -93,14 +93,14 @@ has capsule ends. Its island sizes to
 the path, grows with deeper locations, and caps at the available width; editing
 with F6 temporarily uses the full available space. Normal Browse uses the same
 rounded, content-sized breadcrumb field. Folder navigation animates the island's
-width for 140ms with an ease-out curve and a fixed left edge. Rapid navigation
+width for 200ms with an InOutQuad curve and a fixed left edge. Rapid navigation
 retargets from the current width. Sidebar/window resizing and F6 editing take
 precedence immediately; hidden islands and disabled desktop motion skip the
 animation. The row height stays fixed throughout. The navigator paints the inner
 text field itself as a capsule, with a theme-colored surface and focus rim,
 instead of clipping a rectangular native frame.
 
-Folder navigation in normal and fullscreen Browse adds a 140ms, 28px gallery
+Folder navigation in normal and fullscreen Browse adds a 200ms, 28px gallery
 slide. Parent/back navigation reverses its direction, including RTL layouts.
 Only one viewport-sized frame is retained during the transition; directory
 listing and thumbnail delivery continue, with no per-frame thumbnail painting
@@ -119,7 +119,7 @@ and the exit button restore the normal browser layout and native toolbar.
 
 The native Properties dialog retains KDE's pages, file editing, permissions,
 checksums and Apply/Cancel behavior. Rounded tabs, padded fields, calm button
-states and balanced margins follow the active theme. Opening uses a 140ms
+states and balanced margins follow the active theme. Opening uses a 200ms
 slide/fade of one cached frame inside the native window, so it also works on
 Wayland without moving the window. Input cancels the entrance immediately;
 resizing/closing clears it, and disabled desktop animation skips it entirely.
@@ -142,7 +142,7 @@ Three equal footer tabs show their icons above **Recent**, **Information**,
 and **Tools** labels when space permits, switching to centered icons with tooltips
 when the sidebar is narrow. The Recent history symbol is drawn independently of
 the installed icon theme, and shortcut mnemonic markers are never displayed. The selected tab has a softly raised capsule, with a visible
-keyboard focus ring. The sidebar anchors the footer while the page content scrolls. Page changes slide horizontally for 140ms with an ease-out; the footer remains fixed, rapid changes retarget immediately, and disabled desktop animations switch instantly. Before opening an image, Information
+keyboard focus ring. The sidebar anchors the footer while the page content scrolls. Page changes slide horizontally for 200ms with InOutQuad easing; the footer remains fixed, rapid changes retarget immediately, and disabled desktop animations switch instantly. Before opening an image, Information
 and Tools explain what they will show; opening an image reveals the native
 metadata and operations. Returning to the welcome page restores these empty
 states, so stale image details are never presented as current.
@@ -186,14 +186,14 @@ auto-hiding pill for that bar in image view. Checking it again restores the
 native layout, spacing, palette, icons, and control styling. The choices persist
 across restarts using Gwenview's existing settings.
 
-Switching among Home, Browse and image view uses a quick 140 ms slide. Each page is
+Switching among Home, Browse and image view uses a quick 200 ms slide. Each page is
 captured once, so animation frames move cached images without repeatedly painting
 the thumbnail grid. The destination becomes active immediately; further input
 cancels even a pending transition, rapid switches never queue, and disabled desktop
 animations switch directly. Home's slide continues while its sidebar opens,
 resizing the cached frames instead of recapturing or cancelling the transition.
 
-Toolbar arrows and Left/Right image navigation slide for 140ms in normal and
+Toolbar arrows and Left/Right image navigation slide for 200ms in normal and
 fullscreen view, with direction reversed for Previous and RTL layouts. The old
 frame stays visible until the next image is ready. Two viewport-sized snapshots
 are captured once; animation frames do not decode, rescale or repaint the source
@@ -230,7 +230,7 @@ shadow. A 120ms eased slide presents a single cached popup frame without
 moving native hit targets. Mouse movement, clicks, keyboard navigation and wheel
 input reveal the live menu immediately; closing clears pending animation, and
 reduced motion skips it. Menus follow SequoiaEleven's native material rules:
-Transparent variants use the desktop Base color at 80% opacity; Solid variants
+Transparent variants use the desktop Window color at the palette’s opacity; Solid variants
 use 100%. The material remains constant during animation and Share-menu refreshes,
 and live desktop palette changes apply to all popup types and palette groups.
 Combo views do not paint a second background over their container's material.
@@ -483,3 +483,100 @@ on open Share, Open With and zoom menus, reopens them, checks hidden submenus,
 and verifies stable global-menu command identities. `--global-menu` additionally
 runs the real Plasma widget in a private compositor and audits its imported
 commands while Gwenview changes images and fullscreen state.
+
+### Menus, dialogs, and preferences
+
+All Gwenview-owned dialogs now share the Sequoia presentation layer, including
+KDE dialogs created lazily by menu actions. Properties and tabbed utility windows
+use the real native tab bar as an animated segmented pill. The original pages,
+keyboard navigation, accessibility, permission editing, checksums and plugin
+metadata remain available. Properties opens at a usable 620×580 size.
+
+General, Image View and Advanced preferences have grouped cards and independently
+scrollable pages. The existing KConfig bindings, dependency rules, Apply, Defaults
+and Cancel behavior are retained. Dialog entrance, page and pill transitions use
+200 ms InOutQuad easing; input immediately dismisses a cached entrance frame and
+reduced-motion settings skip animation. Crop, color adjustment and red-eye panels
+use the same timing instead of the old 250 ms linear slide. Find Action uses the
+same rounded material and 200 ms popup motion as the other menus.
+
+Dialog palette changes remain live. Flat monochrome command icons follow their
+button text color in both themes, while colored application icons are preserved.
+Other Application opens a Gwenview-owned KOpenWithDialog, then passes the chosen
+application and original URLs to KDE's launcher. Cancelling never launches it.
+External applications, browser links and system services keep their own UI.
+
+Run the menu/dialog walkthrough against disposable images and configuration:
+
+```sh
+python3 tools/verify-gwenview.py --dialog-preview
+QT_SCALE_FACTOR=1.25 python3 tools/verify-gwenview.py --dialog-preview --dark --transparent
+```
+
+The walkthrough inventories all exported menu actions; opens file operations,
+Properties and its pages, deletion confirmation, resize, annotation, tags, print
+and expanded print options, shortcut and toolbar editors, preferences, About,
+bug-report and language dialogs, and Other Application. It also checks nested
+advanced permissions, inline editing tools, command search, pill/page motion,
+keyboard access, compact layouts, reduced motion, and Apply/Cancel persistence.
+Deletion and submission prompts are cancelled. Browser links and launching other
+applications are intentionally excluded from this GUI test. Existing popup and
+real Plasma global-menu tests remain available via `--popup-preview` and
+`--global-menu`.
+
+The file picker's Places splitter gives all window-resize stretch to the file
+list. This prevents the transient sidebar compression that occurred before KDE
+restored its saved width. Manual divider adjustment and saved widths are retained.
+The dialog walkthrough checks intermediate resize events as well as final sizes.
+
+Create New Folder preserves full-color icon artwork at the actual chooser size,
+so compact symbolic variants cannot turn the color choices monochrome. Tahoe's
+archive and bookmark choices use matching blue folders with a silver zipper and
+gold ribbon. Their explicit symbolic variants remain available to small controls.
+Run `SEQUOIA_DIALOG_FOLDER_ONLY=1 python3 tools/verify-gwenview.py --dialog-preview`
+to check every idle choice, hover/leave, and creation with the selected icon.
+Dialog previews load the repository's Tahoe icon theme as well as its palette.
+
+Properties and other dialog pill selectors also paint Qt's overflow arrows as
+separate capsules, with 100ms hover/press feedback and palette-aware disabled
+states. Native scrolling, auto-repeat and right-to-left layout remain intact.
+
+The Properties filename editor grows and shrinks with its text, leaving unused
+row space empty and allowing long names to scroll within narrow windows. Page
+changes fade the live contents over the existing dialog material instead of
+painting a cached page over an opaque Window-color rectangle.
+
+### Weather styling parity
+
+Gwenview uses the Sequoia Weather overhaul as its presentation reference. Shared
+values live in `lib/sequoiadesign.h`: 24px outer surfaces, 22px inset cards, 12px
+controls, 13px rows, 13% text-color borders, and 100/200ms feedback/transitions.
+These correspond to WeatherSurface.qml, LocationSurface.qml, WeatherAction.qml,
+and settings/SettingsComponent.qml in the Weather source.
+
+All native KDE dialogs receive a rounded, theme-aware shell with an independently
+centered 18px title and Weather's red close control. The shell preserves dialog
+modality, keyboard access, movement and edge resizing. The native file-picker
+bridge is left intact; its actual KDE window receives the shell. Settings keep
+all KConfig controls, with section headings outside centered 22px cards.
+
+An app-local widget style applies the same controls, focus rings, switch-shaped
+checkboxes, menu selections and hover feedback without modifying the desktop
+style for other applications. Browser/sidebar/viewer/thumbnail surfaces, editing
+panels and fullscreen/HUD controls use the shared radii, flatter materials and
+softer shadows. Native image pixels and file operations remain unchanged.
+
+Validation uses the dialog/menu walkthrough in both themes, native Wayland popup
+checks at 125%, file-picker resize/reopen checks, and normal/fullscreen previews.
+
+Dialog shells keep their material palette separate from transparency handling:
+no transparent QDialog stylesheet may overwrite the Window brush. Resize cursors
+reset when entering child content or leaving the dialog. Dialog button-box rules
+and HLine separators are suppressed locally. Find Action remains a normal child
+overlay and never clears the main window backing surface.
+
+Configure Language presents the original KDE language actions in a bounded native
+list (up to 360 logical pixels), with wheel/keyboard navigation and hidden scrollbars.
+Inline editing tools use padded 22px cards separated from the image by an 8px gap.
+The dialog walkthrough verifies painted background alpha, cursor reset, absence of
+separators, bounded language navigation/selection, and the editing-panel padding.

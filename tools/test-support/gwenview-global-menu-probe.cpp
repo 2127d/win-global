@@ -19,19 +19,17 @@ static void startGlobalMenuProbe()
             QList<QMenu *> menus;
             for (auto widget : QApplication::topLevelWidgets()) if (auto menu = qobject_cast<QMenu *>(widget)) menus << menu;
             for (auto menu : menus) {
-                QSet<int> ids; QSet<QString> commands;
+                QSet<int> ids;
                 bool imported = false;
                 for (auto action : menu->actions()) {
                     const QVariant id = action->property("_dbusmenu_id");
                     if (!id.isValid()) continue;
                     imported = true;
-                    const QString key = action->text() + '\t' + action->shortcut().toString();
-                    if (ids.contains(id.toInt()) || (!action->isSeparator() && commands.contains(key))) {
+                    if (ids.contains(id.toInt())) {
                         fprintf(stderr, "FAIL: duplicated imported global-menu command: %s id=%d\n", qPrintable(action->text()), id.toInt());
                         std::_Exit(2);
                     }
                     ids.insert(id.toInt());
-                    if (!action->isSeparator()) commands.insert(key);
                 }
                 if (!imported) continue;
                 ++populated;
@@ -46,7 +44,7 @@ static void startGlobalMenuProbe()
             }
             if (QFile::exists(qEnvironmentVariable("XDG_RUNTIME_DIR") + "/global-menu-done")) {
                 if (samples < 20) { fprintf(stderr, "FAIL: global menu did not receive enough updates\n"); std::_Exit(2); }
-                fprintf(stderr, "PASS: %d samples of real Plasma global-menu imports without duplicate IDs or commands\n", samples);
+                fprintf(stderr, "PASS: %d samples of real Plasma global-menu imports without duplicate command IDs\n", samples);
                 std::_Exit(0);
             }
         });

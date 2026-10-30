@@ -44,6 +44,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 // Local
 #include "mainwindow.h"
 #include "floatingpopups.h"
+#include "polisheddialog.h"
+#include "sequoiawidgetstyle.h"
 #include <lib/about.h>
 #include <lib/gwenviewconfig.h>
 
@@ -207,7 +209,9 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
+    app.setStyle(new Gwenview::SequoiaWidgetStyle(app.style()->objectName()));
     new Gwenview::FloatingPopups(&app);
+    new Gwenview::PolishedDialogs(&app);
 
     KLocalizedString::setApplicationDomain("gwenview");
     QScopedPointer<KAboutData> aboutData(Gwenview::createAboutData(QStringLiteral("gwenview"), /* component name */

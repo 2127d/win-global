@@ -110,7 +110,7 @@ def main():
     with tarfile.open(DIST / 'sequoia-eleven-wallpaper-2.0.0.tar.gz') as archive:
         compare_tar(archive, lambda name: ROOT / 'themes/wallpapers' / name)
     with tarfile.open(DIST / 'sequoia-tahoe-icons-2.0.0.tar.gz') as archive:
-        compare_tar(archive, lambda name: ROOT / ('tools' if name in {'build-tahoe-icons.py', 'tahoe_material.py', 'tahoe_catalog.py', 'tahoe_states.py', 'fetch-tahoe-material.py', 'calibrate-tahoe-material.py'} else 'themes/icons') / name)
+        compare_tar(archive, lambda name: ROOT / ('tools' if name in {'build-tahoe-icons.py', 'tahoe_material.py', 'tahoe_catalog.py', 'tahoe_states.py', 'tahoe_folders.py', 'fetch-tahoe-material.py', 'calibrate-tahoe-material.py'} else 'themes/icons') / name)
     exporter = module('export-installer')
     with tarfile.open(DIST / 'Sequoia-Eleven-Installer.tar.xz') as archive:
         compare_tar(archive, lambda name: ROOT / Path(name).relative_to(exporter.NAME),

@@ -7,6 +7,7 @@ import os
 import xml.etree.ElementTree as ET
 from functools import lru_cache
 from tahoe_catalog import extend
+from tahoe_folders import apply as apply_folder_variants
 from tahoe_states import register as register_states, geometry as state_geometry
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,7 +24,7 @@ REQUIRED_SYMBOLIC_CONTROLS = {'speedometer'}
 # Keep compact place glyphs at 16/22/24px. The actions/32 directory scales
 # through 256px and precedes Places in lookup, so bare names there would
 # shadow the large folder artwork. Explicit symbolic controls remain available.
-SIZE_AWARE_PLACES = {'folder-documents', 'user-desktop'}
+SIZE_AWARE_PLACES = {'folder-documents', 'user-desktop', 'folder-tar', 'folder-bookmark'}
 # Explicit semantic mappings; other icons and their aliases remain upstream.
 GROUPS = {
     'actions': {
@@ -248,6 +249,7 @@ def apply(output):
     all_names = {name: symbol for group in GROUPS.values() for symbol, names in group.items() for name in names.split()}
     for suffix in ('', '-light', '-dark'):
         theme = output / ('SequoiaTahoe' + suffix)
+        apply_folder_variants(theme)
         identities = application_identities(theme, all_names)
         preserve_application_identities(theme, identities)
         protected[theme.name] = {name:str(source.resolve().relative_to(output.resolve())) for name,source in identities.items()}

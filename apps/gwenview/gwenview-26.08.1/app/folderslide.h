@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
+#include <lib/sequoiadesign.h>
 #include <QAbstractItemView>
 #include <QApplication>
 #include <QGraphicsEffect>
@@ -47,7 +48,7 @@ public:
         view->viewport()->setGraphicsEffect(mEffect);
         mAnimation = new QVariantAnimation(this);
         mAnimation->setObjectName(QStringLiteral("folderSlideAnimation"));
-        mAnimation->setDuration(140); mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        mAnimation->setDuration(Sequoia::LongDuration); mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         mAnimation->setStartValue(0.0); mAnimation->setEndValue(1.0);
         connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             const qreal offset = mDirection * 28 * (1 - value.toReal());

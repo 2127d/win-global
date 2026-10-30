@@ -1,3 +1,4 @@
+#include <lib/sequoiadesign.h>
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "floatingsurface.h"
 #include "backdropblur.h"
@@ -172,9 +173,9 @@ protected:
 // their alpha masks in the current text color instead of caching old SVG colors.
 class ToolbarIconEngine : public QIconEngine {
 public:
-    ToolbarIconEngine(const QIcon &source, const QPalette &palette, bool accentWhenChecked)
-        : mSource(source), mPalette(palette), mAccentWhenChecked(accentWhenChecked) {}
-    QIconEngine *clone() const override { return new ToolbarIconEngine(mSource, mPalette, mAccentWhenChecked); }
+    ToolbarIconEngine(const QIcon &source, const QPalette &palette)
+        : mSource(source), mPalette(palette) {}
+    QIconEngine *clone() const override { return new ToolbarIconEngine(mSource, mPalette); }
     QString iconName() override { return mSource.name(); }
     bool isNull() override { return mSource.isNull(); }
     QSize actualSize(const QSize &size, QIcon::Mode mode, QIcon::State state) override { return mSource.actualSize(size, mode, state); }
@@ -184,7 +185,7 @@ public:
         QPixmap result = mSource.pixmap(size, scale, QIcon::Normal, state);
         if (result.isNull()) return result;
         const auto group = mode == QIcon::Disabled ? QPalette::Disabled : QPalette::Active;
-        const auto role = mAccentWhenChecked && state == QIcon::On ? QPalette::HighlightedText : QPalette::ButtonText;
+        const auto role = QPalette::ButtonText;
         QPainter painter(&result);
         painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
         painter.fillRect(result.rect(), mPalette.color(group, role));
@@ -198,7 +199,6 @@ public:
 private:
     QIcon mSource;
     QPalette mPalette;
-    bool mAccentWhenChecked;
 };
 
 QColor mixedColor(const QColor &background, const QColor &foreground, qreal amount)
@@ -293,7 +293,7 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     viewer->setMouseTracking(true);
     if (auto view = qobject_cast<QGraphicsView *>(viewer)) view->viewport()->setMouseTracking(true);
     mAnimation = new QVariantAnimation(this);
-    mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+    mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
         mProgress = value.toReal();
         updateGeometryAndMask();
@@ -316,7 +316,7 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
             const QSignalBlocker blocker(mAnimation);
             mAnimation->setStartValue(start);
             mAnimation->setEndValue(end);
-            mAnimation->setDuration(animate ? qRound(220 * qAbs(end - start)) : 0);
+            mAnimation->setDuration(animate ? qRound(Sequoia::LongDuration * qAbs(end - start)) : 0);
             mAnimation->setCurrentTime(0);
         }
         mAnimation->start();
@@ -468,7 +468,7 @@ void FloatingViewToolbar::updateToggleReveal()
         const QSignalBlocker blocker(mRevealAnimation);
         mRevealAnimation->setStartValue(current);
         mRevealAnimation->setEndValue(target);
-        mRevealAnimation->setDuration(qMax(1, qRound(180 * qAbs(target - current))));
+        mRevealAnimation->setDuration(qMax(1, qRound(Sequoia::LongDuration * qAbs(target - current))));
         mRevealAnimation->setCurrentTime(0);
     }
     mRevealAnimation->start();
@@ -687,8 +687,8 @@ void FloatingViewToolbar::refreshTheme()
             QToolButton:focus { border-color: %2; }
             QToolButton:disabled { background: transparent; border-color: transparent; }
             QComboBox QLineEdit { background: transparent; border: none; }
-        )").arg(mixedColor(background, foreground, 0.10).name(), controls.color(QPalette::Highlight).name(),
-                controls.color(QPalette::HighlightedText).name());
+        )").arg(mixedColor(background, foreground, 0.08).name(), mixedColor(background, controls.color(QPalette::Highlight), 0.16).name(),
+                foreground.name());
     }
     if (mControls->styleSheet() != css) mControls->setStyleSheet(css);
     // The floating field paints a capsule using native edit/arrow geometry.
@@ -734,7 +734,7 @@ void FloatingViewToolbar::refreshIcons(bool force)
         if (source.isNull()) continue;
         if (force || !mThemedIcons.contains(button) || source.cacheKey() != mOriginalIcons.value(button).cacheKey()) {
             mOriginalIcons.insert(button, source);
-            mThemedIcons.insert(button, QIcon(new ToolbarIconEngine(source, controls, button != mToggle)));
+            mThemedIcons.insert(button, QIcon(new ToolbarIconEngine(source, controls)));
         }
         button->setIcon(mThemedIcons.value(button));
         mThemedIconKeys.insert(button, button->icon().cacheKey());

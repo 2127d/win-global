@@ -21,118 +21,26 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Cambridge, MA 02110-1301, USA
 // Self
 #include <hud/hudtheme.h>
 
-// Qt
-#include <QMap>
+#include <QApplication>
+#include <lib/sequoiadesign.h>
 
-// KF
-
-// Local
-
-namespace Gwenview
-{
-namespace HudTheme
-{
-struct RenderInfoSet {
-    QMap<HudTheme::State, HudTheme::RenderInfo> infos;
-};
-
-static QLinearGradient createGradient()
-{
-    QLinearGradient gradient(0, 0, 0, 1.);
-    gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
-    return gradient;
-}
-
+namespace Gwenview::HudTheme {
 RenderInfo renderInfo(WidgetType widget, State state)
 {
-    static QMap<WidgetType, RenderInfoSet> renderInfoMap;
-    if (renderInfoMap.isEmpty()) {
-        QLinearGradient gradient;
-
-        // Button, normal
-        RenderInfo button;
-        button.borderRadius = 5;
-        button.borderPen = QPen(QColor::fromHsvF(0, 0, .25, .8));
-        gradient = createGradient();
-        gradient.setColorAt(0, QColor::fromHsvF(0, 0, .34, .66));
-        gradient.setColorAt(0.5, QColor::fromHsvF(0, 0, 0, .66));
-        button.bgBrush = gradient;
-        button.padding = 6;
-        button.textPen = QPen(QColor(0xcc, 0xcc, 0xcc));
-        renderInfoMap[ButtonWidget].infos[NormalState] = button;
-
-        // Button, over
-        RenderInfo overButton = button;
-        overButton.bgBrush = gradient;
-        overButton.borderPen = QPen(QColor(0xcc, 0xcc, 0xcc));
-        renderInfoMap[ButtonWidget].infos[MouseOverState] = overButton;
-
-        // Button, down
-        RenderInfo downButton = button;
-        gradient = createGradient();
-        gradient.setColorAt(0, QColor::fromHsvF(0, 0, .12));
-        gradient.setColorAt(0.6, Qt::black);
-        downButton.bgBrush = gradient;
-        downButton.borderPen = QPen(QColor(0x44, 0x44, 0x44));
-        renderInfoMap[ButtonWidget].infos[DownState] = downButton;
-
-        // Frame
-        RenderInfo frame;
-        gradient = createGradient();
-        gradient.setColorAt(0, QColor::fromHsvF(0, 0, 0.1, .6));
-        gradient.setColorAt(.6, QColor::fromHsvF(0, 0, 0, .6));
-        frame.bgBrush = gradient;
-        frame.borderPen = QPen(QColor::fromHsvF(0, 0, .4, .6));
-        frame.borderRadius = 8;
-        frame.textPen = QPen(QColor(0xcc, 0xcc, 0xcc));
-        renderInfoMap[FrameWidget].infos[NormalState] = frame;
-
-        // CountDown
-        RenderInfo countDownWidget;
-        countDownWidget.bgBrush = QColor::fromHsvF(0, 0, .5);
-        countDownWidget.borderPen = QPen(QColor::fromHsvF(0, 0, .8));
-        renderInfoMap[CountDown].infos[NormalState] = countDownWidget;
-
-        // SliderWidgetHandle
-        RenderInfo sliderWidgetHandle = button;
-        sliderWidgetHandle.borderPen = QPen(QColor(0x66, 0x66, 0x66));
-        sliderWidgetHandle.borderRadius = 7;
-        renderInfoMap[SliderWidgetHandle].infos[NormalState] = sliderWidgetHandle;
-
-        // SliderWidgetHandle, over
-        sliderWidgetHandle = overButton;
-        sliderWidgetHandle.borderPen = QPen(QColor(0xcc, 0xcc, 0xcc));
-        sliderWidgetHandle.borderRadius = 7;
-        renderInfoMap[SliderWidgetHandle].infos[MouseOverState] = sliderWidgetHandle;
-
-        // SliderWidgetHandle, down
-        sliderWidgetHandle = downButton;
-        sliderWidgetHandle.borderRadius = 7;
-        renderInfoMap[SliderWidgetHandle].infos[DownState] = sliderWidgetHandle;
-
-        // SliderWidgetGroove
-        RenderInfo sliderWidgetGroove = button;
-        sliderWidgetGroove.borderPen = QPen(QColor(0x66, 0x66, 0x66));
-        gradient = createGradient();
-        gradient.setColorAt(0, Qt::black);
-        gradient.setColorAt(1, QColor(0x44, 0x44, 0x44));
-        sliderWidgetGroove.bgBrush = gradient;
-        sliderWidgetGroove.borderRadius = 3;
-        renderInfoMap[SliderWidgetGroove].infos[NormalState] = sliderWidgetGroove;
-
-        // SliderWidgetGroove, over
-        RenderInfo overSliderWidgetGroove = sliderWidgetGroove;
-        overSliderWidgetGroove.borderPen = QPen(QColor(0xcc, 0xcc, 0xcc));
-        renderInfoMap[SliderWidgetGroove].infos[MouseOverState] = overSliderWidgetGroove;
+    const QPalette palette = QApplication::palette();
+    const QColor ink = palette.color(QPalette::WindowText);
+    RenderInfo info;
+    info.borderPen = QPen(Sequoia::border(palette), 1);
+    info.textPen = QPen(ink);
+    info.bgBrush = Sequoia::tint(palette.color(QPalette::Window), ink,
+                               state == DownState ? 0.14 : state == MouseOverState ? 0.08 : 0);
+    switch (widget) {
+    case ButtonWidget: info.borderRadius = Sequoia::ControlRadius; info.padding = 6; break;
+    case FrameWidget: info.borderRadius = Sequoia::SurfaceRadius; break;
+    case CountDown: info.bgBrush = palette.color(QPalette::Highlight); break;
+    case SliderWidgetHandle: info.borderRadius = 7; info.padding = 6; info.bgBrush = palette.color(QPalette::Base); break;
+    case SliderWidgetGroove: info.borderRadius = 3; info.padding = 6; info.bgBrush = Sequoia::alpha(ink, 0.20); break;
     }
-    const RenderInfo normalInfo = renderInfoMap[widget].infos.value(NormalState);
-    if (state == NormalState) {
-        return normalInfo;
-    } else {
-        return renderInfoMap[widget].infos.value(state, normalInfo);
-    }
+    return info;
 }
-
-} // HudTheme namespace
-
-} // Gwenview namespace
+}

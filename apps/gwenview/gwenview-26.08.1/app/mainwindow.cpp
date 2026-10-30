@@ -1,3 +1,4 @@
+#include <lib/sequoiadesign.h>
 /*
 Gwenview: an image viewer
 Copyright 2007 Aurélien Gâteau <agateau@kde.org>
@@ -195,8 +196,8 @@ public:
         mOverlay = new MainPageSlide(this);
         mAnimation = new QVariantAnimation(this);
         mAnimation->setObjectName(QStringLiteral("mainPageSlideAnimation"));
-        mAnimation->setDuration(140);
-        mAnimation->setEasingCurve(QEasingCurve::OutCubic);
+        mAnimation->setDuration(Sequoia::LongDuration);
+        mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         mAnimation->setStartValue(0.0); mAnimation->setEndValue(1.0);
         connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             mOverlay->progress = value.toReal(); mOverlay->update();

@@ -16763,11 +16763,6 @@
       "role": "Text",
       "sha256": "c497a4e52aa7c2d39c17457904bcdb107fd3728e0fff63ee415c72cea6b6fafd"
     },
-    "SequoiaTahoe/actions/32/folder-tar.svg": {
-      "symbol": "folder_zip",
-      "role": "Text",
-      "sha256": "b199fc34882de06b5665823f4eb9151000a9342c89e691163544c465005f1def"
-    },
     "SequoiaTahoe/actions/32/mount-archive.svg": {
       "symbol": "folder_zip",
       "role": "Text",
@@ -16782,11 +16777,6 @@
       "symbol": "folder_shared",
       "role": "Text",
       "sha256": "61a62526b4f4458a645ba9f0afbb06a8aba5f691854c9f73cfc9eff0cf8065a2"
-    },
-    "SequoiaTahoe/actions/32/folder-bookmark.svg": {
-      "symbol": "folder_special",
-      "role": "Text",
-      "sha256": "50aabdf77b93923aeba0fa285ec32054120238b0e501fb80351c183ca6ccc1a0"
     },
     "SequoiaTahoe/actions/32/bookmark-remove.svg": {
       "symbol": "bookmark_remove",
@@ -62303,11 +62293,6 @@
       "role": "Text",
       "sha256": "c497a4e52aa7c2d39c17457904bcdb107fd3728e0fff63ee415c72cea6b6fafd"
     },
-    "SequoiaTahoe-light/actions/32/folder-tar.svg": {
-      "symbol": "folder_zip",
-      "role": "Text",
-      "sha256": "b199fc34882de06b5665823f4eb9151000a9342c89e691163544c465005f1def"
-    },
     "SequoiaTahoe-light/actions/32/mount-archive.svg": {
       "symbol": "folder_zip",
       "role": "Text",
@@ -62322,11 +62307,6 @@
       "symbol": "folder_shared",
       "role": "Text",
       "sha256": "61a62526b4f4458a645ba9f0afbb06a8aba5f691854c9f73cfc9eff0cf8065a2"
-    },
-    "SequoiaTahoe-light/actions/32/folder-bookmark.svg": {
-      "symbol": "folder_special",
-      "role": "Text",
-      "sha256": "50aabdf77b93923aeba0fa285ec32054120238b0e501fb80351c183ca6ccc1a0"
     },
     "SequoiaTahoe-light/actions/32/bookmark-remove.svg": {
       "symbol": "bookmark_remove",
@@ -104723,11 +104703,6 @@
       "role": "Text",
       "sha256": "901fc0235249c3365140df2267c1c2b639c053daa7adb23b6f97add065cef79c"
     },
-    "SequoiaTahoe-dark/actions/32/folder-tar.svg": {
-      "symbol": "folder_zip",
-      "role": "Text",
-      "sha256": "2054b81d062c1751429418392e60598e6ef360a14364969075386d9ca4213592"
-    },
     "SequoiaTahoe-dark/actions/32/mount-archive.svg": {
       "symbol": "folder_zip",
       "role": "Text",
@@ -104742,11 +104717,6 @@
       "symbol": "folder_shared",
       "role": "Text",
       "sha256": "06c87a4fffcb6d8843ea1b06a8473cc4198261e1e7fa9e18f31123b9dbcca749"
-    },
-    "SequoiaTahoe-dark/actions/32/folder-bookmark.svg": {
-      "symbol": "folder_special",
-      "role": "Text",
-      "sha256": "6d8587a9c7f07c6c3cab60a457428e877174542b921180a1b3948ba7deac0b46"
     },
     "SequoiaTahoe-dark/actions/32/bookmark-remove.svg": {
       "symbol": "bookmark_remove",
@@ -119992,6 +119962,36 @@
       "symbol": "playlist_play",
       "role": "Text",
       "sha256": "c62e259341f727c202cc56cb2ad7ccf4106c9f6bf333934c05568a03c32c5bc1"
+    },
+    "SequoiaTahoe-dark/actions/32/folder-bookmark-symbolic.svg": {
+      "role": "Text",
+      "sha256": "6d8587a9c7f07c6c3cab60a457428e877174542b921180a1b3948ba7deac0b46",
+      "symbol": "folder_special"
+    },
+    "SequoiaTahoe-dark/actions/32/folder-tar-symbolic.svg": {
+      "role": "Text",
+      "sha256": "2054b81d062c1751429418392e60598e6ef360a14364969075386d9ca4213592",
+      "symbol": "folder_zip"
+    },
+    "SequoiaTahoe-light/actions/32/folder-bookmark-symbolic.svg": {
+      "role": "Text",
+      "sha256": "50aabdf77b93923aeba0fa285ec32054120238b0e501fb80351c183ca6ccc1a0",
+      "symbol": "folder_special"
+    },
+    "SequoiaTahoe-light/actions/32/folder-tar-symbolic.svg": {
+      "role": "Text",
+      "sha256": "b199fc34882de06b5665823f4eb9151000a9342c89e691163544c465005f1def",
+      "symbol": "folder_zip"
+    },
+    "SequoiaTahoe/actions/32/folder-bookmark-symbolic.svg": {
+      "role": "Text",
+      "sha256": "50aabdf77b93923aeba0fa285ec32054120238b0e501fb80351c183ca6ccc1a0",
+      "symbol": "folder_special"
+    },
+    "SequoiaTahoe/actions/32/folder-tar-symbolic.svg": {
+      "role": "Text",
+      "sha256": "b199fc34882de06b5665823f4eb9151000a9342c89e691163544c465005f1def",
+      "symbol": "folder_zip"
     }
   }
 }

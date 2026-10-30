@@ -47,6 +47,9 @@ public:
      */
     void setCurrentPage(int page);
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 private:
     InvisibleButtonGroup *mWrapNavigationBehaviorGroup = nullptr;
     InvisibleButtonGroup *mAlphaBackgroundModeGroup = nullptr;

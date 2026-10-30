@@ -1,0 +1,149 @@
+dbus-daemon[62998]: [session uid=1000 pid=62998 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.1' (uid=1000 pid=63037 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+MENU: &File | file_open | &Open… | enabled
+MENU: &File | file_open_recent | Open &Recent | enabled
+MENU: &File/Open &Recent |  | scene-00.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/Gallery/scene-00.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/six/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/five/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/four/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/three/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/two/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/one/picture.png] | enabled
+MENU: &File/Open &Recent | no_entries | No Entries | disabled
+MENU: &File/Open &Recent | clear_action | Clear List | enabled
+MENU: &File | file_save | &Save | disabled
+MENU: &File | file_save_as | Save &As… | enabled
+MENU: &File | reload | Reload | enabled
+MENU: &File | file_print | &Print… | enabled
+MENU: &File | file_print_preview | Print Previe&w | enabled
+MENU: &File | add_folder_to_places | Add Folder to Places | enabled
+MENU: &File | file_rename | Rename... | enabled
+MENU: &File | file_trash | Trash | enabled
+MENU: &File | deletefile | &Delete | enabled
+MENU: &File | file_copy_to | Copy To... | enabled
+MENU: &File | file_move_to | Move To... | enabled
+MENU: &File | file_link_to | Link To... | enabled
+MENU: &File | file_open_in_new_window | Open in New Window | enabled
+MENU: &File | file_open_with | Open With | enabled
+MENU: &File/Open With |  | Photos | enabled
+MENU: &File/Open With |  | Google Chrome | enabled
+MENU: &File/Open With |  | Okular | enabled
+MENU: &File/Open With |  | GNU Image Manipulation Program | enabled
+MENU: &File/Open With |  | KolourPaint | enabled
+MENU: &File/Open With |  | Google Chrome | enabled
+MENU: &File/Open With |  | Other Application... | enabled
+MENU: &File | file_open_containing_folder | Open Containing Folder | enabled
+MENU: &File | file_show_properties | Properties | enabled
+MENU: &File | file_create_folder | Create Folder... | enabled
+MENU: &File | file_quit | &Quit | enabled
+MENU: &Edit | edit_undo | Undo | disabled
+MENU: &Edit | edit_redo | Redo | disabled
+MENU: &Edit | edit_cut | Cu&t | enabled
+MENU: &Edit | edit_copy | &Copy | enabled
+MENU: &Edit | edit_paste | Paste | disabled
+MENU: &Edit | edit_tags | Edit Tags | enabled
+MENU: &Edit | rating | &Rating | enabled
+MENU: &Edit/&Rating | rate_0 | Zero | enabled
+MENU: &Edit/&Rating | rate_1 | ⋆ | enabled
+MENU: &Edit/&Rating | rate_2 | ⋆⋆ | enabled
+MENU: &Edit/&Rating | rate_3 | ⋆⋆⋆ | enabled
+MENU: &Edit/&Rating | rate_4 | ⋆⋆⋆⋆ | enabled
+MENU: &Edit/&Rating | rate_5 | ⋆⋆⋆⋆⋆ | enabled
+MENU: &Edit | rotate_left | Rotate Left | enabled
+MENU: &Edit | rotate_right | Rotate Right | enabled
+MENU: &Edit | mirror | Mirror | enabled
+MENU: &Edit | flip | Flip | enabled
+MENU: &Edit | resize | Resize | enabled
+MENU: &Edit | crop | Crop | enabled
+MENU: &Edit | brightness_contrast_gamma | Adjust Colors | enabled
+MENU: &Edit | red_eye_reduction | Reduce Red Eye | enabled
+MENU: &Edit | annotate | Annotate | enabled
+MENU: &View | browse | Browse | enabled
+MENU: &View | view | View | enabled
+MENU: &View | view_toggle_spotlightmode | Spotlight Mode | enabled
+MENU: &View | toggle_slideshow | Start Slideshow | enabled
+MENU: &View | view_actual_size | Zoom to &Actual Size | enabled
+MENU: &View | view_zoom_to_fit | Zoom to Fit | enabled
+MENU: &View | view_zoom_in | Zoom &In | enabled
+MENU: &View | view_zoom_out | Zoom &Out | enabled
+MENU: &View | view_toggle_birdeyeview | Show Bird's Eye View When Zoomed In | enabled
+MENU: &View | view_background_colormode_auto | Follow color scheme | enabled
+MENU: &View | view_background_colormode_light | Light Mode | enabled
+MENU: &View | view_background_colormode_neutral | Neutral Mode | enabled
+MENU: &View | view_background_colormode_dark | Dark Mode | enabled
+MENU: &View | sort_by | Sort By | enabled
+MENU: &View/Sort By |  | Name | enabled
+MENU: &View/Sort By |  | Date | enabled
+MENU: &View/Sort By |  | Size | enabled
+MENU: &View/Sort By |  | Type | enabled
+MENU: &View/Sort By |  | Rating | enabled
+MENU: &View/Sort By | sort_desc | Descending | enabled
+MENU: &View | thumbnail_details | Thumbnail Details | enabled
+MENU: &View/Thumbnail Details |  | Filename | enabled
+MENU: &View/Thumbnail Details |  | Date | enabled
+MENU: &View/Thumbnail Details |  | Image Size | enabled
+MENU: &View/Thumbnail Details |  | File Size | enabled
+MENU: &View/Thumbnail Details |  | Rating | enabled
+MENU: &View | view_toggle_showhiddenfiles | Show Hidden Files | enabled
+MENU: &View | toggle_sidebar | Sidebar | enabled
+MENU: &View | fullscreen | F&ull Screen Mode | enabled
+MENU: &Go | go_first | First | enabled
+MENU: &Go | go_previous | Previous | enabled
+MENU: &Go | go_next | Next | enabled
+MENU: &Go | go_last | Last | enabled
+MENU: &Go | go_up | &Up | enabled
+MENU: &Go | go_start_page | Start Page | enabled
+MENU: &Settings | window-colorscheme-menu | Color Scheme | enabled
+MENU: &Settings/Color Scheme |  | Default | enabled
+MENU: &Settings/Color Scheme |  | Breeze Classic | enabled
+MENU: &Settings/Color Scheme |  | Breeze Dark | enabled
+MENU: &Settings/Color Scheme |  | Breeze Light | enabled
+MENU: &Settings/Color Scheme |  | Darkly | enabled
+MENU: &Settings/Color Scheme |  | Sequoia Eleven Dark | enabled
+MENU: &Settings/Color Scheme |  | Sequoia Eleven Dark Solid | enabled
+MENU: &Settings/Color Scheme |  | Sequoia Eleven Dark Transparent | enabled
+MENU: &Settings/Color Scheme |  | Sequoia Eleven Light | enabled
+MENU: &Settings/Color Scheme |  | Sequoia Eleven Light Solid | enabled
+MENU: &Settings/Color Scheme |  | Sequoia Eleven Light Transparent | enabled
+MENU: &Settings | options_show_menubar | Show &Menubar | enabled
+MENU: &Settings | mainToolBar | Show Toolbar | enabled
+MENU: &Settings | options_show_statusbar | Show St&atusbar | enabled
+MENU: &Settings | switch_application_language | Configure &Language… | enabled
+MENU: &Settings | options_configure_keybinding | Configure Keyboard S&hortcuts… | enabled
+MENU: &Settings | options_configure_toolbars | Configure Tool&bars… | enabled
+MENU: &Settings | options_configure | &Configure Gwenview… | enabled
+MENU: &Help | help_contents | Gwenview &Handbook | enabled
+MENU: &Help | help_whats_this | What's &This? | enabled
+MENU: &Help | open_kcommand_bar | Find Action… | enabled
+MENU: &Help | help_report_bug | &Report Bug… | enabled
+MENU: &Help | help_donate | &Donate | enabled
+MENU: &Help | help_about_app | &About Gwenview | enabled
+MENU: &Help | help_about_kde | About &KDE | enabled
+PASS: Properties filename sizing/edit/cancel, overflow pills, page material, rapid switching, immediate input and reduced motion
+DIALOG: file_open | KDEPlatformFileDialog | Open Image | 864x540
+DIALOG: file_open-followup-1 | QDialog | Error | 730x210
+DIALOG: file_save_as | KFileCustomDialog | Save Image | 853x640
+DIALOG: file_rename | Gwenview::RenameDialog | Rename | 332x238
+DIALOG: file_copy_to | KDEPlatformFileDialog | Copy scene-00.png | 864x540
+DIALOG: file_move_to | KDEPlatformFileDialog | Move scene-00.png | 864x540
+DIALOG: file_link_to | KDEPlatformFileDialog | Link scene-00.png | 864x540
+DIALOG: file_create_folder | QDialog | Create New Folder | 642x320
+DIALOG: deletefile | KMessageDialog | Delete Permanently | 463x336
+DIALOG: file_show_properties | KPropertiesDialog | Properties for scene-00.png | 620x580
+DIALOG: resize | Gwenview::ResizeImageDialog | Resize Image | 389x406
+DIALOG: annotate | QDialog | Annotate scene-00.png | 1231x640
+DIALOG: edit_tags | QDialog | Tag Editor | 334x398
+DIALOG: file_print | QPrintDialog | Print Image | 664x720
+DIALOG: file_print_preview | QPrintPreviewDialog | Print Preview: scene-00.png | 880x608
+DIALOG: options_configure_keybinding | KShortcutsDialog | Configure Keyboard Shortcuts | 600x480
+DIALOG: options_configure_toolbars | KEditToolBar | Configure Toolbars | 686x570
+DIALOG: options_configure | Gwenview::ConfigDialog | Gwenview Settings | 630x700
+DIALOG: help_about_app | KAboutApplicationDialog | About Gwenview | 552x507
+DIALOG: help_about_kde | KDEPrivate::KAboutKdeDialog | About KDE | 805x499
+DIALOG: help_report_bug | KBugReport | Submit Bug Report | 504x388
+DIALOG: switch_application_language | KDEPrivate::KSwitchLanguageDialog | Configure Language | 487x296
+DIALOG: open-with-other | KOpenWithDialog | Open With | 450x576
+PASS: advanced permissions, crop/adjust/red-eye panels, command search and cancellation
+PASS: settings binding, Apply/Cancel persistence, keyboard pill, page motion, rapid reversal, resize, scrolling and reduced motion
+dbus-daemon[62998]: [session uid=1000 pid=62998 pidfd=5] Activated service 'org.freedesktop.Notifications' failed: Process org.freedesktop.Notifications exited with status 1
+PASS: Places width stays fixed throughout resize, file list flexes, divider adjusts manually, chosen width persists
+PASS: global-menu inventory and dialog/page walkthrough

@@ -46,8 +46,8 @@ Q_SIGNALS:
     void pinchZoomChanged(double);
 
 private:
-    PointerGestures *m_pointerGestures;
-    PinchGesture *m_pinchGesture;
+    PointerGestures *m_pointerGestures = nullptr;
+    PinchGesture *m_pinchGesture = nullptr;
     double m_startZoom;
     double m_zoomModifier;
 };

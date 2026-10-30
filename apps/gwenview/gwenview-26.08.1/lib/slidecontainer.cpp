@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 // Self
 #include "slidecontainer.h"
+#include <lib/sequoiadesign.h>
 
 // KF
 
@@ -26,10 +27,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <QEvent>
 #include <QPropertyAnimation>
 #include <QResizeEvent>
+#include <QStyle>
+#include <QLayout>
 
 namespace Gwenview
 {
-static const int SLIDE_DURATION = 250;
+static const int SLIDE_DURATION = Sequoia::LongDuration;
 
 SlideContainer::SlideContainer(QWidget *parent)
     : QFrame(parent)
@@ -53,6 +56,7 @@ void SlideContainer::setContent(QWidget *content)
     mContent = content;
     if (mContent) {
         mContent->setParent(this);
+        mContent->setAutoFillBackground(false);
         mContent->installEventFilter(this);
         mContent->hide();
     }
@@ -62,24 +66,26 @@ void SlideContainer::animTo(int newHeight)
 {
     delete mAnim.data();
     auto anim = new QPropertyAnimation(this, "slideHeight", this);
-    anim->setDuration(SLIDE_DURATION);
+    anim->setObjectName(QStringLiteral("editingToolSlideAnimation"));
+    anim->setDuration(style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, this) == 0 ? 0 : SLIDE_DURATION);
+    anim->setEasingCurve(QEasingCurve::InOutQuad);
     anim->setStartValue(slideHeight());
     anim->setEndValue(newHeight);
-    anim->start(QAbstractAnimation::DeleteWhenStopped);
     connect(anim, &QPropertyAnimation::finished, this, &SlideContainer::slotAnimFinished);
     mAnim = anim;
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 void SlideContainer::slideIn()
 {
     mSlidingOut = false;
     mContent->show();
-    mContent->adjustSize();
+    mContent->resize(qMax(1, width() - 32), mContent->sizeHint().height());
     delete mAnim.data();
-    if (height() == mContent->height()) {
+    if (height() == mContent->height() + 32) {
         return;
     }
-    animTo(mContent->height());
+    animTo(mContent->height() + 32);
 }
 
 void SlideContainer::slideOut()
@@ -94,7 +100,7 @@ void SlideContainer::slideOut()
 QSize SlideContainer::sizeHint() const
 {
     if (mContent) {
-        return mContent->sizeHint();
+        return mContent->sizeHint() + QSize(32, 32);
     } else {
         return {};
     }
@@ -103,7 +109,7 @@ QSize SlideContainer::sizeHint() const
 QSize SlideContainer::minimumSizeHint() const
 {
     if (mContent) {
-        return mContent->minimumSizeHint();
+        return mContent->minimumSizeHint() + QSize(32, 32);
     } else {
         return {};
     }
@@ -121,8 +127,8 @@ void SlideContainer::resizeEvent(QResizeEvent *event)
 void SlideContainer::adjustContentGeometry()
 {
     if (mContent) {
-        const int contentHeight = mContent->hasHeightForWidth() ? mContent->heightForWidth(width()) : mContent->height();
-        mContent->setGeometry(0, height() - contentHeight, width(), contentHeight);
+        const int contentHeight = mContent->hasHeightForWidth() ? mContent->heightForWidth(qMax(1, width() - 32)) : mContent->height();
+        mContent->setGeometry(16, height() - contentHeight - 12, qMax(1, width() - 32), contentHeight);
     }
 }
 
@@ -130,12 +136,12 @@ bool SlideContainer::eventFilter(QObject *, QEvent *event)
 {
     switch (event->type()) {
     case QEvent::Resize:
-        if (!mSlidingOut && height() != 0) {
-            animTo(mContent->height());
+        if (!mSlidingOut && height() != 0 && height() != mContent->height() + 32) {
+            animTo(mContent->height() + 32);
         }
         break;
     case QEvent::LayoutRequest:
-        mContent->adjustSize();
+        mContent->resize(qMax(1, width() - 32), mContent->sizeHint().height());
         break;
     default:
         break;

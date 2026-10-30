@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
+#include <lib/sequoiadesign.h>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPalette>
@@ -19,7 +20,7 @@ inline void paintSmoothSurface(QPainter &painter, const QRectF &area, const QStr
     if (area.isEmpty()) return;
     const QRect box = area.toAlignedRect();
     const qreal dpr = painter.device()->devicePixelRatioF();
-    const QString cacheKey = QStringLiteral("gwenview-surface-v2/%1/%2/%3/%4/%5/%6")
+    const QString cacheKey = QStringLiteral("gwenview-surface-weather/%1/%2/%3/%4/%5/%6")
         .arg(key).arg(dpr).arg(box.x()).arg(box.y()).arg(box.width()).arg(box.height());
     QPixmap cached;
     if (!QPixmapCache::find(cacheKey, &cached)) {
@@ -54,7 +55,6 @@ inline void paintPillSurface(QPainter &painter, const QRectF &bounds, qreal radi
 {
     if (bounds.isEmpty()) return;
     radius = qMin(radius, qMin(bounds.width(), bounds.height()) / 2);
-    const bool dark = palette.color(QPalette::Window).lightness() < 128;
     const QString key = QStringLiteral("pill/%1/%2/%3/%4/%5")
         .arg(surfaceGeometryKey(bounds, radius)).arg(palette.cacheKey()).arg(backdrop.cacheKey())
         .arg(surfaceGeometryKey(backdropRect, 0)).arg(translucent);
@@ -64,25 +64,13 @@ inline void paintPillSurface(QPainter &painter, const QRectF &bounds, qreal radi
             smooth.save(); smooth.setClipPath(clip);
             smooth.drawImage(backdropRect, backdrop); smooth.restore();
         }
-        QLinearGradient fill(bounds.topLeft(), bounds.bottomLeft());
-        QColor top = palette.color(QPalette::Window).lighter(dark ? 113 : 102);
-        QColor bottom = palette.color(QPalette::Window);
-        if (translucent || !backdrop.isNull()) {
-            top.setAlpha(dark ? 205 : 195); bottom.setAlpha(dark ? 185 : 175);
-        }
-        fill.setColorAt(0, top); fill.setColorAt(1, bottom);
+        QColor fill = palette.color(QPalette::Window);
+        if (translucent || !backdrop.isNull()) fill.setAlphaF(0.88);
         smooth.setPen(Qt::NoPen); smooth.setBrush(fill);
         smooth.drawRoundedRect(bounds, radius, radius);
-        // Inset strokes stay inside the capsule and retain even coverage at
-        // fractional desktop scales instead of straddling a clipped boundary.
         smooth.setBrush(Qt::NoBrush);
-        smooth.setPen(QPen(QColor(0, 0, 0, dark ? 65 : 24), 1));
+        smooth.setPen(QPen(Sequoia::border(palette), 1));
         smooth.drawRoundedRect(bounds.adjusted(.5, .5, -.5, -.5), qMax(0.0, radius - .5), qMax(0.0, radius - .5));
-        QLinearGradient rim(bounds.topLeft(), bounds.bottomLeft());
-        rim.setColorAt(0, QColor(255, 255, 255, dark ? 40 : 90));
-        rim.setColorAt(1, QColor(255, 255, 255, dark ? 12 : 35));
-        smooth.setPen(QPen(QBrush(rim), 1));
-        smooth.drawRoundedRect(bounds.adjusted(1.5, 1.5, -1.5, -1.5), qMax(0.0, radius - 1.5), qMax(0.0, radius - 1.5));
     });
 }
 // Paint only the surface's shadow, never blur its contents. The compact card
@@ -94,10 +82,9 @@ inline void paintFloatingShadow(QPainter &painter, const QRectF &bounds, qreal r
     const int spread = elevated ? 12 : 6;
     const qreal offset = elevated ? 4 : 2;
     const qreal sigma = elevated ? 4.5 : 2.5;
-    const bool dark = palette.color(QPalette::Window).lightness() < 128;
-    const qreal strength = (dark ? 0.32 : 0.20) * opacity;
+    const qreal strength = (elevated ? 0.24 : 0.16) * opacity;
     const QString key = QStringLiteral("shadow/%1/%2/%3/%4")
-        .arg(surfaceGeometryKey(bounds, radius)).arg(dark).arg(elevated).arg(opacity);
+        .arg(surfaceGeometryKey(bounds, radius)).arg(palette.cacheKey()).arg(elevated).arg(opacity);
     paintSmoothSurface(painter, bounds.adjusted(-16, -16, 16, 16), key, [&](QPainter &smooth) {
         smooth.setPen(Qt::NoPen);
         for (int i = spread; i >= 0; --i) {
@@ -115,14 +102,13 @@ inline void paintFloatingShadow(QPainter &painter, const QRectF &bounds, qreal r
 
 inline void paintFloatingPanel(QPainter &painter, const QRectF &bounds, const QPalette &palette, bool withShadow = true)
 {
-    constexpr qreal radius = 16;
+    constexpr qreal radius = Sequoia::SurfaceRadius;
     if (withShadow) paintFloatingShadow(painter, bounds, radius, palette);
-    QColor surface = palette.color(QPalette::Button);
+    QColor surface = Sequoia::tint(palette.color(QPalette::Window), palette.color(QPalette::AlternateBase), 0.55);
     surface.setAlpha(255);
-    const bool dark = surface.lightness() < 128;
     const QString key = QStringLiteral("panel/%1/%2").arg(surfaceGeometryKey(bounds, radius)).arg(surface.rgba());
     paintSmoothSurface(painter, bounds, key, [&](QPainter &smooth) {
-        smooth.setPen(QPen(QColor(255, 255, 255, dark ? 20 : 110), 1));
+        smooth.setPen(QPen(Sequoia::alpha(palette.color(QPalette::WindowText), 0.08), 1));
         smooth.setBrush(surface);
         smooth.drawRoundedRect(bounds.adjusted(0.5, 0.5, -0.5, -0.5), radius, radius);
     });

@@ -73,7 +73,7 @@ protected:
         QColor accent = palette().color(QPalette::Highlight);
         if (isChecked() || underMouse() || isDown() || hasFocus()) {
             QColor fill = isChecked() ? accent : palette().color(QPalette::WindowText);
-            if (!isChecked()) fill.setAlpha(isDown() ? 40 : 22);
+            fill.setAlphaF(isChecked() ? 0.16 : isDown() ? 0.14 : 0.08);
             painter.setPen(Qt::NoPen); painter.setBrush(fill);
             painter.drawRoundedRect(QRectF(rect()).adjusted(1, 1, -1, -1), 16, 16);
         }
@@ -84,7 +84,7 @@ protected:
         QPixmap glyph = icon().pixmap(iconSize(), devicePixelRatioF());
         if (!glyph.isNull()) {
             QPainter tint(&glyph); tint.setCompositionMode(QPainter::CompositionMode_SourceIn);
-            tint.fillRect(glyph.rect(), palette().color(isEnabled() ? QPalette::Active : QPalette::Disabled, isChecked() ? QPalette::HighlightedText : QPalette::WindowText));
+            tint.fillRect(glyph.rect(), palette().color(isEnabled() ? QPalette::Active : QPalette::Disabled, QPalette::WindowText));
             tint.end(); painter.drawPixmap(QRect(6, 6, 22, 22), glyph);
         }
     }

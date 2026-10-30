@@ -81,6 +81,7 @@ WaylandGestures::WaylandGestures(QObject *parent)
     m_startZoom = 1.0;
     m_zoomModifier = 1.0;
     m_pointerGestures = new PointerGestures();
+    m_pointerGestures->setParent(this);
     connect(m_pointerGestures, &PointerGestures::activeChanged, this, [this]() {
         init();
     });
@@ -88,11 +89,11 @@ WaylandGestures::WaylandGestures(QObject *parent)
 
 WaylandGestures::~WaylandGestures()
 {
-    if (m_pointerGestures) {
-        m_pointerGestures->release();
-    }
-    if (m_pinchGesture) {
+    if (m_pinchGesture && m_pinchGesture->isInitialized()) {
         m_pinchGesture->destroy();
+    }
+    if (m_pointerGestures && m_pointerGestures->isInitialized()) {
+        m_pointerGestures->release();
     }
 }
 
@@ -103,6 +104,9 @@ void WaylandGestures::setStartZoom(double startZoom)
 
 void WaylandGestures::init()
 {
+    // A view may disappear before the extension or pointer seat becomes ready.
+    // Never create a second pinch object or dereference an unbound extension.
+    if (m_pinchGesture || !m_pointerGestures->isActive()) return;
     QPlatformNativeInterface *native = qGuiApp->platformNativeInterface();
     if (!native) {
         return;

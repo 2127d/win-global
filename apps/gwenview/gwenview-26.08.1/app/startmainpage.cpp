@@ -1,3 +1,4 @@
+#include <lib/sequoiadesign.h>
 // vim: set tabstop=4 shiftwidth=4 expandtab:
 /*
 Gwenview: an image viewer
@@ -192,7 +193,7 @@ void StartMainPage::applyPalette(const QPalette &palette)
     const QColor accent = palette.color(QPalette::Active, QPalette::Highlight);
     const QColor text = palette.color(QPalette::Active, QPalette::HighlightedText);
     findChild<QPushButton *>(QStringLiteral("addImagesButton"))->setStyleSheet(QStringLiteral(
-        "QPushButton { background: %1; color: %2; border: 1px solid %1; border-radius: 11px; padding: 4px 16px; font-weight: 600; }"
+        "QPushButton { background: %1; color: %2; border: 1px solid %1; border-radius: 12px; padding: 4px 16px; font-weight: 600; }"
         "QPushButton:hover { background: %3; } QPushButton:pressed { background: %4; }"
         "QPushButton:focus { border: 2px solid %2; }")
         .arg(accent.name(), text.name(), accent.lighter(108).name(), accent.darker(110).name()));
@@ -209,7 +210,7 @@ void StartMainPage::paintEvent(QPaintEvent *)
         QColor tint = accent; tint.setAlpha(16);
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setPen(QPen(accent, 2.5)); painter.setBrush(tint);
-        painter.drawRoundedRect(QRectF(rect()).adjusted(FloatingPanelInset + 2, FloatingPanelInset + 2, -FloatingPanelInset - 2, -FloatingPanelInset - 2), 15, 15);
+        painter.drawRoundedRect(QRectF(rect()).adjusted(FloatingPanelInset + 2, FloatingPanelInset + 2, -FloatingPanelInset - 2, -FloatingPanelInset - 2), Sequoia::SurfaceRadius - 1, Sequoia::SurfaceRadius - 1);
     }
 }
 
