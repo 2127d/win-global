@@ -81,7 +81,15 @@ inline QRegion popupBlurRegion(const QWidget *popup, qreal offset = 0)
         QPainterPath rounded;
         rounded.addRoundedRect(popupBodyRect(popup).translated(0, offset).adjusted(.5, .5, -.5, -.5), Sequoia::SurfaceRadius - .5, Sequoia::SurfaceRadius - .5);
         const QRegion region = QRegion(rounded.toFillPolygon().toPolygon()) & popup->rect();
-        if (!region.isEmpty()) return region;
+        if (!region.isEmpty()) {
+            // KWin applies the region relative to the visible window geometry.
+            // Anchored Wayland dropdowns exclude our shadow margins from that
+            // geometry; account for them once, rather than shifting the blur
+            // another 14px down/right and leaving clear strips at the edges.
+            if (popup->windowHandle() && popup->windowHandle()->property("gwenviewDropdownAnchor").toBool())
+                return region.translated(-14, -14);
+            return region;
+        }
     }
     // Preserve KDE's surface-lifetime tracking even for solid/empty menus.
     // An empty region means whole-window blur; false hits the KDE 6.31 bug.

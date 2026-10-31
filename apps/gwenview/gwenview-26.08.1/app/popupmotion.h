@@ -145,7 +145,12 @@ private:
     void finish()
     {
         mStart->stop(); mAnimation->stop();
-        if (mEffect) { mEffect->setEnabled(false); mEffect->reset(); }
+        if (mEffect) {
+            mEffect->setEnabled(false); mEffect->reset();
+            // Discard the translated backing-store frame when returning to
+            // live painting, including when a reused combo closes mid-slide.
+            mPopup->update();
+        }
         else { mPopup->setProperty("gwenviewPopupProgress", 1.0); mPopup->update(); }
         refreshBlurRegion();
     }

@@ -185,7 +185,18 @@ protected:
                     }
                     const int width = qMax(combo->width() + 28, textWidth + 64);
                     widget->setFixedWidth(qMin(width, combo->screen()->availableGeometry().width()));
-                    widget->setMinimumHeight(qMax(80, combo->view()->sizeHintForRow(0) + 44));
+                    // Qt sizes the list before our floating-surface margins
+                    // are applied. Reserve those margins in addition to the
+                    // rows, otherwise a three-choice list becomes one row tall.
+                    auto view = combo->view();
+                    int rowsHeight = 0;
+                    for (int row = 0; row < qMin(8, combo->count()); ++row)
+                        rowsHeight += qMax(metrics.height() + 8, view->sizeHintForRow(row));
+                    const auto outerMargins = widget->contentsMargins();
+                    const auto viewMargins = view->contentsMargins();
+                    const int height = qMax(80, rowsHeight + 44 + outerMargins.top() + outerMargins.bottom()
+                        + viewMargins.top() + viewMargins.bottom());
+                    widget->setFixedHeight(qMin(height, combo->screen()->availableGeometry().height() - 32));
                     // The container supplies the material. Do not stack a second
                     // translucent/opaque list background over it.
                     combo->view()->setAutoFillBackground(false);

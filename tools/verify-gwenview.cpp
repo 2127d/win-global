@@ -1751,7 +1751,9 @@ static void requirePopupBlur(QWidget *popup)
 {
     auto handle = popup->windowHandle();
     require(handle && handle->property("verifiedBlurRequests").toInt() > 0, "popup submits a native material region");
-    const QRegion region = handle->property("verifiedBlurRegion").value<QRegion>();
+    QRegion region = handle->property("verifiedBlurRegion").value<QRegion>();
+    if (transparentMenusExpected() && handle->property("gwenviewDropdownAnchor").toBool())
+        region.translate(14, 14); // Native geometry excludes the popup shadow.
     require(!region.isEmpty(), "popup blur never uses the whole-window sentinel");
     require(handle->property("verifiedVisibleBlur").toBool() == transparentMenusExpected(), "blur region follows transparent/solid material");
     if (transparentMenusExpected()) {

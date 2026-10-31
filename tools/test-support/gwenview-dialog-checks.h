@@ -570,6 +570,18 @@ static void verifyNativeDropdowns(QWidget *surface, const QString &name, const Q
                     buffer = QRect(qRound(data["x"].toDouble()),qRound(data["y"].toDouble()),qRound(data["width"].toDouble()),qRound(data["height"].toDouble()));
             }
             require(!buffer.isEmpty(), qPrintable("dropdown really mapped by compositor: " + label));
+            if (auto combo = qobject_cast<QComboBox *>(field)) {
+                if (name == "properties-groups") require(combo->height() >= 34, "Properties dropdown fields retain comfortable height");
+                auto view = combo->view();
+                int visible = 0;
+                for (int row=0;row<combo->count();++row) {
+                    const auto index=combo->model()->index(row,combo->modelColumn(),combo->rootModelIndex());
+                    if (view->viewport()->rect().contains(view->visualRect(index))) ++visible;
+                }
+                fprintf(stderr,"DROPDOWN ROWS %s count=%d visible=%d viewport=%d popup=%d\n",qPrintable(name + "/" + combo->objectName()),combo->count(),visible,view->viewport()->height(),popup->height());
+                require(visible >= qMin(3,combo->count()), "dropdown shows multiple options instead of a single row");
+                if (name == "properties-groups") require(visible == combo->count(), "short Permissions lists show every option");
+            }
             const QRect body = QRectF(buffer).adjusted(14*scale,14*scale,-14*scale,-18*scale).toRect();
             const QRect screen = field->screen()->availableGeometry();
             const QRect available(screen.topLeft()*scale, screen.size()*scale);
@@ -577,7 +589,34 @@ static void verifyNativeDropdowns(QWidget *surface, const QString &name, const Q
             const int expectedX = qBound(available.left(), wantedX, available.right()-body.width()+1);
             const int gap = body.top() >= nativeField.bottom() ? body.top()-nativeField.bottom()-1 : nativeField.top()-body.bottom()-1;
             fprintf(stderr,"NATIVE DROPDOWN %s %s field=%d,%d,%d,%d body=%d,%d,%d,%d gap=%d dx=%d\n",qPrintable(label),field->metaObject()->className(),nativeField.x(),nativeField.y(),nativeField.width(),nativeField.height(),body.x(),body.y(),body.width(),body.height(),gap,body.x()-expectedX);
-            require(gwenviewCompositorCapture().save(output + "/native-dropdown-" + label + ".png"), "capture rendered dropdown and owner");
+            if (qEnvironmentVariableIsSet("SEQUOIA_POPUP_BLUR_ONLY")) {
+                QTest::qWait(350);
+                const auto r=popup->windowHandle()->property("verifiedBlurRegion").value<QRegion>().boundingRect();
+                fprintf(stderr,"BLUR STATE region=%d,%d,%d,%d effect=%d\n",r.x(),r.y(),r.width(),r.height(),popup->graphicsEffect() && popup->graphicsEffect()->isEnabled());
+            }
+            const auto capture = gwenviewCompositorCapture();
+            require(capture.save(output + "/native-dropdown-" + label + ".png"), "capture rendered dropdown and owner");
+            if (qEnvironmentVariableIsSet("SEQUOIA_POPUP_BLUR_ONLY")) {
+                // Measure stripe contrast in content-free gutters. Merely
+                // observing enableBlurBehind() cannot catch shifted regions.
+                const QList<QRect> samples = {
+                    QRect(body.left()+qRound(3*scale), body.center().y()-qRound(24*scale), qRound(8*scale), qRound(12*scale)),
+                    QRect(body.center().x()-qRound(12*scale), body.top()+qRound(3*scale), qRound(24*scale), qRound(7*scale))};
+                for (const auto &sample : samples) {
+                    int contrast=0;
+                    for(int y=sample.top();y<=sample.bottom();++y) {
+                        int low=255, high=0;
+                        for(int x=sample.left();x<=sample.right();++x) {
+                            const int gray=qGray(capture.pixel(x,y)); low=qMin(low,gray); high=qMax(high,gray);
+                        }
+                        contrast=qMax(contrast,high-low);
+                    }
+                    fprintf(stderr,"BLUR CONTRAST %s %d at %d,%d\n",qPrintable(label),contrast,sample.x(),sample.y());
+                    if (qEnvironmentVariable("SEQUOIA_GWENVIEW_TEST_BLUR") != "0")
+                        require(contrast < 20, "compositor blurs top and left popup gutters");
+                    else require(contrast > 25, "disabled blur control retains sharp backdrop stripes");
+                }
+            }
             require(qAbs(body.left()-expectedX)<=1 && qAbs(gap-6*scale)<=1, qPrintable("compositor dropdown aligns to field with six-pixel gap: " + label));
             QTest::keyClick(popup, Qt::Key_Escape);
             if (popup->isVisible()) popup->close();
@@ -599,6 +638,61 @@ static void verifyMenuDialogs(QWidget *window, const QString &output)
     const auto fixtures = qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES");
     require(QMetaObject::invokeMethod(window, "openUrl", Q_ARG(QUrl, QUrl::fromLocalFile(fixtures + "/Gallery/scene-00.png"))), "open dialog fixture");
     QTest::qWait(650);
+    if (qEnvironmentVariableIsSet("SEQUOIA_GROUP_DROPDOWNS_ONLY")) {
+        findAction(window, "file_show_properties")->trigger(); QTest::qWait(250);
+        auto dialog=window->findChild<QDialog *>("gwenviewPropertiesDialog");
+        require(dialog, "Properties opens");
+        auto tabs=dialog->findChild<QTabWidget *>();
+        for(int i=0;i<tabs->count();++i) if(tabs->tabText(i).contains("Permissions")) tabs->setCurrentIndex(i);
+        QTest::qWait(250);
+        const auto combos=dialog->findChildren<QComboBox *>();
+        for(auto a:combos) for(auto b:combos) if(a!=b && a->isVisible() && b->isVisible() && a->parentWidget()==b->parentWidget())
+            require(!a->geometry().adjusted(0,-3,0,3).intersects(b->geometry()), "taller permission fields have space between rows");
+        for(auto box:dialog->findChildren<QDialogButtonBox *>()) if(box->isVisible())
+            require(dialog->rect().contains(QRect(box->mapTo(dialog,QPoint()),box->size())), "Properties footer fits below taller content");
+        const auto cards=tabs->currentWidget()->findChildren<QWidget *>();
+        for(auto a:cards) for(auto b:cards) if(a!=b && a->inherits("QGroupBox") && b->inherits("QGroupBox") && a->parentWidget()==b->parentWidget())
+            require(!a->geometry().intersects(b->geometry()), "permission cards do not overlap after taller fields");
+        require(dialog->grab().save(output + "/properties-permissions-fields.png"), "capture taller permission fields");
+        verifyNativeDropdowns(dialog,"properties-groups",output);
+        for(int width : {430,900}) {
+            dialog->resize(width,540); QTest::qWait(150);
+            require(dialog->width()==width, "taller fields preserve horizontal resizing");
+            for(auto combo:combos) if(combo->isVisible()) require(combo->height()>=34, "field height survives window resizing");
+            for(auto box:dialog->findChildren<QDialogButtonBox *>()) if(box->isVisible())
+                require(dialog->rect().contains(QRect(box->mapTo(dialog,QPoint()),box->size())), "resized Properties keeps footer visible");
+        }
+        dialog->reject();
+        return;
+    }
+    if (qEnvironmentVariableIsSet("SEQUOIA_POPUP_BLUR_ONLY")) {
+#ifdef GWENVIEW_NATIVE_MENU_INPUT
+        const QSize available = window->screen()->availableGeometry().size();
+        window->resize(qMin(1100,available.width()-100), qMin(800,available.height()-100));
+        QTest::qWait(100);
+        const int top = qMax(20, qRound((available.height()-window->height())*window->devicePixelRatioF())-44);
+        gwenviewNativeWindows(QString("workspace.windowList().filter(w=>w.caption.includes('Gwenview')).forEach(w=>{w.frameGeometry={x:40,y:%1,width:w.frameGeometry.width,height:w.frameGeometry.height};});").arg(top));
+        findAction(window, "toggle_sidebar")->setChecked(true);
+        auto tabs = window->findChild<QTabWidget *>("sidebarTabs"); tabs->setCurrentIndex(0);
+        QTest::qWait(300);
+        auto more = window->findChild<QToolButton *>("recentImagesMenuButton");
+        require(more && more->isVisible(), "sidebar overflow visible");
+        // Fine stripes expose unblurred strips without relying on a flat fixture.
+        auto pattern = new QLabel(window);
+        QPixmap stripes(window->size()); stripes.fill(Qt::white);
+        { QPainter p(&stripes); for(int x=0;x<stripes.width();x+=8) p.fillRect(x,0,4,stripes.height(),Qt::black); }
+        pattern->setPixmap(stripes); pattern->setGeometry(window->rect());
+        pattern->setAttribute(Qt::WA_TransparentForMouseEvents); pattern->show();
+        auto sidebar = window->findChild<QWidget *>("sidebarIsland"); sidebar->raise();
+        QTest::qWait(150);
+        for (int repeat=0; repeat<3; ++repeat) {
+            verifyNativeDropdowns(sidebar, "blur-sidebar-" + QString::number(repeat), output);
+            verifyNativeDropdowns(window, "status-blur-" + QString::number(repeat), output);
+        }
+        delete pattern;
+        return;
+#endif
+    }
     if (qEnvironmentVariableIsSet("SEQUOIA_DIALOG_DROPDOWNS_ONLY")) {
         const QSize available = window->screen()->availableGeometry().size();
         const int width = qMin(1100, available.width()-200);

@@ -600,3 +600,28 @@ and checks compositor buffer geometry plus workspace captures, including the
 status zoom, language, annotation, print, print-properties, print-preview and
 folder-icon dialogs. The fixture uses a short temporary runtime path so KIO
 socket-length errors cannot obstruct these input checks.
+
+Anchored Wayland popup blur uses visible-window coordinates, subtracting the
+14px shadow origin from its rounded region. Otherwise KWin shifts the blur down
+and right, exposing sharp background strips along the top and left edges.
+`SEQUOIA_POPUP_BLUR_ONLY=1 tools/verify-gwenview.py --dialog-preview --native-menus
+--dark --transparent` repeatedly opens the real sidebar overflow and zoom menus
+over fine stripes. Compositor captures measure remaining stripe contrast in both
+edge gutters; `--blur-disabled` supplies the sharp-background control. This
+checks rendered blur, not just whether the application requested it. Combo
+containers also repaint after the slide effect releases its cached frame, so
+reopening cannot retain a displaced edge from the entrance animation.
+
+Combo popup height includes the floating inset and both container/list borders
+in addition to up to eight actual rows. This keeps short Properties permission
+and ownership Group lists fully visible instead of consuming their height with
+padding. Longer lists remain scrollable and bounded by the available screen.
+`SEQUOIA_GROUP_DROPDOWNS_ONLY=1` with the native dialog preview checks every
+Permissions combo's fully visible row count and its six-pixel field gap.
+
+Properties combo fields have a 34px minimum height (or font height plus 14px)
+and 8px form-row spacing. Their vertical minimum propagates through the native
+cards and page into the dialog, keeping Ownership and the footer below the
+larger controls while leaving horizontal resizing available. Native dropdown
+walkthroughs also count fully visible rows in combo lists, distinguishing a
+legitimate single-choice printer list from a clipped multi-choice popup.

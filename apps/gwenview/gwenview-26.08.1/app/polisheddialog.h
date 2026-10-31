@@ -6,6 +6,8 @@
 #include <QApplication>
 #include <QAbstractButton>
 #include <QCursor>
+#include <QComboBox>
+#include <QFormLayout>
 #include <QPushButton>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -410,6 +412,35 @@ inline void polishDialogFooters(QDialog *dialog)
     }
 }
 
+inline void polishPropertiesFields(QDialog *dialog)
+{
+    if (dialog->objectName() != QLatin1String("gwenviewPropertiesDialog")
+        || dialog->property("gwenviewPropertiesFieldsPolished").toBool()) return;
+    dialog->setProperty("gwenviewPropertiesFieldsPolished", true);
+    // The native Permissions form can compress combos to text height
+    // when sharing the dialog with taller property pages. Keep the field
+    // itself at the same comfortable height as our other pill controls.
+    for (auto combo : dialog->findChildren<QComboBox *>()) {
+        combo->ensurePolished();
+        combo->setMinimumHeight(qMax(34, combo->fontMetrics().height() + 14));
+        if (auto form = qobject_cast<QFormLayout *>(combo->parentWidget()->layout())) {
+            form->setVerticalSpacing(8);
+            form->invalidate();
+        }
+        // Propagate the larger rows through the native page/card layouts;
+        // otherwise a hidden tab can keep its old, compressed minimum.
+        for (auto parent = combo->parentWidget(); parent && parent != dialog; parent = parent->parentWidget()) {
+            parent->ensurePolished();
+            if (parent->layout()) { parent->layout()->invalidate(); parent->layout()->activate(); }
+            parent->setMinimumHeight(qMax(parent->minimumHeight(), parent->minimumSizeHint().height()));
+        }
+    }
+    if (dialog->layout()) {
+        dialog->layout()->invalidate(); dialog->layout()->activate();
+        dialog->setMinimumHeight(qMax(dialog->minimumHeight(), dialog->layout()->totalMinimumSize().height()));
+    }
+}
+
 inline void polishDialog(QDialog *dialog)
 {
     // Late-created native layouts can show again while the shell changes
@@ -425,7 +456,7 @@ inline void polishDialog(QDialog *dialog)
             edit && !edit->findChild<QObject *>(QStringLiteral("propertiesFileNameWidth")))
             new PropertiesFileNameWidth(edit);
     }
-    if (dialog->property("gwenviewPolishedDialog").toBool()) { polishDialogPages(dialog); return; }
+    if (dialog->property("gwenviewPolishedDialog").toBool()) { polishPropertiesFields(dialog); polishDialogPages(dialog); return; }
     dialog->setProperty("gwenviewPolishedDialog", true);
     // Keep object names intact: KConfigDialog uses its name to find an existing
     // settings window. Palette roles and native controls follow the live theme.
@@ -443,6 +474,7 @@ inline void polishDialog(QDialog *dialog)
     auto content = dialog->findChild<QWidget *>(QStringLiteral("dialogShellContent"), Qt::FindDirectChildrenOnly);
     auto layout = content ? content->layout() : dialog->layout();
     if (layout) { layout->setContentsMargins(16, 12, 16, 16); layout->setSpacing(16); }
+    polishPropertiesFields(dialog);
     new DialogEntrance(dialog);
     polishDialogPages(dialog);
 }
