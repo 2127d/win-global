@@ -580,3 +580,23 @@ list (up to 360 logical pixels), with wheel/keyboard navigation and hidden scrol
 Inline editing tools use padded 22px cards separated from the image by an 8px gap.
 The dialog walkthrough verifies painted background alpha, cursor reset, absence of
 separators, bounded language navigation/selection, and the editing-panel padding.
+
+Properties' Change button hosts KDE's file-association KCM inside Gwenview when
+the installed `kcm_filetypes` plugin is available. The current MIME type is
+selected on opening; KDE retains ownership of editing, Apply, and Cancel, while
+the editor and its nested application chooser receive the shared dialog shell.
+Without that plugin the original KDE file-type editor action remains intact.
+
+Button menus and combo lists anchor their visible material to the leading edge
+of their field, with a 6px gap. Shadow padding does not add to that gap, and
+screen-edge placement can flip the dropdown above the field. Annotation picker
+rows retain native wrapping and docking while centering across the toolbar's
+cross axis, including after orientation and size changes.
+
+On Qt Wayland, dropdowns declare their shadow margins and parent-relative anchor
+to the native popup positioner. Moving the QWidget alone does not override Qt's
+control anchor. Native verification opens controls with KWin's private EIS input
+and checks compositor buffer geometry plus workspace captures, including the
+status zoom, language, annotation, print, print-properties, print-preview and
+folder-icon dialogs. The fixture uses a short temporary runtime path so KIO
+socket-length errors cannot obstruct these input checks.

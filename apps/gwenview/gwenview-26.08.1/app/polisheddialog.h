@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #pragma once
 #include "dialogshell.h"
+#include "annotationtools.h"
 #include "languagemenulist.h"
 #include <QApplication>
 #include <QAbstractButton>
@@ -20,6 +21,7 @@
 #include <QStackedWidget>
 #include <QSplitter>
 #include <QStyle>
+#include <QScopeGuard>
 #include <QTabBar>
 #include <QTabWidget>
 #include <QTimer>
@@ -132,6 +134,9 @@ public:
     explicit DialogPillArrow(QToolButton *button) : QObject(button), mButton(button)
     {
         setObjectName(QStringLiteral("dialogPillArrow"));
+        // Let the dialog material show outside the pill; Qt's tab-scroll
+        // buttons otherwise fill their entire rectangular widget bounds.
+        button->setAutoFillBackground(false);
         mAnimation = new QVariantAnimation(this);
         mAnimation->setDuration(Sequoia::ShortDuration);
         mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
@@ -170,7 +175,6 @@ private:
     {
         QPainter painter(mButton); painter.setRenderHint(QPainter::Antialiasing);
         const auto palette = mButton->palette();
-        painter.fillRect(mButton->rect(), palette.color(QPalette::Window));
         const QRectF pill = QRectF(mButton->rect()).adjusted(1.5, 3.5, -1.5, -3.5);
         const qreal radius = qMin(pill.width(), pill.height()) / 2;
         QColor border = palette.color(QPalette::WindowText); border.setAlpha(24);
@@ -408,6 +412,11 @@ inline void polishDialogFooters(QDialog *dialog)
 
 inline void polishDialog(QDialog *dialog)
 {
+    // Late-created native layouts can show again while the shell changes
+    // window flags. Do not attach a second entrance effect during that Show.
+    if (dialog->property("gwenviewDialogPolishing").toBool()) return;
+    dialog->setProperty("gwenviewDialogPolishing", true);
+    const auto polishing = qScopeGuard([dialog] { dialog->setProperty("gwenviewDialogPolishing", false); });
     polishDialogFooters(dialog);
     polishFilePickerLayout(dialog);
     if (dialog->layout() && !dialog->findChild<QObject *>(QStringLiteral("dialogShell"), Qt::FindDirectChildrenOnly)) new DialogShell(dialog);
@@ -493,6 +502,9 @@ protected:
         if (auto button = qobject_cast<QAbstractButton *>(object); button && button->window()->property("gwenviewPolishedDialog").toBool())
             polishDialogIcon(button);
         auto widget = qobject_cast<QWidget *>(object);
+        if (auto dock = qobject_cast<QDockWidget *>(widget); dock && dock->inherits("kImageAnnotator::AnnotationDockWidget")
+            && !dock->findChild<QObject *>(QStringLiteral("annotationToolsPolish"), Qt::FindDirectChildrenOnly))
+            new AnnotationTools(dock);
         if (widget && widget->inherits("KLanguageButton") && event->type() == QEvent::Show) {
             for (auto button : widget->findChildren<QPushButton *>())
                 if (button->menu() && !button->findChild<QObject *>(QStringLiteral("languageMenuList"))) new LanguageMenuList(button);

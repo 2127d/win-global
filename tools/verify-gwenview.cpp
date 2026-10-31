@@ -1773,39 +1773,39 @@ static void verifyPopupOpening(QMenu *menu, const QPoint &anchor, const QString 
     QTest::qWait(25);
     auto animation = menu->findChild<QVariantAnimation *>("popupEntranceAnimation");
     auto effect = menu->findChild<QGraphicsEffect *>("popupEntranceEffect");
-    require(animation && animation->duration() == 200 && effect && effect->isEnabled()
-        && animation->state() == QAbstractAnimation::Running, "menu entrance uses Weather’s 200ms entrance");
+    require(animation && animation->duration() == 200 && !effect && !menu->graphicsEffect()
+        && animation->state() == QAbstractAnimation::Running, "menu uses a live 200ms entrance without a cached window effect");
     ViewPaintCounter paints; menu->installEventFilter(&paints);
     int frames = 0;
     auto connection = QObject::connect(animation, &QVariantAnimation::valueChanged, menu, [&] { ++frames; });
     QTest::qWait(45);
     QObject::disconnect(connection); menu->removeEventFilter(&paints);
-    require(frames >= 2 && paints.paints <= 2, "menu entrance reuses its frame instead of repainting items every tick");
+    require(frames >= 2 && paints.paints >= 2, "menu fades live rows without swapping paint paths");
     require(menu->geometry() == nativeGeometry, "menu opening never moves native hit targets");
     require(menu->grab().save(output + '/' + name + "-opening.png"), "capture menu entrance");
     QTest::qWait(160);
-    require(!effect->isEnabled(), "menu returns to live painting after entrance");
+    require(menu->property("gwenviewPopupProgress").toReal() == 1.0, "menu fade completes");
     requirePopupBlur(menu);
     menu->move(menu->pos() + QPoint(1, 0)); menu->resize(menu->width(), menu->height() + 2); QTest::qWait(30);
     requirePopupBlur(menu);
     menu->close();
     menu->popup(anchor); QTest::keyClick(menu, Qt::Key_Down);
-    require(!effect->isEnabled() && menu->activeAction(), "immediate keyboard navigation cancels pending entrance without waiting");
+    require(animation->state() == QAbstractAnimation::Stopped && menu->activeAction(), "immediate keyboard navigation cancels pending entrance without waiting");
     QTest::keyClick(menu, Qt::Key_Escape);
     menu->popup(anchor); QTest::qWait(20);
     auto first = menu->actions().first(); const QPoint point = menu->actionGeometry(first).center();
     QMouseEvent move(QEvent::MouseMove, point, menu->mapToGlobal(point), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
     QApplication::sendEvent(menu, &move);
-    require(!effect->isEnabled(), "pointer movement reveals live menu immediately");
+    require(!menu->graphicsEffect() && menu->geometry().size() == nativeGeometry.size(), "pointer hover keeps live geometry and paint path");
     menu->close();
     for (int i = 0; i < 3; ++i) { menu->popup(anchor); menu->close(); }
     QTest::qWait(160);
-    require(!effect->isEnabled() && !menu->isVisible(), "rapid close/reopen leaves no delayed animation");
+    require(animation->state() == QAbstractAnimation::Stopped && !menu->isVisible(), "rapid close/reopen leaves no delayed animation");
     auto originalStyle = menu->style(); NoSidebarMotionStyle noMotion; menu->setStyle(&noMotion);
     menu->popup(anchor); QTest::qWait(25);
-    require(!effect->isEnabled(), "reduced motion skips menu entrance"); menu->close(); menu->setStyle(originalStyle);
+    require(animation->state() == QAbstractAnimation::Stopped, "reduced motion skips menu entrance"); menu->close(); menu->setStyle(originalStyle);
     require(requestMs < 60, "menu opening does not wait for animation or expensive preparation");
-    fprintf(stderr, "INFO: %s menu opens in %lldms; cached entrance frames=%d paints=%d\n", qPrintable(name), requestMs, frames, paints.paints);
+    fprintf(stderr, "INFO: %s menu opens in %lldms; live entrance frames=%d paints=%d\n", qPrintable(name), requestMs, frames, paints.paints);
 }
 
 // Headless KWin has no pointer-grab serial. Tool-role QMenus exercise real
@@ -2196,8 +2196,8 @@ static void verifyFloatingPopups(QWidget *window, const QString &output)
         QTimer::singleShot(25, window, [&] {
             auto menu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
             require(menu, "native context menu is open");
-            auto entrance = menu->findChild<QGraphicsEffect *>("popupEntranceEffect");
-            require(entrance && entrance->isEnabled(), "right-click menu animates in normal and fullscreen views");
+            auto entrance = menu->findChild<QVariantAnimation *>("popupEntranceAnimation");
+            require(entrance && entrance->state() == QAbstractAnimation::Running, "right-click menu animates in normal and fullscreen views");
             QTest::qWait(100);
             checkSurface(menu, full ? "context-fullscreen" : "context-normal");
             QAction *submenu = nullptr;
@@ -2205,8 +2205,8 @@ static void verifyFloatingPopups(QWidget *window, const QString &output)
             require(submenu, "native context menu retains submenu");
             menu->setActiveAction(submenu); QTest::keyClick(menu, Qt::Key_Right); QTest::qWait(25);
             require(submenu->menu()->isVisible(), "keyboard opens native submenu");
-            auto submenuEntrance = submenu->menu()->findChild<QGraphicsEffect *>("popupEntranceEffect");
-            require(submenuEntrance && submenuEntrance->isEnabled(), "submenu shares the opening animation");
+            auto submenuEntrance = submenu->menu()->findChild<QVariantAnimation *>("popupEntranceAnimation");
+            require(submenuEntrance && submenuEntrance->state() == QAbstractAnimation::Running, "submenu shares the opening animation");
             QTest::qWait(100);
             checkSurface(submenu->menu(), full ? "submenu-fullscreen" : "submenu-normal");
             QTest::keyClick(submenu->menu(), Qt::Key_Escape); QTest::qWait(30);
@@ -2432,6 +2432,10 @@ static void startup() {
                     statusGroups[group] = statusGroups[group].united(QRect(widget->mapTo(surface, QPoint()), widget->size()));
             }
             require(statusGroups.size() == 3, "status bar groups layout, image information and zoom separately");
+            for (const auto &group : statusGroups) {
+                require(qAbs(QRectF(group).center().y() - 22.0) <= 0.5, "status pill contents are vertically centered in the painted capsule");
+            }
+
             for (auto button : controls->findChildren<QToolButton *>()) {
                 if (button->property("floatingPillGroup").toInt() != 1) continue;
                 require(!button->icon().isNull() && button->toolButtonStyle() == Qt::ToolButtonIconOnly
@@ -2707,6 +2711,12 @@ static void startup() {
             fprintf(stderr, "TOOLBAR: window=%d viewer=%d panel=%d controls=%d scroll=%d\n", window->width(), viewer->width(), flyout->width(), controls->width(), flyout->horizontalScrollBar()->maximum());
             capture("viewer-toolbar-narrow");
             require(flyout->viewport()->height() >= controls->height(), "narrow status pills reserve scrollbar room below controls");
+            for (auto widget : controls->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly)) {
+                if (!widget->property("floatingPillGroup").toInt() || widget->isHidden()) continue;
+                const QRectF bounds(widget->mapTo(surface, QPoint()), widget->size());
+                require(qAbs(bounds.center().y() - 22.0) <= 0.5, "status contents stay centered above the horizontal scrollbar");
+            }
+
             auto statusScroll = flyout->horizontalScrollBar();
             statusScroll->setValue(statusScroll->maximum()); QTest::qWait(80);
             const QPoint zoomPoint = combo->mapTo(floating, combo->rect().center());

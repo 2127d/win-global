@@ -1,4 +1,4 @@
-dbus-daemon[51767]: [session uid=1000 pid=51767 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=51768 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[51081]: [session uid=1000 pid=51081 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=51082 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
 PASS: zoom popup hover, bidirectional wheel endpoints, cancellation, keyboard and mouse selection
 PASS: closed zoom wheel full-range round trips, editable-field hover, fractional and multi-step wheels, trackpad and custom-scale recovery
 PASS: native bar preferences survive closing and reopening

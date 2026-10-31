@@ -66,7 +66,7 @@
          </item>
         </widget>
        </item>
-       <item row="9" column="1" colspan="3">
+       <item row="10" column="1" colspan="3">
         <widget class="QCheckBox" name="roundedCorners">
          <property name="text">
           <string>Round bottom corners with no borders</string>
@@ -119,7 +119,7 @@
           <number>-1</number>
          </property>
          <property name="maximum">
-          <number>8</number>
+          <number>32</number>
          </property>
         </widget>
        </item>
@@ -177,7 +177,7 @@
        <item row="1" column="1">
         <widget class="QLabel" name="label_6">
          <property name="text">
-          <string>Window corner radus:</string>
+          <string>Window corner radius:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
@@ -201,7 +201,7 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="1" colspan="4">
+       <item row="9" column="1" colspan="4">
         <widget class="QCheckBox" name="matchInactiveTitleBar">
          <property name="toolTip">
           <string>Keep the titlebar background and text colors identical whether the window is focused or not, so unfocused windows don't appear lighter or more transparent.</string>

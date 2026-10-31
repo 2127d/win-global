@@ -28,6 +28,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #include <QListView>
 #include <QMenu>
 #include <QShortcut>
+#include <QTreeWidget>
+#include <QTreeWidgetItemIterator>
+#include <QToolBar>
 
 // KF
 #include <KActionCategory>
@@ -44,6 +47,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #include <KIO/RestoreJob>
 #include <KJobWidgets>
 #include <KLocalizedString>
+#include <KCMultiDialog>
+#include <KPluginMetaData>
+#include <KPageWidgetModel>
 #include <KOpenWithDialog>
 #include <KPropertiesDialog>
 #include "polisheddialog.h"
@@ -298,6 +304,47 @@ void FileOpsContextManagerItem::showProperties()
     auto dialog = !list.isEmpty() ? new KPropertiesDialog(list, mGroup)
                                  : new KPropertiesDialog(contextManager()->currentDirUrl(), mGroup);
     dialog->setObjectName(QStringLiteral("gwenviewPropertiesDialog"));
+    // Host KDE's file-association module in-process so its editor and nested
+    // choosers share Gwenview's material, rounded shell and dialog animations.
+    const auto fileTypes = KPluginMetaData::findPluginById(QStringLiteral("plasma/kcms/systemsettings_qwidgets"), QStringLiteral("kcm_filetypes"));
+    if (fileTypes.isValid() && !list.isEmpty()) {
+        if (auto change = dialog->findChild<QPushButton *>(QStringLiteral("configureMimeBtn"))) {
+            const QString mimeType = list.first().mimetype();
+            disconnect(change, &QAbstractButton::clicked, nullptr, nullptr);
+            connect(change, &QAbstractButton::clicked, dialog, [dialog, fileTypes, mimeType] {
+                auto editor = new KCMultiDialog(dialog);
+                editor->setObjectName(QStringLiteral("gwenviewFileTypeDialog"));
+                editor->setWindowTitle(i18n("File Associations"));
+                editor->setAttribute(Qt::WA_DeleteOnClose);
+                editor->setModal(true);
+                if (auto page = editor->addModule(fileTypes)) page->setHeaderVisible(false);
+                editor->resize(880, 680);
+                editor->show();
+                // KCMultiDialog creates the module on show. Select the actual
+                // MIME entry without filtering out related types or controls.
+                QTimer::singleShot(0, editor, [editor, mimeType] {
+                    for (auto tree : editor->findChildren<QTreeWidget *>()) {
+                        if (!tree->inherits("TypesListTreeWidget")) continue;
+                        for (QTreeWidgetItemIterator it(tree); *it; ++it) {
+                            auto item = *it;
+                            if (item->parent() && item->parent()->text(0) + QLatin1Char('/') + item->text(0) == mimeType) {
+                                tree->setCurrentItem(item);
+                                tree->scrollToItem(item);
+                                break;
+                            }
+                        }
+                    }
+                    polishDialog(editor);
+                    // The shared shell supplies the title. KPageView can keep
+                    // an empty header toolbar with only a floating drag grip.
+                    for (auto header : editor->findChildren<QToolBar *>(QStringLiteral("KPageView::TitleWidget"))) {
+                        header->setMovable(false);
+                        if (header->actions().isEmpty()) header->hide();
+                    }
+                });
+            });
+        }
+    }
     if (auto core = mGroup->window()->findChild<GvCore *>()) dialog->setPalette(core->palette(GvCore::NormalPalette));
     polishDialog(dialog);
     dialog->resize(620, 580);

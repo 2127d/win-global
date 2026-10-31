@@ -1,7 +1,7 @@
-dbus-daemon[51615]: [session uid=1000 pid=51615 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=51616 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[50821]: [session uid=1000 pid=50821 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=50822 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
 GRID: viewport=260 first=0,0 86x86 second=86,0 third=172,0
-dbus-daemon[51615]: [session uid=1000 pid=51615 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=51616 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[51615]: [session uid=1000 pid=51615 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+dbus-daemon[50821]: [session uid=1000 pid=50821 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=50822 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[50821]: [session uid=1000 pid=50821 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
 PASS: quick cached view slides, immediate mode changes/input, rapid reversal and disabled motion
 PASS: sidebar visibility slide, reversal and width restoration
 PASS: native defaults, independent checkbox combinations, repeated style restoration, resizing, fullscreen and spotlight restoration
@@ -14,8 +14,8 @@ PASS: closed zoom wheel full-range round trips, editable-field hover, fractional
 BLUR: panel stripe contrast=0
 BLUR: toggle stripe contrast=0
 TOOLBAR: window=760 viewer=385 panel=287 controls=512 scroll=225
-dbus-daemon[51615]: [session uid=1000 pid=51615 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.0' (uid=1000 pid=51616 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[51615]: [session uid=1000 pid=51615 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
+dbus-daemon[50821]: [session uid=1000 pid=50821 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.0' (uid=1000 pid=50822 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[50821]: [session uid=1000 pid=50821 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
 PASS: rounded horizontal thumbnail area, selection, resizing, visibility, fullscreen restoration
 PASS: quick cached Home/Browse/View slides, immediate mode changes/input, rapid reversal and disabled motion
 PASS: preview grid, tabs, rounded viewer, blurred glass, opaque controls, native zoom dropdown, live light/dark text and icons, repeated slides/reversal, zoom, narrow layout, fullscreen

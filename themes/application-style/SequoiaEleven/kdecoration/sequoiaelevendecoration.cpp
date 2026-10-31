@@ -145,6 +145,7 @@ static int g_sDecoCount = 0;
 static int g_shadowSizeEnum = InternalSettings::ShadowLarge;
 static int g_shadowStrength = 255;
 static QColor g_shadowColor = Qt::black;
+static qreal g_shadowCornerRadius = -1;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 
 //________________________________________________________________
@@ -393,11 +394,13 @@ if (m_internalSettings->floatingTitlebar()){
             QPainterPath clipRect;
             clipRect.addRect(m_titleRect);
 
-            // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
+            // Preserve the full radius even when it exceeds the titlebar
+            // height; Qt otherwise clamps it and disagrees with the shadow.
+            const qreal lowerExtension = qMax(m_scaledCornerRadius, 2 * m_scaledCornerRadius - m_titleRect.height());
             m_titleBarPath->addRoundedRect(m_titleRect.adjusted(isLeftEdge() ? -m_scaledCornerRadius : 0,
                                                                 isTopEdge() ? -m_scaledCornerRadius : 0,
                                                                 isRightEdge() ? m_scaledCornerRadius : 0,
-                                                                m_scaledCornerRadius),
+                                                                lowerExtension),
                                            m_scaledCornerRadius,
                                            m_scaledCornerRadius);
 
@@ -643,7 +646,12 @@ if (m_internalSettings->floatingTitlebar()){
     }
 #endif
 #if KDECORATION_VERSION >= KDECORATION_VERSION_CHECK(6, 5, 0)
-    setBorderRadius(KDecoration3::BorderRadius(0, 0, bottomRightRadius, bottomLeftRadius));
+    // Large top corners extend below the titlebar into the client. Let KWin
+    // clip that part of the window as well as the decoration's own paint.
+    const qreal clientTopRadius = m_scaledCornerRadius > borderTop() && !isTopEdge() ? m_scaledCornerRadius : 0;
+    setBorderRadius(KDecoration3::BorderRadius(isLeftEdge() ? 0 : clientTopRadius,
+                                               isRightEdge() ? 0 : clientTopRadius,
+                                               bottomRightRadius, bottomLeftRadius));
 #endif
     if (isMaximized() || !outlinesEnabled()) {
 #if KDECORATION_VERSION >= KDECORATION_VERSION_CHECK(6, 5, 0)
@@ -775,6 +783,13 @@ if (m_internalSettings->floatingTitlebar()){
     update();
 } else {
     const auto s = settings();
+    const auto cornerPadding = [this, s](int top) {
+        const int normal = s->smallSpacing() * Metrics::TitleBar_SideMargin;
+        if (isTopEdge() || m_scaledCornerRadius <= borderTop()) return normal;
+        const qreal radius = m_scaledCornerRadius;
+        const qreal dy = qMax(0.0, radius - top);
+        return qMax(normal, int(std::ceil(radius - std::sqrt(qMax(0.0, radius * radius - dy * dy)))) + 2);
+    };
 
     // adjust button position
     const auto buttonList = m_leftButtons->buttons() + m_rightButtons->buttons();
@@ -800,7 +815,7 @@ if (m_internalSettings->floatingTitlebar()){
 
         // padding
         const int vPadding = isTopEdge() ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin;
-        const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
+        const int hPadding = cornerPadding(vPadding);
         if (isLeftEdge()) {
             // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
             auto button = static_cast<Button *>(m_leftButtons->buttons().front());
@@ -826,7 +841,7 @@ if (m_internalSettings->floatingTitlebar()){
 
         // padding
         const int vPadding = isTopEdge() ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin;
-        const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
+        const int hPadding = cornerPadding(vPadding);
         if (isRightEdge()) {
             auto button = static_cast<Button *>(m_rightButtons->buttons().back());
 
@@ -967,7 +982,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
             QRect copy(m_titleRect.adjusted(isLeftEdge() ? -m_scaledCornerRadius : 0,
                                             isTopEdge() ? -m_scaledCornerRadius : 0,
                                             isRightEdge() ? m_scaledCornerRadius : 0,
-                                            m_scaledCornerRadius));
+                                            qMax(m_scaledCornerRadius, 2 * m_scaledCornerRadius - m_titleRect.height())));
 
             QPixmap pix = QPixmap(copy.width(), copy.height());
             pix.fill(Qt::transparent);
@@ -1108,10 +1123,11 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
 void Decoration::createShadow()
 {
     if (!g_sShadow || g_shadowSizeEnum != m_internalSettings->shadowSize() || g_shadowStrength != m_internalSettings->shadowStrength()
-        || g_shadowColor != m_internalSettings->shadowColor()) {
+        || g_shadowColor != m_internalSettings->shadowColor() || g_shadowCornerRadius != m_scaledCornerRadius) {
         g_shadowSizeEnum = m_internalSettings->shadowSize();
         g_shadowStrength = m_internalSettings->shadowStrength();
         g_shadowColor = m_internalSettings->shadowColor();
+        g_shadowCornerRadius = m_scaledCornerRadius;
 
         const CompositeShadowParams params = lookupShadowParams(g_shadowSizeEnum);
         if (params.isNone()) {
@@ -1127,7 +1143,9 @@ void Decoration::createShadow()
         };
 
         const QSize boxSize =
-            BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
+            BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
+                .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius))
+                .expandedTo(QSize(2 * qCeil(m_scaledCornerRadius + 0.5), 2 * qCeil(m_scaledCornerRadius + 0.5)));
 
         BoxShadowRenderer shadowRenderer;
         shadowRenderer.setBorderRadius(m_scaledCornerRadius + 0.5);

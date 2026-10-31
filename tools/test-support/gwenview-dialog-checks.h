@@ -4,9 +4,14 @@
 #include <QSpinBox>
 #include <QListWidget>
 #include <QScreen>
+#include <QDockWidget>
+#include <QMainWindow>
+#include <QTreeWidget>
 
 static void verifyDialogShellSurface(QDialog *dialog)
 {
+    require(dialog->findChildren<QWidget *>("dialogEntrance", Qt::FindDirectChildrenOnly).size() == 1,
+            "dialog has one entrance animation even after native Show reentry");
     dialog->grab(); // Resolve any deferred layout/entrance cancellation before sampling.
     QTest::qWait(240);
     QImage surface(dialog->size(), QImage::Format_ARGB32_Premultiplied); surface.fill(Qt::transparent);
@@ -53,6 +58,11 @@ static void verifyLanguagePopup(QDialog *dialog, const QString &output)
     require(list && list->count() > 20 && list->height() <= 360, "all languages are present in a bounded viewport");
     require(!list->verticalScrollBar()->isVisible() && list->verticalScrollBar()->maximum() > 0, "language list scrolls with scrollbar hidden");
     require(menu->screen()->availableGeometry().contains(menu->geometry()), "language popup stays within available screen");
+    const QPoint fieldStart = button->mapToGlobal(QPoint(0, button->height()));
+    const QPoint menuStart = menu->mapToGlobal(QPoint(14,14));
+    fprintf(stderr, "DROPDOWN: field=%d,%d body=%d,%d\n", fieldStart.x(), fieldStart.y(), menuStart.x(), menuStart.y());
+    require(qAbs(menuStart.x() - fieldStart.x()) <= 1 && qAbs(menuStart.y() - fieldStart.y() - 6) <= 1,
+            "language dropdown material aligns with field and keeps a six-pixel gap");
     list->setFocus();
     const QPoint wheelPoint = list->viewport()->rect().center();
     list->verticalScrollBar()->setValue(0);
@@ -219,8 +229,21 @@ static void verifySettingsBehavior(QWidget *window, const QString &output)
     writeTheme(alternate.readAll());
     require((dialog->palette().color(QPalette::Window).lightness() < 128) != wasDark, "open dialog updates theme without restart");
     require(dialog->grab().save(output + "/settings-live-theme.png"), "capture live dialog theme");
+    auto verifyTheme = [&](bool dark) {
+        for (auto card : dialog->findChildren<QFrame *>()) {
+            if (!card->property("gwenviewSettingsCard").toBool() || !card->isVisible()) continue;
+            const auto pixels = card->grab().toImage();
+            const qreal scale = pixels.devicePixelRatio();
+            const QColor fill = pixels.pixelColor(qRound((card->width() - 30) * scale), qRound((card->height() - 30) * scale));
+            require((fill.lightness() < 128) == dark, "settings cards render the current theme, not cached stylesheet colors");
+            require((card->palette().color(QPalette::WindowText).lightness() > 128) == dark,
+                    "settings text keeps contrast with the current card material");
+        }
+    };
+    verifyTheme(!wasDark);
     writeTheme(originalTheme);
     require((dialog->palette().color(QPalette::Window).lightness() < 128) == wasDark, "dialog restores original material live");
+    verifyTheme(wasDark);
     dialog->reject(); QTest::qWait(100);
     fprintf(stderr, "PASS: settings binding, Apply/Cancel persistence, keyboard pill, page motion, rapid reversal, resize, scrolling and reduced motion\n");
 }
@@ -355,11 +378,242 @@ static void verifyFolderChooser(QWidget *window, const QString &output)
     fprintf(stderr, "PASS: nineteen idle folder choices, colored archive/bookmark art, hover and selected folder creation\n");
 }
 
+static void verifyMouseMenuHover(QWidget *window, const QString &output)
+{
+#ifdef GWENVIEW_NATIVE_MENU_INPUT
+    window->showMaximized(); window->activateWindow(); QTest::qWait(300);
+    GwenviewMenuInput input;
+    auto move = [&](QPoint target, QWidget *widget) {
+        input.move(target, widget->devicePixelRatioF()); QTest::qWait(25);
+        // Qt's nested Wayland window coordinates can omit the native titlebar.
+        input.move(target + (target - QCursor::pos()), widget->devicePixelRatioF()); QTest::qWait(35);
+    };
+    int hovers = 0;
+    for (int kind = 0; kind < 3; ++kind) {
+        QWidget *target = nullptr;
+        if (kind == 0) for (auto child : window->findChildren<QWidget *>()) {
+            if (child->inherits("Gwenview::ViewMainPage")) target = child;
+        }
+        else if (kind == 1) target = window->findChild<QAbstractItemView *>("recentImagesView");
+        else {
+            require(QMetaObject::invokeMethod(window, "slotStartMainPageUrlSelected", Q_ARG(QUrl,
+                QUrl::fromLocalFile(qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES") + "/Gallery"))), "open thumbnail hover fixture");
+            QTest::qWait(350);
+            auto browser = window->findChild<QListView *>("mThumbnailView");
+            require(browser && browser->model()->rowCount()>1,"thumbnail fixture loaded");
+            browser->setCurrentIndex(browser->model()->index(1,0));
+            browser->selectionModel()->select(browser->currentIndex(),QItemSelectionModel::ClearAndSelect);
+            target = browser;
+        }
+        require(target, "context menu target exists");
+        move(window->mapToGlobal(QPoint(420, 170)), window);
+        bool inspected = false;
+        QTimer::singleShot(50, window, [&] {
+            auto menu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
+            require(menu, "actual context menu opens");
+            require(!menu->graphicsEffect(), "native menu never swaps a cached window effect on hover");
+            const QSize size = menu->size();
+            QHash<QAction *, QRect> rows;
+            for (auto action : menu->actions()) rows.insert(action, menu->actionGeometry(action));
+            for (int pass=0; pass<2; ++pass) for (auto action : menu->actions()) {
+                if (action->isSeparator() || !action->isEnabled() || action->menu()) continue;
+                move(menu->mapToGlobal(menu->actionGeometry(action).center()), menu);
+                require(menu->activeAction() == action, "physical pointer selects the intended menu row");
+                require(menu->size() == size, "hover never resizes menu");
+                for (auto retained : menu->actions()) require(rows[retained] == menu->actionGeometry(retained), "hover never shifts menu rows");
+                ++hovers;
+            }
+            // Capture the compositor first: QWidget::grab repaints and can hide
+            // partial-update artifacts left on the real window surface.
+            require(gwenviewCompositorCapture().save(output + QString("/mouse-context-%1.png").arg(kind)), "capture actual hovered window");
+            const auto pixels = menu->grab().toImage(); const qreal scale = pixels.devicePixelRatio();
+            for (QPoint point : {QPoint(0,0), QPoint(menu->width()-1,0), QPoint(0,menu->height()-1), QPoint(menu->width()-1,menu->height()-1)})
+                require(pixels.pixelColor(qRound(point.x()*scale),qRound(point.y()*scale)).alpha()==0,"hover preserves transparent outer corners");
+            QTest::keyClick(menu, Qt::Key_Escape); inspected = true;
+        });
+        if (kind == 1) require(QMetaObject::invokeMethod(target,"customContextMenuRequested",Q_ARG(QPoint,QPoint(40,40))),"open recent-image context menu");
+        else require(QMetaObject::invokeMethod(target,"showContextMenu"),"open native context menu");
+        for(int i=0;i<40 && !inspected;++i) QTest::qWait(50);
+        require(inspected,"mouse hover walkthrough completed");
+    }
+    fprintf(stderr,"PASS: %d physical pointer hovers across viewer, sidebar and thumbnail menus; stable geometry and rounded corners\n",hovers);
+#else
+    require(false,"mouse hover check needs private native compositor");
+#endif
+}
+
+static void verifyAnnotationTools(QDialog *dialog, const QString &output)
+{
+    QList<QDockWidget *> docks;
+    for (auto dock : dialog->findChildren<QDockWidget *>()) if (dock->inherits("kImageAnnotator::AnnotationDockWidget")) docks << dock;
+    require(docks.size()==4,"all native annotation toolbars retained");
+    auto check = [&] {
+        for (auto dock : docks) {
+            auto handle = dock->titleBarWidget(); auto grip = handle ? handle->findChild<QLabel *>() : nullptr;
+            require(grip && handle->inherits("kImageAnnotator::AnnotationDockWidgetDragHandle"),"original draggable title widget retained");
+            const bool vertical = dock->features().testFlag(QDockWidget::DockWidgetVerticalTitleBar);
+            require(grip->size() == (vertical ? QSize(4,18) : QSize(18,4)),"grip follows dock orientation");
+            require((grip->geometry().center()-handle->rect().center()).manhattanLength()<=2,"grip centered inside native drag strip");
+            require(dock->rect().contains(QRect(handle->pos()+grip->pos(),grip->size())),"grip stays within toolbar");
+            for (auto button : dock->widget()->findChildren<QToolButton *>()) require(button->iconSize()==QSize(18,18),"annotation icons use balanced 18px size");
+            for (auto host : dock->widget()->findChildren<QWidget *>()) {
+                if (!host->isVisible() || (!host->inherits("kImageAnnotator::ToolPicker") && !host->inherits("kImageAnnotator::ZoomPicker"))) continue;
+                QRect items;
+                for (auto child : host->findChildren<QWidget *>(QString(), Qt::FindDirectChildrenOnly))
+                    if (child->isVisible() && !child->isWindow()) items = items.united(child->geometry());
+                if (items.isEmpty()) continue;
+                const int offset = vertical ? items.center().y() - host->contentsRect().center().y()
+                                            : items.center().x() - host->contentsRect().center().x();
+                require(qAbs(offset) <= 1, "annotation picker items center on toolbar cross axis");
+            }
+        }
+    };
+    QTest::qWait(100); check();
+    require(dialog->grab().save(output+"/annotation-tools-default.png"),"capture default annotation layout");
+    auto main = qobject_cast<QMainWindow *>(docks.first()->parentWidget()); require(main,"native docking container retained");
+    for (auto dock : docks) {
+        const auto original = main->dockWidgetArea(dock);
+        for (auto area : {Qt::TopDockWidgetArea,Qt::RightDockWidgetArea,Qt::BottomDockWidgetArea,original}) {
+            main->addDockWidget(area,dock); QTest::qWait(100); check();
+        }
+    }
+    dialog->resize(dialog->width()-100,dialog->height()-80); QTest::qWait(120); check();
+    require(dialog->grab().save(output+"/annotation-tools-polished.png"),"capture aligned annotation toolbars");
+    fprintf(stderr,"PASS: four native annotation docks, inset centered grips, 18px icons, redocking and window resize\n");
+}
+
+static void verifyFileAssociations(QWidget *window, const QString &output)
+{
+    findAction(window, "file_show_properties")->trigger(); QTest::qWait(350);
+    auto properties = window->findChild<QDialog *>("gwenviewPropertiesDialog");
+    require(properties && properties->isVisible(), "Properties opens for association test");
+    auto change = properties->findChild<QPushButton *>("configureMimeBtn");
+    require(change && change->isEnabled(), "file-association Change button available");
+    change->click(); QTest::qWait(500);
+    auto editor = properties->findChild<QDialog *>("gwenviewFileTypeDialog");
+    require(editor && editor->isVisible() && editor->isModal(), "file associations open in Gwenview-owned modal dialog");
+    verifyDialogShellSurface(editor);
+    bool selected = false;
+    for (auto tree : editor->findChildren<QTreeWidget *>()) {
+        auto item = tree->currentItem();
+        if (item && item->parent()) selected |= item->parent()->text(0) + '/' + item->text(0) == "image/png";
+    }
+    require(selected, "file associations select the Properties image MIME type");
+    require(editor->grab().save(output + "/properties-file-associations.png"), "capture themed file associations");
+    QPushButton *addApplication = nullptr;
+    for (auto widget : editor->findChildren<QWidget *>()) {
+        if (!widget->inherits("KServiceListWidget") || !widget->isVisible()) continue;
+        for (auto button : widget->findChildren<QPushButton *>())
+            if (button->text().remove('&').startsWith("Add")) addApplication = button;
+    }
+    require(addApplication, "native application preference Add action retained");
+    bool inspected = false;
+    QTimer::singleShot(350, editor, [&] {
+        auto chooser = qobject_cast<QDialog *>(QApplication::activeModalWidget());
+        require(chooser && chooser != editor, "nested application chooser opens");
+        verifyDialogShellSurface(chooser);
+        require(chooser->grab().save(output + "/properties-choose-application.png"), "capture nested application chooser");
+        chooser->reject(); inspected = true;
+    });
+    addApplication->click();
+    require(inspected && editor->isVisible(), "cancel nested chooser preserves file-association editor");
+    for (auto tabs : editor->findChildren<QTabWidget *>()) {
+        require(tabs->tabBar()->property("gwenviewDialogPill").toBool(), "association views use shared pill selector");
+        for (int i=0; i<tabs->count(); ++i) { tabs->setCurrentIndex(i); QTest::qWait(240); }
+    }
+    editor->reject(); QTest::qWait(80);
+    require(properties->isVisible(), "cancelling associations returns to Properties");
+    properties->reject();
+    fprintf(stderr, "PASS: native file-association module, matching shell and pill tabs, selected MIME type and cancellation\n");
+}
+
+static void verifyNativeDropdowns(QWidget *surface, const QString &name, const QString &output)
+{
+#ifdef GWENVIEW_NATIVE_MENU_INPUT
+    QList<QPointer<QWidget>> controls;
+    for (auto child : surface->findChildren<QWidget *>()) {
+        if (!child->isVisible() || !child->isEnabled() || child->window() != surface->window()) continue;
+        if (auto combo = qobject_cast<QComboBox *>(child); combo && combo->count()) controls << child;
+        if (name.startsWith("status-")) continue;
+        if (auto button = qobject_cast<QPushButton *>(child); button && button->menu()) controls << child;
+        if (auto button = qobject_cast<QToolButton *>(child); button && button->menu()) controls << child;
+    }
+    require(!controls.isEmpty(), qPrintable("dropdown controls found: " + name));
+    GwenviewMenuInput input;
+    int count = 0;
+    for (auto field : controls) {
+        if (!field || !field->isVisible()) continue;
+        const qreal scale = field->devicePixelRatioF();
+        const auto owner = gwenviewNativeRect(field->window());
+        const QPoint local = field->mapTo(field->window(), QPoint());
+        const QRect nativeField(owner.topLeft() + QPoint(qRound(local.x()*scale), qRound(local.y()*scale)), field->size()*scale);
+        const QPoint click(nativeField.right()-qRound(8*scale),nativeField.center().y());
+        const QString label = name + '-' + QString::number(count++);
+        fprintf(stderr,"CLICK %s %s %s at=%d,%d owner=%d,%d,%d,%d\n",qPrintable(label),field->metaObject()->className(),qPrintable(field->objectName()),click.x(),click.y(),owner.x(),owner.y(),owner.width(),owner.height());
+        bool inspected = false;
+        input.move(click, 1); QTest::qWait(60);
+        QTimer::singleShot(80, surface, [&] { input.button(false); });
+        QTimer::singleShot(450, surface, [&] {
+            auto popup = QApplication::activePopupWidget();
+            if (!popup || !popup->isVisible()) {
+                gwenviewCompositorCapture().save(output + "/native-dropdown-failed-" + label + ".png");
+                fprintf(stderr,"FAILED WINDOWS %s\n",QJsonDocument(gwenviewNativeWindows()).toJson(QJsonDocument::Compact).constData());
+            }
+            require(popup && popup->isVisible(), qPrintable("physical click opens dropdown: " + label));
+            QRect buffer;
+            const auto windows = gwenviewNativeWindows();
+            for (const auto &entry : windows) {
+                const auto data = entry.toObject();
+                if (data["title"].toString().isEmpty()
+                    && qAbs(qRound(data["width"].toDouble())-popup->width()*scale)<2
+                    && qAbs(qRound(data["height"].toDouble())-popup->height()*scale)<2)
+                    buffer = QRect(qRound(data["x"].toDouble()),qRound(data["y"].toDouble()),qRound(data["width"].toDouble()),qRound(data["height"].toDouble()));
+            }
+            require(!buffer.isEmpty(), qPrintable("dropdown really mapped by compositor: " + label));
+            const QRect body = QRectF(buffer).adjusted(14*scale,14*scale,-14*scale,-18*scale).toRect();
+            const QRect screen = field->screen()->availableGeometry();
+            const QRect available(screen.topLeft()*scale, screen.size()*scale);
+            const int wantedX = field->isRightToLeft() ? nativeField.right()-body.width()+1 : nativeField.left();
+            const int expectedX = qBound(available.left(), wantedX, available.right()-body.width()+1);
+            const int gap = body.top() >= nativeField.bottom() ? body.top()-nativeField.bottom()-1 : nativeField.top()-body.bottom()-1;
+            fprintf(stderr,"NATIVE DROPDOWN %s %s field=%d,%d,%d,%d body=%d,%d,%d,%d gap=%d dx=%d\n",qPrintable(label),field->metaObject()->className(),nativeField.x(),nativeField.y(),nativeField.width(),nativeField.height(),body.x(),body.y(),body.width(),body.height(),gap,body.x()-expectedX);
+            require(gwenviewCompositorCapture().save(output + "/native-dropdown-" + label + ".png"), "capture rendered dropdown and owner");
+            require(qAbs(body.left()-expectedX)<=1 && qAbs(gap-6*scale)<=1, qPrintable("compositor dropdown aligns to field with six-pixel gap: " + label));
+            QTest::keyClick(popup, Qt::Key_Escape);
+            if (popup->isVisible()) popup->close();
+            inspected = true;
+        });
+        input.button(true);
+        for (int i=0;i<60 && !inspected;++i) QTest::qWait(20);
+        require(inspected, "physical dropdown inspection completes");
+        QTest::qWait(70);
+    }
+    fprintf(stderr,"PASS: %d physically opened dropdowns in %s, compositor alignment and captures\n",count,qPrintable(name));
+#else
+    require(false,"dropdown walkthrough requires native compositor");
+#endif
+}
+
 static void verifyMenuDialogs(QWidget *window, const QString &output)
 {
     const auto fixtures = qEnvironmentVariable("SEQUOIA_GWENVIEW_FIXTURES");
     require(QMetaObject::invokeMethod(window, "openUrl", Q_ARG(QUrl, QUrl::fromLocalFile(fixtures + "/Gallery/scene-00.png"))), "open dialog fixture");
     QTest::qWait(650);
+    if (qEnvironmentVariableIsSet("SEQUOIA_DIALOG_DROPDOWNS_ONLY")) {
+        const QSize available = window->screen()->availableGeometry().size();
+        const int width = qMin(1100, available.width()-200);
+        for (auto size : {QSize(width,qMin(760,available.height()*2/3)), QSize(width,available.height()-100)}) {
+            window->resize(size); QTest::qWait(150);
+#ifdef GWENVIEW_NATIVE_MENU_INPUT
+            gwenviewNativeWindows("workspace.windowList().filter(w=>w.caption.includes('Gwenview')).forEach(w=>{w.frameGeometry={x:150,y:40,width:w.frameGeometry.width,height:w.frameGeometry.height};});");
+#endif
+            QTest::qWait(150);
+            verifyNativeDropdowns(window, "status-" + QString::number(size.height()), output);
+        }
+        return;
+    }
+    if (qEnvironmentVariableIsSet("SEQUOIA_DIALOG_ASSOCIATIONS_ONLY")) { verifyFileAssociations(window, output); return; }
+    if (qEnvironmentVariableIsSet("SEQUOIA_MOUSE_HOVER_ONLY")) { verifyMouseMenuHover(window, output); return; }
     if (qEnvironmentVariableIsSet("SEQUOIA_DIALOG_PROPERTIES_ONLY")) { verifyProperties(window, output); return; }
     if (qEnvironmentVariableIsSet("SEQUOIA_DIALOG_FOLDER_ONLY")) { verifyFolderChooser(window, output); return; }
     if (qEnvironmentVariableIsSet("SEQUOIA_DIALOG_FILE_PICKER_ONLY")) { verifyFilePickerSidebar(window, output); return; }
@@ -375,7 +629,7 @@ static void verifyMenuDialogs(QWidget *window, const QString &output)
         }
     };
     for (auto action : window->findChild<QMenuBar *>()->actions()) if (action->menu()) inventory(action->menu(), action->text());
-    verifyProperties(window, output);
+    if (qEnvironmentVariable("SEQUOIA_DIALOG_ACTIONS").isEmpty()) verifyProperties(window, output);
     auto inspect = [&](QAction *action, const QString &name) {
         require(action && action->isEnabled(), qPrintable("available dialog action: " + name));
         int captured = 0;
@@ -398,8 +652,38 @@ static void verifyMenuDialogs(QWidget *window, const QString &output)
                 for (auto button : dialog->findChildren<QPushButton *>())
                     if (button->text().contains("Options")) { button->click(); QTest::qWait(240); break; }
             }
+            if (name == QLatin1String("annotate") && dialog->findChild<QObject *>(QStringLiteral("annotationToolsPolish")))
+                verifyAnnotationTools(dialog, output);
             verifyDialogShellSurface(dialog);
-            if (name == QLatin1String("switch_application_language")) {
+            if (qEnvironmentVariableIsSet("SEQUOIA_DROPDOWN_WALKTHROUGH")) {
+                auto nestedDropdowns = [&](QPushButton *button, const QString &label) {
+                    require(button && button->isEnabled(), qPrintable("nested dropdown dialog available: " + label));
+                    bool nestedDone = false;
+                    QTimer::singleShot(400, dialog, [&] {
+                        auto nested = qobject_cast<QDialog *>(QApplication::activeModalWidget());
+                        require(nested && nested != dialog, "nested dropdown dialog opens");
+                        verifyNativeDropdowns(nested, label, output);
+                        nested->reject(); nestedDone = true;
+                    });
+                    button->click();
+                    for (int i=0;i<80 && !nestedDone;++i) QTest::qWait(50);
+                    require(nestedDone, "nested dropdown inspection completes");
+                };
+                if (name == "file_create_folder") {
+                    auto section = dialog->findChild<QWidget *>("chooseIconBox");
+                    require(section, "folder icon section found"); section->setProperty("expanded", true); QTest::qWait(250);
+                    nestedDropdowns(dialog->findChild<QPushButton *>("chooseIconButton"), "folder-icon-selector");
+                } else {
+                    verifyNativeDropdowns(dialog, name, output);
+                    if (name == "file_print") {
+                        QPushButton *properties = nullptr;
+                        for (auto button : dialog->findChildren<QPushButton *>())
+                            if (button->isVisible() && button->text().remove('&').contains("Properties")) properties = button;
+                        nestedDropdowns(properties, "print-properties");
+                    }
+                }
+            }
+            if (name == QLatin1String("switch_application_language") && !qEnvironmentVariableIsSet("SEQUOIA_DROPDOWN_WALKTHROUGH")) {
                 bool hasLanguages = false;
                 for (auto child : dialog->findChildren<QWidget *>()) if (child->inherits("KLanguageButton")) hasLanguages = true;
                 if (hasLanguages) { verifyLanguagePopup(dialog, output); languageChecked = true; }
@@ -426,7 +710,7 @@ static void verifyMenuDialogs(QWidget *window, const QString &output)
         QTest::qWait(700); // Catch dialogs created after an error/message box exits exec().
         poll.stop();
         require(captured > 0, qPrintable("inspected dialog: " + name));
-        if (name == QLatin1String("switch_application_language")) require(languageChecked, "language selector was exercised");
+        if (name == QLatin1String("switch_application_language") && !qEnvironmentVariableIsSet("SEQUOIA_DROPDOWN_WALKTHROUGH")) require(languageChecked, "language selector was exercised");
         for (auto top : QApplication::topLevelWidgets())
             require(!qobject_cast<QDialog *>(top) || !top->isVisible(), "no dialog left from previous action");
         QApplication::setActiveWindow(window);

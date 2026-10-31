@@ -103,6 +103,7 @@ ecm_add_app_icon(gwenview_SRCS ICONS ${ICONS_SRCS})
 add_executable(gwenview ${gwenview_SRCS})
 
 target_link_libraries(gwenview
+    KF6::KCMUtils
     KF6::ItemModels
     KF6::WidgetsAddons
     KF6::GuiAddons

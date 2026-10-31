@@ -6,6 +6,7 @@
 #include <QCursor>
 #include <QGraphicsEffect>
 #include <QMouseEvent>
+#include <QMenu>
 #include <QPainter>
 #include <QPlatformSurfaceEvent>
 #include <QPointer>
@@ -40,23 +41,32 @@ private:
     qreal mProgress = 0;
 };
 
-// Popup geometry and hit targets are final from the outset. Only one cached
-// frame moves, and any interaction reveals the live native menu immediately.
+// Popup geometry and hit targets are final from the outset. Menus fade their
+// live rows; list overlays retain their short slide. Input stays native.
 class PopupMotion : public QObject
 {
 public:
     explicit PopupMotion(QWidget *popup) : QObject(popup), mPopup(popup)
     {
         setObjectName(QStringLiteral("popupMotion"));
-        mEffect = new PopupEntranceEffect(popup);
-        mEffect->setObjectName(QStringLiteral("popupEntranceEffect"));
-        popup->setGraphicsEffect(mEffect);
+        // Native menus must keep one live paint path through pointer hover.
+        // Swapping a translated cached window for partial live row repaints can
+        // leave stale square backing-store pixels around the rounded surface.
+        if (!qobject_cast<QMenu *>(popup)) {
+            mEffect = new PopupEntranceEffect(popup);
+            mEffect->setObjectName(QStringLiteral("popupEntranceEffect"));
+            popup->setGraphicsEffect(mEffect);
+        } else {
+            popup->setProperty("gwenviewPopupProgress", 1.0);
+        }
         mAnimation = new QVariantAnimation(this);
         mAnimation->setObjectName(QStringLiteral("popupEntranceAnimation"));
         mAnimation->setDuration(Sequoia::LongDuration); mAnimation->setEasingCurve(QEasingCurve::InOutQuad);
         mAnimation->setStartValue(0.0); mAnimation->setEndValue(1.0);
         connect(mAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
-            mEffect->setProgress(value.toReal()); refreshBlurRegion();
+            if (mEffect) mEffect->setProgress(value.toReal());
+            else { mPopup->setProperty("gwenviewPopupProgress", value); mPopup->update(); }
+            refreshBlurRegion();
         });
         connect(mAnimation, &QVariantAnimation::finished, this, [this] { finish(); });
         mStart = new QTimer(this); mStart->setSingleShot(true);
@@ -77,7 +87,9 @@ public:
         finish(); refreshBlurRegion(); mBlur->start();
         if (reducedMotion || mPopup->style()->styleHint(QStyle::SH_Widget_Animation_Duration, nullptr, mPopup) == 0) return;
         mPointer = QCursor::pos();
-        mEffect->setProgress(0); mEffect->setEnabled(true); refreshBlurRegion(); mStart->start();
+        if (mEffect) { mEffect->setProgress(0); mEffect->setEnabled(true); }
+        else { mPopup->setProperty("gwenviewPopupProgress", 0.0); mPopup->update(); }
+        refreshBlurRegion(); mStart->start();
     }
 protected:
     bool eventFilter(QObject *object, QEvent *event) override
@@ -104,18 +116,18 @@ protected:
             // The style lazily creates switch widgets for checkable actions
             // after Show, which can also resize the menu at fractional scaling.
             // Refresh its snapshot without cancelling or restarting the entrance.
-            if (mEffect->isEnabled() && (event->type() == QEvent::Resize || event->type() == QEvent::ActionChanged)) {
+            if (mEffect && mEffect->isEnabled() && (event->type() == QEvent::Resize || event->type() == QEvent::ActionChanged)) {
                 mEffect->reset(); mEffect->update();
             }
             if (event->type() == QEvent::PaletteChange || event->type() == QEvent::StyleChange
                 || event->type() == QEvent::ActionAdded || event->type() == QEvent::ActionRemoved) finish();
         }
-        if (!mEffect->isEnabled()) return false;
+        if (!mStart->isActive() && mAnimation->state() == QAbstractAnimation::Stopped) return false;
         auto widget = qobject_cast<QWidget *>(object);
         if (!widget || (widget != mPopup && !mPopup->isAncestorOf(widget))) return false;
         if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease
             || event->type() == QEvent::KeyPress || event->type() == QEvent::Wheel || event->type() == QEvent::TouchBegin) finish();
-        if (event->type() == QEvent::MouseMove
+        if (mEffect && event->type() == QEvent::MouseMove
             && (static_cast<QMouseEvent *>(event)->globalPosition().toPoint() - mPointer).manhattanLength() > 2) finish();
         return false;
     }
@@ -128,14 +140,17 @@ private:
         // transparent shadow margins, including while the opening frame slides.
         // Keep tracking enabled: KDE 6.31's false path untracks the surface then
         // retains a new effect for it, crashing when a popup is opened again.
-        KWindowEffects::enableBlurBehind(mPopup->windowHandle(), true, popupBlurRegion(mPopup, mEffect->slideOffset()));
+        KWindowEffects::enableBlurBehind(mPopup->windowHandle(), true, popupBlurRegion(mPopup, mEffect ? mEffect->slideOffset() : 0));
     }
     void finish()
     {
-        mStart->stop(); mAnimation->stop(); mEffect->setEnabled(false); mEffect->reset(); refreshBlurRegion();
+        mStart->stop(); mAnimation->stop();
+        if (mEffect) { mEffect->setEnabled(false); mEffect->reset(); }
+        else { mPopup->setProperty("gwenviewPopupProgress", 1.0); mPopup->update(); }
+        refreshBlurRegion();
     }
     QWidget *mPopup;
-    PopupEntranceEffect *mEffect;
+    PopupEntranceEffect *mEffect = nullptr;
     QVariantAnimation *mAnimation;
     QTimer *mStart, *mBlur;
     QPoint mPointer;

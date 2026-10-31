@@ -43,7 +43,7 @@
     <entry name="CornerRadius" type = "Int">
       <default>12</default>
       <min>1</min>
-      <max>8</max>
+      <max>32</max>
     </entry>
 
   </group>
@@ -73,7 +73,7 @@
     <entry name="OtherCornerRadius" type = "Int">
       <default>12</default>
       <min>-1</min>
-      <max>8</max>
+      <max>32</max>
     </entry>
 
     <!-- title alignment -->

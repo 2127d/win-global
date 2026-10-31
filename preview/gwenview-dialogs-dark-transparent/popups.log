@@ -1,13 +1,13 @@
-dbus-daemon[62998]: [session uid=1000 pid=62998 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.1' (uid=1000 pid=63037 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[101166]: [session uid=1000 pid=101166 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.1' (uid=1000 pid=101205 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[101166]: [session uid=1000 pid=101166 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
 MENU: &File | file_open | &Open… | enabled
 MENU: &File | file_open_recent | Open &Recent | enabled
-MENU: &File/Open &Recent |  | scene-00.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/Gallery/scene-00.png] | enabled
-MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/six/picture.png] | enabled
-MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/five/picture.png] | enabled
-MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/four/picture.png] | enabled
-MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/three/picture.png] | enabled
-MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/two/picture.png] | enabled
-MENU: &File/Open &Recent |  | picture.png [~/sandbox/win-global/.staging/gwenview-test-xh9y5l26/one/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [/tmp/gwenview-test-qcqossh0/six/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [/tmp/gwenview-test-qcqossh0/five/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [/tmp/gwenview-test-qcqossh0/four/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [/tmp/gwenview-test-qcqossh0/three/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [/tmp/gwenview-test-qcqossh0/two/picture.png] | enabled
+MENU: &File/Open &Recent |  | picture.png [/tmp/gwenview-test-qcqossh0/one/picture.png] | enabled
 MENU: &File/Open &Recent | no_entries | No Entries | disabled
 MENU: &File/Open &Recent | clear_action | Clear List | enabled
 MENU: &File | file_save | &Save | disabled
@@ -24,11 +24,11 @@ MENU: &File | file_move_to | Move To... | enabled
 MENU: &File | file_link_to | Link To... | enabled
 MENU: &File | file_open_in_new_window | Open in New Window | enabled
 MENU: &File | file_open_with | Open With | enabled
-MENU: &File/Open With |  | Photos | enabled
-MENU: &File/Open With |  | Google Chrome | enabled
 MENU: &File/Open With |  | Okular | enabled
+MENU: &File/Open With |  | Photos | enabled
 MENU: &File/Open With |  | GNU Image Manipulation Program | enabled
 MENU: &File/Open With |  | KolourPaint | enabled
+MENU: &File/Open With |  | Google Chrome | enabled
 MENU: &File/Open With |  | Google Chrome | enabled
 MENU: &File/Open With |  | Other Application... | enabled
 MENU: &File | file_open_containing_folder | Open Containing Folder | enabled
@@ -118,32 +118,46 @@ MENU: &Help | help_report_bug | &Report Bug… | enabled
 MENU: &Help | help_donate | &Donate | enabled
 MENU: &Help | help_about_app | &About Gwenview | enabled
 MENU: &Help | help_about_kde | About &KDE | enabled
-PASS: Properties filename sizing/edit/cancel, overflow pills, page material, rapid switching, immediate input and reduced motion
-DIALOG: file_open | KDEPlatformFileDialog | Open Image | 864x540
-DIALOG: file_open-followup-1 | QDialog | Error | 730x210
-DIALOG: file_save_as | KFileCustomDialog | Save Image | 853x640
-DIALOG: file_rename | Gwenview::RenameDialog | Rename | 332x238
-DIALOG: file_copy_to | KDEPlatformFileDialog | Copy scene-00.png | 864x540
-DIALOG: file_move_to | KDEPlatformFileDialog | Move scene-00.png | 864x540
-DIALOG: file_link_to | KDEPlatformFileDialog | Link scene-00.png | 864x540
-DIALOG: file_create_folder | QDialog | Create New Folder | 642x320
-DIALOG: deletefile | KMessageDialog | Delete Permanently | 463x336
-DIALOG: file_show_properties | KPropertiesDialog | Properties for scene-00.png | 620x580
-DIALOG: resize | Gwenview::ResizeImageDialog | Resize Image | 389x406
-DIALOG: annotate | QDialog | Annotate scene-00.png | 1231x640
-DIALOG: edit_tags | QDialog | Tag Editor | 334x398
-DIALOG: file_print | QPrintDialog | Print Image | 664x720
+CLICK folder-icon-selector-0 QComboBox contextCombo at=821,649 owner=685,551,691,576
+NATIVE DROPDOWN folder-icon-selector-0 QComboBox field=715,633,115,34 body=715,673,115,318 gap=6 dx=0
+PASS: 1 physically opened dropdowns in folder-icon-selector, compositor alignment and captures
+DIALOG: file_create_folder | QDialog | Create New Folder | 642x503
+PASS: four native annotation docks, inset centered grips, 18px icons, redocking and window resize
+CLICK annotate-0 kImageAnnotator::CustomToolButton  at=553,594 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-0 kImageAnnotator::CustomToolButton field=512,580,50,30 body=512,616,141,108 gap=6 dx=0
+CLICK annotate-1 kImageAnnotator::CustomToolButton  at=553,658 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-1 kImageAnnotator::CustomToolButton field=512,644,50,30 body=512,680,164,108 gap=6 dx=0
+CLICK annotate-2 kImageAnnotator::CustomToolButton  at=553,690 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-2 kImageAnnotator::CustomToolButton field=512,676,50,30 body=512,712,130,108 gap=6 dx=0
+CLICK annotate-3 kImageAnnotator::CustomToolButton  at=553,722 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-3 kImageAnnotator::CustomToolButton field=512,708,50,30 body=512,744,156,108 gap=6 dx=0
+CLICK annotate-4 kImageAnnotator::CustomToolButton  at=553,754 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-4 kImageAnnotator::CustomToolButton field=512,740,50,30 body=512,776,104,76 gap=6 dx=0
+CLICK annotate-5 kImageAnnotator::CustomToolButton  at=553,786 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-5 kImageAnnotator::CustomToolButton field=512,772,50,30 body=512,808,117,76 gap=6 dx=0
+CLICK annotate-6 kColorPicker::KColorPicker  at=591,452 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-6 kColorPicker::KColorPicker field=566,436,34,34 body=566,476,112,108 gap=6 dx=0
+CLICK annotate-7 kImageAnnotator::ListMenuToolButton  at=789,452 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-7 kImageAnnotator::ListMenuToolButton field=764,436,34,34 body=764,476,112,72 gap=6 dx=0
+CLICK annotate-8 kImageAnnotator::ListMenuToolButton  at=1557,940 owner=463,339,1150,720
+NATIVE DROPDOWN annotate-8 kImageAnnotator::ListMenuToolButton field=1532,924,34,34 body=1454,964,146,162 gap=6 dx=0
+PASS: 9 physically opened dropdowns in annotate, compositor alignment and captures
+DIALOG: annotate | QDialog | Annotate scene-00.png | 1150x720
+CLICK file_print-0 QComboBox printers at=1293,703 owner=818,551,664,716
+NATIVE DROPDOWN file_print-0 QComboBox field=950,687,352,34 body=950,727,352,48 gap=6 dx=0
+PASS: 1 physically opened dropdowns in file_print, compositor alignment and captures
+CLICK print-properties-0 QComboBox unitCombo at=1030,396 owner=860,242,581,958
+NATIVE DROPDOWN print-properties-0 QComboBox field=896,380,143,34 body=896,420,143,152 gap=6 dx=0
+CLICK print-properties-1 QComboBox pageSizeCombo at=1298,491 owner=860,242,581,958
+NATIVE DROPDOWN print-properties-1 QComboBox field=990,475,317,34 body=990,515,317,272 gap=6 dx=0
+PASS: 2 physically opened dropdowns in print-properties, compositor alignment and captures
+DIALOG: file_print | QPrintDialog | Print Image | 664x716
+CLICK file_print_preview-0 QComboBox  at=817,545 owner=590,435,880,608
+NATIVE DROPDOWN file_print_preview-0 QComboBox field=730,529,96,34 body=730,569,96,242 gap=6 dx=0
+PASS: 1 physically opened dropdowns in file_print_preview, compositor alignment and captures
 DIALOG: file_print_preview | QPrintPreviewDialog | Print Preview: scene-00.png | 880x608
-DIALOG: options_configure_keybinding | KShortcutsDialog | Configure Keyboard Shortcuts | 600x480
-DIALOG: options_configure_toolbars | KEditToolBar | Configure Toolbars | 686x570
-DIALOG: options_configure | Gwenview::ConfigDialog | Gwenview Settings | 630x700
-DIALOG: help_about_app | KAboutApplicationDialog | About Gwenview | 552x507
-DIALOG: help_about_kde | KDEPrivate::KAboutKdeDialog | About KDE | 805x499
-DIALOG: help_report_bug | KBugReport | Submit Bug Report | 504x388
-DIALOG: switch_application_language | KDEPrivate::KSwitchLanguageDialog | Configure Language | 487x296
-DIALOG: open-with-other | KOpenWithDialog | Open With | 450x576
-PASS: advanced permissions, crop/adjust/red-eye panels, command search and cancellation
-PASS: settings binding, Apply/Cancel persistence, keyboard pill, page motion, rapid reversal, resize, scrolling and reduced motion
-dbus-daemon[62998]: [session uid=1000 pid=62998 pidfd=5] Activated service 'org.freedesktop.Notifications' failed: Process org.freedesktop.Notifications exited with status 1
-PASS: Places width stays fixed throughout resize, file list flexes, divider adjusts manually, chosen width persists
-PASS: global-menu inventory and dialog/page walkthrough
+CLICK switch_application_language-0 QPushButton  at=1058,727 owner=787,594,487,290
+NATIVE DROPDOWN switch_application_language-0 QPushButton field=946,710,121,36 body=946,752,231,372 gap=6 dx=0
+PASS: 1 physically opened dropdowns in switch_application_language, compositor alignment and captures
+DIALOG: switch_application_language | KDEPrivate::KSwitchLanguageDialog | Configure Language | 487x290
+PASS: requested dialog regression checks

@@ -6,12 +6,13 @@ import subprocess
 import sys
 import time
 import shlex
+import tempfile
 
 env = dict(os.environ)
 runtime = Path(env['XDG_RUNTIME_DIR'])
-assert '/.staging/gwenview-test-' in str(runtime)
+assert runtime.parent.parent == Path(tempfile.gettempdir()) and runtime.parent.name.startswith('gwenview-test-')
 (Path(env['XDG_CONFIG_HOME']) / 'kwinrc').write_text('[Plugins]\nblurEnabled=' + ('false' if env.get('SEQUOIA_GWENVIEW_TEST_BLUR') == '0' else 'true') + '\n')
-compositor_env = dict(env, QT_QPA_PLATFORM='offscreen')
+compositor_env = dict(env, QT_QPA_PLATFORM='offscreen', KWIN_SCREENSHOT_NO_PERMISSION_CHECKS='1')
 for key in ('LD_PRELOAD', 'WAYLAND_DISPLAY', 'DISPLAY', 'QT_PLUGIN_PATH'):
     compositor_env.pop(key, None)
 with (runtime.parent / 'compositor.log').open('w') as log:

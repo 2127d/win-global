@@ -11,10 +11,13 @@ from typography import font
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--dark',action='store_true')
 parser.add_argument('--material', choices=['solid', 'transparent'])
+parser.add_argument('--radius', type=int, choices=range(-1,33), metavar='-1..32')
 args=parser.parse_args()
 root=Path(__file__).resolve().parents[1]
 temporary=tempfile.TemporaryDirectory(prefix='sequoia-decoration-')
 config=Path(temporary.name)
+if args.radius is not None:
+    (config/'sequoiaelevenrc').write_text(f'[Windeco]\nOtherCornerRadius={args.radius}\n')
 (config/'kwinrc').write_text('[org.kde.kdecoration2]\nButtonsOnLeft=XIA\nButtonsOnRight=\nBorderSize=None\n')
 (config/'kdeglobals').write_text((root/'themes/color-schemes'/f'SequoiaEleven{"Dark" if args.dark else "Light"}.colors').read_text()
                                + f'\n[General]\nfont={font()}\n[WM]\nactiveFont={font(10, 500)}\n')
@@ -34,7 +37,7 @@ assert view.status() == QQuickView.Ready, view.errors()
 view.show()
 def capture():
     assert view.rootObject().property('pluginLoaded'), 'Decoration plugin failed to load'
-    suffix = '-' + args.material if args.material else ''
+    suffix = ('-' + args.material if args.material else '') + (f'-radius-{args.radius}' if args.radius is not None else '')
     output=root/'preview'/f'decoration-{"dark" if args.dark else "light"}{suffix}.png'
     assert view.grabWindow().save(str(output))
     print('Rendered native decoration:',output)

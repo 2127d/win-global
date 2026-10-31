@@ -42,7 +42,6 @@ constexpr int ButtonSize = 44;
 constexpr int EdgeMargin = 16;
 constexpr int Gap = 6;
 constexpr int PanelHorizontalInset = 8;
-constexpr int PanelVerticalInset = 6;
 
 void paintGlass(QPainter &painter, QWidget *widget, const ToolbarBackdrop &backdrop, QRectF bounds = QRectF())
 {
@@ -236,7 +235,7 @@ FloatingViewToolbar::FloatingViewToolbar(QWidget *controls, QWidget *viewer, Pos
     connect(mPanel->horizontalScrollBar(), &QScrollBar::valueChanged, this, [this] {
         updatePillGeometry(); updateShadow();
     });
-    mPanel->setAlignment(Qt::AlignVCenter);
+    mPanel->setAlignment(Qt::AlignTop);
     mPanel->viewport()->setBackgroundRole(QPalette::Window);
     mControls->setBackgroundRole(QPalette::Window);
     mNativeStyleSheet = mControls->styleSheet();
@@ -556,8 +555,12 @@ void FloatingViewToolbar::updateGeometryAndMask()
     mToggle->move(width - ButtonSize, 0);
     // Move the full panel leftward as it emerges from behind the fixed button.
     mSurface->setGeometry(revealed - fullWidth, 0, fullWidth, height);
-    mPanel->setGeometry(PanelHorizontalInset, PanelVerticalInset,
-                        qMax(1, fullWidth - 2 * PanelHorizontalInset), height - 2 * PanelVerticalInset);
+    // Center the native row against the painted pills, not the scroll area's
+    // viewport: transient scrollbars may overlay it instead of consuming height.
+    // AlignTop keeps that position stable when the horizontal scrollbar appears.
+    const int verticalInset = qMax(0, (ButtonSize - wanted.height()) / 2);
+    mPanel->setGeometry(PanelHorizontalInset, verticalInset,
+                        qMax(1, fullWidth - 2 * PanelHorizontalInset), height - 2 * verticalInset);
     mSurface->setVisible(revealed > 0);
     mPanel->setVisible(revealed > 0);
     // Disabling the controls on every frame also triggers the theme's fading

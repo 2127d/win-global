@@ -5,6 +5,62 @@
 #include <QDBusMessage>
 #include <QDBusUnixFileDescriptor>
 #include <unistd.h>
+#include <QTemporaryFile>
+#include <QDBusArgument>
+#include <QDBusVirtualObject>
+#include <QDBusPendingCall>
+#include <QDir>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+
+struct GwenviewWindowProbe : QDBusVirtualObject {
+    QJsonArray windows;
+    bool received = false;
+    QString introspect(const QString &) const override { return {}; }
+    bool handleMessage(const QDBusMessage &message, const QDBusConnection &connection) override {
+        windows = QJsonDocument::fromJson(message.arguments().first().toString().toUtf8()).array();
+        received = true;
+        connection.send(message.createReply());
+        return true;
+    }
+};
+
+static QJsonArray gwenviewNativeWindows(const QString &setup = {})
+{
+    require(qEnvironmentVariable("WAYLAND_DISPLAY") == "gwenview-menu-test", "window probe restricted to private compositor");
+    auto bus = QDBusConnection::sessionBus();
+    GwenviewWindowProbe probe;
+    require(bus.registerVirtualObject("/GwenviewWindowProbe", &probe), "register private geometry probe");
+    QTemporaryFile script; require(script.open(), "private geometry script");
+    script.write(setup.toUtf8());
+    script.write(QString("callDBus('%1', '/GwenviewWindowProbe', 'org.gwenview.Test', 'windows', JSON.stringify(workspace.windowList().map(w => ({title:w.caption, x:w.bufferGeometry.x, y:w.bufferGeometry.y, width:w.bufferGeometry.width, height:w.bufferGeometry.height}))));").arg(bus.baseService()).toUtf8());
+    script.flush();
+    auto load = QDBusMessage::createMethodCall("org.kde.KWin", "/Scripting", "org.kde.kwin.Scripting", "loadScript");
+    load << script.fileName() << QStringLiteral("gwenview-native-geometry");
+    const auto reply = bus.call(load);
+    require(reply.type() == QDBusMessage::ReplyMessage && !reply.arguments().isEmpty(), "load private geometry script");
+    auto run = QDBusMessage::createMethodCall("org.kde.KWin", "/Scripting/Script" + QString::number(reply.arguments().first().toInt()), "org.kde.kwin.Script", "run");
+    bus.asyncCall(run);
+    for (int i=0; i<50 && !probe.received; ++i) QTest::qWait(20);
+    auto unload = QDBusMessage::createMethodCall("org.kde.KWin", "/Scripting", "org.kde.kwin.Scripting", "unloadScript");
+    unload << QStringLiteral("gwenview-native-geometry"); bus.call(unload);
+    bus.unregisterObject("/GwenviewWindowProbe");
+    require(probe.received, "receive compositor geometry");
+    return probe.windows;
+}
+
+static QRect gwenviewNativeRect(QWidget *window)
+{
+    const auto windows = gwenviewNativeWindows();
+    for (const auto &entry : windows) {
+        const auto data = entry.toObject();
+        if (data["title"].toString().contains(QString(window->windowTitle()).remove("[*]").trimmed()))
+            return QRect(qRound(data["x"].toDouble()), qRound(data["y"].toDouble()), qRound(data["width"].toDouble()), qRound(data["height"].toDouble()));
+    }
+    require(false, "find actual compositor window");
+    return {};
+}
 
 struct GwenviewMenuInput {
     ei *context = nullptr;
@@ -16,7 +72,7 @@ struct GwenviewMenuInput {
     }
     GwenviewMenuInput() {
         require(qEnvironmentVariable("WAYLAND_DISPLAY") == "gwenview-menu-test"
-                && qEnvironmentVariable("XDG_RUNTIME_DIR").contains("/.staging/gwenview-test-")
+                && qEnvironmentVariable("XDG_RUNTIME_DIR").startsWith(QDir::tempPath() + "/gwenview-test-")
                 && qEnvironmentVariableIsSet("SEQUOIA_GWENVIEW_NATIVE_INPUT"), "input restricted to private test compositor");
         auto request = call("connectToEIS");
         request << 2;
@@ -66,3 +122,17 @@ struct GwenviewMenuInput {
         QDBusConnection::sessionBus().call(request);
     }
 };
+
+static QImage gwenviewCompositorCapture()
+{
+    QTemporaryFile file; require(file.open(), "native screen capture storage");
+    auto request = QDBusMessage::createMethodCall("org.kde.KWin.ScreenShot2", "/org/kde/KWin/ScreenShot2", "org.kde.KWin.ScreenShot2", "CaptureWorkspace");
+    request << QVariantMap{{"native-resolution", false}, {"hide-caller-windows", false}} << QVariant::fromValue(QDBusUnixFileDescriptor(file.handle()));
+    auto reply = QDBusConnection::sessionBus().call(request, QDBus::Block, 5000);
+    require(reply.type() == QDBusMessage::ReplyMessage, "capture actual compositor pixels");
+    const auto info = qdbus_cast<QVariantMap>(reply.arguments().first());
+    const int bytes = info["height"].toInt() * info["stride"].toInt();
+    for(int i=0;i<100 && file.size()<bytes;++i) QTest::qWait(10);
+    file.seek(0);const auto data=file.readAll(); require(data.size()==bytes,"complete native capture");
+    return QImage(reinterpret_cast<const uchar *>(data.constData()),info["width"].toInt(),info["height"].toInt(),info["stride"].toInt(),QImage::Format(info["format"].toInt())).copy();
+}

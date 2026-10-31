@@ -1,8 +1,8 @@
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[62281]: [session uid=1000 pid=62281 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=62282 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
 CHECK: file picker
 CHECK: drop
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=8 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[7]: [session uid=1000 pid=7 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+dbus-daemon[62281]: [session uid=1000 pid=62281 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.0' (uid=1000 pid=62282 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[62281]: [session uid=1000 pid=62281 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
+dbus-daemon[62281]: [session uid=1000 pid=62281 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=62282 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[62281]: [session uid=1000 pid=62281 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
 PASS: welcome, picker, drag/drop, multi-file navigation, MRU, native edit/save, recent activation

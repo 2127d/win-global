@@ -13,6 +13,8 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QProxyStyle>
+#include <QPushButton>
+#include <QScopeGuard>
 #include <QStyleOption>
 #include <QFileSystemWatcher>
 #include <QStandardPaths>
@@ -43,6 +45,14 @@ public:
     void drawControl(ControlElement element, const QStyleOption *option, QPainter *painter,
                      const QWidget *widget = nullptr) const override
     {
+        painter->save();
+        const auto restore = qScopeGuard([painter] { painter->restore(); });
+        if (qobject_cast<const QMenu *>(widget)) {
+            QPainterPath clip; clip.addRoundedRect(popupBodyRect(widget), Sequoia::SurfaceRadius, Sequoia::SurfaceRadius);
+            painter->setClipPath(clip, Qt::IntersectClip);
+            if (element == CE_MenuItem)
+                painter->setOpacity(painter->opacity() * (0.75 + 0.25 * widget->property("gwenviewPopupProgress").toReal()));
+        }
         if (element == CE_MenuItem) {
             if (auto item = qstyleoption_cast<const QStyleOptionMenuItem *>(option); item && !item->icon.name().isEmpty()) {
                 auto copy = *item;
@@ -74,7 +84,14 @@ public:
                        const QWidget *widget = nullptr) const override
     {
         if (qobject_cast<const QMenu *>(widget)) {
-            if (element == PE_PanelMenu) { paintPopupSurface(*painter, widget); return; }
+            if (element == PE_PanelMenu) {
+                painter->save();
+                painter->setCompositionMode(QPainter::CompositionMode_Source);
+                painter->fillRect(widget->rect(), Qt::transparent);
+                painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                paintPopupSurface(*painter, widget);
+                painter->restore(); return;
+            }
             if (element == PE_FrameMenu) return;
         }
         QProxyStyle::drawPrimitive(element, option, painter, widget);
@@ -151,10 +168,24 @@ protected:
             widget->setAutoFillBackground(false);
             widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
             widget->setAttribute(Qt::WA_StyledBackground, false);
+            // Annotation's custom QMenus lay child widgets out themselves;
+            // their items need the same inset as ordinary native menu rows.
+            if (menu && widget->layout()) widget->layout()->setContentsMargins(22, 22, 22, 22);
             if (comboPopup) {
                 if (widget->layout()) widget->layout()->setContentsMargins(22, 22, 22, 22);
                 if (auto combo = qobject_cast<QComboBox *>(widget->parentWidget())) {
-                    widget->setMinimumWidth(qMax(combo->width(), combo->view()->sizeHintForColumn(0) + 20) + 44);
+                    // Some delegates report their current viewport width as
+                    // a column hint (Print Preview can report hundreds of
+                    // pixels for "100%"). Size from the actual option labels.
+                    int textWidth = 0;
+                    const QFontMetrics metrics(combo->view()->font());
+                    for (int row = 0; row < combo->count(); ++row) {
+                        const int iconWidth = combo->itemIcon(row).isNull() ? 0 : combo->iconSize().width() + 8;
+                        textWidth = qMax(textWidth, metrics.horizontalAdvance(combo->itemText(row)) + iconWidth);
+                    }
+                    const int width = qMax(combo->width() + 28, textWidth + 64);
+                    widget->setFixedWidth(qMin(width, combo->screen()->availableGeometry().width()));
+                    widget->setMinimumHeight(qMax(80, combo->view()->sizeHintForRow(0) + 44));
                     // The container supplies the material. Do not stack a second
                     // translucent/opaque list background over it.
                     combo->view()->setAutoFillBackground(false);
@@ -174,6 +205,29 @@ protected:
             widget->setWindowOpacity(1.0);
             widget->clearMask();
             syncPalette(widget);
+            if (event->type() == QEvent::Show) {
+                resetDropdownAnchor(widget);
+                if (comboPopup) {
+                    if (auto field = qobject_cast<QComboBox *>(widget->parentWidget())) positionDropdown(widget, field);
+                } else if (auto popup = qobject_cast<QMenu *>(widget)) {
+                    bool submenu = false;
+                    for (auto object : popup->menuAction()->associatedObjects())
+                        if (auto parentMenu = qobject_cast<QMenu *>(object); parentMenu && parentMenu->isVisible()
+                            && parentMenu->activeAction() == popup->menuAction()) submenu = true;
+                    // Menus can belong to a dialog or action rather than the
+                    // button displaying them (notably the folder icon menu).
+                    for (auto candidate : qApp->allWidgets()) {
+                        if (submenu) break;
+                        if (!candidate->isVisible()) continue;
+                        auto push = qobject_cast<QPushButton *>(candidate);
+                        auto tool = qobject_cast<QToolButton *>(candidate);
+                        if ((push && push->menu() == popup) || (tool && tool->menu() == popup)) {
+                            positionDropdown(popup, candidate);
+                            break;
+                        }
+                    }
+                }
+            }
             auto motion = static_cast<PopupMotion *>(widget->findChild<QObject *>(QStringLiteral("popupMotion"), Qt::FindDirectChildrenOnly));
             if (!motion) motion = new PopupMotion(widget);
             if (event->type() == QEvent::Show) motion->open(reducedMotion);
@@ -212,7 +266,24 @@ private:
                 QPalette dialogPalette = mPalette;
                 for (auto group : {QPalette::Active, QPalette::Inactive, QPalette::Disabled})
                     dialogPalette.setColor(group, QPalette::Mid, Sequoia::alpha(dialogPalette.color(group, QPalette::WindowText), 0.13));
-                if (popup->palette() != dialogPalette) popup->setPalette(dialogPalette);
+                if (popup->palette() != dialogPalette
+                    || popup->property("gwenviewDialogMaterial").value<QPalette>() != dialogPalette) {
+                    popup->setProperty("gwenviewDialogMaterial", dialogPalette);
+                    // Unpolish first: Qt's stylesheet cache restores its old
+                    // palette when cleared, including palettes on child cards.
+                    QString sheet = popup->property("gwenviewDialogStyleTemplate").toString();
+                    if (sheet.isEmpty()) {
+                        sheet = popup->styleSheet();
+                        popup->setProperty("gwenviewDialogStyleTemplate", sheet);
+                    }
+                    popup->setStyleSheet(QString());
+                    popup->setPalette(dialogPalette);
+                    for (auto child : popup->findChildren<QWidget *>())
+                        if (child->window() == popup) child->setPalette(dialogPalette);
+                    sheet.replace(QStringLiteral("palette(base)"), dialogPalette.color(QPalette::Base).name(QColor::HexArgb));
+                    sheet.replace(QStringLiteral("palette(mid)"), dialogPalette.color(QPalette::Mid).name(QColor::HexArgb));
+                    popup->setStyleSheet(sheet);
+                }
             }
             if (!popup->property("gwenviewFloatingPopup").toBool()) continue;
             syncPalette(popup);

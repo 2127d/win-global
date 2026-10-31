@@ -1,3 +1,3 @@
-dbus-daemon[51841]: [session uid=1000 pid=51841 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=51842 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[63590]: [session uid=1000 pid=63590 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=63591 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
 PASS: Properties filename sizing/edit/cancel, overflow pills, page material, rapid switching, immediate input and reduced motion
 PASS: fullscreen floating layout, native navigation/zoom/rotation/slideshow, settings, compact sizing, thumbnails, keyboard focus, auto-hide and cursor restoration

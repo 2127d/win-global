@@ -77,6 +77,7 @@ set(HAVE_QTDBUS ${Qt6DBus_FOUND})
 
 find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     KIO
+    KCMUtils
     ItemModels
     I18n
     Parts

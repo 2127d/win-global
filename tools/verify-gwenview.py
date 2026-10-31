@@ -12,6 +12,8 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--style-config', type=Path, help='Style settings to copy into the isolated test configuration.')
+parser.add_argument('--style-plugins', type=Path, default=ROOT / '.staging/desktop/usr/lib64/qt6/plugins', help='Qt style plugins to reproduce the active desktop style.')
 parser.add_argument('--binary', type=Path, default=ROOT / '.staging/gwenview-build/bin/gwenview')
 parser.add_argument('--sidebar-preview', action='store_true')
 parser.add_argument('--welcome-preview', action='store_true')
@@ -51,7 +53,9 @@ if args.native_menus:
         raise RuntimeError('The private Wayland input test requires libei headers.')
 subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/verify-gwenview.cpp'), '-o', str(helper), *flags], check=True)
 output = ROOT / ('preview/gwenview-' + ('dialogs-' if args.dialog_preview else 'popups-' if args.popup_preview else 'panel-edges-' if args.panel_edges else 'image-slide-' if args.image_slide else 'thumbnail-scroll-' if args.thumbnail_scroll else 'fullscreen-browser-' if args.fullscreen_browser_preview else 'fullscreen-' if args.fullscreen_preview else 'browser-' if args.browser_preview else 'welcome-' if args.welcome_preview else 'sidebar-') + ('dark' if args.dark else 'light') + ('-transparent' if args.transparent else '') if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll or args.image_slide or args.panel_edges or args.popup_preview else 'preview/gwenview'); output.mkdir(exist_ok=True)
-with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging') as temp:
+# KIO's Unix socket names must fit sockaddr_un; the repository path is too
+# long and can leave an error dialog blocking actual compositor input tests.
+with tempfile.TemporaryDirectory(prefix='gwenview-test-') as temp:
     base = Path(temp)
     env = dict(os.environ, KCOREADDONS_NO_XDG_DESKTOP_PORTAL='1', QT_NO_XDG_DESKTOP_PORTAL='1')
     if args.dialog_preview:
@@ -65,6 +69,8 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
     for kind in ('CONFIG', 'DATA', 'CACHE', 'STATE', 'RUNTIME'):
         path = base / kind.lower(); path.mkdir(mode=0o700)
         env[f'XDG_{kind}_HOME' if kind != 'RUNTIME' else 'XDG_RUNTIME_DIR'] = str(path)
+    if args.style_config:
+        (base / 'config/sequoiaelevenrc').write_bytes(args.style_config.read_bytes())
     for name, color in [('one','steelblue'), ('two','coral')]:
         folder = base / name; folder.mkdir()
         Image.new('RGB',(120,80),color).save(folder / 'picture.png')
@@ -110,7 +116,7 @@ with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging')
             with (base / 'config/kdeglobals').open('a') as config:
                 config.write('\n[KFileDialog Settings]\nSpeedbar Width=285\nView Style=DetailTree\n')
         env.update(QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='SequoiaEleven',
-                   QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'))
+                   QT_PLUGIN_PATH=str(args.style_plugins.resolve()))
     if args.wayland_socket:
         env.update(QT_QPA_PLATFORM='wayland', WAYLAND_DISPLAY=str(args.wayland_socket.resolve()))
     if args.image_slide:

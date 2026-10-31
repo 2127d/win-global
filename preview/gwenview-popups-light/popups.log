@@ -1,11 +1,7 @@
-dbus-daemon[50771]: [session uid=1000 pid=50771 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.4' (uid=1000 pid=50854 comm="plasmashell --no-respawn" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[50771]: [session uid=1000 pid=50771 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
-dbus-daemon[50771]: [session uid=1000 pid=50771 pidfd=5] Activating service name='org.kde.KSplash' requested by ':1.4' (uid=1000 pid=50854 comm="plasmashell --no-respawn" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-
-dbus-daemon[50771]: [session uid=1000 pid=50771 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.10' (uid=1000 pid=50935 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-PASS: stable global-menu category commands and Open With action identities across repeated image changes
-PASS: real global-menu export stress across image changes and fullscreen
-PASS: 95 samples of real Plasma global-menu imports without duplicate command IDs
-
-PASS: 95 samples of real Plasma global-menu imports without duplicate command IDs
-
+dbus-daemon[80924]: [session uid=1000 pid=80924 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.0' (uid=1000 pid=80928 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[80924]: [session uid=1000 pid=80924 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.0' (uid=1000 pid=80928 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[80924]: [session uid=1000 pid=80924 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+INFO: sort-normal menu opens in 0ms; live entrance frames=2 paints=2
+INFO: sort-fullscreen menu opens in 0ms; live entrance frames=3 paints=3
+PASS: zoom popup hover, bidirectional wheel endpoints, cancellation, keyboard and mouse selection
+PASS: floating dropdown/context/submenus, keyboard/mouse selection, zoom scrolling, fullscreen palettes and sidebar outline ripples

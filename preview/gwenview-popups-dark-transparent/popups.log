@@ -1,12 +1,12 @@
-dbus-daemon[47543]: [session uid=1000 pid=47543 pidfd=5] Activating service name='org.freedesktop.Notifications' requested by ':1.1' (uid=1000 pid=47582 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
 INFO: native compositor Blur effect is enabled
-dbus-daemon[47543]: [session uid=1000 pid=47543 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.1' (uid=1000 pid=47582 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[47543]: [session uid=1000 pid=47543 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
+dbus-daemon[102326]: [session uid=1000 pid=102326 pidfd=5] Activating service name='org.freedesktop.FileManager1' requested by ':1.1' (uid=1000 pid=102365 comm="/home/jeffreygustafson/.local/share/sequoia-eleven" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[102326]: [session uid=1000 pid=102326 pidfd=5] Successfully activated service 'org.freedesktop.FileManager1'
 INFO: catalog checked 18 populated menus and nested menus (54 openings)
+dbus-daemon[102326]: [session uid=1000 pid=102326 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.1' (uid=1000 pid=102365 comm="/home/jeffreygustafson/.local/share/sequoia-eleven" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
+dbus-daemon[102326]: [session uid=1000 pid=102326 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
 INFO: catalog checked 18 populated menus and nested menus (54 openings)
 INFO: normal popup lifecycle completed
 INFO: catalog checked 18 populated menus and nested menus (54 openings)
-dbus-daemon[47543]: [session uid=1000 pid=47543 pidfd=5] Activated service 'org.freedesktop.Notifications' failed: Process org.freedesktop.Notifications exited with status 1
 INFO: catalog checked 18 populated menus and nested menus (54 openings)
 INFO: fullscreen popup lifecycle completed
 PASS: stable global-menu category commands and Open With action identities across repeated image changes
