@@ -1,4 +1,4 @@
-#include "../apps/gwenview/gwenview-26.08.1/app/sidebarmotion.h"
+#include "../apps/gwenview/gwenview-26.08.2/app/sidebarmotion.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTest>
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
     const auto expandedButton = toggle->grab().toImage();
     motion.setVisible(false, true); QTest::qWait(45);
     require(motion.isRunning() && sidebar->width() > 0 && sidebar->width() < width, "hiding passes through intermediate sidebar widths");
-    require(animation->duration() == 180, "sidebar slide stays short");
+    require(animation->duration() == Sequoia::LongDuration, "sidebar slide follows the shared motion duration");
     require(sidebar->findChild<QLabel *>()->width() == childWidth, "live sidebar contents keep their full width during motion");
     require(toggle->icon().pixmap(24,24).toImage() != expandedArrow, "shared arrow visibly morphs during slide");
     require(toggle->grab().toImage() != expandedButton, "native button repaints the changing arrow");

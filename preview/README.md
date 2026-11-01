@@ -8,7 +8,7 @@ they are evidence of those sessions, not a guarantee of the current appearance.
 Reusable QML scenes and sample SVG artwork belong in `tools/preview/`. Preview
 and verification scripts read those inputs and write generated captures here.
 The control-center fixture lives with its components in
-`plasma/control-center/Preview.qml`.
+`desktop/control-center/Preview.qml`.
 
 ## Regeneration
 
@@ -28,7 +28,7 @@ python3 tools/wallpaper.py
 
 Application and decoration previews require the compiled desktop plugins.
 Native widget checks require their staged packages and, for some checks, a
-Wayland session. See the main README and `plasma/control-center/README.md` for
+Wayland session. See the main README and `desktop/control-center/README.md` for
 setup and additional commands. Historical desktop screenshots must be captured
 manually; they cannot be reproduced exactly by these commands.
 
@@ -45,4 +45,4 @@ captures after checking documentation references. Existing screenshots are not
 automated pixel-comparison test baselines.
 
 Keep this directory: several tools expect it to exist. Do not place source QML
-or SVG fixtures here. Source archives include the retained images and this file.
+or SVG fixtures here. The complete installer excludes this directory; documentation images stay in the repository.

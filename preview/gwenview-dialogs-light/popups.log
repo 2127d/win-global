@@ -1,8 +1,0 @@
-dbus-daemon[101940]: [session uid=1000 pid=101940 pidfd=5] Activating service name='org.kde.ActivityManager' requested by ':1.1' (uid=1000 pid=101979 comm="/home/jeffreygustafson/sandbox/win-global/.staging" label="unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023")
-dbus-daemon[101940]: [session uid=1000 pid=101940 pidfd=5] Successfully activated service 'org.kde.ActivityManager'
-CLICK status-640-0 Gwenview::ZoomComboBox  at=1465,819 owner=150,64,1350,800
-NATIVE DROPDOWN status-640-0 Gwenview::ZoomComboBox field=1376,798,100,43 body=1376,848,100,228 gap=7 dx=0
-PASS: 1 physically opened dropdowns in status-640, compositor alignment and captures
-CLICK status-860-0 Gwenview::ZoomComboBox  at=1465,1094 owner=150,64,1350,1075
-NATIVE DROPDOWN status-860-0 Gwenview::ZoomComboBox field=1376,1073,100,43 body=1376,838,100,228 gap=7 dx=0
-PASS: 1 physically opened dropdowns in status-860, compositor alignment and captures

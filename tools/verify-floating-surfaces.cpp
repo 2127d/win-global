@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
-#include "../apps/gwenview/gwenview-26.08.1/app/floatingsurface.h"
-#include "../apps/gwenview/gwenview-26.08.1/app/smoothviewercorners.h"
+#include "../apps/gwenview/gwenview-26.08.2/app/floatingsurface.h"
+#include "../apps/gwenview/gwenview-26.08.2/app/smoothviewercorners.h"
 #include <QApplication>
 #include <QWidget>
 #include <QDir>

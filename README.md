@@ -781,6 +781,10 @@ enabled effects and replaced files under
 Reinstallation restores the original baseline before refreshing the kit, so its
 own custom settings never replace the baseline. Unrelated settings and theme
 installation records are retained during restoration.
+During a refresh, newer theme files, retired widget overrides and changed user
+settings are preserved as the next snapshot's baseline. The previous snapshot
+remains intact. The logout effect supports Plasma 6.7 and 6.8, including 6.8's
+fade retargeting when the logout dialog closes before its opening fade ends.
 
 Remove **Animation kit** using `python3 uninstall-gui.py` to restore the snapshot,
 or run `python3 tools/install-motion-palette.py --remove`. Removing its required

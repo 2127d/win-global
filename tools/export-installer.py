@@ -21,8 +21,6 @@ PAYLOAD = (
     'apps/settings', 'apps/gwenview', 'apps/kcalc', 'apps/kweather',
 )
 EXCLUDED = {'.git', '.staging', '__pycache__', 'CMakeFiles', 'CMakeCache.txt'}
-RETIRED_SOURCES = {'apps/settings/systemsettings-v6.7.5',
-                   'apps/gwenview/gwenview-26.08.1', 'apps/kcalc/kcalc-26.08.1'}
 INTRO = '''SEQUOIA ELEVEN — INSTALLER
 
 1. Extract this entire archive to a writable folder on a KDE Plasma 6 computer.
@@ -77,8 +75,6 @@ See README.md and desktop/layouts/README.md for details.
 
 def include(member):
     relative = Path(member.name).relative_to(NAME)
-    if any(relative == Path(old) or Path(old) in relative.parents for old in RETIRED_SOURCES):
-        return None
     if any(part in EXCLUDED for part in relative.parts) or relative.suffix in ('.pyc', '.pyo'):
         return None
     if member.issym():

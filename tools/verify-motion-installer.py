@@ -9,9 +9,33 @@ import unittest
 from unittest.mock import patch
 
 import motion_install as motion
+from motion_palette import kwin_effect, duration, EFFECTS, effect_sources
 from theme_files import fingerprint
 
 RELOAD = motion.reload
+
+
+class KWinPaletteTests(unittest.TestCase):
+    def test_installed_effects_accept_the_current_kwin_sources(self):
+        source = effect_sources()
+        for name in EFFECTS:
+            with self.subTest(effect=name):
+                self.assertIn('Sequoia motion loaded:', kwin_effect(name, (source / name / 'contents/code/main.js').read_text()))
+
+    def test_logout_preserves_68_retargeting_and_supports_67(self):
+        legacy = 'duration: animationTime(800),\nduration: animationTime(400),'
+        modern = ('duration: animationTime(400),\nconst duration = animationTime(200);\n'
+                  'retarget(window.inAnimation, 0.0, duration);')
+        for source in (legacy, modern):
+            with self.subTest(source=source):
+                updated = kwin_effect('logout', source)
+                self.assertEqual(updated.count(duration(200)), 2)
+                if source == modern:
+                    self.assertIn('retarget(window.inAnimation, 0.0, duration);', updated)
+
+    def test_unknown_logout_timing_is_still_rejected(self):
+        with self.assertRaisesRegex(RuntimeError, 'Upstream animation changed'):
+            kwin_effect('logout', 'duration: animationTime(900),\nconst duration = animationTime(200);')
 
 
 class MotionTests(unittest.TestCase):
@@ -130,6 +154,32 @@ class MotionTests(unittest.TestCase):
         motion.restore(second)
         self.assertEqual(self.base.read_text(), 'updated base widget')
         self.assertEqual(self.run_command('kreadconfig6', '--file', str(self.config / 'kdeglobals'), '--group', 'KDE', '--key', 'AnimationDurationFactor'), '1.5')
+
+    def test_refresh_preserves_external_updates_and_retired_files_as_new_baseline(self):
+        for retired in (False, True):
+            with self.subTest(retired=retired):
+                first = motion.apply(self.stage(self.root / ('initial-' + str(retired))))
+                saved_manifest = (first / 'manifest.json').read_bytes()
+                if retired:
+                    self.base.unlink()
+                else:
+                    self.base.write_text('new base from theme upgrade')
+                self.run_command('kwriteconfig6', '--file', str(self.config / 'kdeglobals'),
+                                 '--group', 'KDE', '--key', 'AnimationDurationFactor', '2')
+                with patch.object(motion, 'prepare', side_effect=lambda stage, data, config: self.stage(stage)):
+                    with motion.theme_installation(self.data, ['animation-kit']):
+                        self.assertEqual(self.base.exists(), not retired)
+                        if not retired:
+                            self.assertEqual(self.base.read_text(), 'new base from theme upgrade')
+                second = motion.active_backup(self.data)
+                self.assertNotEqual(first, second)
+                self.assertEqual((first / 'manifest.json').read_bytes(), saved_manifest)
+                motion.restore(second)
+                self.assertEqual(self.base.exists(), not retired)
+                if not retired:
+                    self.assertEqual(self.base.read_text(), 'new base from theme upgrade')
+                self.assertEqual(self.run_command('kreadconfig6', '--file', str(self.config / 'kdeglobals'),
+                                                 '--group', 'KDE', '--key', 'AnimationDurationFactor'), '2')
 
     def test_apply_failure_rolls_back_files_settings_and_receipt(self):
         original_receipt = self.receipt.read_text()

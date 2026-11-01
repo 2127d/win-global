@@ -65,8 +65,15 @@ def kwin_effect(name, text):
     elif name == 'login':
         text = replace(text, 'animationTime(500)', duration(200))
     elif name == 'logout':
-        text = replace(text, 'animationTime(800)', duration(200))
-        text = replace(text, 'animationTime(400)', duration(200))
+        if 'animationTime(800)' in text:
+            # Plasma 6.7 used separate 800/400 ms fades.
+            text = replace(text, 'animationTime(800)', duration(200))
+            text = replace(text, 'animationTime(400)', duration(200))
+        else:
+            # Plasma 6.8 opens in 400 ms and retargets a running fade on close.
+            # Keep that lifecycle intact and adjust both timing declarations.
+            text = replace(text, 'duration: animationTime(400),', 'duration: ' + duration(200) + ',')
+            text = replace(text, 'const duration = animationTime(200);', 'const duration = ' + duration(200) + ';')
     return text + f'\nprint("Sequoia motion loaded: {name}");\n'
 
 

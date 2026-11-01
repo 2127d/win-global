@@ -2,5 +2,5 @@ __pycache__/
 *.pyc
 build/
 .staging/
-preview/*.log
-preview/*.tree
+preview/**/*.log
+preview/**/*.tree

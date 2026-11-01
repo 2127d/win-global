@@ -1,2 +1,0 @@
-MESA-EGL: warning: Not allowed to force software rendering when API explicitly selects a hardware device.
-PASS: 78 unique modules; complete category and search coverage; native QML and QWidget pages; Cancel preserves pending changes; real card navigation

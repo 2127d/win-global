@@ -1,5 +1,0 @@
-KWIN environment variables: QList("KWIN_COMPOSE=O2", "KWIN_SCREENSHOT_NO_PERMISSION_CHECKS=1")
-Accepting client connections on sockets: QList("sequoia-modal-test")
-MESA-EGL: warning: Not allowed to force software rendering when API explicitly selects a hardware device.
-kwin_screencast: Failed to connect PipeWire context
-Skipped method "borderActivated" : Type not registered with QtDBus in parameter list: KWin::ElectricBorder

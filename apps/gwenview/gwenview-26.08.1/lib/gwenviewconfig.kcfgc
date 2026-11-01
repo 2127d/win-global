@@ -1,8 +1,0 @@
-File=gwenviewconfig.kcfg
-ClassName=GwenviewConfig
-NameSpace=Gwenview
-Singleton=true
-Mutators=true
-UseEnumTypes=true
-IncludeFiles=lib/gwenviewlib_export.h
-Visibility=GWENVIEWLIB_EXPORT

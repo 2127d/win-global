@@ -76,7 +76,7 @@ def theme_installation(data, components):
     if previous or requested:
         preflight(data)
     if previous:
-        restore(previous)
+        restore(previous, refreshing=True)
     try:
         yield
     except BaseException:
@@ -220,39 +220,48 @@ def update_theme_receipt(manifest):
     receipt.write_text(json.dumps(tracked, indent=2) + '\n')
 
 
-def check_restore(backup):
+def check_restore(backup, *, refreshing=False):
     manifest = json.loads((backup / 'manifest.json').read_text())
     config = Path(manifest['plan']['config'])
     changes = configuration_changes(manifest, backup)
     for args, original, installed in changes:
         current = run('kreadconfig6', *args)
         if current != installed:
-            raise RuntimeError('A motion setting changed since installation; preserve it before restoring: ' + ' '.join(args))
+            if not refreshing:
+                raise RuntimeError('A motion setting changed since installation; preserve it before restoring: ' + ' '.join(args))
+            manifest.setdefault('preservedSettings', []).append(args)
     for entry in manifest['files']:
         target = Path(entry['target'])
         if target.parent == config or is_theme_receipt(target, manifest):
             continue
         if fingerprint(target) != entry['installed']:
-            raise RuntimeError(f'File changed since motion installation; preserve it before restoring: {target}')
+            if not refreshing:
+                raise RuntimeError(f'File changed since motion installation; preserve it before restoring: {target}')
+            # A theme/package refresh or manual edit superseded this overlay.
+            # Keep the current base (including an intentionally retired file),
+            # which the next apply() snapshots before writing the new palette.
+            entry['preserve'] = True
     return manifest
 
 
-def restore(backup):
-    manifest = check_restore(backup)
+def restore(backup, *, refreshing=False):
+    manifest = check_restore(backup, refreshing=refreshing)
     config = Path(manifest['plan']['config'])
     changes = configuration_changes(manifest, backup)
     run('systemctl', '--user', 'stop', 'plasma-plasmashell.service')
     try:
         for entry in reversed(manifest['files']):
             target = Path(entry['target'])
-            if target.parent == config or is_theme_receipt(target, manifest):
+            if entry.get('preserve') or target.parent == config or is_theme_receipt(target, manifest):
                 continue
             target.unlink(missing_ok=True)
             if entry['saved']:
                 copy_file(backup / entry['saved'], target)
         for args, original, installed in changes:
+            if args in manifest.get('preservedSettings', []):
+                continue
             run('kwriteconfig6', *args, '--notify', *(['--delete'] if original is None else [original]))
-        update_theme_receipt(manifest)
+        update_theme_receipt({**manifest, 'files': [e for e in manifest['files'] if not e.get('preserve')]})
         prune_empty_directories(manifest)
         for name in (*EFFECTS, *('sequoia-motion-' + e for e in EFFECTS), 'slidingpopups', 'slidingnotifications'):
             effect_call('unloadEffect', name)
@@ -268,6 +277,9 @@ def restore(backup):
     if active_backup(data) == backup:
         active_path(data).unlink()
     print('Restored motion backup:', backup)
+    if refreshing:
+        print('Animation refresh preserved updated/removed files:', sum(bool(e.get('preserve')) for e in manifest['files']),
+              'and changed settings:', len(manifest.get('preservedSettings', [])))
 
 
 def apply(stage):
