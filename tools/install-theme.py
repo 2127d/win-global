@@ -387,6 +387,14 @@ def perform(args):
         scope = lambda name: change_shell if shell_overrides.is_shell(name) else component_for(name) in args.components
         receipt.validate(force=args.force, scope=scope)
         retained_shell = current_shell - set(args.components)
+        if change_shell and retained_shell:
+            # Include compatibility in --check, before settings or shared files
+            # are removed. A partial uninstall must never restore an old shell.
+            with tempfile.TemporaryDirectory(prefix='sequoia-shell-check-') as temporary:
+                shell_overrides.stage(Path(temporary), args.prefix, (), receipt.data['files'],
+                                      removing=args.components)
+                receipt.validate(payload_files(Path(temporary)), force=args.force,
+                                 scope=shell_overrides.is_shell)
         shared = not args.keep_system and bool(set(args.components) & (NATIVE | {'widgets', 'login', 'modal-dimming'}))
         shared = shared and (args.system_root / SYSTEM_STATE).exists()
         # Check both receipts before starting removal so local edits fail early.
@@ -459,6 +467,13 @@ def perform(args):
             receipt.install(user, force=args.force,
                             original_overrides=original_user_files(user, stage), obsolete=obsolete,
                             scope=lambda name: user_scope(name, components))
+    live_prefix = Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share').absolute()
+    if 'widgets' in components and args.system_root == Path('/') and args.prefix == live_prefix:
+        # An old user-level copy wins over the freshly rebuilt native package.
+        # Archive these exact native fork IDs before retiring the shadow copies.
+        config = Path(os.environ.get('XDG_CONFIG_HOME') or Path.home() / '.config')
+        widget_payload.module('install-widget-archives').retire_local_copies(
+            widget_payload.NAMES, args.prefix, config)
     if 'modal-dimming' in components and args.system_root == Path('/'):
         live_prefix = Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share').absolute()
         if args.prefix == live_prefix:

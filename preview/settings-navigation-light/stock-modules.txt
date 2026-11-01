@@ -61,9 +61,11 @@ kcm_qtquicksettings          - No description available
 kcm_recentFiles              - Manage your file activity history preferences
 kcm_regionandlang            - Language Setting, Numeric, Currency and Time Formats
 kcm_screenlocker             - Configure screen locking
+kcm_sequoia_taskbar          - Integrated taskbar icons, spacing, launchers, and running indicators
 kcm_smserver                 - Desktop Session Login and Logout
 kcm_solid_actions            - Manage actions available to the user when connecting new devices
 kcm_soundtheme               - Select a Sound Theme for Notifications
+kcm_spellchecking            - Spell Checker Dictionaries and Options
 kcm_splashscreen             - Choose splash screen theme
 kcm_style                    - Configure application style and behavior
 kcm_tablet                   - Configure drawing tablets and pens
@@ -75,4 +77,3 @@ kcm_virtualkeyboard          - Select which virtual keyboard to use
 kcm_wallpaper                - Configure the wallpaper
 kcm_webshortcuts             - Configure Web search keywords
 kcm_workspace                - Configure general workspace behavior
-kcmspellchecking             - Spell Checker Dictionaries and Options

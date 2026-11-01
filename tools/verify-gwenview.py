@@ -55,7 +55,9 @@ subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/verify-gwenview.cpp
 output = ROOT / ('preview/gwenview-' + ('dialogs-' if args.dialog_preview else 'popups-' if args.popup_preview else 'panel-edges-' if args.panel_edges else 'image-slide-' if args.image_slide else 'thumbnail-scroll-' if args.thumbnail_scroll else 'fullscreen-browser-' if args.fullscreen_browser_preview else 'fullscreen-' if args.fullscreen_preview else 'browser-' if args.browser_preview else 'welcome-' if args.welcome_preview else 'sidebar-') + ('dark' if args.dark else 'light') + ('-transparent' if args.transparent else '') if args.sidebar_preview or args.welcome_preview or args.browser_preview or args.fullscreen_preview or args.fullscreen_browser_preview or args.thumbnail_scroll or args.image_slide or args.panel_edges or args.popup_preview else 'preview/gwenview'); output.mkdir(exist_ok=True)
 # KIO's Unix socket names must fit sockaddr_un; the repository path is too
 # long and can leave an error dialog blocking actual compositor input tests.
-with tempfile.TemporaryDirectory(prefix='gwenview-test-') as temp:
+# KRecentFilesAction intentionally ignores /tmp URLs; keep isolated fixtures
+# outside the system temporary directory so persistence is actually exercised.
+with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging') as temp:
     base = Path(temp)
     env = dict(os.environ, KCOREADDONS_NO_XDG_DESKTOP_PORTAL='1', QT_NO_XDG_DESKTOP_PORTAL='1')
     if args.dialog_preview:

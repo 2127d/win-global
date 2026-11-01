@@ -15,6 +15,7 @@ FocusScope {
     property alias userList: users
     property alias mediaArea: media
     property bool showUserList: true
+    property Item authenticationTypeItem: null
     default property alias _children: prompts.data
     signal userSelected()
     function playHighlightAnimation() { highlight.restart(); }
@@ -24,7 +25,7 @@ FocusScope {
         objectName: "unlockCard"
         anchors.centerIn: parent
         width: 252 * session.unit - 4
-        height: users.height + prompts.implicitHeight + 66 * session.unit - 4
+        height: users.height + authentication.height + prompts.implicitHeight + 66 * session.unit - 4
         radius: 18 * session.unit
         sceneSource: wallpaper
         scene: lockScreenUi
@@ -65,10 +66,19 @@ FocusScope {
                 }
             }
         }
-        ColumnLayout {
-            id: prompts
+        RowLayout {
+            id: authentication
             anchors.top: users.bottom
             anchors.topMargin: 14 * session.unit
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: card.width - 64 * session.unit
+            height: session.authenticationTypeItem && session.authenticationTypeItem.visible ? implicitHeight + 8 * session.unit : 0
+            visible: height > 0
+            children: session.authenticationTypeItem ? [session.authenticationTypeItem] : []
+        }
+        ColumnLayout {
+            id: prompts
+            anchors.top: authentication.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             width: card.width - 64 * session.unit
             spacing: 8 * session.unit

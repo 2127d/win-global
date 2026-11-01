@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exercise the actual Start menu QML offscreen on a private bus and disposable XDG directories."""
 import json
+import configparser
 import os
 from pathlib import Path
 import subprocess
@@ -21,14 +22,16 @@ def child(stage):
         (stage / name).mkdir(parents=True, exist_ok=True, mode=0o700)
     (stage / 'data/plasma').mkdir()
     (stage / 'data/plasma/desktoptheme').symlink_to(ROOT / 'themes/plasma/desktoptheme')
-    (stage / 'config/plasmarc').write_text('[Theme]\nname=sequoia-eleven-light\n')
+    mode = os.environ.get('SEQUOIA_START_TEST_MODE', 'light')
+    assert mode in ('light', 'dark')
+    (stage / 'config/plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{mode}\n')
     marker = stage / 'launched'
     (stage / 'data/applications/sequoia-start-test.desktop').write_text(
         '[Desktop Entry]\nType=Application\nName=Sequoia Launch Test\nIcon=applications-development\n'
         f'Exec=/usr/bin/touch {marker}\nCategories=Utility;\n')
     subprocess.run(['kbuildsycoca6', '--noincremental'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     from PySide6.QtCore import QObject, QPointF, QUrl, Qt, qInstallMessageHandler
-    from PySide6.QtGui import QIcon
+    from PySide6.QtGui import QIcon, QPalette, QColor
     from PySide6.QtWidgets import QApplication
     from PySide6.QtQml import QQmlComponent, QQmlEngine, QQmlExpression, QQmlPropertyMap
     from PySide6.QtQuick import QQuickView
@@ -36,6 +39,19 @@ def child(stage):
 
     app = QApplication([])
     app.setDesktopFileName("org.kde.plasmashell")
+    scheme = configparser.ConfigParser()
+    scheme.read(ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}Solid.colors')
+    palette = QPalette()
+    for role, section, key in (
+        ('Window', 'Window', 'BackgroundNormal'), ('WindowText', 'Window', 'ForegroundNormal'),
+        ('Base', 'View', 'BackgroundNormal'), ('AlternateBase', 'View', 'BackgroundAlternate'),
+        ('Text', 'View', 'ForegroundNormal'), ('Button', 'Button', 'BackgroundNormal'),
+        ('ButtonText', 'Button', 'ForegroundNormal'), ('Highlight', 'Selection', 'BackgroundNormal'),
+        ('HighlightedText', 'Selection', 'ForegroundNormal'),
+        ('ToolTipBase', 'Tooltip', 'BackgroundNormal'), ('ToolTipText', 'Tooltip', 'ForegroundNormal'),
+        ('PlaceholderText', 'Window', 'ForegroundInactive')):
+        palette.setColor(getattr(QPalette.ColorRole, role), QColor(*map(int, scheme['Colors:' + section][key].split(','))))
+    app.setPalette(palette)
     QIcon.setThemeName('breeze')
     errors = []
 
@@ -182,6 +198,14 @@ KSvg.FrameSvgItem {
         return result
 
     cfg.insert('animationsEnabled', True)
+    # Panel direction, not Floating, must reach Plasma's native slide protocol.
+    for edge in ('TopEdge', 'BottomEdge', 'LeftEdge', 'RightEdge'):
+        popup_eval('panelLocation = PlasmaCore.Types.' + edge)
+        assert popup_eval('location === panelLocation')
+    cfg.insert('animationsEnabled', False)
+    assert popup_eval('location === PlasmaCore.Types.Floating')
+    cfg.insert('animationsEnabled', True)
+    popup_eval('panelLocation = PlasmaCore.Types.BottomEdge')
     cfg.insert('animationDuration', 600)
     popup.setProperty('opened', True)
     settle()
@@ -236,6 +260,16 @@ KSvg.FrameSvgItem {
     QTest.keyClick(power_menu, Qt.Key_Escape)
     QTest.qWait(100)
     assert not power_menu.property('visible') and popup.property('visible')
+    # Click blank parent content: this must work without a focusable target,
+    # dismiss only the child, and consume the click instead of launching an app.
+    for button, dropdown in ((selector, view_menu), (power_button, power_menu)):
+        click_control(button)
+        assert dropdown.property('visible')
+        QTest.mouseClick(popup, Qt.LeftButton, Qt.NoModifier,
+                         popup.property('mainItem').mapToScene(QPointF(8, 90)).toPoint())
+        QTest.qWait(100)
+        assert not dropdown.property('visible') and popup.property('visible')
+    print('PASS: blank-area outside clicks dismiss View and Power without closing Start')
     # Parent dismissal must also remove its transient menu.
     click_control(power_button)
     popup.setProperty('opened', False)
@@ -300,6 +334,23 @@ KSvg.FrameSvgItem {
         min(evaluate('backend.favorites.count'), defaults['pinnedRows'] * defaults['gridColumns']) +
         min(evaluate('backend.recent.count'), defaults['recommendationCount']))
     assert len(visual_items(view.rootObject(), 'startCategoryIcon')) <= 4 * evaluate('backend.categories.count')
+    category_component = QQmlComponent(view.engine(), QUrl.fromLocalFile(str(PACKAGE / 'contents/ui/CategoryGrid.qml')))
+    for width in (280, 510, 640, 840):
+        grid = category_component.createWithInitialProperties({'menu': menu, 'width': width})
+        assert grid is not None, [e.toString() for e in category_component.errors()]
+        grid.setParentItem(view.rootObject())
+        QTest.qWait(30)
+        cards = visual_items(grid, 'startCategoryCard')
+        assert cards
+        for card in cards:
+            assert abs(card.width() - card.height()) < 0.01
+            assert card.x() >= 0 and card.x() + card.width() <= width + 0.01
+        grid.deleteLater()
+        QTest.qWait(20)
+    island = view.rootObject().findChild(QObject, 'startAccountIsland')
+    assert island is not None and island.property('radius') == 24
+    assert island.x() > 0 and island.width() < menu.width()
+    print('PASS: square category cards at four widths and inset account/control island')
     print('PASS: 500-row collection creates only requested tiles; hidden app views and category previews stay bounded')
 
     # Instantiate every settings page and exercise its configuration contract.

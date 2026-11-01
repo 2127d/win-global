@@ -41,6 +41,7 @@ PlasmaCore.Dialog {
         content.forceActiveFocus();
     }
     function closeMenu(returnFocus) {
+        if (!visible) return;
         restoreFocus = returnFocus;
         if (returnFocus && anchor) anchor.forceActiveFocus();
         visible = false;
@@ -81,23 +82,28 @@ PlasmaCore.Dialog {
                 required property var model
                 readonly property var entryData: model.display !== undefined ? model : popup.model[index]
                 readonly property string iconName: entryData?.decoration || ""
+                readonly property bool bundledIcon: ["system-shutdown", "system-reboot", "system-suspend", "system-suspend-hibernate", "system-lock-screen", "system-switch-user", "system-log-out"].indexOf(iconName) >= 0
                 width: entries.width
-                height: 34
+                height: 38
                 text: entryData?.display || ""
                 hoverEnabled: true
                 Accessible.name: text
                 onHoveredChanged: if (hovered) popup.currentIndex = index
                 onClicked: popup.choose(index)
+                padding: 0
                 background: Rectangle {
-                    radius: 6
+                    radius: 13
                     color: entry.index === popup.currentIndex
-                        ? Qt.alpha(Kirigami.Theme.highlightColor, 0.2) : "transparent"
+                        ? Qt.alpha(Kirigami.Theme.highlightColor, 0.16) : "transparent"
+                    Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration > 1 ? Kirigami.Units.shortDuration : 0 } }
                 }
                 contentItem: Item {
                     Kirigami.Icon {
                         id: icon
                         visible: !!entry.iconName
-                        source: entry.iconName
+                        source: entry.bundledIcon ? Qt.resolvedUrl("../icons/" + entry.iconName + ".svg") : entry.iconName
+                        isMask: entry.bundledIcon
+                        color: Kirigami.Theme.textColor
                         width: 18; height: 18
                         x: 8
                         anchors.verticalCenter: parent.verticalCenter
@@ -108,7 +114,7 @@ PlasmaCore.Dialog {
                         width: parent.width - x - 8
                         text: entry.text
                         color: Kirigami.Theme.textColor
-                        font.pixelSize: 12
+                        font.pixelSize: 13
                         elide: Text.ElideRight
                     }
                 }

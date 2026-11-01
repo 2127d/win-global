@@ -281,7 +281,7 @@ def main():
         env['XDG_' + kind + ('_DIR' if kind == 'RUNTIME' else '_HOME')] = str(directory)
     env.update(QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software', QT_STYLE_OVERRIDE='Fusion',
         QT_FORCE_STDERR_LOGGING='1',
-        QT_QPA_PLATFORMTHEME='generic', KWIN_COMPOSE='Q', LIBGL_ALWAYS_SOFTWARE='1',
+        QT_QPA_PLATFORMTHEME='generic', KWIN_COMPOSE='O2', LIBGL_ALWAYS_SOFTWARE='1',
         XDG_DATA_DIRS=str(payload / 'usr/share') + ':/usr/local/share:/usr/share',
         QT_PLUGIN_PATH=str(payload / Path(subprocess.check_output(['qtpaths6', '--query', 'QT_INSTALL_PLUGINS'], text=True).strip()).relative_to('/')),
         QML_IMPORT_PATH=str(payload / Path(subprocess.check_output(['qtpaths6', '--query', 'QT_INSTALL_QML'], text=True).strip()).relative_to('/')))

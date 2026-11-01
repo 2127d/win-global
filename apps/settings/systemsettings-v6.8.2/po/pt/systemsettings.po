@@ -1,0 +1,289 @@
+# SPDX-FileCopyrightText: 2026 André Barata <andretiagob@protonmail.com>
+# SPDX-FileCopyrightText: 2026 César A. P. Cláudio <cesarapclaudio@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: systemsettings\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2026-08-21 00:47+0000\n"
+"PO-Revision-Date: 2026-02-01 17:50+0000\n"
+"Last-Translator: César A. P. Cláudio <cesarapclaudio@gmail.com>\n"
+"Language-Team: pt\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-POFile-SpellExtra: Stemle Reitmayr Edwards Ellen Riddell Jonathan Ltd\n"
+"X-POFile-SpellExtra: Meyer Ben Mathias Stephenson Will Soeken Cooksley\n"
+"X-Generator: Lokalize 25.12.1\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "André Barata, José Nuno Pires, Pedro Morais"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "andretiagob@protonmail.com"
+
+#: app/ExternalAppModule.cpp:26
+#, kde-format
+msgid "%1 is an external application and has been automatically launched"
+msgstr "O %1 é uma aplicação externa e foi iniciada automaticamente"
+
+#: app/ExternalAppModule.cpp:27
+#, kde-format
+msgid "Relaunch %1"
+msgstr "Iniciar de novo o %1"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, ExternalModule)
+#: app/externalModule.ui:14
+#, kde-format
+msgid "Dialog"
+msgstr "Janela"
+
+#: app/main.cpp:61 app/SettingsBase.cpp:54
+#, kde-format
+msgid "Info Center"
+msgstr "Centro de Informações"
+
+#: app/main.cpp:63
+#, kde-format
+msgid "Centralized and convenient overview of system information."
+msgstr "Visão geral centralizada e conveniente das informações de sistema."
+
+#: app/main.cpp:65 app/main.cpp:76
+#, kde-format
+msgid "(c) 2009, Ben Cooksley"
+msgstr "(c) 2009, Ben Cooksley"
+
+#: app/main.cpp:72 app/qml/IntroPage.qml:51 app/SettingsBase.cpp:57
+#: runner/systemsettingsrunner.cpp:124
+#, kde-format
+msgid "System Settings"
+msgstr "Definições de Sistema"
+
+#: app/main.cpp:74
+#, kde-format
+msgid "Central configuration center by KDE."
+msgstr "Centro de configurações central pelo KDE."
+
+#: app/main.cpp:87
+#, kde-format
+msgid "Ben Cooksley"
+msgstr "Ben Cooksley"
+
+#: app/main.cpp:87
+#, kde-format
+msgid "Maintainer"
+msgstr "Responsável pela manutenção"
+
+#: app/main.cpp:88
+#, kde-format
+msgid "Marco Martin"
+msgstr "Marco Martin"
+
+#: app/main.cpp:88
+#, kde-format
+msgid "Author"
+msgstr "Autoria"
+
+#: app/main.cpp:89
+#, kde-format
+msgid "Mathias Soeken"
+msgstr "Mathias Soeken"
+
+#: app/main.cpp:89
+#, kde-format
+msgid "Developer"
+msgstr "Programador"
+
+#: app/main.cpp:90
+#, kde-format
+msgid "Will Stephenson"
+msgstr "Will Stephenson"
+
+#: app/main.cpp:90
+#, kde-format
+msgid "Internal module representation, internal module model"
+msgstr "Representação interna do módulo, modelo interno do módulo"
+
+#: app/main.cpp:98
+#, kde-format
+msgid "List all possible modules"
+msgstr "Mostrar lista de todos os módulos possíveis."
+
+#: app/main.cpp:99 app/main.cpp:160
+#, kde-format
+msgid "Configuration module to open"
+msgstr "Módulo de configuração a abrir"
+
+#: app/main.cpp:100 app/main.cpp:161
+#, kde-format
+msgid "Arguments for the module"
+msgstr "Argumentos para o módulo"
+
+#: app/main.cpp:108
+#, kde-format
+msgid "The following modules are available:"
+msgstr "Estão disponíveis os seguintes módulos:"
+
+#: app/main.cpp:126
+#, kde-format
+msgid "No description available"
+msgstr "Descrição não disponível"
+
+#: app/ModuleView.cpp:186
+#, kde-format
+msgid "Reset all current changes to previous values"
+msgstr "Repor todas as alterações atuais com os valores anteriores"
+
+#: app/ModuleView.cpp:279
+#, kde-format
+msgctxt "@info:whatsthis"
+msgid "Scrollable area"
+msgstr "Área de deslocamento"
+
+#: app/ModuleView.cpp:373
+#, kde-format
+msgid ""
+"The current page has unsaved changes.\n"
+"Apply the changes or discard them?"
+msgstr ""
+"A página atual tem definições alteradas.\n"
+"Aplicar alterações ou descartá-las?"
+
+#: app/ModuleView.cpp:378
+#, kde-format
+msgid "Apply Settings"
+msgstr "Aplicar Definições"
+
+#: app/qml/CategoriesPage.qml:106
+#, kde-format
+msgctxt "A search yielded no results"
+msgid "No items matching your search"
+msgstr "Sem itens correspondentes à sua pesquisa"
+
+#: app/qml/HamburgerMenuButton.qml:25
+#, kde-format
+msgid "Show menu"
+msgstr "Mostrar menu"
+
+#: app/qml/IntroPage.qml:44
+#, kde-format
+msgid "Plasma"
+msgstr "Plasma"
+
+#: app/qml/SubCategoryPage.qml:74
+#, kde-format
+msgctxt "@action:button go back"
+msgid "Back"
+msgstr ""
+
+#. i18n: ectx: label, entry (HighlightNonDefaultSettings), group (systemsettings_sidebar_mode)
+#: app/SettingsBase.cpp:144 app/systemsettings-config.kcfg:8
+#, kde-format
+msgid "Highlight Changed Settings"
+msgstr "Realçar as definições alteradas"
+
+#: app/SettingsBase.cpp:152
+#, kde-format
+msgctxt ""
+"@option:check the pages being referred to here are System Settings KCMs"
+msgid "Show Inapplicable Pages"
+msgstr "Mostrar as páginas inaplicáveis"
+
+#: app/SettingsBase.cpp:167
+#, kde-format
+msgid "Report a Bug in the Current Page…"
+msgstr "Comunicar um erro na página atual…"
+
+#: app/SidebarMode.cpp:598
+#, kde-format
+msgid "Sidebar"
+msgstr "Barra lateral"
+
+#: app/SidebarMode.cpp:667
+#, kde-format
+msgid "Most Used"
+msgstr "Mais usados"
+
+#: runner/systemsettingsrunner.cpp:33
+#, kde-format
+msgid "Finds system settings modules whose names or descriptions match :q:"
+msgstr ""
+"Procura pelos módulos de definições do sistema cujos nomes ou descrições "
+"correspondam a :q:"
+
+#: runner/systemsettingsrunner.cpp:122
+#, kde-format
+msgid "System Information"
+msgstr "Informações de Sistema"
+
+#~ msgid "Show intro page"
+#~ msgstr "Mostrar a página introdutória"
+
+#~ msgid "Help"
+#~ msgstr "Ajuda"
+
+#~ msgid "About System Settings"
+#~ msgstr "Acerca da Configuração do Sistema"
+
+#~ msgid "Contains 1 item"
+#~ msgid_plural "Contains %1 items"
+#~ msgstr[0] "Contém 1 item"
+#~ msgstr[1] "Contém %1 itens"
+
+#~ msgctxt "Search through a list of control modules"
+#~ msgid "Search"
+#~ msgstr "Procurar"
+
+#~ msgid "About Active View"
+#~ msgstr "Acerca da Janela Activa"
+
+#~ msgid "About %1"
+#~ msgstr "Acerca do %1"
+
+#~ msgid ""
+#~ "System Settings was unable to find any views, and hence has nothing to "
+#~ "display."
+#~ msgstr ""
+#~ "A Configuração do Sistema não conseguiu encontrar nenhumas janelas; como "
+#~ "tal, não consegue apresentar nada de facto."
+
+#~ msgid "No views found"
+#~ msgstr "Não foram encontradas janelas"
+
+#~ msgid "Internal name for the view used"
+#~ msgstr "Nome interno da vista usada"
+
+#~ msgid "Switch to Icon View"
+#~ msgstr "Mudar para a Vista por Ícones"
+
+#~ msgid "Switch to Sidebar View"
+#~ msgstr "Mudar para a Vista da Barra Lateral"
+
+#~ msgid "Icon View"
+#~ msgstr "Vista por Ícones"
+
+#~ msgid "Provides a categorized icons view of control modules."
+#~ msgstr ""
+#~ "Oferece uma vista por categorias dos ícones dos módulos de controlo."
+
+#~ msgid "All Settings"
+#~ msgstr "Toda a Configuração"
+
+#~ msgid "Keyboard Shortcut: %1"
+#~ msgstr "Atalho de Teclado: %1"
+
+#~ msgid "Sidebar View"
+#~ msgstr "Vista da Barra Lateral"
+
+#~ msgid "Provides a categorized sidebar for control modules."
+#~ msgstr ""
+#~ "Oferece uma barra lateral dividida por categorias para os módulos de "
+#~ "controlo."
+
+#~ msgid "(c) 2017, Marco Martin"
+#~ msgstr "(c) 2017, Marco Martin"

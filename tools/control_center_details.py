@@ -53,6 +53,8 @@ def style_details(destination, source, plugin_dir, extract, replace):
                 }
                 highlight = list_highlights.get((name, path.name))
                 if highlight:
+                    if highlight not in text and 'highlight: PlasmaExtras.Highlight {}' in text:
+                        highlight = 'highlight: PlasmaExtras.Highlight {}'
                     text = replace(text, highlight, 'highlight: null // The rounded delegate owns its highlight.')
                 if name == 'cameraindicator' and path.name == 'FullRepresentation.qml':
                     text = replace(text, 'PlasmaComponents.Page {', 'Details.DetailRepresentation {')

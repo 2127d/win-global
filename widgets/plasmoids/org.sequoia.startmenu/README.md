@@ -2,7 +2,7 @@
 
 A Plasma 6 launcher modeled on the supplied Windows 11 Start screenshot, using the installed Linux applications and current icon theme.
 
-The main page has search, a six-column pinned grid, recommendations, an All apps view selector, category cards, and an account/power footer. Category, List, and Grid are interchangeable views of the installed apps. Recommendations come from Plasma activity history; the empty state explains when no history is available.
+The main page has search, a six-column pinned grid, recommendations, an All apps view selector, square category cards, and an inset account/power island using Weather/Gwenview’s 24px floating surfaces. Pinned and Recommended use softly tinted 24px cards; square categories use 22px cards, and dropdown rows use 13px selection capsules. Search and action controls share fine rims, soft shadows and 100ms hover feedback. Scrollbars have no adjoining separator. Bundled Sequoia Tahoe Material Symbols Rounded artwork keeps action controls consistent across icon themes, with its Apache license included; application icons retain their own identities. Category, List, and Grid are interchangeable views of the installed apps. Recommendations come from Plasma activity history; the empty state explains when no history is available.
 
 The menu defaults to 740×800 pixels, with size controls in its settings. The launcher icon scales with the panel's available icon area. On horizontal panels the menu is centered on that screen, with a 3-pixel gap from the visible panel surface, including floating panels. Its dimensions shrink to fit smaller screens. Vertical panels place it beside the panel with the same gap. Saved custom sizes remain in effect when upgrading.
 
@@ -28,14 +28,14 @@ For an existing installation, use `--upgrade` instead of `--install`. Right-clic
 - Click the gear to open settings for menu size, launcher icon, pinned rows/columns, recommendations, and the default app view.
 - Right-click an app to pin or unpin it and move it earlier or later. The **Pinned apps** settings page also provides ordering controls. Pins are stored separately for each widget instance.
 - **Show all** and category buttons navigate with a leftward slide. **Back** also slides left, as requested. These are button-driven transitions, not touch gestures.
-- Opening and closing use Plasma's desktop effects for the entire popup, keeping the contents, background, and shadow together. Launching an app shrinks its tile. The **Animations** settings page controls page-transition duration, launch feedback, and reduced motion, with a preview.
+- Opening and closing slide from/to the taskbar edge using Plasma’s Sliding Popups effect, keeping the contents, background, shadow, and blur together. KWin owns the animation and releases its retained surface and forced blur at completion; the widget never delays hiding an empty native window. Desktop animation speed controls this slide; disabling widget animations removes the slide hint. Launching an app shrinks its tile. The **Animations** settings page controls page-transition duration, launch feedback, and reduced motion, with a preview.
 - Type to search installed apps, settings, indexed files, and recent documents. File results depend on the corresponding Plasma search providers.
 - Escape clears search, returns to the main page, or closes the menu. Alt+Left returns to the main page. Tab/Shift+Tab and Enter activate controls without a mouse.
 - Power actions use Plasma's session backend and its normal confirmation behavior.
 - The View menu opens 4px below its control at the same width. Power opens 4px
   above its button, aligned to the button's right edge. Both use native Plasma
   surfaces for themed rounded corners, shadows, transparency and compositor blur.
-  Arrow keys select an entry; Enter activates it and Escape returns to the button.
+  Arrow keys select an entry; Enter activates it and Escape returns to the button. Clicking outside a dropdown dismisses it, including blank areas inside Start; that first click is consumed.
 
 ## Build and verify
 
@@ -44,7 +44,8 @@ From the repository root:
 ```sh
 python3 tools/build-start-menu.py
 python3 tools/verify-start-menu.py
-python3 tools/verify-start-menu-native.py
+SEQUOIA_START_TEST_BACKEND=rhi python3 tools/verify-start-menu-native.py
+SEQUOIA_START_TEST_MODE=dark SEQUOIA_START_TEST_BACKEND=rhi python3 tools/verify-start-menu-native.py
 python3 dist/widgets/install-widgets.py --folder dist/widgets --check
 ```
 

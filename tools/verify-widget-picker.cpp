@@ -260,7 +260,8 @@ static void check(QQuickItem *picker) {
     window->requestActivate();
     QTest::qWait(300);
     card = qvariant_cast<QQuickItem *>(eval(picker, "list.currentItem"));
-    QPoint dragStart = card->mapToScene(QPointF(card->width()/2, 45)).toPoint();
+    // Start below the remove-instance badge, on the widget icon drag surface.
+    QPoint dragStart = card->mapToScene(QPointF(card->width()/2, 80)).toPoint();
     QTimer::singleShot(1500, [&] {
         fprintf(stderr, "DRAG: %s\n", qPrintable(eval(picker, "JSON.stringify({phase:GridSession.phase,drag:main.draggingWidget,visible:sidePanel.visible})").toString()));
         require(eval(picker, "GridSession.phase === 'drag' && main.draggingWidget").toBool(), "native card gesture starts grid drag");
@@ -274,8 +275,11 @@ static void check(QQuickItem *picker) {
     QTest::qWait(500);
     input.button(true);
     QTest::qWait(200);
-    fprintf(stderr, "PRESS: %s\n", qPrintable(eval(card, "JSON.stringify({pressed:pressed,point:mapToGlobal(width/2,45)})").toString()));
-    input.move(window->mapToGlobal(dragStart + QPoint(40,40)), window->devicePixelRatio());
+    fprintf(stderr, "PRESS: %s\n", qPrintable(eval(card, "JSON.stringify({pressed:pressed,point:mapToGlobal(width/2,80)})").toString()));
+    for (int distance = 8; distance <= 40; distance += 8) {
+        input.move(window->mapToGlobal(dragStart + QPoint(distance,distance)), window->devicePixelRatio());
+        QTest::qWait(35);
+    }
     QTest::qWait(2000);
     require(dragChecked, "native drag lifecycle completed");
     QTest::qWait(300);
@@ -295,7 +299,10 @@ static void check(QQuickItem *picker) {
     QTest::qWait(50);
     input.button(true);
     QTest::qWait(50);
-    input.move(window->mapToGlobal(dragStart + QPoint(40,40)), window->devicePixelRatio());
+    for (int distance = 8; distance <= 40; distance += 8) {
+        input.move(window->mapToGlobal(dragStart + QPoint(distance,distance)), window->devicePixelRatio());
+        QTest::qWait(35);
+    }
     QTest::qWait(900);
     require(window->isVisible() && eval(picker, "main.containment.applets.length").toInt() == before + 2, "occupied native drop adds no widget");
     window->requestActivate();
@@ -309,7 +316,10 @@ static void check(QQuickItem *picker) {
     QTest::qWait(50);
     input.button(true);
     QTest::qWait(50);
-    input.move(window->mapToGlobal(dragStart + QPoint(40,40)), window->devicePixelRatio());
+    for (int distance = 8; distance <= 40; distance += 8) {
+        input.move(window->mapToGlobal(dragStart + QPoint(distance,distance)), window->devicePixelRatio());
+        QTest::qWait(35);
+    }
     QTest::qWait(800);
     require(window->isVisible() && eval(picker, "GridSession.phase === 'catalog' && main.containment.applets.length === " + QString::number(before + 2)).toBool(), "cancelled native drag restores picker without adding widget");
     checkAnalogClock(picker, wizardWindow, placement);
@@ -403,7 +413,7 @@ static void start() {
         }
     });
     timer->start(250);
-    QTimer::singleShot(25000, qApp, [] {
+    QTimer::singleShot(55000, qApp, [] {
         for (auto window : QGuiApplication::allWindows()) {
             fprintf(stderr, "WINDOW: %s %s x=%d visible=%d\n", window->metaObject()->className(), qPrintable(window->objectName()), window->x(), window->isVisible());
             if (auto view = qobject_cast<QQuickWindow *>(window)) {

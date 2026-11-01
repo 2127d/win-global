@@ -116,8 +116,16 @@ Item {
             const message = findChild(mainBlock, "unlockMessage");
             verify(message.visible);
             compare(message.text, "Unlocking failed");
-            authenticator.graceLocked = true;
-            verify(!mainBlock.mainPasswordBox.enabled);
+            if (typeof mainBlock.passwordInputVisible !== "undefined") {
+                // Plasma 6.8's authentication loader controls visibility.
+                mainBlock.passwordInputVisible = false;
+                verify(!mainBlock.mainPasswordBox.visible);
+                mainBlock.passwordInputVisible = true;
+                verify(mainBlock.mainPasswordBox.visible);
+            } else {
+                authenticator.graceLocked = true;
+                verify(!mainBlock.mainPasswordBox.enabled);
+            }
         }
         function test_passwordlessLayout() {
             mainBlock.visible = false;

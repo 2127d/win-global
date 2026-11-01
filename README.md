@@ -171,8 +171,8 @@ extract the updated installer and select only **Gwenview makeover** to retry.
 
 Use KDE Plasma 6 with Qt 6.7 or newer and KDE Frameworks 6.10 or newer for the
 native theme; window decorations require KDecoration3. The bundled app forks
-require **System Settings 6.7.5** (Qt 6.10+, Frameworks 6.26+),
-**Gwenview 26.08.1**, **KCalc 26.08.1**, and **KWeather 26.08.1** from Flatpak
+require **System Settings 6.8.2** (Qt 6.10+, Frameworks 6.26+),
+**Gwenview 26.08.2**, **KCalc 26.08.2**, and **KWeather 26.08.1** from Flatpak
 (Weather needs Qt 6.9+ and Frameworks 6.26+). Version checks run before package installation.
 Quick styling and lock-screen overrides also validate the installed KDE sources;
 different releases may need updated overrides. Choosing a distro does not make
@@ -209,7 +209,7 @@ python3 tools/install-kcalc.py --remove
 
 ## Command-line installation
 
-Tested on Fedora 44, Plasma 6.7.5, Qt 6.11.2, and KDE Frameworks 6.30.
+Tested on Fedora 44, Plasma 6.8.2, Qt 6.11.2, and KDE Frameworks 6.31.
 
 Run as the desktop user, without starting the script with sudo:
 
@@ -1005,3 +1005,9 @@ app bridge. The effect does not change desktop layouts or replace decorations.
 Its plugin is tracked by the normal installation receipt; its single `kwinrc` setting
 has a separate reversible snapshot. Removal preserves unrelated configuration.
 See `desktop/effects/modal-dimming/README.md` for the integration API and tests.
+
+## Plasma 6.8 upgrades
+
+Refresh the installed Sequoia components after upgrading Plasma. The installer regenerates shell and widget overrides from the installed system resources, rebuilds native plugins, and archives stale user-level native widget copies that would shadow the new system packages. Partial shell removal also regenerates retained layers from the current Plasma version, with compatibility checks before removal. Panel and desktop layouts are preserved. Native KWin effects must be rebuilt for the exact installed KWin version.
+
+The separate Sequoia Taskbar is ported to Plasma 6.8.2; rebuild it with `tools/build-taskbar.py` and install the resulting stage with `tools/install-taskbar.py`. Its receipt-based removal remains available with `--remove`.

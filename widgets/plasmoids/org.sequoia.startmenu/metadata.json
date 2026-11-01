@@ -4,12 +4,18 @@
     "Name": "Sequoia Start Menu",
     "Description": "A familiar Start menu with pinned apps, recommendations and category, list or grid browsing",
     "Icon": "start-here-kde",
-    "Version": "1.0.6",
+    "Version": "1.1.0",
     "License": "MIT",
     "Category": "Application Launchers",
-    "Authors": [{ "Name": "Sequoia" }]
+    "Authors": [
+      {
+        "Name": "Sequoia"
+      }
+    ]
   },
   "KPackageStructure": "Plasma/Applet",
   "X-Plasma-API-Minimum-Version": "6.0",
-  "X-Plasma-Provides": ["org.kde.plasma.launchermenu"]
+  "X-Plasma-Provides": [
+    "org.kde.plasma.launchermenu"
+  ]
 }

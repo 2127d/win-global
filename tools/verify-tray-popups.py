@@ -80,7 +80,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-tray-popup-',ignore_cleanup_err
         XDG_DATA_DIRS=str(base/'system/usr/share')+':/usr/share',
         QT_PLUGIN_PATH=str(base/'system'/plugin_dir.relative_to('/').parent.parent),
         QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QT_STYLE_OVERRIDE='Fusion',
-        QT_QPA_PLATFORMTHEME='generic',QT_FORCE_STDERR_LOGGING='1',KWIN_COMPOSE='Q')
+        QT_QPA_PLATFORMTHEME='generic',QT_FORCE_STDERR_LOGGING='1',KWIN_COMPOSE='O2')
     for key in ('DISPLAY','WAYLAND_DISPLAY','LD_PRELOAD'): env.pop(key,None)
     log=ROOT/'.staging/tray-popup-test.log'
     with log.open('w') as output:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build/install a version-checked dashboard for the existing Plasma system tray."""
 import argparse
+import ctypes.util
 import hashlib
 import json
 import os
@@ -154,8 +155,10 @@ def build(destination):
     text = replace(text, '                    systemTrayState.setActiveApplet(null)\n', '                    popup.goHome()\n')
     text = replace(text, 'i18n("Status and Notifications")', '(popup.showAllItems ? i18n("More tray items") : i18n("Control Center"))')
     # Media and other applets can remove their configure action entirely.
-    text = replace(text, 'actionsButton.applet?.plasmoid.internalAction("configure").text ?? ""',
-                   'actionsButton.applet?.plasmoid.internalAction("configure")?.text ?? ""')
+    safe_configure = 'actionsButton.applet?.plasmoid.internalAction("configure")?.text ?? ""'
+    if safe_configure not in text:
+        text = replace(text, 'actionsButton.applet?.plasmoid.internalAction("configure").text ?? ""',
+                       safe_configure)
     text = replace(text, '        // Grid view of all available items', '''        ControlDashboard {
             id: dashboard
             backend: controls
@@ -283,7 +286,12 @@ def build(destination):
     path.write_text(text)
     for source in (SOURCE / 'media').glob('*.qml'):
         shutil.copy2(source, media / source.name)
-    dependencies = [PLUGIN, MEDIA_PLUGIN, *(Path(QLibraryInfo.path(QLibraryInfo.LibrariesPath)) / name for name in ('libPlasma.so.7', 'libPlasmaQuick.so.7'))]
+    dependencies = [PLUGIN, MEDIA_PLUGIN]
+    for library in ('Plasma', 'PlasmaQuick'):
+        soname = ctypes.util.find_library(library)
+        if not soname:
+            raise RuntimeError(f'Cannot locate the installed {library} library.')
+        dependencies.append(Path(QLibraryInfo.path(QLibraryInfo.LibrariesPath)) / soname)
     dependencies += style_details(destination, SOURCE, PLUGIN.parent, extract, replace)
     dependencies += style_weather(destination, SOURCE, PLUGIN.parent, extract, replace)
     dependencies += style_contacts(destination, SOURCE, PLUGIN.parent, extract, replace)

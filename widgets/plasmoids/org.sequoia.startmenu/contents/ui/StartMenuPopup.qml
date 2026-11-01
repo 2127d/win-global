@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma ComponentBehavior: Bound
 import QtQuick
+import org.kde.kirigami as Kirigami
 import org.kde.plasma.core as PlasmaCore
 
 PlasmaCore.Dialog {
@@ -10,15 +11,23 @@ PlasmaCore.Dialog {
     required property var backend
     property real popupWidth: configuration.menuWidth
     property real popupHeight: configuration.menuHeight
+    property int panelLocation: PlasmaCore.Types.BottomEdge
     property bool opened: false
     property bool hadFocus: false
     signal settingsRequested()
-    location: PlasmaCore.Types.Floating
+    // An edge submits Plasma's native slide hint. Floating explicitly disables it.
+    // KWin transforms the complete surface and owns blur/contrast cleanup,
+    // including interrupted transitions; never animate just mainItem.opacity.
+    location: configuration.animationsEnabled && Kirigami.Units.longDuration > 1
+        ? panelLocation : PlasmaCore.Types.Floating
+    // Keep every themed corner and its matching blur mask, including the
+    // taskbar-facing edge. The separate location still supplies the slide hint.
+    floating: 1
     type: PlasmaCore.Dialog.PopupMenu
     hideOnWindowDeactivate: false
     backgroundHints: PlasmaCore.Dialog.StandardBackground
-    // Hide the whole native surface together, including its background and shadow.
-    // KWin owns window effects; a second content-only exit leaves an empty box.
+    // Unmap immediately on close. KWin retains the surface only for its exit
+    // animation, then releases its blur and shadow with the animation reference.
     visible: opened
     onOpenedChanged: {
         if (opened) {

@@ -1,0 +1,22 @@
+{
+  "source": "SequoiaTahoe Material Symbols Rounded (same source as Weather and Gwenview controls)",
+  "sha256": {
+    "configure.svg": "7a47125df4c57f7b69e2a8a313be96d236647287a745c108fddcdeeb9a2a3ab3",
+    "search.svg": "0bb32a28601d98800dd8b6b834f9ebb7879db3aaeabd38c54ef0ea37ebfbbee1",
+    "close.svg": "67d1fbd5fa3fcb42e0d07150f4b3b243686da80f97b361e4d7d304045f3945bd",
+    "system-shutdown.svg": "f153f956d1f3850f42568901302c0e5b9e3c54d1f849a11cc2e13a5f056b89b2",
+    "go-next.svg": "6babd9c102b6c2c0944070b753a37a6ee2cfadfa5f3699eaef0ad06ec7be96c5",
+    "go-previous.svg": "ab74d303bcbace8eb106aa72bfa66f7f99e6c6ccf9c82edba5a4199fe50fb06b",
+    "go-down.svg": "4b4dbfc0ba102e46b72c96ec3ee64a248cd06b994715bcf4355340fae0d474fa",
+    "view-list-icons.svg": "1c18e99e5e0c28576bd93efaeac879a25d1ab603b7d217b8731d9a1add73da20",
+    "view-list-details.svg": "24ffe6a7c42b1f14c529346f54a4b41d7bb47c4f1b43fb3df31bc3d564f57017",
+    "category.svg": "cfda41834801182e8faf1fe0705a2e82a835311295dec4d924f01c81d441ba06",
+    "system-reboot.svg": "afdd2ce3ccf1a98ff081deea1ddcba71fb9cb311fb63ab4b329a0b4950f52edd",
+    "system-suspend.svg": "41295a978fdc5d9d359f0d06f1da781ab4ef087c1804d80f20d4d26db9312ae0",
+    "system-suspend-hibernate.svg": "41295a978fdc5d9d359f0d06f1da781ab4ef087c1804d80f20d4d26db9312ae0",
+    "system-lock-screen.svg": "5d4e580c4cba81ffd38950b3fc02cb43bb9b86801a74a61f3cd6ec2a56253aa3",
+    "system-switch-user.svg": "b6077bd486ab560fa9bc28db15c5ab30af275349a85da34aec5ce5fa7b9172a7",
+    "system-log-out.svg": "27ec09eda6f9d0f0f4de56c9898f53a5d1d72adba06699624397db82b27128c5"
+  },
+  "revision": "10ecc14790612ca8fd164e3f4ffe9c16fc50d5b7"
+}

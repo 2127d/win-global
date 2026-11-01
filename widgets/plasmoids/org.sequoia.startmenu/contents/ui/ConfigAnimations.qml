@@ -18,7 +18,7 @@ QQC2.ScrollView {
         QQC2.SpinBox { id: duration; enabled: animations.checked; from: 100; to: 600; stepSize: 20; editable: true; Kirigami.FormData.label: qsTr("Duration (ms):") }
         QQC2.CheckBox { id: shrink; enabled: animations.checked; text: qsTr("Shrink app tiles when opening them") }
         QQC2.Label {
-            text: qsTr("Show all, category buttons, and Back slide pages to the left. Disable animations for instant page transitions. Opening and closing use Plasma's desktop effects for the whole menu window.")
+            text: qsTr("Show all, category buttons, and Back slide pages to the left. Disable animations for instant page transitions. Opening and closing slide the whole menu from the taskbar using Plasma’s Sliding Popups effect and desktop animation speed.")
             wrapMode: Text.Wrap; Layout.maximumWidth: 430; Kirigami.FormData.isSection: true
         }
         Rectangle {

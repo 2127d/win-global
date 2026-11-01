@@ -5,7 +5,6 @@ import QtQuick.Window
 import org.kde.plasma.components as QQC2
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
-import org.kde.ksvg as KSvg
 
 FocusScope {
     id: startMenu
@@ -20,9 +19,10 @@ FocusScope {
     property var pendingModel: null
     property int pendingIndex: -1
     property string launchError: ""
-    readonly property int motionDuration: configuration.animationsEnabled && Kirigami.Units.longDuration > 0 ? configuration.animationDuration : 0
+    readonly property int motionDuration: configuration.animationsEnabled && Kirigami.Units.longDuration > 1 ? configuration.animationDuration : 0
+    readonly property int feedbackDuration: motionDuration > 0 ? 100 : 0
     readonly property color textColor: Kirigami.Theme.textColor
-    readonly property color secondaryColor: Kirigami.Theme.disabledTextColor
+    readonly property color secondaryColor: Qt.alpha(Kirigami.Theme.textColor, 0.60)
     readonly property color borderColor: Qt.alpha(Kirigami.Theme.textColor, 0.08)
     readonly property color hoverColor: Qt.alpha(Kirigami.Theme.highlightColor, 0.15)
     readonly property color tileColor: Qt.alpha(Kirigami.Theme.textColor, 0.04)
@@ -107,27 +107,34 @@ FocusScope {
             spacing: 0
             Item {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 76
+                Layout.preferredHeight: 84
                 QQC2.TextField {
                     id: search
                     objectName: "startSearch"
-                    anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; leftMargin: 28; rightMargin: 28 }
-                    height: 34
-                    leftPadding: 35; rightPadding: 34
+                    anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; leftMargin: 20; rightMargin: 20 }
+                    height: 44
+                    leftPadding: 42; rightPadding: 42
                     placeholderText: qsTr("Search for apps, settings, and documents")
                     color: startMenu.textColor
                     placeholderTextColor: startMenu.secondaryColor
-                    font.pixelSize: 12
+                    font.pixelSize: 13
+                    background: MenuSurface {
+                        radius: height / 2
+                        elevated: true
+                        focused: search.activeFocus
+                        motionDuration: startMenu.feedbackDuration
+                    }
                     selectByMouse: true
                     Accessible.name: placeholderText
                     onTextChanged: searchDelay.restart()
                     onAccepted: if (backend.searchResults && backend.searchResults.count > 0) startMenu.launch(backend.searchResults, 0)
-                    Kirigami.Icon { source: "search"; x: 12; anchors.verticalCenter: parent.verticalCenter; width: 15; height: 15 }
-                    QQC2.ToolButton {
+                    Kirigami.Icon { source: Qt.resolvedUrl("../icons/search.svg"); isMask: true; color: startMenu.secondaryColor; x: 16; anchors.verticalCenter: parent.verticalCenter; width: 18; height: 18 }
+                    MenuAction {
                         visible: search.text.length > 0
-                        anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
-                        width: 32; height: 32; icon.name: "edit-clear"
-                        Accessible.name: qsTr("Clear search")
+                        anchors.right: parent.right; anchors.rightMargin: 4; anchors.verticalCenter: parent.verticalCenter
+                        width: 34; height: 34; symbol: "close"; iconOnly: true
+                        text: qsTr("Clear search")
+                        motionDuration: startMenu.feedbackDuration
                         onClicked: search.clear()
                     }
                 }
@@ -160,6 +167,7 @@ FocusScope {
                     visible: !!search.text.trim().length
                     contentWidth: availableWidth
                     QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
+                    QQC2.ScrollBar.vertical: MenuScrollBar {}
                     Column {
                         width: parent.width
                         spacing: 14
@@ -174,17 +182,20 @@ FocusScope {
                     }
                 }
             }
-            Rectangle {
+            MenuSurface {
+                objectName: "startAccountIsland"
                 Layout.fillWidth: true; Layout.preferredHeight: 64
-                color: "transparent"
-                Rectangle { width: parent.width; height: 1; color: startMenu.borderColor }
+                Layout.leftMargin: 20; Layout.rightMargin: 20
+                Layout.topMargin: 10; Layout.bottomMargin: 14
+                elevated: true
+                motionDuration: startMenu.feedbackDuration
                 RowLayout {
-                    anchors.fill: parent; anchors.leftMargin: 32; anchors.rightMargin: 26
+                    anchors.fill: parent; anchors.leftMargin: 16; anchors.rightMargin: 12
                     spacing: 12
                     Kirigami.ShadowedImage {
                         id: avatar
                         objectName: "startUserAvatar"
-                        Layout.preferredWidth: 30; Layout.preferredHeight: 30
+                        Layout.preferredWidth: 34; Layout.preferredHeight: 34
                         source: backend.avatar
                         fillMode: Image.PreserveAspectCrop
                         radius: width / 2
@@ -197,25 +208,47 @@ FocusScope {
                             visible: avatar.status !== Image.Ready
                         }
                     }
-                    Text { visible: configuration.showAccountName; text: backend.userName; color: startMenu.textColor; font.pixelSize: 12; elide: Text.ElideRight; Layout.maximumWidth: 230 }
+                    Text { visible: configuration.showAccountName; text: backend.userName; color: startMenu.textColor; font.pixelSize: 13; font.weight: Font.Medium; elide: Text.ElideRight; Layout.maximumWidth: 230 }
                     Item { Layout.fillWidth: true }
-                    QQC2.ToolButton {
+                    MenuAction {
                         objectName: "startSettingsButton"
-                        icon.name: "configure"
-                        Accessible.name: qsTr("Configure Start menu")
-                        QQC2.ToolTip.visible: hovered; QQC2.ToolTip.text: Accessible.name
+                        symbol: "configure"; iconOnly: true; raised: true
+                        implicitHeight: 38
+                        text: qsTr("Configure Start menu")
+                        motionDuration: startMenu.feedbackDuration
                         onClicked: startMenu.settingsRequested()
                     }
-                    QQC2.ToolButton {
+                    MenuAction {
                         id: powerButton
-                        icon.name: "system-shutdown"
-                        Accessible.name: qsTr("Power and session")
-                        QQC2.ToolTip.visible: hovered; QQC2.ToolTip.text: Accessible.name
+                        symbol: "system-shutdown"; iconOnly: true; raised: true
+                        implicitHeight: 38
+                        selected: powerMenu.visible
+                        text: qsTr("Power and session")
+                        motionDuration: startMenu.feedbackDuration
                         objectName: "startPowerButton"
                         onClicked: powerMenu.openAt(powerButton, 0)
                     }
                 }
             }
+        }
+    }
+
+    // These dropdowns are separate native surfaces. A click in the parent
+    // must dismiss them even when the clicked item does not take focus.
+    MouseArea {
+        objectName: "startDropdownDismissArea"
+        anchors.fill: parent
+        z: 100
+        enabled: startMenu.submenuOpen
+        acceptedButtons: Qt.AllButtons
+        onPressed: {
+            viewMenu.closeMenu(true);
+            powerMenu.closeMenu(true);
+        }
+        onWheel: wheel => {
+            viewMenu.closeMenu(true);
+            powerMenu.closeMenu(true);
+            wheel.accepted = true;
         }
     }
 
@@ -253,14 +286,15 @@ FocusScope {
     component Heading: RowLayout {
         property string title
         property string buttonText: ""
+        property string buttonSymbol: "go-next"
         signal activated()
         width: parent.width
-        Text { text: parent.title; color: startMenu.textColor; font.pixelSize: 13; font.bold: true; Layout.fillWidth: true }
-        QQC2.Button {
+        Text { text: parent.title; color: startMenu.textColor; font.pixelSize: 15; font.weight: Font.DemiBold; Layout.fillWidth: true }
+        MenuAction {
             visible: parent.buttonText.length > 0
             text: parent.buttonText
-            flat: true
-            font.pixelSize: 11
+            trailingSymbol: parent.buttonSymbol
+            motionDuration: startMenu.feedbackDuration
             onClicked: parent.activated()
         }
     }
@@ -279,24 +313,27 @@ FocusScope {
             readonly property bool showApps: (destination === "home" && configuration.showAllApps) || destination === "apps"
             contentWidth: availableWidth
             QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
+            QQC2.ScrollBar.vertical: MenuScrollBar {}
             Column {
                 width: pageView.availableWidth
                 padding: 0
                 Column {
-                    x: 32; width: parent.width - 64
-                    spacing: 12
+                    x: 20; width: parent.width - 40
+                    spacing: 20
+                    topPadding: 4
                     bottomPadding: 20
                     Heading {
                         visible: pageView.destination !== "home"
                         title: pageView.destination === "pinned" ? qsTr("All pinned apps") : pageView.destination === "recommended" ? qsTr("All recommended") : pageView.destination === "category" ? startMenu.categoryTitle : qsTr("All apps")
-                        buttonText: qsTr("Back  ›")
+                        buttonText: qsTr("Back"); buttonSymbol: "go-previous"
                         onActivated: startMenu.navigate("home")
                     }
-                    Column {
+                    MenuSection {
+                        motionDuration: startMenu.feedbackDuration
                         visible: pageView.showPinned
                         width: parent.width; spacing: 8
-                        QQC2.Button { visible: pageView.destination === "home" && !configuration.showAllApps; text: qsTr("All apps  ›"); onClicked: startMenu.navigate("apps") }
-                        Heading { visible: pageView.destination === "home"; title: qsTr("Pinned"); buttonText: qsTr("Show all  ›"); onActivated: startMenu.navigate("pinned") }
+                        MenuAction { visible: pageView.destination === "home" && !configuration.showAllApps; text: qsTr("All apps"); trailingSymbol: "go-next"; motionDuration: startMenu.feedbackDuration; onClicked: startMenu.navigate("apps") }
+                        Heading { visible: pageView.destination === "home"; title: qsTr("Pinned"); buttonText: qsTr("Show all"); onActivated: startMenu.navigate("pinned") }
                         AppCollection {
                             width: parent.width; menu: startMenu; sourceModel: backend.favorites
                             populated: pageView.showPinned
@@ -304,10 +341,11 @@ FocusScope {
                         }
                         EmptyHint { visible: backend.favorites.count === 0; text: qsTr("Make this space yours. Right-click any app and choose Pin to Start.") }
                     }
-                    Column {
+                    MenuSection {
+                        motionDuration: startMenu.feedbackDuration
                         visible: pageView.showRecent
                         width: parent.width; spacing: 8
-                        Heading { visible: pageView.destination === "home"; title: qsTr("Recommended"); buttonText: qsTr("Show all  ›"); onActivated: startMenu.navigate("recommended") }
+                        Heading { visible: pageView.destination === "home"; title: qsTr("Recommended"); buttonText: qsTr("Show all"); onActivated: startMenu.navigate("recommended") }
                         AppCollection {
                             width: parent.width; menu: startMenu; sourceModel: backend.recent
                             populated: pageView.showRecent
@@ -321,71 +359,29 @@ FocusScope {
                         width: parent.width; spacing: 12
                         RowLayout {
                             width: parent.width
-                            Text { text: qsTr("All"); color: startMenu.textColor; font.pixelSize: 13; font.bold: true; Layout.fillWidth: true }
-                            QQC2.Button { visible: pageView.destination === "home"; text: qsTr("Show all  ›"); flat: true; font.pixelSize: 11; onClicked: startMenu.navigate("apps") }
-                            QQC2.ToolButton {
+                            Text { text: qsTr("All apps"); color: startMenu.textColor; font.pixelSize: 15; font.weight: Font.DemiBold; Layout.fillWidth: true }
+                            MenuAction { visible: pageView.destination === "home"; text: qsTr("Show all"); trailingSymbol: "go-next"; motionDuration: startMenu.feedbackDuration; onClicked: startMenu.navigate("apps") }
+                            MenuAction {
                                 id: viewSelector
                                 objectName: "appViewSelector"
-                                text: qsTr("View: %1").arg(viewMenu.model[configuration.appView].display)
-                                Accessible.name: qsTr("All apps view")
+                                text: viewMenu.model[configuration.appView].display
+                                symbol: ["category", "view-list-details", "view-list-icons"][configuration.appView]
+                                trailingSymbol: "go-down"
+                                raised: true
+                                selected: viewMenu.visible
+                                implicitWidth: 150
+                                Accessible.name: qsTr("All apps view: %1").arg(text)
                                 Accessible.role: Accessible.ComboBox
-                                implicitWidth: 140
-                                implicitHeight: Math.max(label.implicitHeight, 16) + topPadding + bottomPadding
-                                font.pixelSize: 11
+                                motionDuration: startMenu.feedbackDuration
                                 onClicked: viewMenu.openAt(viewSelector, configuration.appView)
                                 Keys.onDownPressed: viewMenu.openAt(viewSelector, configuration.appView)
                                 Keys.onUpPressed: viewMenu.openAt(viewSelector, configuration.appView)
-                                topPadding: selectorBackground.margins.top
-                                bottomPadding: selectorBackground.margins.bottom
-                                leftPadding: selectorBackground.margins.left
-                                rightPadding: selectorBackground.margins.right
-                                contentItem: Item {
-                                    Text {
-                                        id: label
-                                        anchors.left: parent.left
-                                        anchors.right: arrow.left
-                                        anchors.rightMargin: 4
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        text: viewSelector.text
-                                        color: startMenu.textColor
-                                        font: viewSelector.font
-                                        elide: Text.ElideRight
-                                    }
-                                    KSvg.SvgItem {
-                                        id: arrow
-                                        width: Kirigami.Units.iconSizes.small
-                                        height: width
-                                        anchors.right: parent.right
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        svg: KSvg.Svg { imagePath: "widgets/arrows"; colorSet: KSvg.Svg.Button }
-                                        elementId: "down-arrow"
-                                    }
-                                    WheelHandler {
-                                        onWheel: event => {
-                                            if (!event.angleDelta.y) return;
-                                            configuration.appView = Math.max(0, Math.min(2,
-                                                configuration.appView + (event.angleDelta.y < 0 ? 1 : -1)));
-                                            event.accepted = true;
-                                        }
-                                    }
-                                }
-                                background: KSvg.FrameSvgItem {
-                                    id: selectorBackground
-                                    imagePath: "widgets/button"
-                                    prefix: "normal"
-                                    // These theme frames are full button surfaces, not
-                                    // outer halos. Keep every state on the same bounds.
-                                    KSvg.FrameSvgItem {
-                                        anchors.fill: parent
-                                        imagePath: "widgets/button"
-                                        prefix: viewSelector.down ? "pressed" : "hover"
-                                        visible: viewSelector.enabled && (viewSelector.hovered || viewSelector.down)
-                                    }
-                                    KSvg.FrameSvgItem {
-                                        anchors.fill: parent
-                                        imagePath: "widgets/button"
-                                        prefix: "focus"
-                                        visible: viewSelector.activeFocus && !viewSelector.down
+                                WheelHandler {
+                                    onWheel: event => {
+                                        if (!event.angleDelta.y) return;
+                                        configuration.appView = Math.max(0, Math.min(2,
+                                            configuration.appView + (event.angleDelta.y < 0 ? 1 : -1)));
+                                        event.accepted = true;
                                     }
                                 }
                             }

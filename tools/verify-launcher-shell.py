@@ -100,7 +100,7 @@ def main():
         base=Path(temporary)
         env=dict(os.environ, SEQUOIA_LAUNCHER_TEST=str(base), QT_QPA_PLATFORM='offscreen',
                  QT_QUICK_BACKEND='software', QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion',
-                 KWIN_COMPOSE='Q', QT_FORCE_STDERR_LOGGING='1')
+                 KWIN_COMPOSE='O2', QT_FORCE_STDERR_LOGGING='1')
         for key in ('DISPLAY','WAYLAND_DISPLAY','LD_PRELOAD','QT_PLUGIN_PATH','QML_IMPORT_PATH'):
             env.pop(key,None)
         for kind in ('CONFIG','DATA','STATE','CACHE','RUNTIME'):

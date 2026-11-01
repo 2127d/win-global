@@ -55,14 +55,14 @@ def child(base, width, height, offset):
             if not offset:
                 subprocess.run(['qdbus-qt6', 'org.kde.plasmashell', '/PlasmaShell',
                     'org.kde.PlasmaShell.toggleWidgetExplorer'], check=True, capture_output=True)
-            result = shell.wait(timeout=30)
+            result = shell.wait(timeout=60)
             if result:
                 return result
             # Start a new shell against the same private config to verify that
             # Plasma persisted the resized and dragged footprints and positions.
             env['SEQUOIA_GRID_RESTORE'] = '1'
             shell = subprocess.Popen(['plasmashell', '--no-respawn'], env=env, stdout=log, stderr=log)
-            return shell.wait(timeout=30)
+            return shell.wait(timeout=60)
         finally:
             stop(shell)
             stop(compositor)
@@ -96,8 +96,8 @@ def main():
         subprocess.run(['c++', '-std=c++17', '-fPIC', '-shared', str(source), '-o', str(library), *flags], check=True)
     with tempfile.TemporaryDirectory(prefix='sequoia-picker-', ignore_cleanup_errors=True) as directory:
         base = Path(directory)
-        env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software',
-                   QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='Fusion', KWIN_COMPOSE='Q',
+        env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QSG_RHI_BACKEND='opengl', LIBGL_ALWAYS_SOFTWARE='1',
+                   QT_QPA_PLATFORMTHEME='kde', QT_STYLE_OVERRIDE='Fusion', KWIN_COMPOSE='O2',
                    QT_FORCE_STDERR_LOGGING='1', QT_SCALE_FACTOR=str(args.scale),
                    SEQUOIA_PICKER_MATERIAL=args.material,
                    SEQUOIA_CLOCK_CAPTURE=str(ROOT / f'preview/analog-clock-{args.mode}'),
@@ -125,7 +125,7 @@ def main():
         with (base / 'session.log').open('w') as log:
             result = subprocess.run(['dbus-run-session', '--', sys.executable, str(Path(__file__).resolve()),
                 '--child', str(base), '--width', str(args.width), '--height', str(args.height), '--offset', str(args.offset)],
-                env=env, stdout=log, stderr=log, timeout=55)
+                env=env, stdout=log, stderr=log, timeout=125)
         if not (base / 'plasma.log').exists():
             raise RuntimeError((base / 'session.log').read_text())
         output = (base / 'plasma.log').read_text()

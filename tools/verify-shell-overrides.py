@@ -10,7 +10,7 @@ import unittest
 
 import shell_overrides as shell
 import widget_picker
-from theme_files import Receipt, payload_files
+from theme_files import Receipt, payload_files, fingerprint
 
 spec = importlib.util.spec_from_file_location('installer', Path(__file__).with_name('install-theme.py'))
 installer = importlib.util.module_from_spec(spec)
@@ -96,6 +96,19 @@ class ShellTests(unittest.TestCase):
             self.install('plasma-style')
         with self.assertRaisesRegex(RuntimeError, 'CompactApplet has changed'):
             shell.patch_launcher('unrecognized upstream')
+
+    def test_partial_removal_rebuilds_retained_panel_after_upgrade(self):
+        self.install('plasma-style', 'lockscreen')
+        name = shell.SHELL + '/contents/views/Panel.qml'
+        path = self.live / name
+        path.write_text('import org.kde.plasma.shell.panel as Panel\n// old installed shell\n')
+        receipt = self.receipt()
+        receipt.data['files'][name]['installed'] = fingerprint(path)
+        receipt.save()
+        self.remove('lockscreen')
+        self.assertEqual(path.read_text(), widget_picker.panel(
+            (shell.SYSTEM_SHELL / 'contents/views/Panel.qml').read_text()))
+        self.receipt().validate()
 
     def test_modified_shell_stops_before_removal(self):
         self.install('plasma-style', 'lockscreen')

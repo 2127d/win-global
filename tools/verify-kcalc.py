@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verify KCalc mode sizing and installation with isolated configuration."""
 import argparse
+from installer_platform import application_version
 import os
 from pathlib import Path
 import shlex
@@ -58,7 +59,7 @@ with tempfile.TemporaryDirectory(prefix='kcalc-install-test-') as temp:
     changed = base / 'changed-stock'; changed.write_text('package upgrade')
     assert module.command(data, changed, arguments) == [str(changed), *arguments]
     env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QT_QPA_PLATFORMTHEME='generic')
-    assert '26.08.1' in subprocess.check_output([str(launcher), '--version'], env=env, text=True)
+    assert application_version('kcalc') in subprocess.check_output([str(launcher), '--version'], env=env, text=True)
     subprocess.run([*command, '--remove', '--check'], check=True)
     subprocess.run([*command, '--remove'], check=True)
     assert launcher.read_text() == '#!/bin/sh\nexit 19\n'

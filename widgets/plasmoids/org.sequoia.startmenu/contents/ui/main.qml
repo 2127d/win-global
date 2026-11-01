@@ -79,6 +79,7 @@ PlasmoidItem {
         transientParent: root.Window.window
         x: placement.popupX
         y: placement.popupY
+        panelLocation: Plasmoid.location
         popupWidth: placement.popupWidth
         popupHeight: placement.popupHeight
         configuration: Plasmoid.configuration

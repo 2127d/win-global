@@ -8,32 +8,36 @@ Grid {
     id: categories
     required property var menu
     property bool populated: true
-    columns: Math.max(2, Math.floor(width / 130))
-    spacing: 14
+    columns: Math.max(1, Math.floor((width + spacing) / (130 + spacing)))
+    spacing: 16
     Repeater {
         model: categories.populated ? categories.menu.backend.categories : null
         delegate: QQC2.AbstractButton {
             id: card
+            objectName: "startCategoryCard"
             required property int index
             required property var model
             readonly property var apps: categories.menu.backend.categories.modelForRow(index)
             width: (categories.width - categories.spacing * (categories.columns - 1)) / categories.columns
-            height: 142
+            height: width
+            padding: 0
             hoverEnabled: true
+            focusPolicy: Qt.StrongFocus
             text: model.display || ""
             Accessible.name: text
             onClicked: categories.menu.showCategory(apps, text)
-            background: Item {
-                Rectangle {
-                    width: parent.width; height: 112; radius: 9
-                    color: card.hovered ? categories.menu.hoverColor : categories.menu.tileColor
-                    border.width: card.activeFocus ? 2 : 1
-                    border.color: card.activeFocus ? categories.menu.accentColor : categories.menu.borderColor
-                }
+            background: MenuSurface {
+                hovered: card.hovered
+                pressed: card.down
+                focused: card.visualFocus
+                panel: true
+                radius: 22
+                elevated: true
+                motionDuration: categories.menu.feedbackDuration
             }
             contentItem: Item {
                 Grid {
-                    anchors.top: parent.top; anchors.topMargin: 18
+                    y: Math.max(12, (parent.height - 32 - height) / 2)
                     anchors.horizontalCenter: parent.horizontalCenter
                     columns: 2; spacing: 18
                     Repeater {
@@ -53,11 +57,13 @@ Grid {
                     }
                 }
                 Text {
-                    anchors.bottom: parent.bottom; anchors.bottomMargin: 7
-                    width: parent.width
+                    anchors.bottom: parent.bottom; anchors.bottomMargin: 14
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.width - 16
                     text: card.text
                     color: categories.menu.textColor
-                    font.pixelSize: 11
+                    font.pixelSize: 12
+                    font.weight: Font.Medium
                     horizontalAlignment: Text.AlignHCenter
                     elide: Text.ElideRight
                 }

@@ -30,9 +30,11 @@ def main():
     lockscreen = source / 'contents/lockscreen'
     main_block = replace_once((lockscreen / 'MainBlock.qml').read_text(),
                               'SessionManagementScreen {', 'SequoiaSession {')
-    main_block = replace_once(main_block, '    RowLayout {\n        Layout.fillWidth: true', """    ColumnLayout {
-        Layout.fillWidth: true
-        spacing: 14 * sessionManager.unit""")
+    password_layout = ('    RowLayout {\n        id: passwordLayout\n        Layout.fillWidth: true'
+                       if '        id: passwordLayout\n' in main_block
+                       else '    RowLayout {\n        Layout.fillWidth: true')
+    main_block = replace_once(main_block, password_layout,
+        password_layout.replace('RowLayout', 'ColumnLayout', 1) + '\n        spacing: 14 * sessionManager.unit')
     main_block = replace_once(main_block,
         '            font.pointSize: Kirigami.Theme.defaultFont.pointSize + 1\n', '')
     main_block = replace_once(main_block, '            id: passwordBox\n', """            id: passwordBox

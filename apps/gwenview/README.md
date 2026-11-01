@@ -1,18 +1,18 @@
 # Gwenview override
 
-Workspace for a presentation fork of Gwenview 26.08.1, matching the installed
-`gwenview-26.08.1-1.fc44.x86_64` package. The presentation fork adds a clean welcome page and a thumbnail sidebar for
+Workspace for a presentation fork of Gwenview 26.08.2, matching the installed
+`gwenview-26.08.2-1.fc44.x86_64` package. The presentation fork adds a clean welcome page and a thumbnail sidebar for
 recent images, while retaining the native viewing and editing controls.
 
 ## Layout
 
-- `gwenview-26.08.1/`: modified upstream sources with original licenses, translations,
+- `gwenview-26.08.2/`: modified upstream sources with original licenses, translations,
   image loading, editing, metadata, and file operations preserved.
 - `override.json`: baseline version, source URL, archive digest, and status.
 - `upstream.sha256`: SHA-256 of the downloaded upstream archive.
 
 Source archive:
-https://download.kde.org/stable/release-service/26.08.1/src/gwenview-26.08.1.tar.xz
+https://download.kde.org/stable/release-service/26.08.2/src/gwenview-26.08.2.tar.xz
 
 The archive is cached at `.staging/gwenview-source/` in the repository root.
 The recorded digest identifies this downloaded baseline; it is not a signature
@@ -23,7 +23,7 @@ the archive.
 
 Gwenview's main interface uses C++/Qt Widgets and KDE XMLGUI.
 
-| File within `gwenview-26.08.1/` | Responsibility |
+| File within `gwenview-26.08.2/` | Responsibility |
 | --- | --- |
 | `app/gwenviewui.rc` | Menus, toolbar actions, ordering, and separators |
 | `app/mainwindow.cpp` | Window layout, action wiring, mode changes, and navigation |

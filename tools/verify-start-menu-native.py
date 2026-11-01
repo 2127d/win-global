@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run Start menu interaction tests under a private Wayland compositor."""
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -38,6 +39,7 @@ def child(stage):
         else:
             raise RuntimeError('Private compositor failed to start')
         env.update(SEQUOIA_START_TEST_PLATFORM='wayland', WAYLAND_DISPLAY='start-menu-test',
+                   QT_QUICK_BACKEND=os.environ.get('SEQUOIA_START_TEST_BACKEND', 'software'),
                    WAYLAND_DEBUG='client', PYTHONUNBUFFERED='1',
                    # Match plasmashell's Qt Wayland position bookkeeping.
                    QT_WAYLAND_DISABLE_FIXED_POSITIONS='')
@@ -57,6 +59,12 @@ def child(stage):
                          or ('org_kde_kwin_blur#' in line and '.commit(' in line)]
         assert len(blur_requests) >= 3, ('Native menu windows did not submit compositor blur regions\n' +
             '\n'.join(line for line in output.splitlines() if 'blur' in line or 'background_effect' in line))
+        slide_surfaces = set(re.findall(r'org_kde_kwin_slide_manager#\d+\.create\(new id org_kde_kwin_slide#\d+, wl_surface#(\d+)\)', output))
+        assert slide_surfaces, 'Start did not submit a native taskbar slide hint'
+        assert re.search(r'org_kde_kwin_slide#\d+\.set_location\(3\)', output), 'Missing bottom-edge slide'
+        for surface in slide_surfaces:
+            assert f'wl_surface#{surface}.attach(nil, 0, 0)' in output, 'Sliding popup retained a mapped native/blur surface after close'
+        print('PASS: native taskbar slide protocol and surface unmapping on dismissal')
         print('PASS: native Wayland popup interaction and compositor blur-region requests')
 
     finally:

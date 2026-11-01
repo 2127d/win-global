@@ -55,7 +55,7 @@ buttons exceed the available space.
 
 ## Build and install
 
-This implementation targets the installed **Plasma 6.7.5** panel backend. The
+This implementation targets the installed **Plasma 6.8.2** panel backend. The
 builder compares the upstream panel's embedded QML with `upstream.json` before
 building. Other Plasma releases need a compatibility review. Build on the target
 computer with Qt 6 development tools, ECM, KDE Frameworks 6 Config, CoreAddons,

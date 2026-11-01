@@ -1,0 +1,223 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Lukáš Tinkl <ltinkl@redhat.com>, 2010.
+# SPDX-FileCopyrightText: 2010, 2011, 2012, 2015, 2017, 2024, 2025, 2026 Vít Pelčák <vit@pelcak.org>
+# Tomáš Chvátal <tomas.chvatal@gmail.com>, 2013.
+# Vit Pelcak <vit@pelcak.org>, 2017, 2019, 2020, 2021, 2022, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: systemsettings\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2026-08-21 00:47+0000\n"
+"PO-Revision-Date: 2026-09-04 23:51+0200\n"
+"Last-Translator: Libor Filípek <libor.filipek@gmail.com>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 3.9\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Klára Cihlářová,Vít Pelčák,David Kolibáč"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "koty@seznam.cz,vit@pelcak.org,david@kolibac.cz"
+
+#: app/ExternalAppModule.cpp:26
+#, kde-format
+msgid "%1 is an external application and has been automatically launched"
+msgstr "%1 je externí aplikace a byla automaticky spuštěna"
+
+#: app/ExternalAppModule.cpp:27
+#, kde-format
+msgid "Relaunch %1"
+msgstr "Znovu spustit %1"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, ExternalModule)
+#: app/externalModule.ui:14
+#, kde-format
+msgid "Dialog"
+msgstr "Dialog"
+
+#: app/main.cpp:61 app/SettingsBase.cpp:54
+#, kde-format
+msgid "Info Center"
+msgstr "Informační centrum"
+
+#: app/main.cpp:63
+#, kde-format
+msgid "Centralized and convenient overview of system information."
+msgstr "Centralizovaný a pohodlný přehled informací o systému."
+
+#: app/main.cpp:65 app/main.cpp:76
+#, kde-format
+msgid "(c) 2009, Ben Cooksley"
+msgstr "(c) 2009, Ben Cooksley"
+
+#: app/main.cpp:72 app/qml/IntroPage.qml:51 app/SettingsBase.cpp:57
+#: runner/systemsettingsrunner.cpp:124
+#, kde-format
+msgid "System Settings"
+msgstr "Nastavení systému"
+
+#: app/main.cpp:74
+#, kde-format
+msgid "Central configuration center by KDE."
+msgstr "Centrum nastavení od KDE."
+
+#: app/main.cpp:87
+#, kde-format
+msgid "Ben Cooksley"
+msgstr "Ben Cooksley"
+
+#: app/main.cpp:87
+#, kde-format
+msgid "Maintainer"
+msgstr "Správce"
+
+#: app/main.cpp:88
+#, kde-format
+msgid "Marco Martin"
+msgstr "Marco Martin"
+
+#: app/main.cpp:88
+#, kde-format
+msgid "Author"
+msgstr "Autor"
+
+#: app/main.cpp:89
+#, kde-format
+msgid "Mathias Soeken"
+msgstr "Mathias Soeken"
+
+#: app/main.cpp:89
+#, kde-format
+msgid "Developer"
+msgstr "Vývojář"
+
+#: app/main.cpp:90
+#, kde-format
+msgid "Will Stephenson"
+msgstr "Will Stephenson"
+
+#: app/main.cpp:90
+#, kde-format
+msgid "Internal module representation, internal module model"
+msgstr "Interní reprezentace modulů, interní model modulů"
+
+#: app/main.cpp:98
+#, kde-format
+msgid "List all possible modules"
+msgstr "Vypsat dostupné moduly"
+
+#: app/main.cpp:99 app/main.cpp:160
+#, kde-format
+msgid "Configuration module to open"
+msgstr "Konfigurační modul k otevření"
+
+#: app/main.cpp:100 app/main.cpp:161
+#, kde-format
+msgid "Arguments for the module"
+msgstr "Argumenty pro modul"
+
+#: app/main.cpp:108
+#, kde-format
+msgid "The following modules are available:"
+msgstr "Jsou dostupné tyto moduly:"
+
+#: app/main.cpp:126
+#, kde-format
+msgid "No description available"
+msgstr "Popis není dostupný"
+
+#: app/ModuleView.cpp:186
+#, kde-format
+msgid "Reset all current changes to previous values"
+msgstr "Vrátit všechny změny na původní hodnoty"
+
+#: app/ModuleView.cpp:279
+#, kde-format
+msgctxt "@info:whatsthis"
+msgid "Scrollable area"
+msgstr "Posouvatelná oblast"
+
+#: app/ModuleView.cpp:373
+#, kde-format
+msgid ""
+"The current page has unsaved changes.\n"
+"Apply the changes or discard them?"
+msgstr ""
+"Současná stránka obsahuje neuložené změny.\n"
+"Přejete si je uložit nebo zahodit?"
+
+#: app/ModuleView.cpp:378
+#, kde-format
+msgid "Apply Settings"
+msgstr "Provést nastavení"
+
+#: app/qml/CategoriesPage.qml:106
+#, kde-format
+msgctxt "A search yielded no results"
+msgid "No items matching your search"
+msgstr "Vašemu hledání neodpovídá žádná položka"
+
+#: app/qml/HamburgerMenuButton.qml:25
+#, kde-format
+msgid "Show menu"
+msgstr "Zobrazovat nabídku"
+
+#: app/qml/IntroPage.qml:44
+#, kde-format
+msgid "Plasma"
+msgstr "Plasma"
+
+#: app/qml/SubCategoryPage.qml:74
+#, kde-format
+msgctxt "@action:button go back"
+msgid "Back"
+msgstr "Zpět"
+
+#. i18n: ectx: label, entry (HighlightNonDefaultSettings), group (systemsettings_sidebar_mode)
+#: app/SettingsBase.cpp:144 app/systemsettings-config.kcfg:8
+#, kde-format
+msgid "Highlight Changed Settings"
+msgstr "Zvýraznit změněná nastavení"
+
+#: app/SettingsBase.cpp:152
+#, kde-format
+msgctxt ""
+"@option:check the pages being referred to here are System Settings KCMs"
+msgid "Show Inapplicable Pages"
+msgstr "Zobrazit neaplikovatelné stránky"
+
+#: app/SettingsBase.cpp:167
+#, kde-format
+msgid "Report a Bug in the Current Page…"
+msgstr "Nahlásit chybu na současné stránce…"
+
+#: app/SidebarMode.cpp:598
+#, kde-format
+msgid "Sidebar"
+msgstr "Postranní panel"
+
+#: app/SidebarMode.cpp:667
+#, kde-format
+msgid "Most Used"
+msgstr "Nejčastěji použité"
+
+#: runner/systemsettingsrunner.cpp:33
+#, kde-format
+msgid "Finds system settings modules whose names or descriptions match :q:"
+msgstr "Najde moduly nastavení systému jejichž názvy a popisy odpovídají :q:"
+
+#: runner/systemsettingsrunner.cpp:122
+#, kde-format
+msgid "System Information"
+msgstr "Systémové informace"

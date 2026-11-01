@@ -4,7 +4,7 @@ This application's sources and launcher live in `apps/settings/`. Run the
 commands below from the repository root; shared build and installation tools
 remain in `tools/`.
 
-This is a presentation fork of KDE System Settings 6.7.5. It replaces the long
+This is a presentation fork of KDE System Settings 6.8.2. It replaces the long
 navigation tree with eight category cards, a stable sidebar, focused category
 overviews, global search, and an alphabetical **All Settings** view. Existing
 KDE settings modules, their controls, authorization, Apply/Reset/Defaults/Help,
@@ -34,7 +34,7 @@ link, dynamically opened subpages, and the in-app host for external modules.
 ## Build and install
 
 Build dependencies are the Qt 6 and KDE Frameworks development packages listed
-in `systemsettings-v6.7.5/CMakeLists.txt`, plus CMake, Ninja, a C++20 compiler, ECM,
+in `systemsettings-v6.8.2/CMakeLists.txt`, plus CMake, Ninja, a C++20 compiler, ECM,
 gettext, and Plasma Activities. On the Fedora 44 development machine the extra
 packages beyond the theme's existing dependencies were:
 
@@ -111,8 +111,8 @@ Decorations' titlebar-button subpage without changing any values.
 
 ## Source and maintenance
 
-`systemsettings-v6.7.5/` was obtained from:
-https://invent.kde.org/plasma/systemsettings/-/archive/v6.7.5/systemsettings-v6.7.5.tar.gz
+`systemsettings-v6.8.2/` was obtained from:
+https://invent.kde.org/plasma/systemsettings/-/archive/v6.8.2/systemsettings-v6.8.2.tar.gz
 
 Upstream copyright headers, translations, and LICENSES are retained. The new
 navigation code uses GPL-2.0-or-later. Changes are confined to:

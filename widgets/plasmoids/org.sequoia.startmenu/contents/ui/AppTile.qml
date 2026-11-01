@@ -33,17 +33,17 @@ QQC2.AbstractButton {
     }
     Timer { id: releaseTimer; interval: tile.menu.motionDuration + 80; onTriggered: tile.launching = false }
     background: Rectangle {
-        radius: 7
-        color: tile.hovered || tile.down ? tile.menu.hoverColor : "transparent"
-        border.width: tile.activeFocus ? 2 : 0
+        radius: tile.listStyle ? 13 : 16
+        color: Qt.alpha(Kirigami.Theme.textColor, tile.down ? 0.14 : tile.hovered ? 0.08 : 0)
+        border.width: tile.visualFocus ? 2 : 0
         border.color: tile.menu.accentColor
-        Behavior on color { ColorAnimation { duration: 100 } }
+        Behavior on color { ColorAnimation { duration: tile.menu.feedbackDuration } }
     }
     contentItem: Item {
         Kirigami.Icon {
             id: appIcon
             source: tile.entry?.decoration || "application-x-executable"
-            width: tile.listStyle ? 30 : 32
+            width: tile.listStyle ? 32 : 36
             height: width
             x: tile.listStyle ? 12 : (parent.width - width) / 2
             y: tile.listStyle ? (parent.height - height) / 2 : 9
@@ -54,7 +54,7 @@ QQC2.AbstractButton {
             width: parent.width - x - (tile.listStyle ? 12 : 3)
             text: tile.text
             color: tile.menu.textColor
-            font.pixelSize: tile.listStyle ? 13 : 11
+            font.pixelSize: tile.listStyle ? 13 : 12
             horizontalAlignment: tile.listStyle ? Text.AlignLeft : Text.AlignHCenter
             elide: Text.ElideRight
             maximumLineCount: tile.listStyle ? 1 : 2
@@ -65,7 +65,7 @@ QQC2.AbstractButton {
             x: 54; y: 29; width: parent.width - 66
             text: tile.description
             color: tile.menu.secondaryColor
-            font.pixelSize: 10
+            font.pixelSize: 11
             elide: Text.ElideRight
         }
     }

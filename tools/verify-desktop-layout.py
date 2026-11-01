@@ -175,7 +175,7 @@ def main():
             installer.widget_payload.stage(native_stage, installer.PLUGINDIR)
             env = dict(os.environ, SEQUOIA_LAYOUT_TEST=str(base), QT_QPA_PLATFORM='offscreen',
                        QT_QUICK_BACKEND='software', QT_STYLE_OVERRIDE='Fusion', QT_QPA_PLATFORMTHEME='generic',
-                       XDG_DATA_DIRS=str(stage) + ':' + str(native_stage / 'usr/share') + ':/usr/local/share:/usr/share', KWIN_COMPOSE='Q',
+                       XDG_DATA_DIRS=str(stage) + ':' + str(native_stage / 'usr/share') + ':/usr/local/share:/usr/share', KWIN_COMPOSE='O2',
                        AKONADI_INSTANCE=base.name, QT_FORCE_STDERR_LOGGING='1')
             for key in ('DISPLAY', 'WAYLAND_DISPLAY', 'LD_PRELOAD', 'QT_PLUGIN_PATH', 'QML_IMPORT_PATH'):
                 env.pop(key, None)

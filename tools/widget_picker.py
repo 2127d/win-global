@@ -49,16 +49,32 @@ def desktop(text):
         readonly property int pickerWidth: pickerMetrics.contentWidth
         readonly property int pickerHeight: pickerMetrics.contentHeight
 ''')
-    text = replace(text, 'property var referenceRect: containment?.plasmoid.corona.editMode ?',
-                   'property var referenceRect: (centeredPicker || containment?.plasmoid.corona.editMode) ?')
+    # Plasma 6.8 already uses the strict available rectangle for every mode.
+    # Preserve that upstream geometry; older shells need the picker exception.
+    if 'property var referenceRect: desktop.strictAvailableScreenRect' not in text:
+        text = replace(text, 'property var referenceRect: containment?.plasmoid.corona.editMode ?',
+                       'property var referenceRect: (centeredPicker || containment?.plasmoid.corona.editMode) ?')
     text = replace(text, 'location: sideBarOnRightEdge ? PlasmaCore.Types.RightEdge : PlasmaCore.Types.LeftEdge',
                    'location: centeredPicker ? PlasmaCore.Types.Floating : sideBarOnRightEdge ? PlasmaCore.Types.RightEdge : PlasmaCore.Types.LeftEdge')
-    text = replace(text, '            let result = desktop.x;', '''            if (centeredPicker) {
+    if '            let result = desktop.x;' in text:
+        text = replace(text, '            let result = desktop.x;', '''            if (centeredPicker) {
                 return desktop.x + referenceRect.x + Math.floor((referenceRect.width - width) / 2);
             }
             let result = desktop.x;''')
-    text = replace(text, 'y: desktop.y + (containment ? referenceRect.y : 0)',
+        text = replace(text, 'y: desktop.y + (containment ? referenceRect.y : 0)',
                    'y: desktop.y + (containment ? referenceRect.y : 0) + (centeredPicker ? Math.floor((referenceRect.height - height) / 2) : 0)')
+    else:
+        text = replace(text, '        type: PlasmaCore.Dialog.Dock', '''        Binding on x {
+            when: sidePanel.centeredPicker
+            value: desktop.x + sidePanel.referenceRect.x + Math.floor((sidePanel.referenceRect.width - sidePanel.width) / 2)
+            restoreMode: Binding.RestoreBindingOrValue
+        }
+        Binding on y {
+            when: sidePanel.centeredPicker
+            value: desktop.y + sidePanel.referenceRect.y + Math.floor((sidePanel.referenceRect.height - sidePanel.height) / 2)
+            restoreMode: Binding.RestoreBindingOrValue
+        }
+        type: PlasmaCore.Dialog.Dock''')
     text = replace(text, 'height: containment ? sidePanel.referenceRect.height - sidePanel.margins.top - sidePanel.margins.bottom : 1000',
                    'height: sidePanel.centeredPicker ? sidePanel.pickerHeight : containment ? sidePanel.referenceRect.height - sidePanel.margins.top - sidePanel.margins.bottom : 1000')
     text = replace(text, '                    switch (state) {', '''                    // Clear bindings left by a previous drag before switching views.
@@ -213,9 +229,12 @@ def delegate(text):
 
 def panel(text):
     text = replace(text, 'import QtQuick\n', 'import QtQuick\nimport "../explorer/grid"\n')
-    return replace(text, '    property Item containment\n', '''    property Item containment
-    GridTarget { containment: root.containment; view: panel }
-''')
+    # Preserve the typed ContainmentItem introduced in Plasma 6.8.
+    declaration = ('    property ContainmentItem containment\n'
+                   if '    property ContainmentItem containment\n' in text
+                   else '    property Item containment\n')
+    return replace(text, declaration, declaration +
+                   '    GridTarget { containment: root.containment; view: panel }\n')
 
 
 def catalog():

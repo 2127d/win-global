@@ -16,7 +16,7 @@ import org.kde.ksvg as KSvg
 import org.kde.plasma.components as PC3
 import org.kde.draganddrop as DragDrop
 import org.kde.kirigami as Kirigami
-import org.kde.plasma.shell.panel as Panel
+import org.kde.plasma.shell
 
 import "LayoutManager.js" as LayoutManager
 
@@ -33,7 +33,7 @@ ContainmentItem {
 
     readonly property var panelWindow: Window.window
     readonly property string surfaceMode: builtIn.settings.surfaceMode
-    readonly property bool fitContents: panelWindow !== null && panelWindow.lengthMode === Panel.Global.FitContent
+    readonly property bool fitContents: panelWindow !== null && panelWindow.lengthMode === Panel.FitContent
     readonly property real naturalLength: launcherLength + builtIn.naturalLength + naturalWidgetLength + 8
     readonly property real naturalWidgetLength: Math.max(Plasmoid.userConfiguring ? (isHorizontal ? 200 : 80) : 0,
         (isHorizontal ? currentLayout.implicitWidth : currentLayout.implicitHeight) + currentLayout.toolBoxSize + 12)
@@ -44,7 +44,7 @@ ContainmentItem {
         // Apply only a changed preset. Remember it per containment so subsequent
         // edits in Plasma's panel editor survive a shell restart.
         if (Plasmoid.configuration.lastSurfaceMode === surfaceMode) return;
-        panelWindow.lengthMode = surfaceMode === "dock" ? Panel.Global.FitContent : Panel.Global.FillAvailable;
+        panelWindow.lengthMode = surfaceMode === "dock" ? Panel.FitContent : Panel.FillAvailable;
         Plasmoid.configuration.lastSurfaceMode = surfaceMode;
     }
 

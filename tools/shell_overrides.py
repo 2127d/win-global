@@ -75,25 +75,17 @@ def stage(stage_root, prefix, selected, managed, *, removing=()):
     if source.exists() and not any((source / marker).is_file() for marker in MARKERS.values()):
         raise RuntimeError(f'Existing custom Plasma shell must be preserved: {source}')
     destination = Path(stage_root) / SHELL
-    if 'lockscreen' in selected and 'lockscreen' not in removing:
+    # Recompose every retained layer against the CURRENT system shell. Copying
+    # a previous layer back can resurrect removed QML imports after an upgrade,
+    # including when the operation is a partial uninstall.
+    if 'lockscreen' in wanted:
         subprocess.run([sys.executable, str(ROOT / 'tools/install-lockscreen.py'), '--prefix', str(stage_root)], check=True)
     else:
         shutil.copytree(SYSTEM_SHELL, destination, dirs_exist_ok=True)
-        if 'lockscreen' in wanted:
-            shutil.rmtree(destination / 'contents/lockscreen')
-            shutil.copytree(source / 'contents/lockscreen', destination / 'contents/lockscreen')
-            shutil.copy2(source / MARKERS['lockscreen'], destination / MARKERS['lockscreen'])
     if 'plasma-style' in wanted:
         target = destination / COMPACT
-        if 'plasma-style' in selected:
-            target.write_text(patch_launcher((SYSTEM_SHELL / COMPACT).read_text()))
-            widget_picker.stage(destination, SYSTEM_SHELL)
-        else:
-            shutil.copy2(source / COMPACT, target)
-            for name in widget_picker.FILES:
-                if (source / name).exists():
-                    (destination / name).parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(source / name, destination / name)
+        target.write_text(patch_launcher((SYSTEM_SHELL / COMPACT).read_text()))
+        widget_picker.stage(destination, SYSTEM_SHELL)
         (destination / MARKERS['plasma-style']).write_text('Launcher geometry and centered widget picker; refresh through the Sequoia installer after Plasma updates.\n')
 
 

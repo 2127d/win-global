@@ -144,12 +144,13 @@ def prepare(stage, data, config):
             for p in dock.rglob('*') if p.is_file() and p != manifest}
         manifest.write_text(json.dumps(payload, indent=2) + '\n')
     changes.append('Dock hover/reorder/launch 370 ms; one launch pulse; one 450 ms attention cue')
-    for name in ('contents/ui/StartMenu.qml', 'contents/config/main.xml', 'contents/ui/AppTile.qml'):
-        text = (ROOT / 'widgets/plasmoids/org.sequoia.startmenu' / name).read_text()
-        if name.endswith('AppTile.qml'):
-            text = text.replace('duration: 100', 'duration: tile.menu.motionDuration > 0 ? 200 : 0')
-        save('plasma/plasmoids/org.sequoia.startmenu/' + name, text)
-    changes.append('Start menu page navigation 200 ms; app-tile control feedback 200 ms')
+    # Copy the complete presentation: StartMenu now references shared surfaces,
+    # controls and bundled symbols, which must travel with its motion bindings.
+    start_menu = ROOT / 'widgets/plasmoids/org.sequoia.startmenu'
+    for source in sorted((start_menu / 'contents').rglob('*')):
+        if source.is_file():
+            save('plasma/plasmoids/org.sequoia.startmenu/' + str(source.relative_to(start_menu)), source.read_text())
+    changes.append('Start menu page navigation 200 ms; Sequoia control feedback 100 ms')
     # The application overlay already handles native style initialization. Refresh
     # only timing declarations, preserving all visual and layout customizations.
     quick = data / 'sequoia-eleven/quick-islands/qml/org/kde/desktop'

@@ -1,6 +1,6 @@
 # KCalc makeover
 
-Presentation fork of KCalc 26.08.1, matching the installed Fedora package.
+Presentation fork of KCalc 26.08.2, matching the installed Fedora package.
 The native calculator engine, scientific functions, statistics, number bases,
 shortcuts, history, constants and preferences remain available.
 
@@ -43,7 +43,7 @@ before the queued fit executes. Saved startup geometry uses native KCalc behavio
 
 ## Build and install
 
-From the repository root, with KCalc 26.08.1 and the Qt/KDE development libraries,
+From the repository root, with KCalc 26.08.2 and the Qt/KDE development libraries,
 GMP, MPFR and MPC development packages installed:
 
 ```sh
@@ -77,7 +77,7 @@ pre-existing custom files. KCalc preferences are retained.
 
 `override.json` and `upstream.sha256` identify the official KDE source archive;
 the digest records the downloaded baseline, not signature verification. Original
-source licenses and translations are bundled in `kcalc-26.08.1/`.
+source licenses and translations are bundled in `kcalc-26.08.2/`.
 Presentation changes are limited to `kcalc.{cpp,h}`, `kcalc_button.cpp`,
 `kcalc_display.cpp`, `kcalc_display_frame.{cpp,h}`, `kcalc_history.{cpp,h}`
 and `kcalcui.rc`.

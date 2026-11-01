@@ -66,28 +66,30 @@ public:
     bool isActive() const override { return !m_embedded.isEmpty() || !m_native.isEmpty(); }
     int requestedEffectChainPosition() const override { return 99; }
 
-    void drawWindow(const RenderTarget &target, const RenderViewport &viewport, EffectWindow *w,
+#ifdef SEQUOIA_KWIN_BOOLEAN_PAINT
+    bool
+#else
+    void
+#endif
+    drawWindow(const RenderTarget &target, const RenderViewport &viewport, EffectWindow *w,
                     int mask, const Region &region, WindowPaintData &data) override
     {
         if (const auto animation = m_native.value(w); animation && !nativeHandled()) {
             WindowPaintData dimmed(data);
             dimmed.multiplyBrightness(std::pow(1.0 - animation->currentValue().toReal(), 2.2));
-            effects->drawWindow(target, viewport, w, mask, region, dimmed);
-            return;
+            return effects->drawWindow(target, viewport, w, mask, region, dimmed);
         }
         const qreal amount = m_embedded.value(w).amount;
         // Cooperating decorations compose the same source-over black scrim as
         // the app. Brightness alone leaves the backdrop visible through alpha
         // undimmed, so translucent title bars otherwise look too light.
         if (decorationScrim(w, amount)) {
-            effects->drawWindow(target, viewport, w, mask, region, data);
-            return;
+            return effects->drawWindow(target, viewport, w, mask, region, data);
         }
         // Rotation and overview own their composition. Axis-aligned transforms
         // use the same device-space partition as the normal window.
         if (amount <= 0 || effects->hasActiveFullScreenEffect() || data.rotationAngle() != 0) {
-            effects->drawWindow(target, viewport, w, mask, region, data);
-            return;
+            return effects->drawWindow(target, viewport, w, mask, region, data);
         }
         const auto map = [&](const RectF &rect) {
             // Match the renderer's nearest-pixel rasterization. Rounding the
@@ -99,10 +101,19 @@ public:
         const Region frame(map(w->frameGeometry()));
         const Region client(map(w->clientGeometry()));
         const Region decoration = frame.subtracted(client);
+#ifdef SEQUOIA_KWIN_BOOLEAN_PAINT
+        const bool clientPainted =
+#endif
         effects->drawWindow(target, viewport, w, mask, region.subtracted(decoration), data);
         WindowPaintData dimmed(data);
         dimmed.multiplyBrightness(std::pow(1.0 - amount, 2.2));
+#ifdef SEQUOIA_KWIN_BOOLEAN_PAINT
+        const bool decorationPainted =
+#endif
         effects->drawWindow(target, viewport, w, mask, region.intersected(decoration), dimmed);
+#ifdef SEQUOIA_KWIN_BOOLEAN_PAINT
+        return clientPainted || decorationPainted;
+#endif
     }
 
 public Q_SLOTS:

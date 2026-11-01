@@ -6,7 +6,7 @@ import subprocess
 from installer_platform import application_version, build_jobs
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = '26.08.1'
+VERSION = '26.08.2'
 
 
 def installed_version():

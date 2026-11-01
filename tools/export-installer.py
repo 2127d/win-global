@@ -21,6 +21,8 @@ PAYLOAD = (
     'apps/settings', 'apps/gwenview', 'apps/kcalc', 'apps/kweather',
 )
 EXCLUDED = {'.git', '.staging', '__pycache__', 'CMakeFiles', 'CMakeCache.txt'}
+RETIRED_SOURCES = {'apps/settings/systemsettings-v6.7.5',
+                   'apps/gwenview/gwenview-26.08.1', 'apps/kcalc/kcalc-26.08.1'}
 INTRO = '''SEQUOIA ELEVEN — INSTALLER
 
 1. Extract this entire archive to a writable folder on a KDE Plasma 6 computer.
@@ -63,7 +65,7 @@ and Firefox projects.
 
 The installer supports Arch, Fedora, Ubuntu and Debian when their releases
 provide the required Plasma 6 development packages. Tested with Fedora 44,
-Plasma 6.7.5 and Qt 6.11.2. Optional app makeovers require the
+Plasma 6.8.2 and Qt 6.11.2. Optional app makeovers require the
 matching application versions shown by the installer. The login theme requires
 Plasma Login Manager; it does not support SDDM.
 Both the GUI and default command-line installation omit the login screen when
@@ -75,6 +77,8 @@ See README.md and desktop/layouts/README.md for details.
 
 def include(member):
     relative = Path(member.name).relative_to(NAME)
+    if any(relative == Path(old) or Path(old) in relative.parents for old in RETIRED_SOURCES):
+        return None
     if any(part in EXCLUDED for part in relative.parts) or relative.suffix in ('.pyc', '.pyo'):
         return None
     if member.issym():

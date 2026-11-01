@@ -176,7 +176,7 @@
         "groupName": "Connected Devices",
         "icon": "drive-removable-media",
         "id": "kcm_device_automounter",
-        "keywords": "Device Auto-Mount Automount Mount Disk Disks Removable Device Devices Automatic",
+        "keywords": "Device Auto-Mount Automount Mount Disk Disks Removable Device Devices Automatic usb",
         "name": "Device Auto-Mount"
     },
     {
@@ -535,7 +535,7 @@
         "group": "system",
         "groupName": "System & Accounts",
         "icon": "tools-check-spelling",
-        "id": "kcmspellchecking",
+        "id": "kcm_spellchecking",
         "keywords": "Spell Check spell spellings grammar check grammatical check spell check autocorrect auto correct words phrases wrong words linguistics semantic alphabet correction sonnet",
         "name": "Spell Check"
     },
@@ -565,6 +565,15 @@
         "id": "kcm_kwintabbox",
         "keywords": "Task Switcher window windows switcher window switcher switching window switching alttab alt-tab alt+tab alt tab apps changer application changer app task switch task switcher",
         "name": "Task Switcher"
+    },
+    {
+        "description": "Integrated taskbar icons, spacing, launchers, and running indicators",
+        "group": "appearance",
+        "groupName": "Appearance",
+        "icon": "preferences-system-windows",
+        "id": "kcm_sequoia_taskbar",
+        "keywords": "Taskbar taskbar panel dock icons spacing launchers tasks",
+        "name": "Taskbar"
     },
     {
         "description": "Thunderbolt Device Management",
