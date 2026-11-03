@@ -15,6 +15,7 @@ from control_center_details import style_details
 from control_center_bluetooth import style_bluetooth
 from control_center_audio import style_audio
 from control_center_display import style_display
+from control_center_network import style_network
 from control_center_weather import style_weather
 from control_center_contacts import style_contacts
 from control_center_dock import style_dock
@@ -143,7 +144,7 @@ def build(destination):
     # Keep native detail pages wide enough and restore the compact size on Back.
     text = replace(text, '    Layout.minimumWidth: Kirigami.Units.gridUnit * 24', '''    readonly property bool compactDashboard: !systemTrayState.activeApplet && !showAllItems
     readonly property bool weatherPage: systemTrayState.activeApplet?.Plasmoid.pluginName === "org.kde.plasma.weather"
-    readonly property bool displayPage: systemTrayState.activeApplet?.Plasmoid.pluginName === "org.kde.plasma.brightness"
+    readonly property bool displayPage: ["org.kde.plasma.brightness", "org.kde.plasma.networkmanagement"].includes(systemTrayState.activeApplet?.Plasmoid.pluginName)
     readonly property real dashboardWidth: Math.max(1, Math.min(1600, Math.max(260, Plasmoid.configuration.controlCenterWidth ?? 297), Screen.width - 60))
     readonly property real dashboardHeight: Math.max(1, Math.min(1600, Math.max(240, Plasmoid.configuration.controlCenterHeight ?? 451), Screen.height - 60))
     onCompactDashboardChanged: {
@@ -324,6 +325,7 @@ def build(destination):
     style_bluetooth(destination, SOURCE, replace)
     style_audio(destination, SOURCE, replace)
     style_display(destination, SOURCE, replace)
+    style_network(destination, SOURCE, replace)
     dependencies += style_weather(destination, SOURCE, PLUGIN.parent, extract, replace)
     dependencies += style_contacts(destination, SOURCE, PLUGIN.parent, extract, replace)
     dependencies += style_dock(destination, SOURCE, PLUGIN.parent, extract, replace)

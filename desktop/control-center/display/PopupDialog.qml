@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import QtQuick
+import org.kde.plasma.plasmoid
 import QtQuick.Layouts
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.private.brightnesscontrolplugin
@@ -20,6 +21,8 @@ PlasmaExtras.Representation {
     KeyboardColorControl {id:keyboardColor}
     QtObject {
         id:backend
+        readonly property string layoutMode: ["spotlight","twin","map"].includes(Plasmoid.configuration.displayLayout) ? Plasmoid.configuration.displayLayout : "spotlight"
+        function setLayout(mode) { if (["spotlight","twin","map"].includes(mode)) Plasmoid.configuration.displayLayout=mode; }
         readonly property var displays:records.entries
         readonly property bool keyboardAvailable:dialog.keyboardBrightnessControl.isBrightnessAvailable
         readonly property bool keyboardColorAvailable:keyboardColor.supported

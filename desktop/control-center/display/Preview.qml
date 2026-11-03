@@ -13,6 +13,8 @@ Rectangle {
     property alias fixture:fixture
     QtObject {
         id:fixture
+        property string layoutMode:"spotlight"
+        function setLayout(mode) { layoutMode=mode; }
         property var displays:[]
         property bool keyboardAvailable:false
         property bool keyboardColorAvailable:false
@@ -27,7 +29,7 @@ Rectangle {
         function reset(count) {
             const names=["Main display","Left display","Right display","Portrait display","Overhead display","Projector","Drawing tablet"];
             displays=Array.from({length:count??5},(_,i)=>({id:"screen"+i,backendId:"display"+i,number:i+1,name:names[i] || "Display "+(i+1),brightness:72-i*6,maximum:100}));
-            darkMode=false;keyboardAvailable=false;keyboardColorAvailable=false;settingsAllowed=true;themeSettingsAllowed=true;statusMessage="";lastAction="";
+            layoutMode="spotlight";darkMode=false;keyboardAvailable=false;keyboardColorAvailable=false;settingsAllowed=true;themeSettingsAllowed=true;statusMessage="";lastAction="";
         }
         function setBrightness(id,value) {
             if(!Number.isFinite(value))return;

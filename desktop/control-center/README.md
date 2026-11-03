@@ -110,7 +110,15 @@ objects for routing, ports, and profiles; long menus scroll within the popup.
 `tools/verify-audio-spotlight.py` tests interaction routing, external updates,
 hotplug, volume limits, empty states, and narrow layouts using simulated devices.
 
-Display uses a spotlight layout with numbered selectors for up to five brightness-capable
+Display offers Display spotlight, Twin displays, and Workspace map from the grid button
+in its compact bottom action island. The selection is saved per applet in `displayLayout`.
+Twin displays uses two columns (one on narrow panels), with optional proportional
+linked brightness across the available displays. Workspace map provides numbered
+selection tiles; arrangement and mirroring open Plasma’s screen settings, since the
+brightness model does not expose physical geometry. All layouts retain Theme,
+Night Light, keyboard controls, and native brightness ranges.
+
+The spotlight layout uses numbered selectors for up to five brightness-capable
 screens and a glass dropdown beyond five. One featured slider is visible initially;
 All displays expands compact sliders without duplicating the featured slider. Screen
 selection follows native display identity, while brightness values stay in each device’s
@@ -124,6 +132,25 @@ The fixed bottom island and faded scroll edges keep long lists clear. The tray g
 Display up to 660 pixels of height, bounded by the screen, and restores the dashboard
 size on Back. `tools/verify-display-spotlight.py` covers selection, hotplug, dragging,
 native ranges, Night Light, theme actions, overflow menus, and narrow layouts.
+
+Networks offers Connection spotlight, Connection desk, and Compact connections from
+the bottom island’s three-dot menu, saved per applet in `networkLayout`. Spotlight
+features the first active non-VPN connection in a hero card, with secondary connections
+inside it, configured VPN profiles in separate cards, and one grouped available-network
+card (three rows initially, expandable). Radio cards have On/Off switches; Spotlight
+search is accessible from the available-network card or Ctrl+F. Opening a connection
+uses a separate native detail page, with no duplicate active rows on Spotlight.
+Desk gives Wi-Fi and Ethernet separate
+cards; Compact has All / Wi-Fi / VPN filters. Native delegates still own connection,
+password, sharing, speed, and detailed information flows. The type filter forwards
+password-entry delay updates through the proxy model, and releases expanded entry
+locks before switching filters. Search, mobile data, airplane mode, captive portal
+login, and native scanning remain available. Settings, Hotspot, and Scan QR stay in
+the fixed bottom island. Hotspot retains the handler’s support/active checks and
+create/stop behavior; QR uses QRCA and is disabled with an explanation if unavailable.
+Saved and hidden network configuration opens Plasma’s connection editor.
+`tools/verify-network-layouts.py` checks the layout menu, live summary changes,
+action availability, and footer bounds without changing real connections.
 
 Bluetooth uses a Device spotlight layout. The first connected device keeps the
 featured card until it disconnects or another device starts playing audio or

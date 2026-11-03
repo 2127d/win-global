@@ -14,6 +14,22 @@ Item {
         function find(name){const r=search(preview,name);verify(!!r,name);return r;}
         function scrollBottom(){const flick=find("displayScroll").contentItem;flick.contentY=Math.max(0,flick.contentHeight-flick.height);wait(40);}
         function init(){stage.width=418;stage.height=680;preview.fixture.reset(5);preview.view.allExpanded=false;preview.view.selectedId="screen0";find("displayScroll").contentItem.contentY=0;wait(60);}
+        function test_layout_menu_twin_link_and_map() {
+            mouseClick(find("displayLayoutButton"));wait(80);
+            mouseClick(findChild(preview,"displayLayoutTwin"));wait(80);compare(preview.view.layoutMode,"twin");
+            verify(!!find("displayTwinGrid"));verify(!search(preview,"displayFeaturedCard"));
+            preview.view.linkedBrightness=true;
+            const slider=find("displaySlider:screen0");mouseClick(slider,slider.width*0.45,slider.height/2);wait(40);
+            const value=preview.fixture.displays[0].brightness;verify(value>0);
+            for(const d of preview.fixture.displays)compare(d.brightness,value);
+            mouseClick(find("displayLayoutButton"));wait(80);mouseClick(findChild(preview,"displayLayoutMap"));wait(80);
+            compare(preview.view.layoutMode,"map");mouseClick(find("displayMapSelect:screen4"));compare(preview.view.selectedId,"screen4");
+            for(const mode of ["spotlight","twin","map"])for(const count of [0,1,5,7])for(const width of [292,418]) {
+                preview.fixture.reset(count);preview.fixture.setLayout(mode);stage.width=width;wait(35);
+                const island=find("displayActionIsland");verify(island.height<=48);verify(island.width<=width);
+                verify(island.mapToItem(preview,0,0).y+island.height<=preview.height);
+            }
+        }
         function test_five_displays_selection_and_brightness(){
             compare(preview.view.displays.length,5);mouseClick(find("displaySelect:screen4"));wait(30);compare(preview.view.selectedId,"screen4");
             const slider=find("displaySlider:screen4");mouseClick(slider,slider.width*0.65,slider.height/2);wait(30);compare(preview.fixture.lastAction,"brightness:screen4");compare(preview.fixture.displays[0].brightness,72);

@@ -13,6 +13,16 @@ FocusScope {
     property Component keyboardColorCard
     property string selectedId: ""
     property bool allExpanded: false
+    readonly property string layoutMode: controller.layoutMode || "spotlight"
+    property bool linkedBrightness: false
+    function changeBrightness(id, value) {
+        const source = displays.find(d => d.id === id);
+        if (layoutMode === "twin" && linkedBrightness && source?.maximum > 0) {
+            for (const display of displays) controller.setBrightness(display.id, value / source.maximum * display.maximum);
+        } else controller.setBrightness(id, value);
+    }
+    QtObject { id: brightnessController; function setBrightness(id, value) { view.changeBrightness(id, value); } }
+
     readonly property var displays: controller.displays
     readonly property var selected: displays.find(d=>d.id===selectedId) || displays[0] || null
     objectName: "displaySpotlightView"
@@ -46,8 +56,63 @@ FocusScope {
                 id: content
                 x: 6; y: 6; width: Math.max(0,scroll.availableWidth-12); spacing: 12
                 Details.DetailSurface {
+                    objectName: "displayWorkspaceMap"
+                    Layout.fillWidth: true; visible: view.layoutMode === "map" && view.displays.length > 0
+                    radius: 24; implicitHeight: mapBody.implicitHeight + 24
+                    ColumnLayout {
+                        id: mapBody; anchors.fill: parent; anchors.margins: 12; spacing: 10
+                        PC.Label { text: qsTr("Workspace · %1 displays").arg(view.displays.length); font.weight: Font.DemiBold }
+                        GridLayout {
+                            Layout.fillWidth: true; columns: Math.max(1,Math.min(3,Math.floor(width/100))); columnSpacing: 8; rowSpacing: 8
+                            Repeater {
+                                model: view.layoutMode === "map" ? view.displays.length : 0
+                                delegate: DisplayActionButton {
+                                    required property int index
+                                    readonly property var record: view.displays[index] || {}
+                                    objectName: "displayMapSelect:"+record.id
+                                    Layout.fillWidth: true; Layout.preferredWidth: 1; Layout.minimumWidth: 0
+                                    implicitHeight: 64; text: String(record.number || ""); icon.name: "video-display-symbolic"
+                                    checkable: true; checked: record.id === view.selectedId
+                                    Accessible.name: qsTr("Display %1: %2").arg(record.number).arg(record.name)
+                                    onClicked: view.select(record.id,false)
+                                    PC.ToolTip { text: parent.Accessible.name }
+                                }
+                            }
+                        }
+                        DisplayActionButton { Layout.fillWidth: true; flat: true; text: qsTr("Arrange / mirror displays…"); icon.name: "configure-symbolic"; enabled: controller.settingsAllowed; onClicked: controller.settings() }
+                    }
+                }
+                GridLayout {
+                    objectName: "displayTwinGrid"
+                    Layout.fillWidth: true; visible: view.layoutMode === "twin"; columns: width < 330 ? 1 : 2; columnSpacing: 12; rowSpacing: 12
+                    Repeater {
+                        model: view.layoutMode === "twin" ? view.displays.length : 0
+                        delegate: Details.DetailSurface {
+                            required property int index
+                            readonly property var record: view.displays[index] || {}
+                            Layout.fillWidth: true; Layout.preferredWidth: 1; Layout.minimumWidth: 0; radius: 24
+                            implicitHeight: twinBody.implicitHeight + 24
+                            ColumnLayout {
+                                id: twinBody; anchors.fill: parent; anchors.margins: 12; spacing: 8
+                                DisplayActionButton { Layout.fillWidth: true; flat: true; icon.name: "video-display-symbolic"; text: String(record.number || ""); onClicked: { view.selectedId=record.id; controller.settings(); } }
+                                PC.Label { Layout.fillWidth: true; text: record.name || ""; textFormat: Text.PlainText; wrapMode: Text.Wrap; maximumLineCount: 2; elide: Text.ElideRight; font.weight: Font.DemiBold }
+                                DisplayLevelSlider { Layout.fillWidth: true; record: parent.parent.record; controller: brightnessController }
+                                PC.Label { Layout.alignment: Qt.AlignHCenter; text: view.percent(record); color: Kirigami.Theme.disabledTextColor }
+                                DisplayActionButton { Layout.fillWidth: true; Layout.minimumWidth: 0; flat: true; text: qsTr("Settings"); enabled: controller.settingsAllowed; onClicked: controller.settings() }
+                            }
+                        }
+                    }
+                }
+                Details.DetailSurface {
+                    Layout.fillWidth: true; visible: view.layoutMode === "twin" && view.displays.length > 1; radius: 24; implicitHeight: linkRow.implicitHeight+16
+                    RowLayout { id:linkRow; anchors.fill:parent; anchors.margins:8
+                        PC.Label { Layout.fillWidth:true; Layout.leftMargin:6; text:qsTr("Link brightness") }
+                        PC.Switch { objectName:"displayLinkBrightness"; checked:view.linkedBrightness; Accessible.name:qsTr("Link brightness"); onToggled:view.linkedBrightness=checked }
+                    }
+                }
+                Details.DetailSurface {
                     objectName: "displayFeaturedCard"
-                    Layout.fillWidth: true; visible: !!view.selected
+                    Layout.fillWidth: true; visible: !!view.selected && view.layoutMode !== "twin"
                     radius: 24; implicitHeight: featured.implicitHeight+28
                     ColumnLayout {
                         id: featured
@@ -65,7 +130,7 @@ FocusScope {
                         RowLayout {
                             objectName: "displayNumberSelector"
                             Layout.fillWidth: true; spacing: 6
-                            visible: view.displays.length>1 && view.displays.length<=5
+                            visible: view.layoutMode === "spotlight" && view.displays.length>1 && view.displays.length<=5
                             Repeater {
                                 model: view.displays.length<=5 ? view.displays.length : 0
                                 delegate: DisplayActionButton {
@@ -120,7 +185,7 @@ FocusScope {
                 }
                 Details.DetailSurface {
                     objectName:"displayAllCard"
-                    Layout.fillWidth:true;visible:view.displays.length>1;radius:24;implicitHeight:allContent.implicitHeight+16
+                    Layout.fillWidth:true;visible:view.displays.length>1 && view.layoutMode !== "twin";radius:24;implicitHeight:allContent.implicitHeight+16
                     ColumnLayout {
                         id:allContent;anchors.fill:parent;anchors.margins:8;spacing:4
                         DisplayActionButton {
@@ -200,10 +265,18 @@ FocusScope {
     Details.DetailSurface {
         id:island;objectName:"displayActionIsland"
         anchors.left:parent.left;anchors.right:parent.right;anchors.bottom:parent.bottom
-        radius:24;elevated:true;implicitHeight:footer.implicitHeight+10
-        RowLayout {id:footer;anchors.fill:parent;anchors.margins:5;spacing:4
-            DisplayActionButton{objectName:"displaySettings";Layout.fillWidth:true;Layout.minimumWidth:0;flat:true;text:qsTr("Display settings");icon.name:"configure-symbolic";enabled:controller.settingsAllowed;onClicked:controller.settings()}
-            DisplayActionButton{objectName:"displayIdentify";Layout.minimumWidth:0;flat:true;text:qsTr("Identify");icon.name:"video-display-symbolic";enabled:!!view.selected;onClicked:controller.identify();PC.ToolTip{text:qsTr("Show display names on your screens")}}
+        radius:height/2;elevated:true;implicitHeight:footer.implicitHeight+8
+        RowLayout {id:footer;anchors.fill:parent;anchors.margins:4;spacing:2
+            DisplayActionButton{objectName:"displaySettings";Layout.fillWidth:true;Layout.minimumWidth:0;flat:true;text:qsTr("Settings");icon.name:"configure-symbolic";enabled:controller.settingsAllowed;onClicked:controller.settings()}
+            DisplayActionButton{objectName:"displayIdentify";Layout.fillWidth:true;Layout.minimumWidth:0;flat:true;text:qsTr("Identify");icon.name:"video-display-symbolic";enabled:!!view.selected;onClicked:controller.identify();PC.ToolTip{text:qsTr("Show display names on your screens")}}
+            DisplayActionButton { objectName:"displayLayoutButton"; flat:true; display:PC.AbstractButton.IconOnly; icon.name:"view-grid-symbolic"; text:qsTr("Switch layout"); Accessible.name:text; onClicked:layoutMenu.popup(this,0,-layoutMenu.height); PC.ToolTip{text:parent.text} }
         }
+    }
+    DisplayMenu {
+        id:layoutMenu; objectName:"displayLayoutMenu"
+        DisplayMenuItem { text:qsTr("Layout");section:true }
+        DisplayMenuItem { objectName:"displayLayoutSpotlight";text:qsTr("Display spotlight");checkable:true;checked:view.layoutMode==="spotlight";onTriggered:controller.setLayout("spotlight") }
+        DisplayMenuItem { objectName:"displayLayoutTwin";text:qsTr("Twin displays");checkable:true;checked:view.layoutMode==="twin";onTriggered:controller.setLayout("twin") }
+        DisplayMenuItem { objectName:"displayLayoutMap";text:qsTr("Workspace map");checkable:true;checked:view.layoutMode==="map";onTriggered:controller.setLayout("map") }
     }
 }

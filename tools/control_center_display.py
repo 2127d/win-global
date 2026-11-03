@@ -16,3 +16,10 @@ def style_display(destination, source, replace):
     text = replace(text, 'Layout.preferredWidth: Kirigami.Units.gridUnit * 20',
                    'Layout.preferredWidth: 418')
     path.write_text(text)
+
+    config = directory / 'main.xml'
+    if not config.exists():
+        config.write_text('<?xml version="1.0"?><kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"><kcfgfile name=""/><group name="General"></group></kcfg>')
+    text = config.read_text()
+    text = replace(text, '<group name="General">', '<group name="General"><entry name="displayLayout" type="String"><default>spotlight</default></entry>')
+    config.write_text(text)
