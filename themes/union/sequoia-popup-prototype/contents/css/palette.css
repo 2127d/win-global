@@ -1,0 +1,10 @@
+/* SPDX-License-Identifier: MIT */
+/* Default light material. The probe generates light/dark variants from the
+   actual Sequoia color schemes in its private data directory. */
+:root {
+    --sequoia-surface: #f8f8f8;
+    --sequoia-glass: rgba(242, 242, 242, 0.72);
+    --sequoia-text: #202124;
+    --sequoia-accent: #2d7dff;
+    --sequoia-rim: rgba(32, 33, 36, 0.08);
+}

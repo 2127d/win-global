@@ -91,6 +91,9 @@ The bridge checks the installed greeter's SHA-256 and falls back to the stock
 screen after a greeter update, when theme files are missing, or when QML cannot
 load. Re-run `./install.sh` after Plasma Login updates to rebuild compatibility.
 The preload is scoped to the greeter service and cleared before launching children.
+The bridge handles Plasma 6.8's `QQuickView` as well as the older shared-engine
+view. Keyboard activation uses a per-window `GreeterEventFilter`; desktop-session
+selection and login requests use the current native `GreeterState` API.
 
 ## Preview and verification
 
@@ -100,6 +103,7 @@ python3 tools/preview-login.py --mode dark --width 1280 --height 720
 python3 tools/preview-login.py --demo-status --status-panel audio --width 1280 --height 720
 python3 tools/preview-login.py --user-switcher --width 1280 --height 720
 python3 tools/verify-login-screen.py
+python3 tools/verify-screen-multimonitor.py --output /tmp/sequoia-screen-check
 SEQUOIA_FULL_INSTALL_TEST=1 python3 tools/verify-theme-installer.py
 ```
 

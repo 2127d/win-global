@@ -31,7 +31,7 @@ PC.ToolButton {
         }
     }
     background: Details.DetailSurface {
-        radius: 10
+        radius: height / 2
         emphasized: action.down
         hovered: action.hovered
         focused: action.activeFocus

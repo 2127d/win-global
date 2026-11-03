@@ -1,0 +1,28 @@
+/* SPDX-License-Identifier: MIT */
+applicationwindow { background-color: var(--sequoia-glass); }
+frame, groupbox, popup, dialog {
+    background-color: var(--sequoia-surface);
+    color: var(--sequoia-text);
+    border-radius: var(--sequoia-card-radius);
+    border: 1px solid var(--sequoia-rim);
+    padding: var(--sequoia-inset);
+    box-shadow: 0px var(--sequoia-shadow-offset) var(--sequoia-shadow-size) 0px rgba(0, 0, 0, 0.18);
+}
+popup, dialog { border-radius: var(--sequoia-panel-radius); }
+#glass-probe { background-color: var(--sequoia-glass); }
+button, toolbutton, textfield, combobox {
+    border-radius: var(--sequoia-control-radius);
+    background-color: var(--sequoia-surface);
+    color: var(--sequoia-text);
+    border: 1px solid var(--sequoia-rim);
+}
+button:hovered, toolbutton:hovered {
+    background-color: mix(var(--sequoia-surface), var(--sequoia-accent), var(--sequoia-hover-opacity));
+}
+button:pressed, toolbutton:pressed, button:checked {
+    background-color: mix(var(--sequoia-surface), var(--sequoia-accent), var(--sequoia-selected-opacity));
+}
+button:visual-focus, toolbutton:visual-focus, textfield:active-focus {
+    border: var(--sequoia-focus-width) solid var(--sequoia-accent);
+}
+button:disabled { color: mix(var(--sequoia-surface), var(--sequoia-text), 0.4); }

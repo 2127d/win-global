@@ -38,6 +38,9 @@ def style_details(destination, source, plugin_dir, extract, replace):
                 'PC3.TabBar {': 'Details.DetailTabBar {',
                 'PlasmaComponents3.TabBar {': 'Details.DetailTabBar {',
             }
+            for alias in ('PC3', 'PC', 'PlasmaComponents3', 'PlasmaComponents'):
+                for kind in ('ToolButton', 'Button'):
+                    replacements[f'{alias}.{kind} {{'] = f'Details.Detail{kind} {{'
             # Apply shared detail styling here. Notification banners and their
             # shared components are refined separately in style_notifications.
             if path.parent == directory:
@@ -108,6 +111,8 @@ def style_details(destination, source, plugin_dir, extract, replace):
         text = text.replace(': PlasmaExtras.PlasmoidHeading {', ': Details.DetailHeading {')
         text = text.replace('PlasmaComponents3.TabButton {', 'Details.DetailTabButton {')
         text = text.replace('PlasmaComponents3.TabBar {', 'Details.DetailTabBar {')
+        for kind in ('ToolButton', 'Button'):
+            text = text.replace(f'PlasmaComponents3.{kind} {{', f'Details.Detail{kind} {{')
         if path.name == 'ClipboardItemDelegate.qml':
             text = replace(text, '''    background: PlasmaExtras.Highlight {
         anchors.fill: parent

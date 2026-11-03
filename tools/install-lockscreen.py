@@ -112,6 +112,11 @@ def main():
     readonly property real unit: Math.max(0.65, Math.min(2, width / 1024, height / 560))
     readonly property real loginUnit: Math.max(0.75, unit * 0.8)
     readonly property real powerUnit: Math.max(0.85, unit * 0.8)
+    // KScreenLocker 6.8 shares one QML engine and overwrites its global
+    // wallpaper context property for every output. Capture this view's item;
+    // a live binding would make the first monitor sample the second window.
+    property Item wallpaperSource: null
+    Component.onCompleted: wallpaperSource = wallpaper
     SequoiaPalette { id: appearance }
 """)
     screen_ui = replace_once(screen_ui, '    Kirigami.Theme.colorSet: Kirigami.Theme.Complementary', """    Kirigami.Theme.colorSet: Kirigami.Theme.Window
@@ -124,6 +129,12 @@ def main():
             anchors.leftMargin: 28 * lockScreenUi.unit
             anchors.bottomMargin: 22 * lockScreenUi.unit""")
     screen_ui = replace_once(screen_ui, '        WallpaperFader {', '        SequoiaWallpaperFader {')
+    screen_ui = replace_once(screen_ui, '            Component.onCompleted: source = wallpaper',
+                             '            source: lockScreenUi.wallpaperSource')
+    # Plasma's shipped QML still names the pre-6.8 PAM delay API. Follow the
+    # installed authenticator's current signal so retries are actually queued.
+    screen_ui = screen_ui.replace('onPamTimeoutChanged', 'onInPasswordDelayChanged')
+    screen_ui = screen_ui.replace('authenticator.pamTimeout', 'authenticator.inPasswordDelay')
     screen_ui = replace_once(screen_ui, 'height: lockScreenRoot.height + Kirigami.Units.gridUnit * 3',
                              'height: lockScreenRoot.height')
     screen_ui = replace_once(screen_ui, 'showUserList: userList.y + mainStack.y > 0', 'showUserList: true')
@@ -171,7 +182,7 @@ def main():
                 anchors.bottomMargin: -2 * lockScreenUi.unit
                 radius: 9 * lockScreenUi.unit
                 visible: footer.implicitWidth > 0
-                sceneSource: wallpaper
+                sceneSource: lockScreenUi.wallpaperSource
                 scene: lockScreenUi
                 themeColors: appearance
             }

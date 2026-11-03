@@ -6,6 +6,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import "../SequoiaPopup" as Popup
 import QtQuick.Layouts
 import QtQuick.Templates as T
 
@@ -210,7 +211,7 @@ Item {
 
         KeyNavigation.up: root.configureButton
 
-        PlasmaComponents.ToolButton {
+        Popup.HeaderButton {
             id: previousButton
             text: {
                 switch ((root.monthViewRoot as MonthView).calendarViewDisplayed) {
@@ -235,7 +236,7 @@ Item {
             PlasmaComponents.ToolTip { text: previousButton.text  }
         }
 
-        PlasmaComponents.ToolButton {
+        Popup.HeaderButton {
             id: todayButton
             text: i18ndc("plasmashellprivateplugin", "Reset calendar to today", "Today")
             Accessible.description: i18nd("plasmashellprivateplugin", "Reset calendar to today")
@@ -246,7 +247,7 @@ Item {
             Keys.onEnterPressed: animateClick()
         }
 
-        PlasmaComponents.ToolButton {
+        Popup.HeaderButton {
             id: nextButton
             text: {
                 switch ((root.monthViewRoot as MonthView).calendarViewDisplayed) {
@@ -284,7 +285,7 @@ Item {
 
         KeyNavigation.up: pinButton
 
-        PlasmaComponents.ToolButton {
+        Popup.HeaderButton {
             id: configureButton
 
             visible: (root.monthViewRoot as MonthView).digitalClock.internalAction("configure").enabled
@@ -306,7 +307,7 @@ Item {
         }
 
         // Allows the user to keep the calendar open for reference
-        PlasmaComponents.ToolButton {
+        Popup.HeaderButton {
             id: pinButton
 
             checkable: true

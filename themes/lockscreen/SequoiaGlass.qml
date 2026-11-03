@@ -11,6 +11,7 @@ Rectangle {
     readonly property bool accelerated: GraphicsInfo.api !== GraphicsInfo.Software
     // mapToItem is reevaluated when the scene or panel geometry changes.
     readonly property rect sampleRect: {
+        if (!sceneSource || !scene) return Qt.rect(0, 0, 0, 0);
         const geometry = [x, y, width, height, scene.width, scene.height];
         const point = mapToItem(sceneSource, 0, 0);
         return Qt.rect(point.x, point.y, width, height);
@@ -20,7 +21,11 @@ Rectangle {
     ShaderEffectSource {
         id: sample
         visible: false
-        sourceItem: glass.sceneSource
+        // A scene-graph texture cannot cross QQuickWindow boundaries. Avoid
+        // sampling until both items belong to the same output's window.
+        sourceItem: glass.accelerated && glass.sceneSource && glass.sceneSource.parent
+            && glass.Window.window
+            && glass.Window.window === glass.sceneSource.Window.window ? glass.sceneSource : null
         sourceRect: glass.sampleRect
         textureSize: Qt.size(glass.width, glass.height)
         live: true

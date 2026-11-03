@@ -11,16 +11,11 @@
 #error Build with the absolute installed Main.qml path and greeter SHA-256.
 #endif
 
-extern "C" void sequoiaSetSource(void *view, const QUrl &source)
-    asm("_ZN11PlasmaQuick21QuickViewSharedEngine9setSourceERK4QUrl");
-extern "C" void sequoiaSetSource(void *view, const QUrl &source)
+using SetSource = void (*)(void *, const QUrl &);
+using RootObject = void *(*)(const void *);
+
+static void loadTheme(void *view, const QUrl &source, SetSource original, RootObject rootObject)
 {
-    using SetSource = void (*)(void *, const QUrl &);
-    using RootObject = void *(*)(const void *);
-    static const auto original = reinterpret_cast<SetSource>(dlsym(RTLD_NEXT,
-        "_ZN11PlasmaQuick21QuickViewSharedEngine9setSourceERK4QUrl"));
-    static const auto rootObject = reinterpret_cast<RootObject>(dlsym(RTLD_NEXT,
-        "_ZNK11PlasmaQuick21QuickViewSharedEngine10rootObjectEv"));
     if (!original) std::abort();
     if (source.toString() != QStringLiteral("qrc:/qt/qml/org/kde/plasma/login/Main.qml")) {
         original(view, source);
@@ -41,6 +36,30 @@ extern "C" void sequoiaSetSource(void *view, const QUrl &source)
         qWarning("Sequoia login: theme failed to load; restoring stock greeter.");
         original(view, source);
     }
+}
+
+// Plasma Login 6.8 uses QQuickView directly. Keep the older view hook for
+// supported installations which still use PlasmaQuick's shared-engine view.
+extern "C" void sequoiaSetSource(void *view, const QUrl &source)
+    asm("_ZN10QQuickView9setSourceERK4QUrl");
+extern "C" void sequoiaSetSource(void *view, const QUrl &source)
+{
+    static const auto original = reinterpret_cast<SetSource>(dlsym(RTLD_NEXT,
+        "_ZN10QQuickView9setSourceERK4QUrl"));
+    static const auto rootObject = reinterpret_cast<RootObject>(dlsym(RTLD_NEXT,
+        "_ZNK10QQuickView10rootObjectEv"));
+    loadTheme(view, source, original, rootObject);
+}
+
+extern "C" void sequoiaSharedSetSource(void *view, const QUrl &source)
+    asm("_ZN11PlasmaQuick21QuickViewSharedEngine9setSourceERK4QUrl");
+extern "C" void sequoiaSharedSetSource(void *view, const QUrl &source)
+{
+    static const auto original = reinterpret_cast<SetSource>(dlsym(RTLD_NEXT,
+        "_ZN11PlasmaQuick21QuickViewSharedEngine9setSourceERK4QUrl"));
+    static const auto rootObject = reinterpret_cast<RootObject>(dlsym(RTLD_NEXT,
+        "_ZNK11PlasmaQuick21QuickViewSharedEngine10rootObjectEv"));
+    loadTheme(view, source, original, rootObject);
 }
 
 // The preload belongs only to this process, never to launched sessions/helpers.

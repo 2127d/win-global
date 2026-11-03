@@ -7,11 +7,13 @@ import org.kde.plasma.components as PC
 
 Rectangle {
     id: preview
-    width: 321; height: 475
+    width: 442; height: 650
     color: Kirigami.Theme.backgroundColor
     property alias fixture: fixture
     property bool live: false
     property string requestedApplet: ""
+    property string savedLayout: ""
+    property alias dashboard: dashboard
     Loader { id: liveBackend; active: preview.live; source: "ControlBackend.qml" }
     QtObject {
         id: fixture
@@ -43,6 +45,7 @@ Rectangle {
         property bool canPrevious: true
         property bool canNext: true
         property bool canLock: true
+        property string lastSessionAction: ""
         function toggleWifi() { wifiEnabled = !wifiEnabled; }
         function toggleBluetooth() { bluetoothEnabled = !bluetoothEnabled; }
         function toggleDnd() { dndEnabled = !dndEnabled; }
@@ -53,24 +56,39 @@ Rectangle {
         function playPause() { playing = !playing; }
         function previous() {}
         function next() {}
-        function settings() {}
-        function lock() {}
-        function powerOptions() {}
+        function settings() { lastSessionAction = "settings"; }
+        function lock() { lastSessionAction = "lock"; }
+        function powerOptions() { lastSessionAction = "power"; }
     }
     ColumnLayout {
         anchors.fill: parent; anchors.margins: 12
         spacing: 12
-        RowLayout {
-            PC.Label { text: qsTr("Control Center"); font.pointSize: 12; font.weight: Font.DemiBold; Layout.fillWidth: true }
-            Kirigami.Icon { source: "window-pin-symbolic"; implicitWidth: 20; implicitHeight: 20 }
-            Kirigami.Icon { source: "configure-symbolic"; implicitWidth: 20; implicitHeight: 20 }
+        ControlGlassSurface {
+            Layout.fillWidth: true
+            implicitHeight: headerRow.implicitHeight + 8
+            radius: height / 2
+            elevated: true
+            RowLayout {
+                id: headerRow
+                anchors.fill: parent
+                anchors.margins: 4
+                PC.Label { text: qsTr("Control Center"); font.pointSize: 12; font.weight: Font.DemiBold; Layout.fillWidth: true; Layout.leftMargin: 10 }
+                ControlHeaderButton { icon.name: "window-pin-symbolic"; text: qsTr("Pin"); display: PC.AbstractButton.IconOnly }
+                ControlHeaderButton { icon.name: "configure-symbolic"; text: qsTr("Configure"); display: PC.AbstractButton.IconOnly }
+            }
         }
         ControlDashboard {
             id: dashboard
             objectName: "dashboardViewport"
             Layout.margins: 4
             Layout.fillWidth: true; Layout.fillHeight: true
+            layoutJson: preview.savedLayout
+            onLayoutCommitted: json => preview.savedLayout = json
             backend: preview.live && liveBackend.item ? liveBackend.item : fixture
+            otherItems: preview.live ? [] : [{
+                id: "org.kde.merkuro.contact.applet", title: "Contacts", subtitle: "Contact list",
+                icon: "user-identity", kind: "Plasmoid", applet: null
+            }]
             onOpenApplet: plugin => preview.requestedApplet = plugin
         }
     }

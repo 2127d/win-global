@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import QtQuick
+import "../details" as Details
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PC
@@ -66,7 +67,7 @@ Column {
                     textFormat: Text.PlainText
                     wrapMode: Text.Wrap
                 }
-                PC.Button {
+                Details.DetailButton {
                     text: qsTr("More information")
                     icon.name: "window-new-symbolic"
                     visible: !!card.model.info

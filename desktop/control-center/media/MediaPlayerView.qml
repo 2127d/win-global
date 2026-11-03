@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import QtQuick
+import "../details" as Details
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PC
@@ -125,11 +126,11 @@ FocusScope {
                 onClicked: media.players.currentIndex = index
                 Keys.onRightPressed: media.players.currentIndex = Math.min(tabs.count - 1, index + 1)
                 Keys.onLeftPressed: media.players.currentIndex = Math.max(0, index - 1)
-                background: Rectangle {
-                    radius: 18
-                    color: tab.checked ? Kirigami.Theme.highlightColor : media.surface
-                    border.width: tab.activeFocus ? 2 : 1
-                    border.color: Qt.alpha(tab.checked ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor, tab.activeFocus ? 0.8 : 0.07)
+                background: Details.DetailSurface {
+                    radius: height / 2
+                    emphasized: tab.checked
+                    hovered: tab.hovered
+                    focused: tab.activeFocus
                 }
                 contentItem: RowLayout {
                     id: tabContent
@@ -138,11 +139,11 @@ FocusScope {
                         Layout.preferredWidth: 18; Layout.preferredHeight: 18
                         source: tab.isMultiplexer ? "media-playback-start-symbolic" : tab.iconName
                         isMask: true
-                        color: tab.checked ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                        color: Kirigami.Theme.textColor
                     }
                     PC.Label {
                         text: tab.text
-                        color: tab.checked ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                        color: Kirigami.Theme.textColor
                         font.weight: tab.checked ? Font.DemiBold : Font.Normal
                         elide: Text.ElideRight
                         Layout.fillWidth: true
@@ -151,17 +152,11 @@ FocusScope {
                 PC.ToolTip { text: tab.Accessible.name }
             }
         }
-        Rectangle {
+        Details.DetailSurface {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.minimumHeight: 72
             radius: 24
-            gradient: Gradient {
-                GradientStop { position: 0; color: Qt.tint(media.surface, Qt.alpha(Kirigami.Theme.highlightColor, 0.12)) }
-                GradientStop { position: 1; color: media.surface }
-            }
-            border.width: 1
-            border.color: Qt.alpha(Kirigami.Theme.textColor, 0.06)
             MediaArtwork {
                 anchors.fill: parent
                 anchors.margins: 10
@@ -198,13 +193,10 @@ FocusScope {
                 onClicked: media.player.Raise()
             }
         }
-        Rectangle {
+        Details.DetailSurface {
             Layout.fillWidth: true
             implicitHeight: transport.implicitHeight + 20
             radius: 22
-            color: media.surface
-            border.width: 1
-            border.color: Qt.alpha(Kirigami.Theme.textColor, 0.07)
             ColumnLayout {
                 id: transport
                 anchors.fill: parent; anchors.margins: 10

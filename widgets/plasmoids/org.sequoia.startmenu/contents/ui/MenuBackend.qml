@@ -68,17 +68,24 @@ Item {
     Kicker.SystemModel { id: power }
     CoreAddons.KUser { id: user }
 
-    function isPinned(id) { return !!id && configuration.favorites.indexOf(id) !== -1; }
+    // Plasma 6.8 exposes applications: URLs; older configurations store desktop
+    // file IDs. Compare both forms without rewriting the user's saved list.
+    function desktopId(id) { return String(id || "").replace(/^applications:/, ""); }
+    function pinIndex(id) {
+        const key = desktopId(id);
+        return key ? configuration.favorites.findIndex(item => desktopId(item) === key) : -1;
+    }
+    function isPinned(id) { return pinIndex(id) !== -1; }
     function togglePin(id) {
         if (!id) return;
         const items = configuration.favorites.slice();
-        const index = items.indexOf(id);
-        if (index < 0) items.push(id); else items.splice(index, 1);
+        const index = pinIndex(id);
+        if (index < 0) items.push(desktopId(id)); else items.splice(index, 1);
         configuration.favorites = items;
     }
     function movePin(id, offset) {
         const items = configuration.favorites.slice();
-        const from = items.indexOf(id);
+        const from = pinIndex(id);
         const to = Math.max(0, Math.min(items.length - 1, from + offset));
         if (from < 0 || from === to) return;
         items.splice(to, 0, items.splice(from, 1)[0]);

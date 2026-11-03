@@ -146,7 +146,8 @@ static void start() {
             require(surface, "calendar surface exists");
             const auto originalBackground = eval(calendar, "Kirigami.Theme.backgroundColor.toString()").toString();
             const auto originalText = eval(calendar, "Kirigami.Theme.textColor.toString()").toString();
-            require(surface->property("color") == calendar->property("cardColor"), "calendar uses theme card color at startup");
+            require(surface->property("color").value<QColor>().alpha() == 255,
+                    "calendar content island is opaque at startup");
             require(eval(today, "Kirigami.Theme.textColor.toString()").toString() == originalText,
                     "calendar dates use theme text color at startup");
             for (const auto background : {"#24262b", "#ffffff"}) {
@@ -154,8 +155,9 @@ static void start() {
                 eval(calendar, QStringLiteral("Kirigami.Theme.backgroundColor = '%1'; Kirigami.Theme.textColor = '%2'")
                      .arg(background, text));
                 QTest::qWait(300);
-                require(surface->property("color") == calendar->property("cardColor"),
-                        "calendar surface follows live light/dark palette changes");
+                const auto card = surface->property("color").value<QColor>();
+                require(card.alpha() == 255 && ((card.lightnessF() > 0.5) == (QString::fromLatin1(background) == "#ffffff")),
+                        "calendar content island stays opaque and follows live light/dark palette changes");
                 require(eval(today, "Kirigami.Theme.textColor.toString()").toString() == QString::fromLatin1(text),
                         "calendar dates follow live light/dark text changes");
             }

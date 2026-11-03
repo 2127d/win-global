@@ -97,7 +97,7 @@ ColumnLayout {
                         highlighted: ListView.isCurrentItem && list.activeFocus
                         onClicked: { list.currentIndex = index; root.openContact(model.itemId); }
                         background: Rectangle {
-                            radius: 12
+                            radius: height / 2
                             color: Qt.alpha(Kirigami.Theme.highlightColor, row.down ? 0.17 : row.highlighted ? 0.13 : row.hovered ? 0.07 : 0)
                             border.width: row.activeFocus ? 2 : 0
                             border.color: Kirigami.Theme.highlightColor

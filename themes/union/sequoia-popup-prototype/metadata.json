@@ -1,0 +1,9 @@
+{
+  "input-type": "css",
+  "input-version": 1,
+  "name": "Sequoia Popup Prototype",
+  "description": "Isolated feasibility study; not a replacement for the desktop style.",
+  "version": "0.1",
+  "license": "MIT",
+  "authors": ["Sequoia Eleven"]
+}

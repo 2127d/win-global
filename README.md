@@ -34,6 +34,13 @@ Plasma panels and desktop widgets retain their existing finishes.
 
 ## Project folders
 
+Control Center, Start menu and Digital Clock now share the
+[Sequoia popup components](desktop/components/popups/README.md): palette-aware
+cards, panels, action backgrounds and header buttons. Their canonical tokens
+also feed an isolated [Union feasibility prototype](themes/union/README.md).
+Run `python3 tools/popup_components.py` after shared component edits; package
+builders reject unsynchronized copies.
+
 All components remain in this `win-global` repository:
 
 | Folder | Contents |

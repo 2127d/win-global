@@ -132,7 +132,11 @@ KSvg.FrameSvgItem {
     assert cfg.value('favorites').toVariant()[-2] == 'sequoia-start-test.desktop'
     evaluate('backend.togglePin("sequoia-start-test.desktop")')
     assert 'sequoia-start-test.desktop' not in cfg.value('favorites').toVariant()
-    print('PASS: pin, reorder, and unpin persist in configuration')
+    evaluate('backend.togglePin("applications:sequoia-start-test.desktop")')
+    assert evaluate('backend.isPinned("sequoia-start-test.desktop")')
+    evaluate('backend.togglePin("sequoia-start-test.desktop")')
+    assert not evaluate('backend.isPinned("applications:sequoia-start-test.desktop")')
+    print('PASS: pin, reorder, and unpin persist across desktop IDs and application URLs')
 
     for destination in ('pinned', 'recommended', 'apps', 'category'):
         if destination == 'category':
@@ -166,7 +170,7 @@ KSvg.FrameSvgItem {
     settle()
     favorites = evaluate('backend.favorites')
     roles = {bytes(name).decode(): role for role, name in favorites.roleNames().items()}
-    row = next(row for row in range(favorites.rowCount()) if favorites.data(favorites.index(row, 0), roles['favoriteId']) == 'sequoia-start-test.desktop')
+    row = next(row for row in range(favorites.rowCount()) if str(favorites.data(favorites.index(row, 0), roles['favoriteId'])).removeprefix('applications:') == 'sequoia-start-test.desktop')
     evaluate(f'launch(backend.favorites, {row})')
     QTest.qWait(1200)
     assert marker.exists(), 'The fixture desktop entry was not launched'

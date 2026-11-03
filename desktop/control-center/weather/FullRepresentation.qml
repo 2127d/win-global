@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import QtQuick
+import "../details" as Details
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PC
@@ -139,7 +140,7 @@ PlasmaExtras.Representation {
                         color: Kirigami.Theme.disabledTextColor
                         text: qsTr("Weather information is provided by your selected weather service.")
                     }
-                    PC.Button {
+                    Details.DetailButton {
                         Layout.alignment: Qt.AlignHCenter
                         text: qsTr("Set location…")
                         visible: root.status === Weather.ForecastControl.NeedsConfiguration

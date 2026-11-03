@@ -10,7 +10,11 @@ import shlex
 import shutil
 import subprocess
 import tempfile
+from popup_components import sync
 from control_center_details import style_details
+from control_center_bluetooth import style_bluetooth
+from control_center_audio import style_audio
+from control_center_display import style_display
 from control_center_weather import style_weather
 from control_center_contacts import style_contacts
 from control_center_dock import style_dock
@@ -30,6 +34,7 @@ def replace(text, old, new):
 
 
 def build(destination):
+    sync(check=True)
     from PySide6.QtCore import QCoreApplication, QDir, QDirIterator, QFile, QPluginLoader, QLibraryInfo
     app = QCoreApplication.instance() or QCoreApplication([])
     # Keep plugin loaders alive while their resources are being copied.
@@ -67,13 +72,19 @@ def build(destination):
         target.write_bytes(bytes(source.readAll()))
     # Local sibling QML must not resolve back into the compiled upstream module.
     (tray / 'qmldir').unlink()
-    for source in SOURCE.glob('*.qml'):
+    for source in [*SOURCE.glob('*.qml'), *SOURCE.glob('*.js')]:
         if source.name == 'Preview.qml':
             continue
         shutil.copy2(source, tray / source.name)
 
+    shutil.copytree(SOURCE / 'SequoiaPopup', tray / 'SequoiaPopup')
+
     path = tray / 'main.xml'
-    text = replace(path.read_text(), '  </group>', '''    <entry name="controlCenterWidth" type="Int">
+    text = replace(path.read_text(), '  </group>', '''    <entry name="quickSettingsLayout" type="String">
+      <label>Saved Quick Settings tile order and sizes.</label>
+      <default></default>
+    </entry>
+    <entry name="controlCenterWidth" type="Int">
       <label>Default width of the Control Center content in logical pixels.</label>
       <default>297</default><min>260</min><max>1600</max>
     </entry>
@@ -123,7 +134,7 @@ def build(destination):
     Connections {
         target: systemTrayState
         function onExpandedChanged() {
-            if (!systemTrayState.expanded) popup.showAllItems = false;
+            if (!systemTrayState.expanded) { popup.showAllItems = false; dashboard.cancelEdit(); }
         }
     }''')
     text = replace(text, 'import QtQuick.Layouts', 'import QtQuick.Layouts\nimport QtQuick.Window\nimport org.kde.kitemmodels as KItemModels')
@@ -132,6 +143,7 @@ def build(destination):
     # Keep native detail pages wide enough and restore the compact size on Back.
     text = replace(text, '    Layout.minimumWidth: Kirigami.Units.gridUnit * 24', '''    readonly property bool compactDashboard: !systemTrayState.activeApplet && !showAllItems
     readonly property bool weatherPage: systemTrayState.activeApplet?.Plasmoid.pluginName === "org.kde.plasma.weather"
+    readonly property bool displayPage: systemTrayState.activeApplet?.Plasmoid.pluginName === "org.kde.plasma.brightness"
     readonly property real dashboardWidth: Math.max(1, Math.min(1600, Math.max(260, Plasmoid.configuration.controlCenterWidth ?? 297), Screen.width - 60))
     readonly property real dashboardHeight: Math.max(1, Math.min(1600, Math.max(240, Plasmoid.configuration.controlCenterHeight ?? 451), Screen.height - 60))
     onCompactDashboardChanged: {
@@ -148,7 +160,7 @@ def build(destination):
     Layout.minimumWidth: compactDashboard ? dashboardWidth : weatherPage ? Math.min(520, Screen.width - 60) : Kirigami.Units.gridUnit * 24
     Layout.preferredWidth: Layout.minimumWidth
     Layout.maximumWidth: compactDashboard ? dashboardWidth : Infinity''')
-    text = replace(text, '    Layout.minimumHeight: Kirigami.Units.gridUnit * 24', '''    Layout.minimumHeight: compactDashboard ? dashboardHeight : weatherPage ? Math.min(640, Screen.height - 100) : Kirigami.Units.gridUnit * 24
+    text = replace(text, '    Layout.minimumHeight: Kirigami.Units.gridUnit * 24', '''    Layout.minimumHeight: compactDashboard ? dashboardHeight : displayPage ? Math.min(660, Screen.height - 100) : weatherPage ? Math.min(640, Screen.height - 100) : Kirigami.Units.gridUnit * 24
     Layout.preferredHeight: Layout.minimumHeight
     Layout.maximumHeight: compactDashboard ? Layout.minimumHeight : Infinity''')
     text = replace(text, 'visible: systemTrayState.activeApplet && systemTrayState.activeApplet.expanded && (popup.hiddenLayout.itemCount > 0)', 'visible: !!systemTrayState.activeApplet || popup.showAllItems')
@@ -162,8 +174,12 @@ def build(destination):
     text = replace(text, '        // Grid view of all available items', '''        ControlDashboard {
             id: dashboard
             backend: controls
+            layoutJson: Plasmoid.configuration.quickSettingsLayout || ""
+            onLayoutCommitted: json => { Plasmoid.configuration.quickSettingsLayout = json; Plasmoid.configuration.writeConfig(); }
             customItems: trayItems.customItems
             otherItems: trayItems.otherItems
+            availableCustomItems: trayItems.availableCustomItems
+            availableOtherItems: trayItems.availableOtherItems
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: Kirigami.Units.smallSpacing
@@ -180,7 +196,7 @@ def build(destination):
         bottomInset: 0
         leftInset: container.visible ? container.Layout.leftMargin : dashboard.Layout.leftMargin
         rightInset: container.visible ? container.Layout.rightMargin : dashboard.Layout.rightMargin
-        background: Details.DetailSurface { radius: 10; elevated: true }''')
+        background: Details.DetailSurface { radius: height / 2; elevated: true }''')
     text = replace(text, 'spacing: plasmoidHeading.bottomPadding', 'spacing: 8')
     text = replace(text, '            id: trayHeading', '''            id: trayHeading
             // A taller applet must not stretch the shared header row.
@@ -202,6 +218,18 @@ def build(destination):
     # Retain every native action and key binding, only replace button surfaces.
     text = text.replace('PlasmaComponents.ToolButton {', 'ControlHeaderButton {')
     text = text.replace('implicitWidth: Kirigami.Units.iconSizes.smallMedium', 'implicitWidth: 18')
+    text = replace(text, '            Repeater {\n                id: primaryActionButtons', '''            Loader {
+                sourceComponent: systemTrayState.activeApplet?.sequoiaHeaderControl ?? null
+                visible: !!item
+                Layout.alignment: Qt.AlignVCenter
+            }
+
+            Repeater {
+                id: primaryActionButtons''')
+    text = replace(text, 'if (actionsButton.applet === null)',
+                   'if (actionsButton.applet === null || actionsButton.applet.sequoiaFooterActions === true)')
+    text = replace(text, 'visible: actionsButton.applet && actionsButton.applet.plasmoid.internalAction("configure")',
+                   'visible: actionsButton.applet && !actionsButton.applet.sequoiaFooterActions && actionsButton.applet.plasmoid.internalAction("configure")')
     path.write_text(text)
     path = tray / 'PlasmoidPopupsContainer.qml'
     text = replace(path.read_text(), 'import QtQuick\n', 'import QtQuick\nimport "../details" as Details\n')
@@ -293,6 +321,9 @@ def build(destination):
             raise RuntimeError(f'Cannot locate the installed {library} library.')
         dependencies.append(Path(QLibraryInfo.path(QLibraryInfo.LibrariesPath)) / soname)
     dependencies += style_details(destination, SOURCE, PLUGIN.parent, extract, replace)
+    style_bluetooth(destination, SOURCE, replace)
+    style_audio(destination, SOURCE, replace)
+    style_display(destination, SOURCE, replace)
     dependencies += style_weather(destination, SOURCE, PLUGIN.parent, extract, replace)
     dependencies += style_contacts(destination, SOURCE, PLUGIN.parent, extract, replace)
     dependencies += style_dock(destination, SOURCE, PLUGIN.parent, extract, replace)

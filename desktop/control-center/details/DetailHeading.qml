@@ -14,5 +14,5 @@ PlasmaExtras.PlasmoidHeading {
     topPadding: 8
     bottomPadding: 8
     Kirigami.Theme.colorSet: Kirigami.Theme.Window
-    background: DetailSurface { radius: 16; elevated: true }
+    background: DetailSurface { radius: Math.min(24, height / 2); elevated: true }
 }

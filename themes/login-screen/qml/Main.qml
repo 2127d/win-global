@@ -58,7 +58,7 @@ LoginScreen {
         function login(username, password) {
             if (busy) return;
             ViewState.busy = true; ViewState.message = "";
-            PlasmaLogin.GreeterState.handleLoginRequest(username, password, session.currentSessionType, session.currentSessionFileName);
+            PlasmaLogin.GreeterState.handleLoginRequest(username, password);
         }
         function suspend() { PlasmaLogin.SessionManagement.suspend(); }
         function powerOff() { PlasmaLogin.SessionManagement.requestShutdown(PlasmaLogin.SessionManagement.ConfirmationMode.Skip); }
@@ -99,16 +99,16 @@ LoginScreen {
     // The visible picker uses the same glass popup as the other tray controls.
     sessionModel: PlasmaLogin.SessionModel
     sessionIndex: session.currentIndex
-    sessionDescription: session.text
+    sessionDescription: session.currentText
     onSessionSelected: index => { session.currentIndex = index; root.focusInput(); }
     PlasmaLogin.SessionButton {
         id: session
         visible: false
     }
-    Connections {
-        target: greeterEventFilter
-        function onKeyPressed() { Qt.callLater(() => PlasmaLogin.GreeterState.activateWindow(root.Window.window)); }
-        function onEscapeKeyPressed() { native.clearPassword(); root.userMenu.close(); }
+    PlasmaLogin.GreeterEventFilter {
+        window: root.Window.window
+        onKeyPressed: Qt.callLater(() => PlasmaLogin.GreeterState.activateWindow(root.Window.window))
+        onEscapeKeyPressed: { native.clearPassword(); root.userMenu.close(); }
     }
     TapHandler { onPressedChanged: { if (pressed) PlasmaLogin.GreeterState.activateWindow(root.Window.window); } }
 }

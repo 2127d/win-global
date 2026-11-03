@@ -10,6 +10,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import "SequoiaPopup" as Popup
 import QtQuick.Layouts
 import "calendar" as SequoiaCalendar
 
@@ -49,8 +50,6 @@ PlasmaExtras.Representation {
     collapseMarginsHint: true
 
     readonly property int paddings: Kirigami.Units.largeSpacing
-    readonly property color cardColor: Kirigami.ColorUtils.linearInterpolation(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.025)
-    readonly property color cardBorder: Qt.alpha(Kirigami.Theme.textColor, 0.08)
     readonly property bool showAgenda: eventPluginsManager.enabledPlugins.length > 0
     readonly property bool showClocks: clocksList.count > 1
 
@@ -136,22 +135,18 @@ PlasmaExtras.Representation {
         }
     }
 
-    Rectangle {
+    Popup.Surface {
+        objectName: "sequoiaAgendaSurface"
+        Kirigami.Theme.inherit: true
         anchors.fill: leadingColumn
         anchors.margins: -calendar.paddings
         visible: leadingColumn.visible
-        radius: 18
-        color: calendar.cardColor
-        border.color: calendar.cardBorder
     }
-    Kirigami.ShadowedRectangle {
+    Popup.Surface {
         objectName: "sequoiaCalendarSurface"
+        Kirigami.Theme.inherit: true
         anchors.fill: monthViewWrapper
-        radius: 18
-        color: calendar.cardColor
-        shadow.size: 14
-        shadow.yOffset: 3
-        shadow.color: Qt.rgba(0, 0, 0, 0.18)
+        elevated: true
     }
 
     // Leading column containing agenda view and time zones

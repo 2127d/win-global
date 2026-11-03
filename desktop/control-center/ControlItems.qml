@@ -9,6 +9,7 @@ QtObject {
     required property var configuration
     required property var sourceModel
     property var entries: []
+    property var availableEntries: []
     readonly property var customPlugins: [
         "org.kde.plasma.networkmanagement", "org.kde.plasma.bluetooth",
         "org.kde.plasma.notifications", "org.kde.plasma.volume",
@@ -16,6 +17,8 @@ QtObject {
     ]
     readonly property var customItems: entries.filter(entry => customPlugins.includes(entry.id)).map(entry => entry.id)
     readonly property var otherItems: entries.filter(entry => !customPlugins.includes(entry.id))
+    readonly property var availableCustomItems: availableEntries.filter(entry => customPlugins.includes(entry.id)).map(entry => entry.id)
+    readonly property var availableOtherItems: availableEntries.filter(entry => !customPlugins.includes(entry.id))
     // Reading every setting here makes changes apply without restarting Plasma.
     readonly property var policy: ({
         all: configuration.showAllItems,
@@ -30,7 +33,7 @@ QtObject {
 
     function rebuild() {
         if (!sourceModel || !configuration) return;
-        const result = [];
+        const available = [];
         const seen = new Set();
         for (let row = 0; row < sourceModel.rowCount(); ++row) {
             const index = sourceModel.index(row, 0);
@@ -43,16 +46,17 @@ QtObject {
             const id = kind === "Plasmoid" ? applet?.Plasmoid.pluginName
                 : kind === "StatusNotifier" ? value("Id") : value("itemId");
             const identity = kind === "StatusNotifier" ? value("DataEngineSource") || id : id;
-            if (!id || seen.has(identity) || policy.all || policy.shown.includes(id)) continue;
+            if (!id || seen.has(identity)) continue;
             if (kind === "Plasmoid" ? !policy.enabled.includes(id) : policy.disabled.includes(id)) continue;
             seen.add(identity);
-            result.push({ id, kind, applet, row,
+            available.push({ id, kind, applet, row,
                 title: kind === "StatusNotifier" ? value("Title") || value("ToolTipTitle") : value("name"),
                 subtitle: kind === "StatusNotifier" ? value("ToolTipSubTitle") : value("message"),
                 icon: kind === "StatusNotifier" ? value("Icon") || value("IconName") : value("icon"),
                 source: value("DataEngineSource"), menuOnly: value("ItemIsMenu") });
         }
-        entries = result;
+        availableEntries = available;
+        entries = available.filter(entry => !policy.all && !policy.shown.includes(entry.id));
     }
     readonly property Connections modelConnections: Connections {
         target: items.sourceModel

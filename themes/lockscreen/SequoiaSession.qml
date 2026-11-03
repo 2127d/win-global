@@ -27,7 +27,7 @@ FocusScope {
         width: 252 * session.unit - 4
         height: users.height + authentication.height + prompts.implicitHeight + 66 * session.unit - 4
         radius: 18 * session.unit
-        sceneSource: wallpaper
+        sceneSource: lockScreenUi.wallpaperSource
         scene: lockScreenUi
         themeColors: session.themeColors
         blurRadius: 32 * session.unit
@@ -120,7 +120,7 @@ FocusScope {
         width: actions.width + 20 * lockScreenUi.powerUnit
         height: actions.height + 16 * lockScreenUi.powerUnit
         radius: 18 * lockScreenUi.powerUnit
-        sceneSource: wallpaper
+        sceneSource: lockScreenUi.wallpaperSource
         scene: lockScreenUi
         themeColors: session.themeColors
         visible: actions.visible && actions.visibleChildren.length > 0

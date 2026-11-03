@@ -82,4 +82,5 @@ def style_notifications(destination, source, replace):
         ('        id: bodyLabel', '        id: bodyLabel\n        Layout.topMargin: summary.visible ? 5 : 8'),
     ])
     for path in (source / 'notifications').glob('*.qml'):
-        shutil.copy2(path, directory / 'components' / path.name)
+        (directory / 'components' / path.name).write_text(
+            path.read_text().replace('import "../details" as Details', 'import "../../details" as Details'))

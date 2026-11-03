@@ -184,6 +184,7 @@ FocusScope {
             }
             MenuSurface {
                 objectName: "startAccountIsland"
+                panel: true
                 Layout.fillWidth: true; Layout.preferredHeight: 64
                 Layout.leftMargin: 20; Layout.rightMargin: 20
                 Layout.topMargin: 10; Layout.bottomMargin: 14

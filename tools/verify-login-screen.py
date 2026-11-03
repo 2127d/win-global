@@ -68,8 +68,8 @@ with tempfile.TemporaryDirectory(prefix='sequoia-login-verify-') as temporary:
             const row = model.index(next, 0);
             const valid = session.currentIndex === next && root.sessionIndex === next
                 && PlasmaLogin.GreeterState.sessionIndex === next
-                && session.currentSessionFileName === model.data(row, PlasmaLogin.SessionModel.FileNameRole)
-                && session.currentSessionType === model.data(row, PlasmaLogin.SessionModel.TypeRole);
+                && session.currentText === model.data(row, Qt.DisplayRole)
+                && root.sessionDescription === session.currentText;
             root.sessionSelected(original);
             if (valid) console.warn("SEQUOIA_SESSION_SELECTION_OK");
             else console.error("SESSION_SELECTION_FAILED");

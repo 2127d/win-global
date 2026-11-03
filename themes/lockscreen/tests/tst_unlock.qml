@@ -27,6 +27,7 @@ Item {
     Rectangle { id: wallpaper; anchors.fill: parent; color: "#567568" }
     Item {
         id: lockScreenUi
+        readonly property Item wallpaperSource: wallpaper
         anchors.fill: parent
         readonly property real unit: Math.max(0.65, Math.min(2, width / 1024, height / 560))
         readonly property real loginUnit: Math.max(0.75, unit * 0.8)

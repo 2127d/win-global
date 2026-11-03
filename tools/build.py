@@ -8,6 +8,7 @@ from wallpaper import WALLPAPER_ID, build_wallpaper
 from task_progress import without_progress_endcaps
 
 ROOT = Path(__file__).resolve().parents[1]
+POPUP_RADIUS = json.loads((ROOT / 'desktop/components/popups/tokens.json').read_text())['panelRadius']
 VERSION = "2.0.0"
 PALETTES = {
     "light": dict(surface="#f2f3f5", raised="#ffffff", view="#ffffff", text="#24262b", muted="#666b75",
@@ -23,6 +24,7 @@ class Svg:
     def __init__(self):
         self.parts = []
         self.row = 0
+        self.extent = 0
 
     def hint(self, name, width=1, height=1):
         self.parts.append(f'<rect id="{name}" x="800" y="{len(self.parts)*3}" width="{width}" height="{height}" fill="#ff00ff"/>')
@@ -34,6 +36,7 @@ class Svg:
         key = prefix + "-" if prefix else ""
         y0 = self.row * 100
         self.row += 1
+        self.extent = max(self.extent, y0 + 2 * ry + c)
         outer = f'M {rx} {iy} A {radius} {radius} 0 0 0 {ix} {ry} L {rx} {ry} Z'
         inner = f'M {rx} {iy+b} A {radius-b} {radius-b} 0 0 0 {ix+b} {ry} L {rx} {ry} Z'
         positions = {
@@ -97,6 +100,7 @@ class Svg:
           </radialGradient></defs>''')
         y = self.row * 100
         self.row += 1
+        self.extent = max(self.extent, y + 2 * r + 32)
         for name, x, yy, w, h, transform in [
             ("topleft",0,0,r,r,""), ("topright",r+32,0,r,r,f'translate({r} 0) rotate(90)'),
             ("bottomleft",0,r+32,r,r,f'translate(0 {r}) rotate(-90)'),
@@ -117,7 +121,8 @@ class Svg:
     def save(self, path):
         path.parent.mkdir(parents=True, exist_ok=True)
         self.hint("hint-stretch-borders")
-        path.write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="900" height="{max(100,self.row*100)}" viewBox="0 0 900 {max(100,self.row*100)}">\n' + '\n'.join(self.parts) + '\n</svg>\n')
+        height = max(100, self.row * 100, self.extent)
+        path.write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="900" height="{height}" viewBox="0 0 900 {height}">\n' + '\n'.join(self.parts) + '\n</svg>\n')
 
 
 def colors(p, name, material=None):
@@ -185,8 +190,8 @@ def build_theme(mode,p):
     (ROOT/'themes/color-schemes').mkdir(exist_ok=True)
     (ROOT/'themes/color-schemes'/f'SequoiaEleven{mode.title()}.colors').write_text(scheme)
     for folder, alpha in [('',0.76),('translucent',0.64),('opaque',1),('solid',1)]:
-        for file,radius,margin in [('widgets/panel-background',16,6),('dialogs/background',14,12),
-                                   ('widgets/background',16,12),('widgets/tooltip',9,8)]:
+        for file,radius,margin in [('widgets/panel-background',16,6),('dialogs/background',POPUP_RADIUS,12),
+                                   ('widgets/background',POPUP_RADIUS,12),('widgets/tooltip',9,8)]:
             s=Svg()
             is_panel = file.endswith('panel-background')
             surface = p['panel'] if is_panel else p['surface']
