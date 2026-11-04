@@ -17,7 +17,7 @@ Item {
             return null;
         }
         function find(name) { const item = findIn(preview,name); verify(!!item, name); return item; }
-        function init() { stage.width=418; stage.height=520; preview.view.selectionState = {order:[],activeIds:[],featuredId:"",manualId:""}; preview.fixture.reset(); preview.view.goBack(); wait(50); }
+        function init() { stage.width=418; stage.height=520; preview.view.selectionState = {order:[],activeIds:[],featuredId:"",manualId:""}; preview.fixture.reset(); preview.view.goBack(); wait(50); tryCompare(preview.view,"navigationBusy",false); }
         function test_connection_order_and_battery_values() {
             compare(preview.view.featured.id,"headphones");
             preview.fixture.change("headphones",{battery:0}); wait(30);
@@ -113,13 +113,13 @@ Item {
             compare(find("bluetoothSpotlightConnect").text,"Disconnect");
         }
         function test_details_back_forget_and_removed_device() {
-            mouseClick(find("bluetoothSpotlightDetails")); wait(30);
+            mouseClick(find("bluetoothSpotlightDetails")); tryCompare(preview.view,"navigationBusy",false);
             compare(preview.view.navigationDepth,2);
             const scroll=find("bluetoothDeviceScroll").contentItem;
             scroll.contentY=Math.max(0,scroll.contentHeight-scroll.height);wait(30);
             mouseClick(find("bluetoothForget"));compare(preview.fixture.lastAction,"forget:headphones");
             compare(preview.fixture.devices.length,3,"forget routes to native confirmation, without deleting directly");
-            preview.view.forceActiveFocus();keyClick(Qt.Key_Escape);wait(30);
+            preview.view.forceActiveFocus();keyClick(Qt.Key_Escape);tryCompare(preview.view,"navigationBusy",false);
             compare(preview.view.navigationDepth,1);
             preview.view.openDetails("mouse");wait(20);
             preview.fixture.devices=preview.fixture.devices.filter(d=>d.id!=="mouse");wait(40);
@@ -132,6 +132,7 @@ Item {
             preview.view.openDetails("headphones");wait(30);
             mouseClick(find("bluetoothHeaderSwitch"));wait(30);
             verify(!preview.fixture.operational);compare(preview.view.navigationDepth,1);
+            tryCompare(preview.view,"navigationBusy",false);
             verify(!find("bluetoothPair").enabled);
             mouseClick(find("bluetoothEmptyAction"));wait(30);verify(preview.fixture.operational);
             preview.fixture.devices=[];wait(30);compare(find("bluetoothEmptyAction").text,"Pair new device");

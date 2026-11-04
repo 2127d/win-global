@@ -2,6 +2,7 @@
 """Polish native notification views while retaining KDE's models and actions."""
 import re
 import shutil
+from control_center_notification_history import style_notification_history
 
 
 def style_notifications(destination, source, replace):
@@ -84,3 +85,5 @@ def style_notifications(destination, source, replace):
     for path in (source / 'notifications').glob('*.qml'):
         (directory / 'components' / path.name).write_text(
             path.read_text().replace('import "../details" as Details', 'import "../../details" as Details'))
+
+    style_notification_history(destination, replace)

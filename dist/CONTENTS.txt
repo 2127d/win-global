@@ -21,7 +21,7 @@ sequoia-eleven-dark-2.0.0.tar.gz
   Standalone dark Plasma style.
 
 sequoia-eleven-wallpaper-2.0.0.tar.gz
-  Standalone adaptive wallpaper.
+  Michigan Glass light/dark pair and Natural Colors artwork; native KDE packages with eight sizes, up to 3440x1440.
 
 sequoia-tahoe-icons-2.0.0.tar.gz
   Standalone icon family with light/dark variants and licenses.

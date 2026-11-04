@@ -22,7 +22,9 @@ if command -v gtk-update-icon-cache >/dev/null 2>&1; then
         gtk-update-icon-cache --force --ignore-theme-index "$theme"
     done
 fi
-cp -R -- "$source_dir/themes/wallpapers/SequoiaEleven" "$data_dir/wallpapers/"
+for wallpaper in SequoiaEleven MichiganGlass MichiganGlassNatural; do
+    cp -R -- "$source_dir/themes/wallpapers/$wallpaper" "$data_dir/wallpapers/"
+done
 for variant in light dark; do
     cp -R -- "$source_dir/themes/plasma/desktoptheme/sequoia-eleven-$variant" "$data_dir/plasma/desktoptheme/"
     # Remove the palette shipped by older Sequoia versions so accent colors work.
@@ -38,4 +40,4 @@ for widget in org.sequoia.startmenu org.sequoia.downloads org.sequoia.docksepara
         cp -R -- "$source_dir/widgets/plasmoids/$widget" "$data_dir/plasma/plasmoids/"
     fi
 done
-printf 'Installed Sequoia Eleven to %s\nChoose Light/Dark Solid or Transparent in System Settings → Colors & Themes → Global Theme.\nChoose Sequoia Eleven in Wallpaper settings for automatic light/dark switching based on the color scheme.\n' "$data_dir"
+printf 'Installed Sequoia Eleven to %s\nChoose Light/Dark Solid or Transparent in System Settings → Colors & Themes → Global Theme.\nChoose Sequoia Eleven — Michigan Glass in Wallpaper settings for automatic light/dark switching based on the Plasma style.\n' "$data_dir"

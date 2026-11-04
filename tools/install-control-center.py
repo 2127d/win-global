@@ -15,6 +15,14 @@ from control_center_details import style_details
 from control_center_bluetooth import style_bluetooth
 from control_center_audio import style_audio
 from control_center_display import style_display
+from control_center_displayconfiguration import style_displayconfiguration
+from control_center_kdeconnect import style_kdeconnect
+from control_center_devices import style_devices
+from control_center_printers import style_printers
+from control_center_dwell import style_dwell
+from control_center_vaults import style_vaults
+from control_center_power import style_power
+from control_center_clipboard import style_clipboard
 from control_center_network import style_network
 from control_center_weather import style_weather
 from control_center_contacts import style_contacts
@@ -139,31 +147,35 @@ def build(destination):
         }
     }''')
     text = replace(text, 'import QtQuick.Layouts', 'import QtQuick.Layouts\nimport QtQuick.Window\nimport org.kde.kitemmodels as KItemModels')
-    # Plasma adds its frame around the configured content size; preserve the
-    # original 297x451 default and limit only the dashboard to the saved size.
-    # Keep native detail pages wide enough and restore the compact size on Back.
+    # Sizes come from the active page, never from the previous popup geometry.
     text = replace(text, '    Layout.minimumWidth: Kirigami.Units.gridUnit * 24', '''    readonly property bool compactDashboard: !systemTrayState.activeApplet && !showAllItems
-    readonly property bool weatherPage: systemTrayState.activeApplet?.Plasmoid.pluginName === "org.kde.plasma.weather"
-    readonly property bool displayPage: ["org.kde.plasma.brightness", "org.kde.plasma.networkmanagement"].includes(systemTrayState.activeApplet?.Plasmoid.pluginName)
     readonly property real dashboardWidth: Math.max(1, Math.min(1600, Math.max(260, Plasmoid.configuration.controlCenterWidth ?? 297), Screen.width - 60))
     readonly property real dashboardHeight: Math.max(1, Math.min(1600, Math.max(240, Plasmoid.configuration.controlCenterHeight ?? 451), Screen.height - 60))
-    onCompactDashboardChanged: {
-        if (!compactDashboard) Qt.callLater(function() {
-            if (popup.compactDashboard) return;
-            // AppletPopup retains the previous window size when its maximum
-            // is released. Restore the detail size from the original dashboard,
-            // after the detail page's minimum sizes have taken effect.
-            dialog.width = popup.Layout.preferredWidth + dialog.leftPadding + dialog.rightPadding;
-            dialog.height = Math.max(popup.Layout.preferredHeight, Math.min(451, Screen.height - 60))
-                + dialog.topPadding + dialog.bottomPadding;
-        });
+    ControlPopupSizing {
+        id: sizing
+        page: systemTrayState.activeApplet?.fullRepresentationItem ?? null
+        availableWidth: Screen.width - 60
+        availableHeight: Screen.height - 100
+        headingHeight: plasmoidHeading.height + 12
     }
-    Layout.minimumWidth: compactDashboard ? dashboardWidth : weatherPage ? Math.min(520, Screen.width - 60) : Kirigami.Units.gridUnit * 24
-    Layout.preferredWidth: Layout.minimumWidth
-    Layout.maximumWidth: compactDashboard ? dashboardWidth : Infinity''')
-    text = replace(text, '    Layout.minimumHeight: Kirigami.Units.gridUnit * 24', '''    Layout.minimumHeight: compactDashboard ? dashboardHeight : displayPage ? Math.min(660, Screen.height - 100) : weatherPage ? Math.min(640, Screen.height - 100) : Kirigami.Units.gridUnit * 24
-    Layout.preferredHeight: Layout.minimumHeight
-    Layout.maximumHeight: compactDashboard ? Layout.minimumHeight : Infinity''')
+    readonly property real targetWidth: compactDashboard ? dashboardWidth : sizing.preferredWidth
+    readonly property real targetHeight: compactDashboard ? dashboardHeight : sizing.preferredHeight
+    ControlPopupGeometry {
+        id: geometry
+        objectName: "controlPopupGeometry"
+        targetWidth: popup.targetWidth
+        targetHeight: popup.targetHeight
+        active: systemTrayState.expanded && dialog.visible
+        duration: Kirigami.Units.longDuration
+    }
+    readonly property real appliedWidth: Math.round(geometry.width)
+    readonly property real appliedHeight: Math.round(geometry.height)
+    Layout.minimumWidth: appliedWidth
+    Layout.preferredWidth: appliedWidth
+    Layout.maximumWidth: appliedWidth''')
+    text = replace(text, '    Layout.minimumHeight: Kirigami.Units.gridUnit * 24', '''    Layout.minimumHeight: appliedHeight
+    Layout.preferredHeight: appliedHeight
+    Layout.maximumHeight: appliedHeight''')
     text = replace(text, 'visible: systemTrayState.activeApplet && systemTrayState.activeApplet.expanded && (popup.hiddenLayout.itemCount > 0)', 'visible: !!systemTrayState.activeApplet || popup.showAllItems')
     text = replace(text, '                    systemTrayState.setActiveApplet(null)\n', '                    popup.goHome()\n')
     text = replace(text, 'i18n("Status and Notifications")', '(popup.showAllItems ? i18n("More tray items") : i18n("Control Center"))')
@@ -231,9 +243,32 @@ def build(destination):
                    'if (actionsButton.applet === null || actionsButton.applet.sequoiaFooterActions === true)')
     text = replace(text, 'visible: actionsButton.applet && actionsButton.applet.plasmoid.internalAction("configure")',
                    'visible: actionsButton.applet && !actionsButton.applet.sequoiaFooterActions && actionsButton.applet.plasmoid.internalAction("configure")')
+    # Keep both pages alive for the outgoing/incoming slide. Layout margins
+    # belong to the deck; StackView owns the pages' positions and dimensions.
+    start = text.index('        ControlDashboard {')
+    end = text.index('\n    }\n\n    // Footer', start)
+    pages = text[start:end]
+    pages = pages.replace('            visible: !systemTrayState.activeApplet && !popup.showAllItems\n', '')
+    pages = pages.replace('            visible: !systemTrayState.activeApplet && popup.showAllItems\n', '')
+    pages = pages.replace('            visible: systemTrayState.activeApplet\n', '')
+    pages = pages.replace('        }\n\n        // Grid view', '        },\n\n        // Grid view')
+    pages = pages.replace('        }\n\n        // Container', '        },\n\n        // Container')
+    text = text[:start] + '''        Details.DetailPageDeck {
+            id: trayNavigation
+            objectName: "controlNavigation"
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.margins: 4
+            currentIndex: systemTrayState.activeApplet ? 2 : popup.showAllItems ? 1 : 0
+            pages: [
+''' + pages + '''
+            ]
+        }''' + text[end:]
     path.write_text(text)
     path = tray / 'PlasmoidPopupsContainer.qml'
+
     text = replace(path.read_text(), 'import QtQuick\n', 'import QtQuick\nimport "../details" as Details\n')
+    text = replace(text, 'QQC2.StackView {', 'Details.DetailNavigationStack {')
     text = replace(text, '    focus: true', '''    focus: true
     ControlScrollBars { targetItem: mainStack.currentItem }
     // Also give third-party applets a matching content surface.
@@ -251,6 +286,18 @@ def build(destination):
                         'activeApplet.fullRepresentationItem.header.background.visible = activeApplet.fullRepresentationItem.header.objectName === "sequoiaDetailHeading"')
     text = text.replace('activeApplet.fullRepresentationItem.footer.background.visible = false',
                         'activeApplet.fullRepresentationItem.footer.background.visible = activeApplet.fullRepresentationItem.footer.objectName === "sequoiaDetailHeading"')
+    text = replace(text, '    readonly property Item activeApplet: systemTrayState.activeApplet', '''    // Keep the outgoing view until the popup closes or another widget opens.
+    property Item previousApplet: null
+    readonly property Item activeApplet: systemTrayState.activeApplet ?? (systemTrayState.expanded ? previousApplet : null)''')
+    text = replace(text, '    onActiveAppletChanged: {', '''    onActiveAppletChanged: {
+        if (systemTrayState.activeApplet) previousApplet = systemTrayState.activeApplet;
+        showApplet();
+    }
+    Connections {
+        target: mainStack.activeApplet
+        function onFullRepresentationItemChanged() { mainStack.showApplet(); }
+    }
+    function showApplet() {''')
     path.write_text(text)
     path = tray / 'main.qml'
     text = replace(path.read_text(), 'visible: root.hiddenLayout.itemCount > 0', 'visible: true // The control center is useful even with no hidden icons.')
@@ -325,6 +372,14 @@ def build(destination):
     style_bluetooth(destination, SOURCE, replace)
     style_audio(destination, SOURCE, replace)
     style_display(destination, SOURCE, replace)
+    dependencies += style_displayconfiguration(destination, SOURCE, PLUGIN.parent, extract, replace)
+    dependencies += style_kdeconnect(destination, SOURCE, replace)
+    style_devices(destination, SOURCE, replace)
+    style_printers(destination, SOURCE, replace)
+    dependencies += style_vaults(destination, SOURCE, PLUGIN.parent, replace)
+    dependencies += style_dwell(destination, SOURCE, PLUGIN.parent, extract, replace)
+    style_power(destination, SOURCE, replace)
+    style_clipboard(destination, SOURCE, replace)
     style_network(destination, SOURCE, replace)
     dependencies += style_weather(destination, SOURCE, PLUGIN.parent, extract, replace)
     dependencies += style_contacts(destination, SOURCE, PLUGIN.parent, extract, replace)

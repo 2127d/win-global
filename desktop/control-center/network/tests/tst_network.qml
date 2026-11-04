@@ -11,7 +11,7 @@ Item {
         name:"NetworkLayouts";when:windowShown
         function search(root,name){if(root.objectName===name && root.visible)return root;for(const child of root.children || []){const result=search(child,name);if(result)return result;}return null;}
         function find(name){const item=search(preview,name);verify(!!item,name);return item;}
-        function init(){radio.visible=false;radio.enabled=true;radio.checked=false;stage.width=418;preview.fixture.reset();preview.summary.allNetworks=false;preview.scroll.contentItem.contentY=0;wait(40);}
+        function init(){radio.visible=false;radio.enabled=true;radio.checked=false;stage.width=418;preview.fixture.reset();preview.summary.allNetworks=false;preview.summary.searchText="";preview.scroll.contentItem.contentY=0;wait(40);}
         function test_radio_mouse_keyboard_and_disabled_state() {
             radio.visible=true;wait(30);const toggle=findChild(radio,"Switch");
             verify(!!toggle);mouseClick(toggle);verify(radio.checked);toggle.forceActiveFocus();keyClick(Qt.Key_Space);verify(!radio.checked);
@@ -21,6 +21,8 @@ Item {
             const available=Array.from({length:6},(_,i)=>({row:i+3,name:"Nearby "+i,icon:"network-wireless-symbolic",type:PlasmaNM.Enums.Wireless,active:false,connecting:false,secured:true,saved:i===0,signal:80-i*10}));
             preview.fixture.entries=preview.fixture.entries.concat(available);wait(50);
             compare(preview.summary.available.length,6);compare(preview.summary.secondary.length,1);
+            preview.summary.searchText="Nearby 5";wait(20);compare(preview.summary.available.length,1);compare(preview.summary.primary.name,"Home network");
+            preview.summary.searchText="";wait(20);
             verify(!!find("networkSecondary:1"));verify(!search(preview,"networkAvailable:0"));verify(!search(preview,"networkAvailable:1"));
             verify(!!find("networkAvailable:3"));verify(!search(preview,"networkAvailable:8"));
             const flick=preview.scroll.contentItem;flick.contentY=Math.max(0,flick.contentHeight-flick.height);wait(50);

@@ -32,7 +32,7 @@ ColumnLayout {
         rightPadding: 36
         placeholderText: i18n("Search contacts")
         Accessible.name: placeholderText
-        background: Details.DetailSurface { radius: 13; focused: search.activeFocus }
+        background: Details.DetailSurface { radius: height / 2; focused: search.activeFocus }
         onTextChanged: { list.currentIndex = -1; root.searchChanged(text); }
         Keys.onDownPressed: {
             if (list.count > 0) { list.currentIndex = 0; list.forceActiveFocus(); }

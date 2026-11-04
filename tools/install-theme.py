@@ -67,7 +67,8 @@ LAYOUT_WIDGETS = {
 }
 USER_TREES = {
     'icons/SequoiaTahoe', 'icons/SequoiaTahoe-light', 'icons/SequoiaTahoe-dark',
-    'wallpapers/SequoiaEleven', 'fonts/sequoia-eleven',
+    'wallpapers/SequoiaEleven', 'wallpapers/MichiganGlass',
+    'wallpapers/MichiganGlassNatural', 'fonts/sequoia-eleven',
     'plasma/desktoptheme/sequoia-eleven-light', 'plasma/desktoptheme/sequoia-eleven-dark',
     'plasma/shells/org.kde.plasma.desktop', 'sequoia-eleven/quick-islands',
     *(f'plasma/plasmoids/{name}' for name in LAYOUT_WIDGETS),

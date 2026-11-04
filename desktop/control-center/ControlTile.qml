@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import QtQuick
+import "SequoiaPopup" as Popup
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PC
@@ -67,7 +68,7 @@ ControlGlassSurface {
                 visible: !tile.iconOnly
                 x: tile.vertical ? 10 : iconDisc.x + iconDisc.width + 8
                 y: tile.vertical ? 54 : (parent.height - implicitHeight) / 2
-                width: Math.max(0, parent.width - x - (tile.showArrow ? 30 : 10))
+                width: Math.max(0, parent.width - x - (tile.showArrow ? 38 : 10))
                 spacing: 0
                 PC.Label { width: parent.width; text: tile.title; font.weight: Font.DemiBold; color: tile.foreground; elide: Text.ElideRight }
                 PC.Label { visible: tile.width >= 150 || tile.vertical; width: parent.width; text: tile.subtitle; color: tile.foreground; opacity: 0.78; font.pointSize: Kirigami.Theme.defaultFont.pointSize * 0.9; maximumLineCount: 1; elide: Text.ElideRight; textFormat: Text.PlainText }
@@ -75,18 +76,13 @@ ControlGlassSurface {
         }
         PC.ToolTip { text: tile.title + ": " + tile.subtitle }
     }
-    PC.ToolButton {
+    Popup.GlassToolButton {
         anchors.right: parent.right; anchors.rightMargin: 6; anchors.verticalCenter: parent.verticalCenter
-        width: 24; height: Math.min(48, tile.height - 12)
+        width: 32; height: 32
+        padding: 7
         visible: tile.showArrow
         text: qsTr("%1 details").arg(tile.title)
         display: PC.AbstractButton.IconOnly
-        background: Rectangle {
-            radius: width / 2
-            color: Qt.alpha(tile.foreground, parent.down ? 0.12 : parent.hovered ? 0.08 : 0)
-            border.width: parent.activeFocus ? 2 : 0
-            border.color: Kirigami.Theme.highlightColor
-        }
         contentItem: Kirigami.Icon { source: "go-next-symbolic"; color: tile.foreground; selected: tile.selected; implicitWidth: 16; implicitHeight: 16; isMask: true }
         onClicked: tile.detailsRequested()
         PC.ToolTip { text: parent.text }

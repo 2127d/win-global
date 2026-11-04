@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import QtQuick
+import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import QtQuick.Effects
 import org.kde.kirigami as Kirigami
@@ -9,6 +10,7 @@ import "BluetoothDevices.js" as Devices
 
 FocusScope {
     id: view
+    readonly property real naturalHeight: contents.implicitHeight + islandRow.implicitHeight + 44 + (showPowerControl ? powerRow.implicitHeight + 16 : 0)
     objectName: "bluetoothSpotlightView"
     required property var controller
     property bool showPowerControl: true
@@ -32,11 +34,17 @@ FocusScope {
     readonly property var remaining: devices.filter(d => d.id !== featured?.id)
     readonly property var selectedDevice: devices.find(d => d.id === selectedId) || null
     readonly property int navigationDepth: selectedDevice ? 2 : 1
+    readonly property bool navigationBusy: contents.busy
     function goBack() { selectedId = ""; scroll.contentItem.contentY = 0; }
     function openDetails(id) { selectedId = id; scroll.contentItem.contentY = 0; }
-    onSelectedDeviceChanged: if (selectedId && !selectedDevice) Qt.callLater(function() {
-        if (view.selectedId && !view.selectedDevice) view.goBack();
-    })
+    // Retain the outgoing detail record until its slide has finished.
+    property var detailDevice: null
+    onSelectedDeviceChanged: {
+        if (selectedDevice) detailDevice = selectedDevice;
+        if (selectedId && !selectedDevice) Qt.callLater(function() {
+            if (view.selectedId && !view.selectedDevice) view.goBack();
+        });
+    }
     Connections { target: view.controller; function onOperationalChanged() { if (!view.controller.operational) view.goBack(); } }
     Keys.onEscapePressed: event => { if (selectedId) { goBack(); event.accepted = true; } else event.accepted = false; }
 
@@ -82,116 +90,121 @@ FocusScope {
                     contentWidth: width
                     contentHeight: contents.height + 32
                     boundsBehavior: Flickable.StopAtBounds
-                    ColumnLayout {
+                    Details.DetailPageDeck {
                         id: contents
                         x: 6; y: 6
                         width: Math.max(0, scroll.availableWidth - 12)
-                        spacing: 10
-                        ColumnLayout {
-                            visible: !view.controller.operational || !view.devices.length
-                            Layout.fillWidth: true
-                            Layout.topMargin: 45
-                            spacing: 14
-                            Kirigami.Icon { source: "network-bluetooth-symbolic"; Layout.alignment: Qt.AlignHCenter; Layout.preferredWidth: 48; Layout.preferredHeight: 48 }
-                            PC.Label {
-                                Layout.fillWidth: true
-                                horizontalAlignment: Text.AlignHCenter; wrapMode: Text.Wrap
-                                text: !view.controller.adapterAvailable ? qsTr("No Bluetooth adapters available")
-                                    : !view.controller.operational ? qsTr("Bluetooth is off") : qsTr("No devices paired")
-                            }
-                            BluetoothActionButton {
-                                objectName: "bluetoothEmptyAction"
-                                Layout.alignment: Qt.AlignHCenter
-                                visible: view.controller.adapterAvailable
-                                text: view.controller.operational ? qsTr("Pair new device") : qsTr("Turn on Bluetooth")
-                                onClicked: view.controller.operational ? view.controller.pair() : view.controller.setEnabled(true)
-                            }
-                        }
-                        ColumnLayout {
-                            visible: view.controller.operational && !view.selectedDevice && !!view.featured
-                            Layout.fillWidth: true
-                            spacing: 10
-                            BluetoothDeviceCard {
-                                Layout.fillWidth: true
-                                spotlight: true
-                                switchDevices: view.switchDevices
-                                onDeviceChosen: id => view.chooseDevice(id)
-                                device: view.featured || {id:"",name:"",battery:-1}
-                                onConnectionRequested: view.controller.toggleDevice(device.id)
-                                onDetailsRequested: view.openDetails(device.id)
-                            }
-                            PC.Label {
-                                visible: view.remaining.length > 0
-                                Layout.leftMargin: 10; Layout.topMargin: 4
-                                text: qsTr("Your devices")
-                                color: Kirigami.Theme.disabledTextColor
-                            }
-                            Repeater {
-                                model: view.remaining
-                                delegate: BluetoothDeviceCard {
-                                    required property var modelData
-                                    Layout.fillWidth: true
-                                    device: modelData
-                                    onConnectionRequested: view.controller.toggleDevice(device.id)
-                                    onDetailsRequested: view.openDetails(device.id)
-                                }
-                            }
-                        }
-                        Details.DetailSurface {
-                            visible: view.controller.operational && !!view.selectedDevice
-                            Layout.fillWidth: true
-                            implicitHeight: detailColumn.implicitHeight + 28
-                            radius: 24
+                        height: implicitHeight
+                        currentIndex: view.selectedDevice ? 1 : 0
+                        pages: [
                             ColumnLayout {
-                                id: detailColumn
-                                anchors.fill: parent; anchors.margins: 14
-                                spacing: 12
-                                BluetoothActionButton {
-                                    flat: true
-                                    objectName: "bluetoothDetailsBack"
-                                    text: qsTr("Your devices"); icon.name: "go-previous-symbolic"
-                                    onClicked: view.goBack()
+                                spacing: 10
+                                ColumnLayout {
+                                    visible: !view.controller.operational || !view.devices.length
+                                    Layout.fillWidth: true
+                                    Layout.topMargin: 45
+                                    spacing: 14
+                                    Kirigami.Icon { source: "network-bluetooth-symbolic"; Layout.alignment: Qt.AlignHCenter; Layout.preferredWidth: 48; Layout.preferredHeight: 48 }
+                                    PC.Label {
+                                        Layout.fillWidth: true
+                                        horizontalAlignment: Text.AlignHCenter; wrapMode: Text.Wrap
+                                        text: !view.controller.adapterAvailable ? qsTr("No Bluetooth adapters available")
+                                            : !view.controller.operational ? qsTr("Bluetooth is off") : qsTr("No devices paired")
+                                    }
+                                    BluetoothActionButton {
+                                        objectName: "bluetoothEmptyAction"
+                                        Layout.alignment: Qt.AlignHCenter
+                                        visible: view.controller.adapterAvailable
+                                        text: view.controller.operational ? qsTr("Pair new device") : qsTr("Turn on Bluetooth")
+                                        onClicked: view.controller.operational ? view.controller.pair() : view.controller.setEnabled(true)
+                                    }
                                 }
-                                PC.Label { Layout.fillWidth: true; text: view.selectedDevice?.name ?? ""; textFormat: Text.PlainText; wrapMode: Text.Wrap; font.weight: Font.DemiBold; font.pointSize: Kirigami.Theme.defaultFont.pointSize * 1.2 }
-                                PC.Label { Layout.fillWidth: true; text: view.selectedDevice?.failed ? qsTr("Connection failed — try again") : view.selectedDevice?.connecting ? qsTr("Connecting…") : view.selectedDevice?.disconnecting ? qsTr("Disconnecting…") : view.selectedDevice?.connected ? qsTr("Connected") : qsTr("Not connected"); wrapMode: Text.Wrap; color: Kirigami.Theme.disabledTextColor }
-                                GridLayout {
-                                    Layout.fillWidth: true; columns: 2; columnSpacing: 12; rowSpacing: 10
+                                ColumnLayout {
+                                    visible: view.controller.operational && !!view.featured
+                                    Layout.fillWidth: true
+                                    spacing: 10
+                                    BluetoothDeviceCard {
+                                        Layout.fillWidth: true
+                                        spotlight: true
+                                        switchDevices: view.switchDevices
+                                        onDeviceChosen: id => view.chooseDevice(id)
+                                        device: view.featured || {id:"",name:"",battery:-1}
+                                        onConnectionRequested: view.controller.toggleDevice(device.id)
+                                        onDetailsRequested: view.openDetails(device.id)
+                                    }
+                                    PC.Label {
+                                        visible: view.remaining.length > 0
+                                        Layout.leftMargin: 10; Layout.topMargin: 4
+                                        text: qsTr("Your devices")
+                                        color: Kirigami.Theme.disabledTextColor
+                                    }
                                     Repeater {
-                                        model: view.selectedDevice ? [qsTr("Address"), view.selectedDevice.address, qsTr("Paired"), view.selectedDevice.paired ? qsTr("Yes") : qsTr("No"), qsTr("Trusted"), view.selectedDevice.trusted ? qsTr("Yes") : qsTr("No"), qsTr("Adapter"), view.selectedDevice.adapterName, ...(view.selectedDevice.battery >= 0 ? [qsTr("Battery"), view.selectedDevice.battery + "%"] : [])] : []
-                                        delegate: PC.Label {
-                                            required property int index
-                                            required property string modelData
-                                            text: modelData
-                                            textFormat: Text.PlainText
-                                            Layout.fillWidth: index % 2 === 1
-                                            wrapMode: Text.WrapAnywhere
-                                            color: index % 2 ? Kirigami.Theme.textColor : Kirigami.Theme.disabledTextColor
+                                        model: view.remaining
+                                        delegate: BluetoothDeviceCard {
+                                            required property var modelData
+                                            Layout.fillWidth: true
+                                            device: modelData
+                                            onConnectionRequested: view.controller.toggleDevice(device.id)
+                                            onDetailsRequested: view.openDetails(device.id)
                                         }
                                     }
                                 }
-                                BluetoothActionButton {
-                                    objectName: "bluetoothDetailConnect"
-                                    Layout.fillWidth: true
-                                    enabled: !view.selectedDevice?.busy
-                                    text: view.selectedDevice?.connected ? qsTr("Disconnect") : qsTr("Connect")
-                                    onClicked: view.controller.toggleDevice(view.selectedId)
-                                }
-                                Loader {
-                                    Layout.fillWidth: true
-                                    property var deviceRecord: view.selectedDevice
-                                    active: !!view.selectedDevice?.mediaPlayer && !!view.mediaComponent
-                                    sourceComponent: view.mediaComponent
-                                }
-                                Flow {
-                                    Layout.fillWidth: true
-                                    spacing: 6
-                                    BluetoothActionButton { text: qsTr("Copy address"); onClicked: view.controller.copyAddress(view.selectedId) }
-                                    BluetoothActionButton { visible: view.selectedDevice?.canBrowse ?? false; text: qsTr("Browse files"); onClicked: view.controller.browse(view.selectedId) }
-                                    BluetoothActionButton { visible: view.selectedDevice?.canSend ?? false; text: qsTr("Send file"); onClicked: view.controller.send(view.selectedId) }
-                                    BluetoothActionButton { objectName: "bluetoothForget"; text: qsTr("Forget device…"); enabled: !view.selectedDevice?.busy; onClicked: view.controller.forget(view.selectedId) }
+                            },
+                            Details.DetailSurface {
+                                QQC2.StackView.onDeactivated: if (!view.selectedDevice) view.detailDevice = null
+                                implicitHeight: detailColumn.implicitHeight + 28
+                                radius: 24
+                                ColumnLayout {
+                                    id: detailColumn
+                                    anchors.fill: parent; anchors.margins: 14
+                                    spacing: 12
+                                    BluetoothActionButton {
+                                        flat: true
+                                        objectName: "bluetoothDetailsBack"
+                                        text: qsTr("Your devices"); icon.name: "go-previous-symbolic"
+                                        onClicked: view.goBack()
+                                    }
+                                    PC.Label { Layout.fillWidth: true; text: view.detailDevice?.name ?? ""; textFormat: Text.PlainText; wrapMode: Text.Wrap; font.weight: Font.DemiBold; font.pointSize: Kirigami.Theme.defaultFont.pointSize * 1.2 }
+                                    PC.Label { Layout.fillWidth: true; text: view.detailDevice?.failed ? qsTr("Connection failed — try again") : view.detailDevice?.connecting ? qsTr("Connecting…") : view.detailDevice?.disconnecting ? qsTr("Disconnecting…") : view.detailDevice?.connected ? qsTr("Connected") : qsTr("Not connected"); wrapMode: Text.Wrap; color: Kirigami.Theme.disabledTextColor }
+                                    GridLayout {
+                                        Layout.fillWidth: true; columns: 2; columnSpacing: 12; rowSpacing: 10
+                                        Repeater {
+                                            model: view.detailDevice ? [qsTr("Address"), view.detailDevice.address, qsTr("Paired"), view.detailDevice.paired ? qsTr("Yes") : qsTr("No"), qsTr("Trusted"), view.detailDevice.trusted ? qsTr("Yes") : qsTr("No"), qsTr("Adapter"), view.detailDevice.adapterName, ...(view.detailDevice.battery >= 0 ? [qsTr("Battery"), view.detailDevice.battery + "%"] : [])] : []
+                                            delegate: PC.Label {
+                                                required property int index
+                                                required property string modelData
+                                                text: modelData
+                                                textFormat: Text.PlainText
+                                                Layout.fillWidth: index % 2 === 1
+                                                wrapMode: Text.WrapAnywhere
+                                                color: index % 2 ? Kirigami.Theme.textColor : Kirigami.Theme.disabledTextColor
+                                            }
+                                        }
+                                    }
+                                    BluetoothActionButton {
+                                        objectName: "bluetoothDetailConnect"
+                                        Layout.fillWidth: true
+                                        enabled: !view.detailDevice?.busy
+                                        text: view.detailDevice?.connected ? qsTr("Disconnect") : qsTr("Connect")
+                                        onClicked: view.controller.toggleDevice(view.selectedId)
+                                    }
+                                    Loader {
+                                        Layout.fillWidth: true
+                                        property var deviceRecord: view.detailDevice
+                                        active: !!view.detailDevice?.mediaPlayer && !!view.mediaComponent
+                                        sourceComponent: view.mediaComponent
+                                    }
+                                    Flow {
+                                        Layout.fillWidth: true
+                                        spacing: 6
+                                        BluetoothActionButton { text: qsTr("Copy address"); onClicked: view.controller.copyAddress(view.selectedId) }
+                                        BluetoothActionButton { visible: view.detailDevice?.canBrowse ?? false; text: qsTr("Browse files"); onClicked: view.controller.browse(view.selectedId) }
+                                        BluetoothActionButton { visible: view.detailDevice?.canSend ?? false; text: qsTr("Send file"); onClicked: view.controller.send(view.selectedId) }
+                                        BluetoothActionButton { objectName: "bluetoothForget"; text: qsTr("Forget device…"); enabled: !view.detailDevice?.busy; onClicked: view.controller.forget(view.selectedId) }
+                                    }
                                 }
                             }
-                        }
+                        ]
                     }
                 }
             }

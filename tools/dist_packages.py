@@ -14,7 +14,7 @@ PACKAGES = {
     'icons-only-task-manager-animated.tar.gz': 'Standalone animated task manager, retaining the checked-in package and its native compatibility manifest.',
     'sequoia-eleven-light-2.0.0.tar.gz': 'Standalone light Plasma style.',
     'sequoia-eleven-dark-2.0.0.tar.gz': 'Standalone dark Plasma style.',
-    'sequoia-eleven-wallpaper-2.0.0.tar.gz': 'Standalone adaptive wallpaper.',
+    'sequoia-eleven-wallpaper-2.0.0.tar.gz': 'Michigan Glass light/dark pair and Natural Colors artwork; native KDE packages with eight sizes, up to 3440x1440.',
     'sequoia-tahoe-icons-2.0.0.tar.gz': 'Standalone icon family with light/dark variants and licenses.',
     'widgets/start-menu.tar.gz': 'Standalone Sequoia Start Menu for the widget archive installer.',
     'widgets/downloads.tar.gz': 'Downloads widget; also included in the matching bundle.',
@@ -54,8 +54,16 @@ def assets():
     for mode in ('light', 'dark'):
         name = f'sequoia-eleven-{mode}'
         package_tree(ROOT / 'themes/plasma/desktoptheme' / name, DIST / f'{name}-2.0.0.tar.gz')
-    package_tree(ROOT / 'themes/wallpapers/SequoiaEleven', DIST / 'sequoia-eleven-wallpaper-2.0.0.tar.gz')
+    wallpapers()
     icons()
+
+
+def wallpapers():
+    output = DIST / 'sequoia-eleven-wallpaper-2.0.0.tar.gz'
+    with tarfile.open(output, 'w:gz') as archive:
+        for name in ('MichiganGlass', 'MichiganGlassNatural'):
+            archive.add(ROOT / 'themes/wallpapers' / name, arcname=name)
+    checksum(output)
 
 
 def icons():

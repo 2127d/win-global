@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import QtQuick
+import "../details" as Details
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.kitemmodels as KItemModels
@@ -18,6 +19,7 @@ PlasmaExtras.Representation {
     padding: 0; background: null
     collapseMarginsHint: true
     implicitWidth: 418; implicitHeight: 510
+    readonly property real sequoiaPreferredHeight: applet.micTestActive ? 430 : spotlight.naturalHeight
     Layout.minimumWidth: 280
     Layout.minimumHeight: 300
     Keys.onEscapePressed: event => {
@@ -162,12 +164,17 @@ PlasmaExtras.Representation {
             onTriggered: Plasmoid.configuration.showVirtualDevices = !root.applet.showVirtualDevices
         }
     }
-    AudioSpotlightView { id: spotlight; anchors.fill: parent; controller: nativeController; visible: !root.applet.micTestActive }
-    MicrophoneTestView {
-        id: microphoneTest
+    Details.DetailPageDeck {
+        objectName: "audioNavigation"
         anchors.fill: parent
-        visible: root.applet.micTestActive
-        showInternalBackButton: !(Plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentDrawsPlasmoidHeading)
-        onBackRequested: root.stopMicrophoneTest()
+        currentIndex: root.applet.micTestActive ? 1 : 0
+        pages: [
+            AudioSpotlightView { id: spotlight; controller: nativeController },
+            MicrophoneTestView {
+                id: microphoneTest
+                showInternalBackButton: !(Plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentDrawsPlasmoidHeading)
+                onBackRequested: root.stopMicrophoneTest()
+            }
+        ]
     }
 }

@@ -77,6 +77,10 @@ plugin=org.kde.plasma.notifications
     assert 'launchers=applications:org.kde.dolphin.desktop,applications:org.kde.konsole.desktop\n' in migration
     assert 'extraItems=org.sequoia.volume,org.sequoia.notifications\n' in migration
     assert installer.fork_settings(migration, packages) == migration
+    tiles = '[Containments][1][Applets][3]\nplugin=org.sequoia.systemtray\n[Containments][1][Applets][3][General]\nquickSettingsLayout={"tiles":[{"id":"tray:org.kde.plasma.volume","w":3,"h":1}]}\n'
+    migrated_tiles = installer.fork_settings(tiles, packages)
+    assert '"tray:org.sequoia.volume"' in migrated_tiles
+    assert installer.fork_settings(migrated_tiles, packages) == migrated_tiles
     trash = '[Containments][7][Applets][8]\nplugin=org.kde.plasma.trash\n'
     assert 'plugin=org.sequoia.trash\n' in installer.fork_settings(trash, packages)
     disabled = '[Containments][1][Applets][3]\nplugin=org.kde.plasma.systemtray\n[Containments][1][Applets][3][General]\nknownItems=org.kde.plasma.notifications\nextraItems=org.kde.plasma.volume\n'

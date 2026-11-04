@@ -264,6 +264,9 @@ def fork_settings(text, packages):
                         values = old + values + list(aliases) + list(aliases.values())
                     value = ','.join(dict.fromkeys(v for v in values if v))
                     body = body[:match.start(1)] + value + body[match.end(1):]
+        if in_tray:
+            for old, new in aliases.items():
+                body = body.replace('"tray:' + old + '"', '"tray:' + new + '"')
         blocks[i + 1] = body
     return blocks[0] + ''.join(blocks[i] + '\n' + blocks[i + 1] for i in range(1, len(blocks), 2))
 

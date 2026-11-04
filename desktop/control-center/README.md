@@ -4,6 +4,14 @@ The panel icon's slider knobs glide inward on hover, swap sides when the popup
 opens, and return when it closes. Timing follows Plasma's animation-speed setting,
 including disabled animations.
 
+Forward navigation slides left and Back slides right using the shared
+`details/DetailNavigationStack.qml`. Contacts (including QR sharing), Network,
+Clipboard, Bluetooth details, the microphone test, and dashboard navigation use
+the same easing and KDE animation timing. `DetailPageDeck.qml` preserves native
+view instances while switching between existing pages; popup sizing still comes
+from the destination's content. Check directions, interruption, and disabled
+motion with `desktop/control-center/tests/tst_navigation.qml`.
+
 The dashboard has Android-style Quick Settings with an **Edit tiles** button.
 Edit, System Settings, Lock, and Power live in a fixed glass island at the bottom
 of the dialog. In edit mode it holds Cancel and Done. The tile viewport fades at
@@ -137,8 +145,9 @@ Networks offers Connection spotlight, Connection desk, and Compact connections f
 the bottom island’s three-dot menu, saved per applet in `networkLayout`. Spotlight
 features the first active non-VPN connection in a hero card, with secondary connections
 inside it, configured VPN profiles in separate cards, and one grouped available-network
-card (three rows initially, expandable). Radio cards have On/Off switches; Spotlight
-search is accessible from the available-network card or Ctrl+F. Opening a connection
+card (three rows initially, expandable). Radio cards have On/Off switches. A full-height search pill sits immediately above Available networks inside the
+network-list island in all three layouts, also accessible with Ctrl+F. Desk and Compact group connected and
+available rows inside one glass island, with inset hover and expansion highlights. Opening a connection
 uses a separate native detail page, with no duplicate active rows on Spotlight.
 Desk gives Wi-Fi and Ethernet separate
 cards; Compact has All / Wi-Fi / VPN filters. Native delegates still own connection,

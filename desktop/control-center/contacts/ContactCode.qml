@@ -58,8 +58,13 @@ PC.Control {
             }
         }
         PC.ComboBox {
+            id: codeType
             Layout.alignment: Qt.AlignHCenter
             Layout.maximumWidth: parent.width
+            // Avoid the background loader feeding animated page width back
+            // into its own implicit width.
+            implicitWidth: Math.max(...model.map(item => codeTypeMetrics.advanceWidth(item.label))) + leftPadding + rightPadding
+            FontMetrics { id: codeTypeMetrics; font: codeType.font }
             textRole: "label"
             valueRole: "value"
             Accessible.name: i18n("Code type")

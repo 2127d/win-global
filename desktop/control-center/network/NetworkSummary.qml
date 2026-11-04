@@ -12,13 +12,15 @@ Item {
     signal connectionRequested(int row)
     signal configureRequested()
     signal refreshRequested()
-    signal searchRequested()
     signal vpnToggleRequested(int row)
     property bool internetAccess:false
     property bool portal:false
     property string emptyMessage:qsTr("No available networks")
     property bool allNetworks:false
-    readonly property var available:entries.filter(e=>!e.active && !e.connecting && e.type!==PlasmaNM.Enums.Vpn)
+    property string searchText:""
+    property real searchHeight:48
+    property alias searchHost:availableSearchSlot
+    readonly property var available:entries.filter(e=>!e.active && !e.connecting && e.type!==PlasmaNM.Enums.Vpn && e.name.toLocaleLowerCase().includes(searchText.toLocaleLowerCase()))
     readonly property var vpns:entries.filter(e=>e.type===PlasmaNM.Enums.Vpn)
     readonly property var secondary:connected.filter(e=>e!==primary && e.type!==PlasmaNM.Enums.Vpn)
     function kind(record) {return record?.type===PlasmaNM.Enums.Wired?qsTr("Ethernet"):record?.type===PlasmaNM.Enums.Wireless?qsTr("Wi-Fi"):qsTr("Network");}
@@ -120,10 +122,10 @@ Item {
         objectName:"networkAvailableCard";Layout.fillWidth:true;visible:summary.layoutMode==="spotlight";radius:24;implicitHeight:availableBody.implicitHeight+24
         ColumnLayout {
             id:availableBody;anchors.fill:parent;anchors.margins:12;spacing:3
+            Item {id:availableSearchSlot;Layout.fillWidth:true;implicitHeight:summary.searchHeight;Layout.bottomMargin:8}
             RowLayout {
                 Layout.fillWidth:true;spacing:2
                 PC.Label {Layout.fillWidth:true;Layout.leftMargin:4;text:qsTr("Available networks");font.weight:Font.DemiBold}
-                NetworkActionButton {flat:true;display:PC.AbstractButton.IconOnly;icon.name:"search-symbolic";text:qsTr("Search networks");Accessible.name:text;onClicked:summary.searchRequested();PC.ToolTip{text:parent.text}}
                 NetworkActionButton {flat:true;display:PC.AbstractButton.IconOnly;icon.name:"view-refresh-symbolic";text:qsTr("Refresh networks");Accessible.name:text;onClicked:summary.refreshRequested();PC.ToolTip{text:parent.text}}
             }
             Repeater {

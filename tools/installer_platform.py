@@ -18,7 +18,7 @@ COMPONENTS = {
     'plasma-style': ('Plasma style', 'Panel, widget and switch artwork.'),
     'colors': ('Color schemes', 'Light and dark, solid and transparent palettes.'),
     'icons': ('Icons', 'Sequoia Tahoe for KDE; default Adwaita icons for native and Flatpak GTK apps. Disables KDE-to-GTK appearance syncing; removal restores it.'),
-    'wallpaper': ('Wallpaper', 'Adaptive light and dark wallpaper.'),
+    'wallpaper': ('Wallpaper', 'Michigan Glass light/dark pair, Natural Colors glass artwork, and classic Sequoia Eleven wallpapers.'),
     'fonts': ('Fonts', 'Adwaita Sans and Nunito.'),
     'widgets': ('Desktop widgets', 'Custom tray, trash, animated task manager, Start Menu, Downloads Stack, Dock Separator, Kpple Menu and Window Title Fork.'),
     'global-theme': ('Global Theme, desktop layout & splash', 'Coordinated presets and top bar/dock layout. Includes the styles, colors, icons, wallpaper, fonts and widgets referenced by the presets.'),

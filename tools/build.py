@@ -4,7 +4,7 @@ from pathlib import Path
 import json
 import shutil
 from typography import FONT_SETTINGS
-from wallpaper import WALLPAPER_ID, build_wallpaper
+from wallpaper import DEFAULT_WALLPAPER_ID, build_wallpaper
 from task_progress import without_progress_endcaps
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -313,7 +313,7 @@ activeFont={FONT_SETTINGS['WM']['activeFont']}
 name=sequoia-eleven-{mode}
 
 [Wallpaper]
-Image={WALLPAPER_ID}
+Image={DEFAULT_WALLPAPER_ID}
 
 [kwinrc][org.kde.kdecoration2]
 library=org.kde.sequoiaeleven

@@ -21,7 +21,12 @@ def main():
         for relative in ('themes/application-style/SequoiaEleven/CMakeLists.txt',
                          'themes/plasma/Splash.qml', 'widgets/plasmoids/org.sequoia.startmenu/metadata.json',
                          'desktop/taskbar/CMakeLists.txt', 'tools/project_paths.py', 'docs/DEPLOYMENT.md',
-                         'install.sh', 'install-gui.py', 'uninstall-gui.py', 'tools/gtk_icons.py'):
+                         'install.sh', 'install-gui.py', 'uninstall-gui.py', 'tools/gtk_icons.py',
+                         'themes/wallpapers/MichiganGlass/metadata.json',
+                         'themes/wallpapers/MichiganGlass/contents/images/3440x1440.png',
+                         'themes/wallpapers/MichiganGlass/contents/images_dark/3440x1440.png',
+                         'themes/wallpapers/MichiganGlassNatural/metadata.json',
+                         'themes/wallpapers/MichiganGlassNatural/contents/images/3440x1440.png'):
             assert (project / relative).is_file(), relative
         for name in ('settings', 'gwenview', 'kcalc'):
             assert list((project / 'apps' / name).glob('*/CMakeLists.txt')), name

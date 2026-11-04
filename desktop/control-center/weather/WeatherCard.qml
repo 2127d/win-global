@@ -4,5 +4,5 @@ import org.kde.kirigami as Kirigami
 import "../details" as Details
 
 Details.DetailSurface {
-    radius: 18
+    radius: 20
 }

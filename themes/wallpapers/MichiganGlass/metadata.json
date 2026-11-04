@@ -1,0 +1,10 @@
+{
+  "KPlugin": {
+    "Id": "MichiganGlass",
+    "Name": "Sequoia Eleven \u2014 Michigan Glass",
+    "Description": "An abstract Lake Michigan shoreline in luminous glass, with matching light and dark appearances",
+    "Version": "2.0"
+  },
+  "X-KDE-CrossFade": true,
+  "KPackageStructure": "Wallpaper/Images"
+}

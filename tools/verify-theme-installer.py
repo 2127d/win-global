@@ -22,6 +22,32 @@ spec.loader.exec_module(installer)
 
 
 class ThemeTests(unittest.TestCase):
+    def test_michigan_wallpaper_install_refresh_remove(self):
+        installer.stage_user(self.stage, self.live, {'wallpaper'})
+        incoming = payload_files(self.stage)
+        michigan = 'wallpapers/MichiganGlass/'
+        self.assertEqual(sum(name.startswith(michigan) and name.endswith('.png')
+                             for name in incoming), 16)
+        self.assertIn('wallpapers/SequoiaEleven/metadata.json', incoming)
+        natural = 'wallpapers/MichiganGlassNatural/'
+        self.assertEqual(sum(name.startswith(natural) and name.endswith('.png')
+                             for name in incoming), 8)
+        self.assertIn(natural + 'contents/images/3440x1440.png', incoming)
+        self.assertTrue(all(installer.component_for(name) == 'wallpaper'
+                            and installer.user_allowed(name) for name in incoming))
+        for mode in ('images', 'images_dark'):
+            self.assertIn(michigan + f'contents/{mode}/3440x1440.png', incoming)
+        receipt = Receipt(self.live, installer.USER_STATE, installer.user_allowed)
+        scope = lambda name: installer.user_scope(name, {'wallpaper'})
+        receipt.install(self.stage, scope=scope)
+        receipt.install(self.stage, scope=scope)
+        receipt.validate()
+        self.put(self.live, 'wallpapers/Personal/keep.txt', 'keep')
+        receipt.uninstall(scope=scope)
+        self.assertFalse((self.live / 'wallpapers/MichiganGlass').exists())
+        self.assertFalse((self.live / 'wallpapers/MichiganGlassNatural').exists())
+        self.assertEqual((self.live / 'wallpapers/Personal/keep.txt').read_text(), 'keep')
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='sequoia-install-test-')
         self.addCleanup(self.temp.cleanup)

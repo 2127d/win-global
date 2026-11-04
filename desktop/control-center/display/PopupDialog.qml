@@ -17,6 +17,7 @@ PlasmaExtras.Representation {
     objectName: "sequoiaDetailPage"
     padding: 0; background: null; collapseMarginsHint: true
     implicitWidth: 418; implicitHeight: 600
+    readonly property real sequoiaPreferredHeight: displayView.naturalHeight
     DisplayRecords {id:records;displayModel:dialog.screenBrightnessControl.displays}
     KeyboardColorControl {id:keyboardColor}
     QtObject {

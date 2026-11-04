@@ -8,7 +8,7 @@ from pathlib import Path
 import shutil
 import subprocess
 from typography import FONT_SETTINGS
-from wallpaper import WALLPAPER_ID
+from wallpaper import DEFAULT_WALLPAPER_ID as WALLPAPER_ID
 
 ROOT = Path(__file__).resolve().parents[1]
 HOME_DIR = Path.home()
@@ -76,6 +76,13 @@ def main():
     if not args.keep_wallpaper:
         # Select the package, without a #light/#dark fragment, to follow colors.
         run('plasma-apply-wallpaperimage', DATA/'wallpapers'/WALLPAPER_ID)
+        # Reset a previous forced/day-night preference as well as the image URL.
+        script = 'var ds=desktops(); for(var i=0;i<ds.length;i++) {' \
+                 'var d=ds[i]; d.currentConfigGroup=["Wallpaper","org.kde.image","General"];' \
+                 'd.writeConfig("DynamicMode",0); d.writeConfig("Image",' + \
+                 json.dumps((DATA/'wallpapers'/WALLPAPER_ID).resolve().as_uri() + '/') + ');}'
+        run('qdbus-qt6','org.kde.plasmashell','/PlasmaShell',
+            'org.kde.PlasmaShell.evaluateScript',script)
     run('qdbus-qt6','org.kde.KWin','/KWin','org.kde.KWin.reconfigure')
     run('dbus-send','--session','--type=signal','/KGlobalSettings','org.kde.KGlobalSettings.notifyChange','int32:0','int32:0')
     run('dbus-send','--session','--type=signal','/KGlobalSettings','org.kde.KGlobalSettings.notifyChange','int32:2','int32:0')

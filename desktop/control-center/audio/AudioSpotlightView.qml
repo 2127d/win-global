@@ -8,6 +8,7 @@ import "../details" as Details
 
 FocusScope {
     id: view
+    readonly property real naturalHeight: content.implicitHeight + islandRow.implicitHeight + 36
     required property var controller
     objectName: "audioSpotlightView"
     property bool applicationsExpanded: false

@@ -74,11 +74,12 @@ with tempfile.TemporaryDirectory(prefix='sequoia-contacts-preview-') as temp:
     view = QQuickView()
     view.rootContext().setContextObject(translations)
     for name, value in dict(testContacts=contacts, testPhones=phones, testEmails=emails, testAddresses=addresses).items(): view.rootContext().setContextProperty(name, value)
-    source = ROOT / '.staging/control-center-data/sequoia-eleven/control-center/contacts'
+    source = ROOT / 'desktop/control-center/contacts'
     qml = Path(temp, 'Preview.qml')
     qml.write_text('''import QtQuick
 import QtQuick.Controls as QQC2
 import "''' + source.as_uri() + '''" as Custom
+import "''' + (source.parent / "details").as_uri() + '''" as Details
 Rectangle {
     id: root
     width: 432; height: 472
@@ -89,7 +90,7 @@ Rectangle {
     LayoutMirroring.childrenInherit: true
     function showDetails() { stack.push(details); }
     function goBack() { stack.pop(); }
-    QQC2.StackView {
+    Details.DetailNavigationStack {
         id: stack
         anchors.fill: parent; anchors.margins: 8
         initialItem: Custom.ContactsView {

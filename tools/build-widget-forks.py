@@ -38,11 +38,19 @@ def build(destination):
         builder.build(overlay)
         folders = sorted(p.name for p in overlay.iterdir() if p.is_dir() and (p / 'main.qml').is_file())
         upstream = {short: 'org.kde.plasma.' + ('systemtray' if short == 'tray' else short) for short in folders}
+        upstream['kscreen'] = 'org.kde.kscreen'
+        upstream['kdeconnect'] = 'org.kde.kdeconnect'
         upstream['contacts'] = 'org.kde.merkuro.contact.applet'
         ids = {short: IDS.get(short, 'org.sequoia.' + short) for short in folders}
         replacements = {upstream[short]: ids[short] for short in folders}
         replacements['org.kde.plasma.icontasks'] = IDS['taskmanager']
-        metadata = {short: QPluginLoader(str(applets / (upstream[short] + '.so'))).metaData()['MetaData'] for short in folders}
+        metadata = {}
+        for short in folders:
+            plugin = applets / (upstream[short] + '.so')
+            embedded = QPluginLoader(str(plugin)).metaData().get('MetaData') if plugin.is_file() else None
+            # Some native applets (Vaults) keep their metadata in the external
+            # package rather than embedding JSON in the factory library.
+            metadata[short] = embedded or json.loads((Path('/usr/share/plasma/plasmoids') / upstream[short] / 'metadata.json').read_text())
         known, enabled = [], []
         for path in sorted(applets.glob('*.so')):
             meta = QPluginLoader(str(path)).metaData().get('MetaData', {})
@@ -54,6 +62,11 @@ def build(destination):
         # Children are explicitly enabled only in the fork tray, not added to
         # every existing stock tray merely by installing these packages.
         child_names = [short for short in folders if short not in ('tray', 'taskmanager', 'trash')]
+        for short in folders:
+            if upstream[short] not in known and 'X-Plasma-NotificationAreaCategory' in metadata[short]:
+                known.append(upstream[short])
+                if metadata[short].get('KPlugin', {}).get('EnabledByDefault', False):
+                    enabled.append(ids[short])
         known += list(ids.values())
         packages = temp / 'packages'; packages.mkdir()
         for short in folders:
@@ -104,15 +117,16 @@ def build(destination):
                     tree.find(f'.//k:entry[@name="{key}"]/k:default', ns).text = ','.join(dict.fromkeys(values))
                 ET.register_namespace('', ns['k'])
                 tree.write(path, encoding='utf-8', xml_declaration=True)
-            native = package / 'contents/native'; native.mkdir()
-            shutil.copy2(ROOT / 'widgets/widget-forks/native-factory.cpp', native)
-            native_meta = json.loads(json.dumps(meta))
-            native_meta['KPlugin'].pop('Id')
-            (native / 'native-metadata.json').write_text(json.dumps(native_meta, indent=2) + '\n')
-            subprocess.run([str(moc), *[f for f in flags if f.startswith(('-I', '-D'))], str(native / 'native-factory.cpp'),
-                            '-o', str(native / 'native-factory.moc')], check=True)
-            subprocess.run(['c++', '-std=c++17', '-shared', '-fPIC', str(native / 'native-factory.cpp'),
-                            '-o', str(native / (ids[short] + '.so')), *flags], check=True)
+            if (applets / (upstream[short] + '.so')).is_file():
+                native = package / 'contents/native'; native.mkdir()
+                shutil.copy2(ROOT / 'widgets/widget-forks/native-factory.cpp', native)
+                native_meta = json.loads(json.dumps(meta))
+                native_meta['KPlugin'].pop('Id')
+                (native / 'native-metadata.json').write_text(json.dumps(native_meta, indent=2) + '\n')
+                subprocess.run([str(moc), *[f for f in flags if f.startswith(('-I', '-D'))], str(native / 'native-factory.cpp'),
+                                '-o', str(native / 'native-factory.moc')], check=True)
+                subprocess.run(['c++', '-std=c++17', '-shared', '-fPIC', str(native / 'native-factory.cpp'),
+                                '-o', str(native / (ids[short] + '.so')), *flags], check=True)
             shutil.copytree(ROOT / 'widgets/widget-forks/LICENSES', package / 'LICENSES')
             shutil.copy2(ROOT / 'LICENSE', package / 'LICENSES/MIT.txt')
         tray = packages / IDS['tray']

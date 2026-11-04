@@ -12,8 +12,10 @@ ColumnLayout {
     id:toolbar
     property bool backOnly:false
     property string layoutMode:"spotlight"
-    property bool searchExpanded:false
-    function revealSearch() {searchExpanded=true;Qt.callLater(()=>{search.forceActiveFocus();search.selectAll();});}
+    property Item searchHost:null
+    function applySearch() {appletProxyModel.setFilterFixedString(layoutMode==="spotlight"?"":search.text);}
+    onLayoutModeChanged:Qt.callLater(applySearch)
+    function revealSearch() {Qt.callLater(()=>{search.forceActiveFocus();search.selectAll();});}
     signal backRequested()
     property bool hasConnections
     property alias searchTextField:search
@@ -64,13 +66,19 @@ ColumnLayout {
     }
 
     PlasmaExtras.SearchField {
-        visible:!toolbar.backOnly && (toolbar.layoutMode!=="spotlight" || toolbar.searchExpanded || text.length>0)
+        parent:toolbar.searchHost
+        visible:!toolbar.backOnly && parent!==null
+        width:parent?parent.width:0
+        height:implicitHeight
         id:search;objectName:"networkSearch";Layout.fillWidth:true;placeholderText:i18n("Search networks…")
         background:Details.DetailSurface { radius:height/2; property var margins:({left:8,right:8,top:7,bottom:7}) }
-        topPadding:7;bottomPadding:7
+        implicitHeight:Math.max(48,contentHeight+30)
+        Layout.minimumHeight:implicitHeight
+        topPadding:12;bottomPadding:12
+        verticalAlignment:TextInput.AlignVCenter
         enabled:true
         focus:mainWindow.expanded && !Kirigami.InputMethod.willShowOnActive
-        onTextChanged:appletProxyModel.setFilterFixedString(text)
+        onTextChanged:toolbar.applySearch()
     }
     NetworkActionButton { visible:toolbar.backOnly;flat:true;text:i18n("Back to connections");icon.name:"go-previous-symbolic";onClicked:toolbar.backRequested() }
 }

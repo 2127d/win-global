@@ -17,6 +17,9 @@ import org.kde.networkmanager as NMQt
 
 ColumnLayout {
     id: connectionListPage
+    readonly property real naturalHeight: (categories.visible ? categories.implicitHeight + spacing : 0) + spacing
+        + (connectivityMessage.visible ? connectivityMessage.implicitHeight + spacing : 0)
+        + Math.max(160, connectionView.contentHeight) + 24
     objectName:"networkConnectionList"
 
     required property PlasmaNM.NetworkStatus nmStatus
@@ -24,6 +27,14 @@ ColumnLayout {
     property alias count: connectionView.count
 
     property string layoutMode: "spotlight"
+    readonly property bool groupedList:layoutMode==="desk" || layoutMode==="compact"
+    property Item availableSearchHost:null
+    readonly property string availableSection:records.entries.find(entry=>!entry.active && !entry.connecting)?.section || ""
+    Binding {
+        target:toolbar;property:"searchHost"
+        when:connectionListPage.layoutMode!=="details"
+        value:connectionListPage.layoutMode==="spotlight" ? connectionView.headerItem?.searchHost || null : connectionListPage.availableSearchHost || connectionView.footerItem?.searchHost || null
+    }
     property string category: "all"
     property string detailName:""
     signal detailRequested(string name)
@@ -41,7 +52,7 @@ ColumnLayout {
     onCategoryChanged:Qt.callLater(resetFilter)
     onLayoutModeChanged:Qt.callLater(resetFilter)
     function showConnection(row) {
-        if(layoutMode==="spotlight") {
+        if(layoutMode==="spotlight" || layoutMode==="desk") {
             const record=records.entries.find(entry=>entry.row===row);
             if(record) detailRequested(record.name);
             return;
@@ -57,12 +68,21 @@ ColumnLayout {
         filterRowCallback: (row, parent) => {
             if(connectionListPage.layoutMode === "spotlight") return false;
             if(connectionListPage.layoutMode === "details") return sourceModel.data(sourceModel.index(row,0,parent),PlasmaNM.NetworkModel.ItemUniqueNameRole) === connectionListPage.detailName;
+            if(connectionListPage.layoutMode === "desk") {
+                // Omit only connections already represented by the cards above.
+                const connected=records.entries.filter(entry=>entry.active || entry.connecting);
+                const cardRows=[connected.find(entry=>entry.type===PlasmaNM.Enums.Wireless)?.row,
+                                connected.find(entry=>entry.type===PlasmaNM.Enums.Wired)?.row,
+                                ...records.entries.filter(entry=>entry.type===PlasmaNM.Enums.Vpn).map(entry=>entry.row)];
+                return !cardRows.includes(row);
+            }
             if(connectionListPage.layoutMode !== "compact" || connectionListPage.category === "all") return true;
             return sourceModel.data(sourceModel.index(row,0,parent),filterRole) === connectionListPage.categoryType;
         }
     }
-    NetworkRecords { id:records; connectionModel:connectionListPage.model }
+    NetworkRecords { id:records; connectionModel:connectionListPage.model; onEntriesChanged:Qt.callLater(()=>typeFilter.invalidateFilter()) }
     RowLayout {
+        id: categories
         Layout.fillWidth:true; visible:connectionListPage.layoutMode === "compact"; spacing:6
         Repeater {
             model:[{id:"all",label:qsTr("All")},{id:"wifi",label:qsTr("Wi-Fi")},{id:"vpn",label:qsTr("VPN")}]
@@ -112,6 +132,16 @@ ColumnLayout {
             id: connectionView
             clip:true
 
+            footer:Column {
+                property alias searchHost:fallbackSearchSlot
+                width:connectionView.width
+                spacing:8
+                readonly property bool showSearch:connectionListPage.groupedList && !connectionListPage.availableSearchHost
+                Item{width:1;height:parent.showSearch?4:0}
+                Item {id:fallbackSearchSlot;x:12;width:parent.width-24;height:parent.showSearch?toolbar.searchTextField.implicitHeight:0;visible:parent.showSearch}
+                PlasmaComponents3.Label {x:16;width:parent.width-32;visible:parent.showSearch;text:i18n("Available networks");font.weight:Font.DemiBold;color:Kirigami.Theme.disabledTextColor}
+                PlasmaComponents3.Label {x:16;width:parent.width-32;visible:parent.showSearch;text:toolbar.searchTextField.text?i18n("No matches"):i18n("No available networks");wrapMode:Text.Wrap;color:Kirigami.Theme.disabledTextColor}
+            }
             property int currentVisibleButtonIndex: -1
 
             Keys.onDownPressed: event => {
@@ -132,11 +162,12 @@ ColumnLayout {
                 width: connectionView.width - connectionView.leftMargin - connectionView.rightMargin
                 layoutMode:connectionListPage.layoutMode
                 entries:records.entries
+                searchText:toolbar.searchTextField.text
+                searchHeight:toolbar.searchTextField.implicitHeight
                 internetAccess:connectionListPage.nmStatus.connectivity===NMQt.NetworkManager.Full
                 portal:connectionListPage.nmStatus.connectivity===NMQt.NetworkManager.Portal
                 emptyMessage:toolbar.searchTextField.text?i18n("No matches"):toolbar.displayplaneModeMessage?i18n("Wi-Fi is off in airplane mode"):toolbar.displayWifiOffMessage?i18n("Turn on Wi-Fi to see nearby networks"):i18n("No available networks")
                 onConfigureRequested:toolbar.settings()
-                onSearchRequested:toolbar.revealSearch()
                 onRefreshRequested:toolbar.scan()
                 onVpnToggleRequested:row=>{
                     const record=records.entries.find(entry=>entry.row===row);
@@ -151,28 +182,49 @@ ColumnLayout {
             bottomMargin: Kirigami.Units.smallSpacing * 2
             leftMargin: 0
             rightMargin: 0
-            spacing: 8
+            spacing: connectionListPage.groupedList?3:8
             model: typeFilter
             currentIndex: -1
             boundsBehavior: Flickable.StopAtBounds
-            section.property: connectionListPage.layoutMode === "compact" || connectionListPage.layoutMode === "details" ? "" : "Section"
-            section.delegate: PlasmaExtras.ListSectionHeader {
-                width: connectionView.width - connectionView.leftMargin - connectionView.rightMargin
-                text: section
+            section.property: connectionListPage.groupedList ? "Section" : ""
+            section.delegate:Column {
+                id:sectionHeader
+                required property string section
+                readonly property bool hostsSearch:section===connectionListPage.availableSection
+                width:connectionView.width;spacing:0
+                function registerHost() {
+                    if(hostsSearch) connectionListPage.availableSearchHost=sectionSearchSlot;
+                    else if(connectionListPage.availableSearchHost===sectionSearchSlot) connectionListPage.availableSearchHost=null;
+                }
+                onHostsSearchChanged:registerHost()
+                Component.onCompleted:registerHost()
+                Component.onDestruction:if(connectionListPage.availableSearchHost===sectionSearchSlot) connectionListPage.availableSearchHost=null
+                Item {width:1;height:sectionHeader.hostsSearch?12:0}
+                Item {id:sectionSearchSlot;x:12;width:parent.width-24;height:sectionHeader.hostsSearch?toolbar.searchTextField.implicitHeight+8:0}
+                PlasmaComponents3.Label {
+                    width:parent.width;leftPadding:16;rightPadding:16;topPadding:14;bottomPadding:6
+                    text:sectionHeader.section;font.weight:Font.DemiBold
+                    font.pointSize:Kirigami.Theme.defaultFont.pointSize*0.9
+                    color:Kirigami.Theme.disabledTextColor
+                }
             }
             highlight: null // The rounded delegate owns its highlight.
             highlightMoveDuration: Kirigami.Units.shortDuration
             highlightResizeDuration: Kirigami.Units.shortDuration
             delegate: ConnectionItem {
                 listView: connectionView
-                width: connectionView.width
+                grouped:connectionListPage.groupedList
+                x:grouped?12:0
+                width: connectionView.width-(grouped?24:0)
             }
 
             // Placeholder message
             Loader {
-                anchors.centerIn: parent
+                readonly property real groupTop:connectionListPage.groupedList ? Math.max(0,(connectionView.headerItem?.y || 0)+(connectionView.headerItem?.height || 0)-connectionView.contentY) : 0
+                x:(parent.width-width)/2
+                y:groupTop+Math.max(0,(parent.height-groupTop-height)/2)
                 width: parent.width - (Kirigami.Units.largeSpacing * 4)
-                active: connectionView.count === 0 && connectionListPage.layoutMode!=="spotlight"
+                active: connectionView.count === 0 && connectionListPage.layoutMode==="details"
                 asynchronous: true
                 visible: status === Loader.Ready && !!connectionListPage.model
                 sourceComponent: PlasmaExtras.PlaceholderMessage {
@@ -249,6 +301,15 @@ ColumnLayout {
                 }
             }
         }
+    }
+    Details.DetailSurface {
+        objectName:"networkConnectionsIsland"
+        parent:connectionView.contentItem
+        visible:connectionListPage.groupedList
+        z:-1;radius:24
+        x:0;y:connectionView.headerItem ? connectionView.headerItem.y+connectionView.headerItem.height : 0
+        width:connectionView.width
+        height:connectionView.count===0 ? Math.max(160,connectionView.height-(connectionView.headerItem?.height || 0)) : Math.max(120,connectionView.contentHeight-(connectionView.headerItem?.height || 0))
     }
     Rectangle {
         id:edgeMask; width:scrollView.width;height:scrollView.height;visible:false;layer.enabled:true

@@ -27,6 +27,7 @@ PlasmaExtras.Representation {
     collapseMarginsHint: true
     implicitWidth: 418
     implicitHeight: 470
+    readonly property real sequoiaPreferredHeight: spotlight.naturalHeight
     Keys.forwardTo: [spotlight]
 
     function refresh() {

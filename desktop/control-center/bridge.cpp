@@ -46,6 +46,18 @@ QUrl Applet::mainScript() const
         const QString local = trayDirectory + QStringLiteral("/contacts/main.qml");
         if (QFileInfo::exists(local)) return QUrl::fromLocalFile(local);
     }
+    if (!trayDirectory.isEmpty() && source == QUrl::fromLocalFile(QStringLiteral("/usr/share/plasma/plasmoids/org.kde.plasma.vault/contents/ui/main.qml"))) {
+        const QString local = trayDirectory + QStringLiteral("/vault/main.qml");
+        if (QFileInfo::exists(local)) return QUrl::fromLocalFile(local);
+    }
+    if (!trayDirectory.isEmpty() && source == QUrl::fromLocalFile(QStringLiteral("/usr/share/plasma/plasmoids/org.kde.kdeconnect/contents/ui/main.qml"))) {
+        const QString local = trayDirectory + QStringLiteral("/kdeconnect/main.qml");
+        if (QFileInfo::exists(local)) return QUrl::fromLocalFile(local);
+    }
+    if (!trayDirectory.isEmpty() && source == QUrl(QStringLiteral("qrc:/qt/qml/plasma/applet/org/kde/kscreen/main.qml"))) {
+        const QString local = trayDirectory + QStringLiteral("/kscreen/main.qml");
+        if (QFileInfo::exists(local)) return QUrl::fromLocalFile(local);
+    }
     // Only exact entry points under this prefix can resolve into the overlay.
     const QString prefix = QStringLiteral("qrc:/qt/qml/plasma/applet/org/kde/plasma/");
     const QString url = source.toString();

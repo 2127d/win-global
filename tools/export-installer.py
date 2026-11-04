@@ -55,7 +55,10 @@ The custom System Tray, Trash, animated task manager, layout widgets, Analog Clo
 and adaptive grid test widget are included. The Digital Clock review package's
 sources and standalone builder are included too. Native widgets are built for the destination machine. Pinned applications must be
 installed separately. Downloads uses your own Downloads folder. The theme uses
-its bundled wallpaper, not a personal wallpaper from the original machine.
+its bundled Michigan Glass light/dark wallpaper. Select the package and use
+"Based on whether the Plasma style is light or dark" for automatic switching.
+The Wallpaper component also includes Michigan Glass Natural Colors (a single
+daytime appearance) and retains the classic Sequoia Eleven background.
 
 This archive includes the theme, layout, installer and sources for the optional
 Settings/Gwenview/KCalc/Weather makeovers. It excludes build caches, SDKs, screenshots, backups,

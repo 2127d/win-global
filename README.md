@@ -119,9 +119,15 @@ and uses its own build/install helper; existing panels are preserved.
 - **Login screen:** a system-wide Plasma Login Manager installer shares the
   Sequoia Eleven colors, Plasma controls, Adwaita Sans font, and adaptive wallpaper.
   A settings watcher follows the selected desktop account's light/dark variant.
-- **Adaptive wallpaper:** the preview's blue gradient and rounded lavender,
-  rose, and peach bands in coordinated light and dark palettes. One native KDE
-  wallpaper package includes both 3840×2160 images and editable SVG sources.
+- **Michigan Glass wallpaper:** Sequoia Eleven's Michigan codename artwork turns
+  the lakefront into translucent glass, gradients and refracted color. The native
+  KDE package follows Plasma's light/dark style and includes eight size pairs,
+  from 1280×720 through 3440×1440 (larger exports are upscaled). The original
+  Sequoia Eleven vector wallpaper remains available as a separate choice.
+- **Michigan Glass Natural Colors:** an additional daytime glass wallpaper using
+  the photo's gray roads, green parkland, ivory buildings, sandy beaches and
+  turquoise water. It includes the same eight sizes and is installed with the
+  Wallpaper component as a separate choice.
 
 ## Install with the graphical interface
 
@@ -393,10 +399,15 @@ For development-only artwork staging, `tools/install-theme-assets.sh --prefix
 /path/to/data` copies Plasma styles, Global Theme/color variants, Sequoia Tahoe
 icons, and wallpaper. This internal helper does not install native plugins or
 create uninstall receipts; use `./install.sh` for a normal installation.
-Select **Sequoia Eleven** in Wallpaper settings, with dynamic switching set to
-follow the color scheme. Select the wallpaper package rather than an individual
-PNG so Plasma can choose its light or dark image automatically. Both Global
-Themes also name this package as their default wallpaper.
+Select **Sequoia Eleven — Michigan Glass** in Wallpaper settings, with dynamic
+switching set to **Based on whether the Plasma style is light or dark**. Select the wallpaper package rather than an individual
+PNG so Plasma can choose its light or dark image automatically. All Global
+Theme variants name Michigan Glass as their default wallpaper. The installer
+Wallpaper component installs Michigan Glass, Michigan Glass Natural Colors and the classic wallpaper,
+with tracked upgrades and removal. Michigan artwork lives in
+`themes/wallpapers/MichiganGlass/`.
+The single-appearance Natural Colors variant lives in
+`themes/wallpapers/MichiganGlassNatural/` and appears separately in KDE Wallpaper settings.
 The archives in `dist/sequoia-eleven-{light,dark}-2.0.0.tar.gz` contain these styles.
 The standalone wallpaper is in `dist/sequoia-eleven-wallpaper-2.0.0.tar.gz`.
 The standalone icon family is in `dist/sequoia-tahoe-icons-2.0.0.tar.gz`;
@@ -409,7 +420,7 @@ check checksums, source freshness and widget completeness with
 
 | Light wallpaper | Dark wallpaper |
 | --- | --- |
-| ![Light wallpaper](preview/wallpaper-light.png) | ![Dark wallpaper](preview/wallpaper-dark.png) |
+| ![Light wallpaper](themes/wallpapers/MichiganGlass/contents/images/1920x1080.png) | ![Dark wallpaper](themes/wallpapers/MichiganGlass/contents/images_dark/1920x1080.png) |
 
 ## Accent-aware switches
 
@@ -860,7 +871,8 @@ Theme packaging. Application and decoration sources are in
 QML components. No authentication implementation is replaced.
 `tools/wallpaper.py` preserves the original preview backdrop's geometry and
 palettes, generates editable SVGs, and renders the 4K PNGs with PySide6/QtSvg.
-Run it independently to rebuild just the wallpaper, or use `tools/build.py`
+Michigan Glass is checked-in raster artwork; this legacy generator leaves it
+intact. Run it independently to rebuild the classic wallpaper, or use `tools/build.py`
 to rebuild all artwork and archives. Artwork builds require PySide6
 (`python3-pyside6` on Fedora); installing the prebuilt artwork does not.
 

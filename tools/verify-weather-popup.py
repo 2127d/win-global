@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Render all weather pages with deterministic models, without requesting weather."""
 import os
+import argparse
 from pathlib import Path
 import sys
 import tempfile
@@ -9,14 +10,19 @@ from preview_session import ensure_private_session
 ensure_private_session()
 
 ROOT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser(description=__doc__)
+for option in ('dark','large','rtl','day-only'): parser.add_argument('--' + option, action='store_true')
+parser.add_argument('--source', type=Path, default=ROOT / '.staging/control-center-data/sequoia-eleven/control-center/weather')
+parser.add_argument('--output', type=Path, default=ROOT / 'preview')
+args = parser.parse_args()
 dark = '--dark' in sys.argv
 large = '--large' in sys.argv
 os.environ.update(QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software', QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion')
-from PySide6.QtCore import QObject, Property, Slot, QAbstractTableModel, QAbstractListModel, QModelIndex, Qt, QUrl, QPluginLoader, qInstallMessageHandler
+from PySide6.QtCore import QObject, Property, Slot, QDateTime, QDate, QTime, QMetaObject, QPointF, QAbstractTableModel, QAbstractListModel, QModelIndex, Qt, QUrl, QPluginLoader, qInstallMessageHandler
 from PySide6.QtGui import QPalette, QColor, QFont
 from PySide6.QtWidgets import QApplication
 from PySide6.QtQuick import QQuickView
-from PySide6.QtTest import QTest
+from PySide6.QtTest import QTest, QSignalSpy
 
 class Translations(QObject):
     @Slot(str, result=str)
@@ -27,7 +33,7 @@ class Translations(QObject):
     def i18ncp(self, context, one, many, count): return (one if count == 1 else many).replace('%1', str(count))
 
 class Forecast(QAbstractTableModel):
-    names = ['conditionIcon', 'conditionProbability', 'highTemp', 'lowTemp', 'condition', 'monthDay', 'weekDay']
+    names = ['conditionIcon', 'conditionProbability', 'highTemp', 'lowTemp', 'condition', 'monthDay', 'weekDay', 'timestamp']
     @Property(int, constant=True)
     def daysNumber(self): return 7
     @Property(bool, constant=True)
@@ -49,6 +55,7 @@ class Forecast(QAbstractTableModel):
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if orientation == Qt.Horizontal:
             if role in (Qt.DisplayRole, 261): return str(22 + section)
+            if role == 263: return QDateTime(QDate(2026, 11, 3 + section), QTime(12,0))
             if role == 262: return ['Tue','Wed','Thu','Fri','Sat','Sun','Mon'][section]
         return None
 
@@ -97,12 +104,12 @@ with tempfile.TemporaryDirectory(prefix='sequoia-weather-preview-') as temp:
     view.rootContext().setContextProperty('testForecast', forecast)
     view.rootContext().setContextProperty('testNotices', notices)
     qml = Path(temp, 'Preview.qml')
-    source = ROOT / '.staging/control-center-data/sequoia-eleven/control-center/weather'
+    source = args.source.resolve()
     qml.write_text('''import QtQuick
 import plasma.applet.org.kde.plasma.weather as Weather
 import "''' + source.as_uri() + '''" as Custom
 Rectangle {
-    width: 520; height: 640
+    width: weather.sequoiaPreferredWidth + 24; height: Math.min(720, weather.sequoiaPreferredHeight + 24)
     readonly property int timeoutState: Weather.ForecastControl.Timeout
     readonly property int connectingState: Weather.ForecastControl.Connecting
     readonly property int configurationState: Weather.ForecastControl.NeedsConfiguration
@@ -120,9 +127,9 @@ Rectangle {
         displayVisibilityUnit: Weather.VisibilityUnitListModel.unitIdForListIndex(0)
         metaData: ({temperatureUnit: displayTemperatureUnit, pressureUnit: displayPressureUnit,
             windSpeedUnit: displaySpeedUnit, visibilityUnit: displayVisibilityUnit, humidityUnit: 1,
-            credit: "Data from NOAA National Weather Service"})
+            credit: "Data from NOAA National Weather Service", creditURL: "https://example.com/forecast"})
         lastObservation: ({temperature: 24, currentConditions: "Mostly clear", conditionIcon: "weather-clear",
-            dewpoint: 0, pressure: 1013, pressureTendency: "Steady", visibility: 20, humidity: 0, windGust: 15})
+            windSpeed: 0, windDirection: "North", dewpoint: 0, pressure: 1013, pressureTendency: "Steady", visibility: 20, humidity: 0, windGust: 15})
     }
 }''')
     view.setSource(QUrl.fromLocalFile(str(qml)))
@@ -133,40 +140,128 @@ Rectangle {
         for child in item.childItems(): result.extend(items(child))
         return result
     def find(name): return next(i for i in items(view.rootObject()) if i.objectName() == name)
+    weather = find('sequoiaWeatherPage')
+    settings = QSignalSpy(weather.configureRequested)
+    source_link = QSignalSpy(weather.sourceRequested)
+    QMetaObject.invokeMethod(find('weatherSettings'), 'clicked')
+    QMetaObject.invokeMethod(find('weatherSource'), 'clicked')
+    assert settings.count() == 1 and source_link.count() == 1
+    assert source_link.at(0)[0].toString() == 'https://example.com/forecast'
     tabs = find('weatherTabs')
     assert tabs.property('count') == 3
-    output = ROOT / 'preview'; output.mkdir(exist_ok=True)
+    output = args.output; output.mkdir(parents=True, exist_ok=True)
     suffix = ('dark' if dark else 'light') + ('-large' if large else '') + ('-rtl' if '--rtl' in sys.argv else '') + ('-daily' if '--day-only' in sys.argv else '')
     for index, page in enumerate(('forecast', 'details', 'notices')):
         tabs.setProperty('currentIndex', index); QTest.qWait(300)
         names = [i.objectName() for i in items(view.rootObject())]
         if index == 0:
-            assert 'weatherDayCard' in names
-            assert ('weatherNightCard' in names) == forecast.isNightPresent
-            for row in range(forecast.rowCount()):
-                table = find('weatherForecastTable' + str(row))
-                assert table.property('rows') == forecast.rowCount() and table.property('columns') == 7
-        if index == 1: assert names.count('weatherDetailCard') == 6, names
+            assert 'weatherForecastCard' in names
+            table = find('weatherForecastTable')
+            assert table.property('rows') == forecast.rowCount() and table.property('columns') == 7
+            labels = [i.property('text') for i in items(view.rootObject()) if i.objectName() == 'weatherForecastDayLabel']
+            assert labels and all(label and label != '—' for label in labels), labels
+            for label in items(table):
+                if label.objectName() == 'weatherForecastTemperature' and label.isVisible():
+                    assert label.height() >= label.implicitHeight() - 1, (label.height(), label.implicitHeight())
+                    bottom = label.mapToItem(table, QPointF(0, label.height())).y()
+                    assert bottom <= table.height() + 1, (bottom, table.height())
+            card = find('weatherForecastCard')
+            card.setProperty('motionDuration', 240)
+            next_day, previous_day = find('weatherNextDay'), find('weatherPreviousDay')
+            assert not previous_day.property('enabled')
+            QMetaObject.invokeMethod(next_day, 'clicked')
+            QTest.qWait(65)
+            assert card.property('selectedDay') == 1
+            assert 0 < table.property('contentX') < table.width(), table.property('contentX')
+            QTest.qWait(260)
+            assert abs(table.property('contentX') - table.width()) < 1
+            QMetaObject.invokeMethod(previous_day, 'clicked')
+            QTest.qWait(65)
+            assert 0 < table.property('contentX') < table.width()
+            QTest.qWait(260)
+            assert abs(table.property('contentX')) < 1
+            QMetaObject.invokeMethod(find('weatherDay:4'), 'clicked')
+            QTest.qWait(50)
+            QMetaObject.invokeMethod(find('weatherDay:1'), 'clicked')
+            QTest.qWait(300)
+            assert card.property('selectedDay') == 1
+            assert abs(table.property('contentX') - table.width()) < 1
+            card.setProperty('motionDuration', 0)
+            card.setProperty('selectedDay', 6)
+            QTest.qWait(30)
+            assert not next_day.property('enabled')
+            assert abs(table.property('contentX') - 6 * table.width()) < 1
+            card.setProperty('selectedDay', 0)
+            QTest.qWait(30)
+            for button in (next_day, previous_day):
+                background = button.property('background')
+                assert abs(background.width() - background.height()) < 1
+            card.forceActiveFocus()
+            QTest.keyClick(view, Qt.Key_Right); QTest.qWait(30)
+            assert card.property('selectedDay') == 1
+            QTest.keyClick(view, Qt.Key_Left); QTest.qWait(30)
+            assert card.property('selectedDay') == 0
+            QTest.mouseMove(view, next_day.mapToScene(QPointF(next_day.width()/2, next_day.height()/2)).toPoint())
+            QTest.qWait(100)
+            assert next_day.property('hovered')
+            assert next_day.property('background').isVisible()
+        if index == 1: assert names.count('weatherDetailRow') == 8, names
         if index == 2: assert names.count('weatherNoticeCard') == 2
+        rail = find('sequoiaWeatherPage').width()
         for card in items(view.rootObject()):
-            if card.objectName().startswith('weather') and card.objectName().endswith('Card'):
-                for child in card.childItems():
-                    if child.isVisible() and child.width() > 0:
-                        assert child.x() >= 12 and child.y() >= 12, (card.objectName(), child.x(), child.y())
-                        assert child.x() + child.width() <= card.width() - 11, card.objectName()
-                        assert child.y() + child.height() <= card.height() - 11, card.objectName()
+            if card.objectName() in ('weatherCurrentCard','weatherForecastCard','weatherDetailsCard','weatherNoticeCard'):
+                assert abs(card.width() - rail) < 1, (card.objectName(), card.width(), rail)
+        assert find('weatherActionIsland').width() < rail
+        if weather.property('sequoiaPreferredHeight') < 696:
+            assert find('weatherPageScroll').height() >= find('weatherPageStack').height(), page
         assert view.grabWindow().save(str(output / f'weather-{suffix}-{page}.png'))
+        if index == 0:
+            QMetaObject.invokeMethod(find('weatherDay:3'), 'clicked')
+            QTest.qWait(300)
+    assert find('weatherCurrentCard').height() < (190 if large else 160)
     weather = find('sequoiaWeatherPage')
     tabs.setProperty('currentIndex', 0)
+    QTest.qWait(300)
+    assert find('weatherForecastCard').property('selectedDay') == 3
+    table = find('weatherForecastTable')
+    assert abs(table.property('contentX') - 3 * table.width()) < 1
+    stack = find('weatherPageStack')
+    stack.setProperty('motionDuration', 240)
+    for destination, direction in ((1, 1), (2, 1), (1, -1), (0, -1)):
+        outgoing = stack.property('currentItem')
+        tabs.setProperty('currentIndex', destination)
+        QTest.qWait(65)
+        incoming = stack.property('currentItem')
+        assert stack.property('busy')
+        assert 0 < direction * incoming.x() < stack.width(), incoming.x()
+        assert -stack.width() < direction * outgoing.x() < 0, outgoing.x()
+        QTest.qWait(260)
+        assert not stack.property('busy') and abs(incoming.x()) < 1
+    tabs.setProperty('currentIndex', 2); QTest.qWait(45)
+    tabs.setProperty('currentIndex', 0); QTest.qWait(300)
+    assert not stack.property('busy')
+    assert stack.property('currentItem').objectName() == 'weatherForecastCard'
+    assert find('weatherForecastCard').property('selectedDay') == 3
+    stack.setProperty('motionDuration', 0)
+    tabs.setProperty('currentIndex', 1); QTest.qWait(30)
+    assert not stack.property('busy') and abs(stack.property('currentItem').x()) < 1
+    tabs.setProperty('currentIndex', 0); QTest.qWait(30)
+    weather.setProperty('status', view.rootObject().property('connectingState'))
+    QTest.qWait(100)
+    assert weather.property('ready') and find('weatherUpdatingLabel').isVisible()
+    assert find('weatherCurrentCard').isVisible()
+    weather.setProperty('lastObservation', None)
     weather.setProperty('futureDays', None)
     QTest.qWait(100)
     for state in ('timeoutState', 'connectingState', 'configurationState'):
         weather.setProperty('status', view.rootObject().property(state))
         QTest.qWait(100)
+        assert not weather.property('ready') and find('weatherStateCard').isVisible()
+        assert view.grabWindow().save(str(output / f'weather-{suffix}-{state}.png'))
     view.setSource(QUrl())
     view.close()
     assert not errors, errors
 # KDE's weather plugin can outlive Qt's font database during Python teardown.
 # Like the native tray check, skip global teardown in this test-only process.
-print('PASS: forecast periods, padded cards, zero readings, details/notices tabs and unavailable/loading states', flush=True)
+print('PASS: dated forecast periods, aligned cards, content-fitting footer, zero readings, details/notices tabs and unavailable/loading states', flush=True)
 os._exit(0)

@@ -86,7 +86,7 @@ def verify_account(base, layout, optional=False):
     assert run(env, working, 'kreadconfig6', '--file', config / 'kdeglobals',
                '--group', 'KDE', '--key', 'widgetStyle').strip() == 'SequoiaEleven'
     calls = [json.loads(line) for line in log.read_text().splitlines()]
-    assert any(call[1:] == [str(data / 'wallpapers/SequoiaEleven')] for call in calls)
+    assert any(call[1:] == [str(data / 'wallpapers/MichiganGlass')] for call in calls)
     backup, = (data / 'sequoia-eleven/backups').iterdir()
     manifest = json.loads((backup / 'manifest.json').read_text())
     for entry in manifest:

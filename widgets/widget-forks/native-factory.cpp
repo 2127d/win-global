@@ -15,7 +15,8 @@ protected:
     {
         const auto backend = metaData().value(QStringLiteral("X-Sequoia-NativePlugin"));
         const auto result = KPluginFactory::loadFactory(
-            KPluginMetaData(QStringLiteral("plasma/applets/") + backend));
+            // Vaults keeps its JSON in its KPackage, not in this library.
+            KPluginMetaData(QStringLiteral("plasma/applets/") + backend, KPluginMetaData::AllowEmptyMetaData));
         if (!result.plugin) {
             qWarning() << "Cannot load Sequoia applet backend:" << backend << result.errorString;
             return nullptr;

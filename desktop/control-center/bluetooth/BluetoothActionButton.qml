@@ -7,7 +7,7 @@ import "../details" as Details
 
 Details.DetailButton {
     id: button
-    implicitWidth: Math.max(32, implicitContentWidth + leftPadding + rightPadding)
+    implicitWidth: display === PC.AbstractButton.IconOnly ? implicitHeight : Math.max(32, implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
     topPadding: 7
     bottomPadding: 7
@@ -16,6 +16,10 @@ Details.DetailButton {
     font: Kirigami.Theme.defaultFont
     background: Details.DetailSurface {
         radius: Math.min(width, height) / 2
+        width: button.display === PC.AbstractButton.IconOnly ? Math.min(button.width, button.height) : button.width
+        height: button.display === PC.AbstractButton.IconOnly ? width : button.height
+        x: (button.width - width) / 2
+        y: (button.height - height) / 2
         visible: !button.flat || button.hovered || button.down || button.checked || button.visualFocus
         shadow.size: button.flat ? 0 : 5
         hovered: button.hovered && button.enabled

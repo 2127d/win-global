@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import "SequoiaPopup" as Popup
+import org.kde.plasma.components as PC
 
 Popup.GlassToolButton {
     padding: 4
@@ -7,6 +8,6 @@ Popup.GlassToolButton {
     bottomPadding: 2
     icon.width: Popup.Tokens.iconSize
     icon.height: Popup.Tokens.iconSize
-    implicitWidth: Math.max(30, implicitContentWidth + leftPadding + rightPadding)
-    implicitHeight: Math.max(28, implicitContentHeight + topPadding + bottomPadding)
+    implicitWidth: display === PC.AbstractButton.IconOnly ? implicitHeight : Math.max(32, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
 }

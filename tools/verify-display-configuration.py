@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""Render and exercise Display Configuration without changing real displays."""
+import argparse, os, subprocess, sys, tempfile
+from pathlib import Path
+from preview_session import ensure_private_session
+ensure_private_session()
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--dark',action='store_true')
+parser.add_argument('--large',action='store_true')
+parser.add_argument('--rtl',action='store_true')
+parser.add_argument('--render-only',action='store_true')
+parser.add_argument('--output',type=Path)
+args=parser.parse_args()
+root=Path(__file__).resolve().parents[1]
+config=tempfile.TemporaryDirectory(prefix='sequoia-displayconfiguration-preview-')
+variant='Dark' if args.dark else 'Light'
+(Path(config.name)/'kdeglobals').write_text((root/f'themes/color-schemes/SequoiaEleven{variant}Solid.colors').read_text())
+(Path(config.name)/'plasmarc').write_text(f'[Theme]\nname=sequoia-eleven-{variant.lower()}\n')
+os.environ.update(XDG_DATA_DIRS=str(root/'themes')+':'+os.environ.get('XDG_DATA_DIRS','/usr/local/share:/usr/share'),XDG_CONFIG_HOME=config.name,QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QT_STYLE_OVERRIDE='Fusion',QT_QPA_PLATFORMTHEME='generic')
+if not args.render_only:
+ result=subprocess.run(['/usr/lib64/qt6/bin/qmltestrunner','-input',str(root/'desktop/control-center/displayconfiguration/tests'),'-o','-,txt'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=60)
+ print(result.stdout,flush=True)
+ bad=any(s in result.stdout for s in ['ReferenceError','TypeError','Binding loop','Unable to assign','Cannot assign','is not a type','polish() loop'])
+ if result.returncode or bad:raise SystemExit(result.returncode or 1)
+from PySide6.QtCore import QUrl,QTimer,Qt,qInstallMessageHandler
+from PySide6.QtGui import QFont,QColor,QPalette
+from PySide6.QtWidgets import QApplication
+from PySide6.QtQuick import QQuickView
+errors=[]
+def message(kind,context,text):
+ print(text,file=sys.stderr)
+ if any(s in text for s in ['ReferenceError','TypeError','Binding loop','Unable to assign','Cannot assign','is not a type','polish() loop']):errors.append(text)
+qInstallMessageHandler(message)
+app=QApplication([])
+palette=QPalette()
+for role,light,dark in [(QPalette.Window,'#edf0f6','#252630'),(QPalette.Base,'#ffffff','#33343f'),(QPalette.WindowText,'#242632','#f3f1fa'),(QPalette.Text,'#242632','#f3f1fa'),(QPalette.ButtonText,'#242632','#f3f1fa'),(QPalette.Highlight,'#ac8cc8','#bfa3df'),(QPalette.HighlightedText,'#ffffff','#22192b')]:palette.setColor(role,QColor(dark if args.dark else light))
+app.setPalette(palette);app.setFont(QFont('Adwaita Sans',13 if args.large else 10))
+if args.rtl:app.setLayoutDirection(Qt.RightToLeft)
+view=QQuickView();view.setResizeMode(QQuickView.SizeViewToRootObject)
+view.setSource(QUrl.fromLocalFile(str(root/'desktop/control-center/displayconfiguration/Preview.qml')))
+assert view.status()==QQuickView.Ready,view.errors()
+view.show()
+def finish():
+ try:
+  assert not errors,errors
+  output=args.output or root/('preview/display-configuration-'+variant.lower()+'.png')
+  assert view.grabWindow().save(str(output));print(output);app.exit(0)
+ except Exception as error:print(error,file=sys.stderr);app.exit(1)
+QTimer.singleShot(900,finish)
+raise SystemExit(app.exec())

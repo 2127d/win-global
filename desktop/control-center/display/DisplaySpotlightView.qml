@@ -8,6 +8,7 @@ import "../details" as Details
 
 FocusScope {
     id: view
+    readonly property real naturalHeight: content.implicitHeight + island.implicitHeight + 26
     required property var controller
     property Component nightLightCard
     property Component keyboardColorCard

@@ -4,40 +4,37 @@ import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PC
 
-GridLayout {
+WeatherCard {
     id: root
+    objectName: "weatherDetailsCard"
     required property var model
-    columns: width >= 350 ? 2 : 1
-    columnSpacing: 10
-    rowSpacing: 10
-    Repeater {
-        model: root.model
-        delegate: WeatherCard {
-            id: card
-            required property var modelData
-            objectName: "weatherDetailCard"
-            Layout.fillWidth: true
-            Layout.preferredWidth: 1
-            implicitHeight: content.implicitHeight + 32
-            ColumnLayout {
-                id: content
-                anchors.fill: parent
-                anchors.margins: 16
-                spacing: 8
-                PC.Label {
-                    Layout.fillWidth: true
-                    text: card.modelData.label.replace(/:$/, "")
-                    color: Kirigami.Theme.disabledTextColor
-                    wrapMode: Text.Wrap
-                    textFormat: Text.PlainText
-                }
-                PC.Label {
-                    Layout.fillWidth: true
-                    text: card.modelData.text
-                    font.pointSize: Kirigami.Theme.defaultFont.pointSize * 1.15
-                    font.weight: Font.DemiBold
-                    wrapMode: Text.Wrap
-                    textFormat: Text.PlainText
+    implicitHeight: content.implicitHeight + 24
+    ColumnLayout {
+        id: content
+        anchors.fill: parent; anchors.margins: 12; spacing: 8
+        PC.Label { text: qsTr("Conditions"); font.weight: Font.DemiBold }
+        Repeater {
+            model: root.model
+            delegate: ColumnLayout {
+                id: detail
+                required property var modelData
+                required property int index
+                objectName: "weatherDetailRow"
+                Layout.fillWidth: true; spacing: 8
+                Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Qt.alpha(Kirigami.Theme.textColor, 0.08); visible: detail.index > 0 }
+                RowLayout {
+                    Layout.fillWidth: true; spacing: 20
+                    PC.Label {
+                        Layout.fillWidth: true; Layout.preferredWidth: 1
+                        text: detail.modelData.label.replace(/:$/, "")
+                        color: Kirigami.Theme.disabledTextColor; wrapMode: Text.Wrap; textFormat: Text.PlainText
+                    }
+                    PC.Label {
+                        Layout.fillWidth: true; Layout.preferredWidth: 1
+                        text: detail.modelData.text
+                        font.weight: Font.DemiBold; horizontalAlignment: Text.AlignRight
+                        wrapMode: Text.Wrap; textFormat: Text.PlainText
+                    }
                 }
             }
         }

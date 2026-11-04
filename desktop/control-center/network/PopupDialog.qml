@@ -33,6 +33,9 @@ Details.DetailRepresentation {
     background: null
     implicitWidth: 418
     implicitHeight: 600
+    readonly property real sequoiaPreferredHeight: (header.visible ? header.implicitHeight + spacing : 0)
+        + (footer.visible ? footer.implicitHeight + spacing : 0)
+        + (stack.currentItem?.naturalHeight ?? stack.currentItem?.implicitHeight ?? 440)
 
     Component {
         id: networkModelComponent
@@ -101,7 +104,7 @@ Details.DetailRepresentation {
         }
     }
 
-    QQC2.StackView {
+    Details.DetailNavigationStack {
         id: stack
         anchors.fill: parent
         initialItem: ConnectionListPage {

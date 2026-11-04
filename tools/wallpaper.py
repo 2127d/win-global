@@ -3,7 +3,8 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WALLPAPER_ID = 'SequoiaEleven'
+WALLPAPER_ID = 'SequoiaEleven'  # Legacy generated artwork remains available.
+DEFAULT_WALLPAPER_ID = 'MichiganGlass'
 PALETTES = {
     'light': ('#c7d7ee', '#e8d4c7', '#b9bee1', '#d7bdd1', '#ecc4ae'),
     'dark': ('#233453', '#473746', '#514566', '#735269', '#986451'),

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 import QtQuick
+import "../details" as Details
 import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
@@ -38,7 +39,7 @@ PlasmoidItem {
             if (stack.depth > 1) { goBack(); event.accepted = true; }
             else event.accepted = false;
         }
-        QQC2.StackView {
+        Details.DetailNavigationStack {
             id: stack
             objectName: "contactsStack"
             anchors.fill: parent
@@ -53,18 +54,7 @@ PlasmoidItem {
                 target: contactApplet
                 function onExpandedChanged() { stack.loadContacts(); }
             }
-            pushEnter: Transition {
-                NumberAnimation { property: "opacity"; from: 0; to: 1; duration: Kirigami.Units.shortDuration }
-            }
-            pushExit: Transition {
-                NumberAnimation { property: "opacity"; from: 1; to: 0; duration: Kirigami.Units.shortDuration }
-            }
-            popEnter: Transition {
-                NumberAnimation { property: "opacity"; from: 0; to: 1; duration: Kirigami.Units.shortDuration }
-            }
-            popExit: Transition {
-                NumberAnimation { property: "opacity"; from: 1; to: 0; duration: Kirigami.Units.shortDuration }
-            }
+
         }
     }
 }
