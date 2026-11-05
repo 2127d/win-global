@@ -92,9 +92,9 @@ def _build(destination):
     menu.write_text(desktop_menu(menu.read_text(), replace))
     shared = destination / 'org/sequoia/eleven'
     shared.mkdir(parents=True)
-    for component in ('Island', 'Canvas'):
+    for component in ('Island', 'Canvas', 'SidebarIcon', 'SidebarHighlight'):
         shutil.copy2(ROOT / f'themes/application-style/quick/{component}.qml', shared / f'{component}.qml')
-    (shared / 'qmldir').write_text('module org.sequoia.eleven\nIsland 1.0 Island.qml\nCanvas 1.0 Canvas.qml\n')
+    (shared / 'qmldir').write_text('module org.sequoia.eleven\nIsland 1.0 Island.qml\nCanvas 1.0 Canvas.qml\nSidebarIcon 1.0 SidebarIcon.qml\nSidebarHighlight 1.0 SidebarHighlight.qml\n')
 
     def patch(relative, transform):
         path = destination / relative
@@ -166,20 +166,170 @@ def _build(destination):
                   '        solidColor: Kirigami.Theme.backgroundColor'))
     patch(base + 'controls/OverlayDrawer.qml', lambda t:
           background(t.replace('import QtQuick\n', 'import QtQuick\n' + import_island),
-                     '    padding: 12\n    background: Sequoia.Island { color: Platform.Theme.backgroundColor }'))
-    patch(base + 'controls/GlobalDrawer.qml', lambda t:
-          replace(replace(replace(replace(t,
+                     '''    padding: 12
+    background: Sequoia.Island {
+        color: Platform.Theme.backgroundColor
+        radius: parent?.objectName === "DiscoverDrawer" ? 22 : 14
+    }'''))
+    def global_drawer(t):
+        # Keep Discover's category viewport as wide as its search field even
+        # when the list overflows. Wheel, touch and keyboard scrolling remain.
+        t = replace(t, '            id: scrollView', '''            id: scrollView
+            QQC2.ScrollBar.vertical.policy: (QQC2.ApplicationWindow.window?.sequoiaDiscoverHeaders ?? false)
+                ? QQC2.ScrollBar.AlwaysOff : QQC2.ScrollBar.AsNeeded''')
+        t = replace(t, '                id: backItem', '''                id: backItem
+                readonly property bool sequoiaDiscoverSidebar: QQC2.ApplicationWindow.window?.sequoiaDiscoverHeaders ?? false''')
+        # Discover resets the drawer padding to zero. Give its whole layout
+        # one inset so the header, scrolling list and progress footer all fit.
+        t = replace(t, '        id: mainLayout', '''        id: mainLayout
+        readonly property int sequoiaDrawerInset: parent?.objectName === "DiscoverDrawer" ? 12 : 0''')
+        for edge in ('top', 'bottom', 'left', 'right'):
+            margin = f'{edge}Margin: '
+            if edge == 'top':
+                margin += '(root.collapsed && !root.showHeaderWhenCollapsed ? -contentItem.y : 0) + '
+            anchor = f'            {margin}root.{edge}Padding'
+            t = replace(t, anchor, anchor + ' + mainLayout.sequoiaDrawerInset')
+        return replace(replace(replace(replace(t,
               'leftPadding: root.edge === Qt.LeftEdge ? parent.SafeArea.margins.left : 0',
               'leftPadding: 12 + (root.edge === Qt.LeftEdge ? parent.SafeArea.margins.left : 0)'),
               'rightPadding: root.edge === Qt.RightEdge ? parent.SafeArea.margins.right : 0',
               'rightPadding: 12 + (root.edge === Qt.RightEdge ? parent.SafeArea.margins.right : 0)'),
               'topPadding: parent.SafeArea.margins.top', 'topPadding: 12 + parent.SafeArea.margins.top'),
-              'bottomPadding: parent.SafeArea.margins.bottom', 'bottomPadding: 12 + parent.SafeArea.margins.bottom'))
+              'bottomPadding: parent.SafeArea.margins.bottom', 'bottomPadding: 12 + parent.SafeArea.margins.bottom')
+    patch(base + 'controls/GlobalDrawer.qml', global_drawer)
+    def search_icon_spacing(t):
+        t = replace(t, '    id: root', '''    id: root
+    property real sequoiaIconInset: Platform.Units.smallSpacing * 2
+    property int sequoiaIconSize: Platform.Units.iconSizes.sizeForLabels''')
+        t = replace(t, 'anchors.leftMargin: Platform.Units.smallSpacing * 2',
+                    'anchors.leftMargin: root.sequoiaIconInset')
+        t = replace(t, 'implicitHeight: Platform.Units.iconSizes.sizeForLabels',
+                    'implicitHeight: root.sequoiaIconSize')
+        return replace(t, 'implicitWidth: Platform.Units.iconSizes.sizeForLabels',
+                       'implicitWidth: root.sequoiaIconSize')
+    patch(base + 'controls/SearchField.qml', search_icon_spacing)
+    def discover_sidebar_item(t):
+        t = replace(t, 'import QtQuick\n', 'import QtQuick\n' + import_island)
+        t = replace(t, '    id: listItem', '''    id: listItem
+
+    readonly property bool sequoiaDiscoverSidebar: QQC2.ApplicationWindow.window?.sequoiaDiscoverHeaders ?? false''')
+        t = replace(t, 'color: (listItem.highlighted || listItem.checked || listItem.down) ? Platform.Theme.highlightedTextColor : Platform.Theme.textColor',
+                    '''color: listItem.sequoiaDiscoverSidebar
+                ? ((listItem.highlighted || listItem.checked) ? Platform.Theme.linkColor : Platform.Theme.textColor)
+                : ((listItem.highlighted || listItem.checked || listItem.down) ? Platform.Theme.highlightedTextColor : Platform.Theme.textColor)''')
+        return replace(t, '''        Primitives.Icon {
+            id: iconItem
+            color: listItem.tAction.icon.color
+            source: listItem.tAction.icon.name || listItem.tAction.icon.source
+
+            readonly property int size: Platform.Units.iconSizes.smallMedium
+            Layout.minimumHeight: size
+            Layout.maximumHeight: size
+            Layout.minimumWidth: size
+            Layout.maximumWidth: size
+
+            selected: (listItem.highlighted || listItem.checked || listItem.down)
+            visible: source !== undefined && !listItem.isSeparator
+        }''', '''        Item {
+            id: iconItem
+            readonly property var source: listItem.tAction.icon.name || listItem.tAction.icon.source
+            readonly property int size: listItem.sequoiaDiscoverSidebar ? 26 : Platform.Units.iconSizes.smallMedium
+            Layout.minimumHeight: size
+            Layout.maximumHeight: size
+            Layout.minimumWidth: size
+            Layout.maximumWidth: size
+            visible: source !== undefined && !listItem.isSeparator
+
+            Primitives.Icon {
+                anchors.fill: parent
+                visible: !listItem.sequoiaDiscoverSidebar
+                color: listItem.tAction.icon.color
+                source: iconItem.source
+                selected: listItem.highlighted || listItem.checked || listItem.down
+            }
+            Loader {
+                anchors.fill: parent
+                active: listItem.sequoiaDiscoverSidebar
+                sourceComponent: Sequoia.SidebarIcon {
+                    source: iconItem.source
+                    selected: listItem.checked || listItem.highlighted
+                    hovered: listItem.hovered
+                }
+            }
+        }''')
+    patch(base + 'controls/private/GlobalDrawerActionItem.qml', discover_sidebar_item)
+    def sidebar_row_size(t):
+        # Match the search field's 40px surface, with a 6px gap above each row.
+        # Keep these metrics scoped to Discover's explicitly marked delegates.
+        t = replace(t, '    id: controlRoot', '''    id: controlRoot
+    readonly property bool sequoiaRoomySidebar: controlRoot.sequoiaDiscoverSidebar ?? false
+    topPadding: sequoiaRoomySidebar ? 13 : padding''')
+        t = replace(t, 'implicitHeight: Math.max(implicitBackgroundHeight',
+                    'implicitHeight: Math.max(sequoiaRoomySidebar ? 46 : 0, implicitBackgroundHeight')
+        t = replace(t, 'bottomPadding: typeof index',
+                    'bottomPadding: sequoiaRoomySidebar ? 7 : typeof index')
+        t = replace(t, 'topInset: TableView.view',
+                    'topInset: sequoiaRoomySidebar ? 6 : TableView.view')
+        return replace(t, 'bottomInset: TableView.view',
+                       'bottomInset: sequoiaRoomySidebar ? 0 : TableView.view')
+    patch('org/kde/desktop/ItemDelegate.qml', sidebar_row_size)
+    def sidebar_background(t):
+        t = replace(t, 'import QtQuick\n', 'import QtQuick\n' + import_island)
+        t = replace(t, '    id: background', '''    id: background
+    readonly property bool sequoiaSidebar: control?.sequoiaDiscoverSidebar ?? false
+    Loader {
+        anchors.fill: parent
+        anchors.leftMargin: -background.control.leftInset
+        anchors.rightMargin: -background.control.rightInset
+        active: background.sequoiaSidebar
+        sourceComponent: Sequoia.SidebarHighlight { control: background.control }
+    }''')
+        if t.count('visible: background.control.enabled') != 2:
+            raise RuntimeError('Sidebar background visibility changed; review before refreshing.')
+        return t.replace('visible: background.control.enabled',
+                         'visible: background.control.enabled && !background.sequoiaSidebar')
+    patch('org/kde/desktop/private/DefaultListItemBackground.qml', sidebar_background)
     for relative, theme in [('controls/AbstractApplicationHeader.qml', 'Platform'),
                             ('styles/org.kde.desktop/AbstractApplicationHeader.qml', 'Kirigami')]:
         patch(base + relative, lambda t, theme=theme:
               background(t.replace('import QtQuick\n', 'import QtQuick\n' + import_island),
-                         f'    background: Sequoia.Island {{ color: {theme}.Theme.backgroundColor }}'))
+                         f'''    background: Sequoia.Island {{
+        visible: root.parent?.parent?.objectName !== "DiscoverDrawer"
+        color: {theme}.Theme.backgroundColor
+    }}'''))
+    def discover_header(t):
+        t = replace(t, '    id: root', '''    id: root
+
+    readonly property bool sequoiaDiscoverHeader: QQC.ApplicationWindow.window?.sequoiaDiscoverHeaders ?? false
+    background.visible: !sequoiaDiscoverHeader''')
+        t = replace(t, 'separatorVisible: pageRow ? pageRow.globalToolBar.separatorVisible : true',
+                    'separatorVisible: !sequoiaDiscoverHeader && (pageRow ? pageRow.globalToolBar.separatorVisible : true)')
+        return replace(t, '            Layout.leftMargin: {', '''            Layout.leftMargin: {
+                if (root.sequoiaDiscoverHeader) {
+                    const inset = root.page?.sequoiaTitleInset ?? root.page?.leftPadding ?? Platform.Units.gridUnit;
+                    const navigationWidth = (navButtons.visible ? navButtons.width + layout.spacing : 0)
+                        + (leadingHandle.visible ? leadingHandle.width + layout.spacing : 0);
+                    return Math.max(0, inset - root.leftPadding - navigationWidth);
+                }''')
+    patch(base + 'controls/private/globaltoolbar/ToolBarPageHeader.qml', discover_header)
+
+    def discover_title(t):
+        t = replace(t, 'import QtQuick\n', 'import QtQuick\nimport QtQuick.Controls as QQC\n')
+        return replace(t, '        id: heading', '''        id: heading
+
+        Binding {
+            target: heading
+            property: "font.family"
+            value: "Noto Sans"
+            when: heading.QQC.ApplicationWindow.window?.sequoiaDiscoverHeaders ?? false
+        }
+        Binding {
+            target: heading
+            property: "font.weight"
+            value: Font.Bold
+            when: heading.QQC.ApplicationWindow.window?.sequoiaDiscoverHeaders ?? false
+        }''')
+    patch(base + 'controls/private/DefaultPageTitleDelegate.qml', discover_title)
     patch(base + 'controls/private/DefaultCardBackground.qml', lambda t:
           replace(replace(replace(replace(t, 'radius: Platform.Units.cornerRadius', 'radius: 14'),
                   'color: Qt.rgba(0, 0, 0, 0.05)', 'color: Qt.rgba(0, 0, 0, 0.12)'),
@@ -202,9 +352,10 @@ def _build(destination):
         # scrollbars) without painting a second island inside the drawer.
         t = replace(t, '    id: controlRoot', '''    id: controlRoot
 
+    readonly property bool sequoiaDiscoverDrawer: parent?.parent?.objectName === "DiscoverDrawer"
     readonly property bool sequoiaNavigationPage: /^(CategoriesPage|SubCategoryPage)_/.test(parent?.toString() ?? "")
     readonly property bool sequoiaInsetContent: background?.visible || sequoiaNavigationPage
-        || parent?.parent?.objectName === "DiscoverDrawer"''')
+        || sequoiaDiscoverDrawer''')
         t = t.replace('controlRoot.background?.visible', 'controlRoot.sequoiaInsetContent')
         # Padding positions the viewport but does not clip app-provided
         # ListViews/Flickables. Clip their contents at that inset rectangle so
@@ -219,11 +370,11 @@ def _build(destination):
         },''')
         return background(t, '''    background: Sequoia.Island {
         // The navigation host supplies its full-height background, like Discover.
-        visible: controlRoot.Kirigami.StyleHints.showFramedBackground && !controlRoot.sequoiaNavigationPage
-        readonly property real topPadding: 12
-        readonly property real bottomPadding: 12
-        readonly property real leftPadding: 12
-        readonly property real rightPadding: 12
+        visible: controlRoot.Kirigami.StyleHints.showFramedBackground && !controlRoot.sequoiaNavigationPage && !controlRoot.sequoiaDiscoverDrawer
+        readonly property real topPadding: controlRoot.sequoiaDiscoverDrawer ? 4 : 12
+        readonly property real bottomPadding: controlRoot.sequoiaDiscoverDrawer ? 4 : 12
+        readonly property real leftPadding: controlRoot.sequoiaDiscoverDrawer ? 4 : 12
+        readonly property real rightPadding: controlRoot.sequoiaDiscoverDrawer ? 4 : 12
     }
 ''')
     patch('org/kde/desktop/ScrollView.qml', scroll_view)
@@ -233,6 +384,8 @@ def _build(destination):
               'anchors.margins: model.data.noMargins ? model.data.showBackground : Kirigami.Units.largeSpacing',
               'anchors.margins: model.data.showBackground ? 12 : (model.data.noMargins ? 0 : Kirigami.Units.largeSpacing)'),
               'radius: Kirigami.Units.cornerRadius', 'radius: 14'))
+    from discover_islands import build as build_discover
+    build_discover(ROOT, destination, fingerprints)
     from merkuro_islands import build as build_merkuro
     build_merkuro(ROOT, destination, fingerprints, replace, background)
     (destination / 'manifest.json').write_text(json.dumps({'sources': fingerprints}, indent=2) + '\n')

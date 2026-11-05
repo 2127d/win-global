@@ -30,14 +30,22 @@ def main():
         sys.exit('Usage: sequoia-quick APPLICATION [ARGUMENTS...]')
     overlay = Path(__file__).resolve().parent / 'qml'
     env = environment(overlay, os.environ)
-    if Path(sys.argv[1]).name == 'merkuro-calendar' and env.get('QML_IMPORT_PATH', '').split(os.pathsep)[0] == str(overlay):
-        bridge = overlay / 'merkuro-qml.so'
+    bridges = {
+        'merkuro-calendar': ('merkuro-qml.so', 'SEQUOIA_MERKURO_QML', 'org/kde/merkuro/calendar'),
+        'plasma-discover': ('discover-qml.so', 'SEQUOIA_DISCOVER_QML', 'org/kde/discover/qml'),
+    }
+    application = Path(sys.argv[1]).name
+    if application in bridges and env.get('QML_IMPORT_PATH', '').split(os.pathsep)[0] == str(overlay):
+        library, variable, module = bridges[application]
+        bridge = overlay / library
         if bridge.exists():
-            env['SEQUOIA_MERKURO_QML'] = str(overlay / 'org/kde/merkuro/calendar')
+            env[variable] = str(overlay / module)
             # The loader cannot quote paths containing spaces or colons.
             descriptor = os.open(bridge, os.O_RDONLY)
             os.set_inheritable(descriptor, True)
             env['LD_PRELOAD'] = f'/proc/self/fd/{descriptor}' + (os.pathsep + env['LD_PRELOAD'] if env.get('LD_PRELOAD') else '')
+            if application == 'plasma-discover':
+                env['SEQUOIA_DISCOVER_PRELOAD'] = f'/proc/self/fd/{descriptor}'
     os.execvpe(sys.argv[1], sys.argv[1:], env)
 
 

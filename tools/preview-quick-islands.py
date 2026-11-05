@@ -33,7 +33,7 @@ def verify_card_opacity(tree, capture, scale):
             x += ancestors[-1][0]
             y += ancestors[-1][1]
         ancestors.append((x, y))
-        if not kind.startswith('DefaultCardBackground') or width < 60 or height < 40:
+        if not kind.startswith(('DefaultCardBackground', 'HomeAppCard')) or width < 60 or height < 40:
             continue
         px, py = round((x + width / 2) * scale), round((y + height - 16) * scale)
         if not (3 < px < capture.width()-3 and 3 < py < capture.height()-3):
@@ -63,8 +63,8 @@ def verify_discover_sidebar(tree):
         absolute_x = float(x) + (ancestors[-1][2] if ancestors else 0)
         entry = (kind, name, absolute_x, float(width))
         drawer = next((item for item in ancestors if item[1] == 'DiscoverDrawer'), None)
-        if drawer and kind == 'KQuickStyleItem' and any(
-                item[0].startswith('DefaultListItemBackground') for item in ancestors):
+        if drawer and (kind.startswith('SidebarHighlight') or (kind == 'KQuickStyleItem' and any(
+                item[0].startswith('DefaultListItemBackground') for item in ancestors))):
             assert absolute_x >= drawer[2] + 6, f'Sidebar highlight crosses left border: {line}'
             assert absolute_x + float(width) <= drawer[2] + drawer[3] - 6, \
                 f'Sidebar highlight crosses right border: {line}'
@@ -149,6 +149,9 @@ with tempfile.TemporaryDirectory(prefix='sequoia-quick-preview-') as temporary:
         if not args.direct:
             env['SEQUOIA_MERKURO_QML'] = str(overlay / 'org/kde/merkuro/calendar')
     preload = str(helper) + (':' + str(overlay / 'merkuro-qml.so') if args.app == 'merkuro' and not args.direct else '')
+    if args.app == 'discover' and not args.direct:
+        env['SEQUOIA_DISCOVER_QML'] = str(overlay / 'org/kde/discover/qml')
+        preload += ':' + str(overlay / 'discover-qml.so')
     command = ['dbus-run-session', '--', 'python3', str(ROOT / 'tools/quick-preview-session.py'),
                'env', f'LD_PRELOAD={preload}', f'SEQUOIA_CAPTURE_PATH={output}']
     command.append('SEQUOIA_VERIFY_SCROLL_CLIPPING=1')

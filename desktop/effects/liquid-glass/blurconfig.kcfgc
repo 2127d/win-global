@@ -1,0 +1,5 @@
+File=blur.kcfg
+ClassName=LiquidGlassConfig
+NameSpace=KWin
+Singleton=true
+Mutators=true

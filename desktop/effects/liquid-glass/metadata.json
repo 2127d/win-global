@@ -1,0 +1,12 @@
+{
+  "KPlugin": {
+    "Name": "Sequoia Liquid Glass (Experimental)",
+    "Description": "Refracted backdrop glass with directional lighting. Test separately from Blur.",
+    "Category": "Appearance",
+    "License": "GPL-2.0-or-later",
+    "EnabledByDefault": false
+  },
+  "org.kde.kwin.effect": {
+    "exclusiveGroup": "blur"
+  }
+}

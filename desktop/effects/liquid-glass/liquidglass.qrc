@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/effects/sequoia_liquid_glass/">
+  <file>shaders/downsample.frag</file>
+  <file>shaders/noise.frag</file>
+  <file>shaders/onscreen.frag</file>
+  <file>shaders/onscreen_rounded.frag</file>
+  <file>shaders/onscreen_rounded.vert</file>
+  <file>shaders/upsample.frag</file>
+  <file>shaders/vertex.vert</file>
+</qresource>
+<qresource prefix="/opengl/"><file alias="sequoia_liquid_glass.glsl">shaders/glass.glsl</file></qresource>
+</RCC>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+    http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+    <kcfgfile arg="true"/>
+    <group name="Effect-sequoia_liquid_glass">
+        <entry name="BlurStrength" type="Int">
+            <default>7</default>
+        </entry>
+        <entry name="NoiseStrength" type="Int">
+            <default>0</default>
+        </entry>
+        <entry name="Saturation" type="Int">
+            <default>110</default>
+        </entry>
+        <entry name="Refraction" type="Double"><default>10.0</default><min>0.0</min><max>18.0</max></entry>
+        <entry name="RimWidth" type="Double"><default>40.0</default><min>8.0</min><max>80.0</max></entry>
+        <entry name="LightStrength" type="Double"><default>0.22</default><min>0.0</min><max>0.5</max></entry>
+        <entry name="LightAzimuth" type="Double"><default>225.0</default></entry>
+        <entry name="LightElevation" type="Double"><default>50.0</default><min>10.0</min><max>85.0</max></entry>
+        <entry name="FallbackCornerRadius" type="Double"><default>0.0</default><min>0.0</min><max>48.0</max></entry>
+    </group>
+</kcfg>
