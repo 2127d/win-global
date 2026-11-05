@@ -59,7 +59,7 @@ ControlGlassSurface {
                 Item { Layout.fillHeight: true }
                 RowLayout {
                     PC.Label { text: qsTr("Display"); font.weight: Font.DemiBold; Layout.fillWidth: true }
-                    IconButton { objectName: "displayDetails"; text: qsTr("Brightness and color"); icon.name: "video-display"; onClicked: content.controller.openApplet("org.kde.plasma.brightness") }
+                    IconButton { objectName: "displayDetails"; text: qsTr("Brightness and color"); icon.name: "video-display-symbolic"; onClicked: content.controller.openApplet("org.kde.plasma.brightness") }
                 }
                 PC.ScrollView {
                     id: displayScroll

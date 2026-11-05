@@ -19,7 +19,7 @@ ColumnLayout {
     id: connectionListPage
     readonly property real naturalHeight: (categories.visible ? categories.implicitHeight + spacing : 0) + spacing
         + (connectivityMessage.visible ? connectivityMessage.implicitHeight + spacing : 0)
-        + Math.max(160, connectionView.contentHeight) + 24
+        + Math.max(120, connectionView.contentHeight) + connectionView.bottomMargin
     objectName:"networkConnectionList"
 
     required property PlasmaNM.NetworkStatus nmStatus
@@ -28,12 +28,12 @@ ColumnLayout {
 
     property string layoutMode: "spotlight"
     readonly property bool groupedList:layoutMode==="desk" || layoutMode==="compact"
-    property Item availableSearchHost:null
-    readonly property string availableSection:records.entries.find(entry=>!entry.active && !entry.connecting)?.section || ""
+    property var summaryModel: model
     Binding {
-        target:toolbar;property:"searchHost"
-        when:connectionListPage.layoutMode!=="details"
-        value:connectionListPage.layoutMode==="spotlight" ? connectionView.headerItem?.searchHost || null : connectionListPage.availableSearchHost || connectionView.footerItem?.searchHost || null
+        target: toolbar
+        property: "searchHost"
+        when: connectionListPage.layoutMode !== "details"
+        value: connectionView.headerItem?.searchHost ?? null
     }
     property string category: "all"
     property string detailName:""
@@ -71,16 +71,16 @@ ColumnLayout {
             if(connectionListPage.layoutMode === "desk") {
                 // Omit only connections already represented by the cards above.
                 const connected=records.entries.filter(entry=>entry.active || entry.connecting);
-                const cardRows=[connected.find(entry=>entry.type===PlasmaNM.Enums.Wireless)?.row,
-                                connected.find(entry=>entry.type===PlasmaNM.Enums.Wired)?.row,
-                                ...records.entries.filter(entry=>entry.type===PlasmaNM.Enums.Vpn).map(entry=>entry.row)];
-                return !cardRows.includes(row);
+                const cardNames=[connected.find(entry=>entry.type===PlasmaNM.Enums.Wireless)?.name,
+                                connected.find(entry=>entry.type===PlasmaNM.Enums.Wired)?.name,
+                                ...records.entries.filter(entry=>entry.type===PlasmaNM.Enums.Vpn).map(entry=>entry.name)];
+                return !cardNames.includes(sourceModel.data(sourceModel.index(row, 0, parent), PlasmaNM.NetworkModel.ItemUniqueNameRole));
             }
             if(connectionListPage.layoutMode !== "compact" || connectionListPage.category === "all") return true;
             return sourceModel.data(sourceModel.index(row,0,parent),filterRole) === connectionListPage.categoryType;
         }
     }
-    NetworkRecords { id:records; connectionModel:connectionListPage.model; onEntriesChanged:Qt.callLater(()=>typeFilter.invalidateFilter()) }
+    NetworkRecords { id:records; connectionModel:connectionListPage.summaryModel; onEntriesChanged:Qt.callLater(()=>typeFilter.invalidateFilter()) }
     RowLayout {
         id: categories
         Layout.fillWidth:true; visible:connectionListPage.layoutMode === "compact"; spacing:6
@@ -117,30 +117,40 @@ ColumnLayout {
 
     PlasmaComponents3.ScrollView {
         id: scrollView
-        padding:0
+        leftPadding: 0; rightPadding: 0; topPadding: 0; bottomPadding: 0
         background:null
 
         Layout.fillWidth: true
         Layout.fillHeight: true
         contentWidth: availableWidth - contentItem.leftMargin - contentItem.rightMargin
-        PlasmaComponents3.ScrollBar.vertical.policy: PlasmaComponents3.ScrollBar.AlwaysOff
+        PlasmaComponents3.ScrollBar.vertical: NetworkScrollBar {
+            parent: scrollView
+            anchors { right: parent.right; top: parent.top; bottom: parent.bottom; margins: 4 }
+            z: 2
+        }
         PlasmaComponents3.ScrollBar.horizontal.policy: PlasmaComponents3.ScrollBar.AlwaysOff
 
-        layer.enabled: GraphicsInfo.api !== GraphicsInfo.Software
-        layer.effect: MultiEffect { maskEnabled:true;maskSource:edgeMask;maskThresholdMin:0.5;maskSpreadAtMin:1;autoPaddingEnabled:false }
+        layer.enabled: true
+        layer.effect: GraphicsInfo.api === GraphicsInfo.Software ? null : edgeFade
+        Component { id: edgeFade; MultiEffect { maskEnabled:true;maskSource:edgeMask;maskThresholdMin:0.5;maskSpreadAtMin:1;autoPaddingEnabled:false } }
         contentItem: ListView {
             id: connectionView
             clip:true
 
-            footer:Column {
-                property alias searchHost:fallbackSearchSlot
-                width:connectionView.width
-                spacing:8
-                readonly property bool showSearch:connectionListPage.groupedList && !connectionListPage.availableSearchHost
-                Item{width:1;height:parent.showSearch?4:0}
-                Item {id:fallbackSearchSlot;x:12;width:parent.width-24;height:parent.showSearch?toolbar.searchTextField.implicitHeight:0;visible:parent.showSearch}
-                PlasmaComponents3.Label {x:16;width:parent.width-32;visible:parent.showSearch;text:i18n("Available networks");font.weight:Font.DemiBold;color:Kirigami.Theme.disabledTextColor}
-                PlasmaComponents3.Label {x:16;width:parent.width-32;visible:parent.showSearch;text:toolbar.searchTextField.text?i18n("No matches"):i18n("No available networks");wrapMode:Text.Wrap;color:Kirigami.Theme.disabledTextColor}
+            footer: Item {
+                width: connectionView.width
+                height: connectionListPage.groupedList && connectionView.count === 0 ? emptyLabel.implicitHeight : 0
+                clip: true
+                PlasmaComponents3.Label {
+                    id: emptyLabel
+                    width: parent.width
+                    leftPadding: 16; rightPadding: 16; topPadding: 10; bottomPadding: 12
+                    wrapMode: Text.Wrap
+                    color: Kirigami.Theme.disabledTextColor
+                    text: toolbar.searchTextField.text ? i18n("No matches")
+                        : connectionListPage.category === "vpn" ? i18n("No VPN connections")
+                        : connectionListPage.category === "wifi" ? i18n("No Wi-Fi connections") : i18n("No available networks")
+                }
             }
             property int currentVisibleButtonIndex: -1
 
@@ -158,24 +168,36 @@ ColumnLayout {
                 }
             }
 
-            header: NetworkSummary {
-                width: connectionView.width - connectionView.leftMargin - connectionView.rightMargin
-                layoutMode:connectionListPage.layoutMode
-                entries:records.entries
-                searchText:toolbar.searchTextField.text
-                searchHeight:toolbar.searchTextField.implicitHeight
-                internetAccess:connectionListPage.nmStatus.connectivity===NMQt.NetworkManager.Full
-                portal:connectionListPage.nmStatus.connectivity===NMQt.NetworkManager.Portal
-                emptyMessage:toolbar.searchTextField.text?i18n("No matches"):toolbar.displayplaneModeMessage?i18n("Wi-Fi is off in airplane mode"):toolbar.displayWifiOffMessage?i18n("Turn on Wi-Fi to see nearby networks"):i18n("No available networks")
-                onConfigureRequested:toolbar.settings()
-                onRefreshRequested:toolbar.scan()
-                onVpnToggleRequested:row=>{
-                    const record=records.entries.find(entry=>entry.row===row);
-                    if(!record || record.type!==PlasmaNM.Enums.Vpn || record.connecting) return;
-                    if(record.active) handler.deactivateConnection(record.connectionPath,record.devicePath);
-                    else handler.activateConnection(record.connectionPath,record.devicePath,record.specificPath);
+            header: Column {
+                width: connectionView.width
+                readonly property Item searchHost: connectionListPage.groupedList ? groupedSearch : summary.searchHost
+                readonly property real summaryHeight: summary.height
+                NetworkSummary {
+                    id: summary
+                    width: connectionView.width - connectionView.leftMargin - connectionView.rightMargin
+                    layoutMode:connectionListPage.layoutMode
+                    entries:records.entries
+                    searchText:toolbar.searchTextField.text
+                    searchHeight:toolbar.searchTextField.implicitHeight
+                    internetAccess:connectionListPage.nmStatus.connectivity===NMQt.NetworkManager.Full
+                    portal:connectionListPage.nmStatus.connectivity===NMQt.NetworkManager.Portal
+                    emptyMessage:toolbar.searchTextField.text?i18n("No matches"):toolbar.displayplaneModeMessage?i18n("Wi-Fi is off in airplane mode"):toolbar.displayWifiOffMessage?i18n("Turn on Wi-Fi to see nearby networks"):i18n("No available networks")
+                    onConfigureRequested:toolbar.settings()
+                    onRefreshRequested:toolbar.scan()
+                    onVpnToggleRequested:row=>{
+                        const record=records.entries.find(entry=>entry.row===row);
+                        if(!record || record.type!==PlasmaNM.Enums.Vpn || record.connecting) return;
+                        if(record.active) handler.deactivateConnection(record.connectionPath,record.devicePath);
+                        else handler.activateConnection(record.connectionPath,record.devicePath,record.specificPath);
+                    }
+                    onConnectionRequested: row => connectionListPage.showConnection(row)
                 }
-                onConnectionRequested: row => connectionListPage.showConnection(row)
+                Item {
+                    visible: connectionListPage.groupedList
+                    width: parent.width
+                    height: toolbar.searchTextField.implicitHeight + 16
+                    Item { id: groupedSearch; x: 12; y: 8; width: parent.width - 24; height: toolbar.searchTextField.implicitHeight }
+                }
             }
             // No topMargin because ListSectionHeader and InlineMessage both bring
             // their own.
@@ -190,17 +212,7 @@ ColumnLayout {
             section.delegate:Column {
                 id:sectionHeader
                 required property string section
-                readonly property bool hostsSearch:section===connectionListPage.availableSection
-                width:connectionView.width;spacing:0
-                function registerHost() {
-                    if(hostsSearch) connectionListPage.availableSearchHost=sectionSearchSlot;
-                    else if(connectionListPage.availableSearchHost===sectionSearchSlot) connectionListPage.availableSearchHost=null;
-                }
-                onHostsSearchChanged:registerHost()
-                Component.onCompleted:registerHost()
-                Component.onDestruction:if(connectionListPage.availableSearchHost===sectionSearchSlot) connectionListPage.availableSearchHost=null
-                Item {width:1;height:sectionHeader.hostsSearch?12:0}
-                Item {id:sectionSearchSlot;x:12;width:parent.width-24;height:sectionHeader.hostsSearch?toolbar.searchTextField.implicitHeight+8:0}
+                width: connectionView.width
                 PlasmaComponents3.Label {
                     width:parent.width;leftPadding:16;rightPadding:16;topPadding:14;bottomPadding:6
                     text:sectionHeader.section;font.weight:Font.DemiBold
@@ -213,6 +225,7 @@ ColumnLayout {
             highlightResizeDuration: Kirigami.Units.shortDuration
             delegate: ConnectionItem {
                 listView: connectionView
+                cardSurface.color: cardSurface.stateColor
                 grouped:connectionListPage.groupedList
                 x:grouped?12:0
                 width: connectionView.width-(grouped?24:0)
@@ -220,72 +233,13 @@ ColumnLayout {
 
             // Placeholder message
             Loader {
-                readonly property real groupTop:connectionListPage.groupedList ? Math.max(0,(connectionView.headerItem?.y || 0)+(connectionView.headerItem?.height || 0)-connectionView.contentY) : 0
-                x:(parent.width-width)/2
-                y:groupTop+Math.max(0,(parent.height-groupTop-height)/2)
-                width: parent.width - (Kirigami.Units.largeSpacing * 4)
-                active: connectionView.count === 0 && connectionListPage.layoutMode==="details"
-                asynchronous: true
+                anchors.centerIn: parent
+                width: Math.max(0, parent.width - Kirigami.Units.largeSpacing * 4)
+                active: connectionView.count === 0 && connectionListPage.layoutMode === "details"
                 visible: status === Loader.Ready && !!connectionListPage.model
                 sourceComponent: PlasmaExtras.PlaceholderMessage {
-                    iconName: {
-                        if (toolbar.displayplaneModeMessage) {
-                            return "network-flightmode-on"
-                        }
-                        if (toolbar.displayWifiOffMessage) {
-                            return "network-wireless-off"
-                        }
-                        if (toolbar.displayWifiConnectingMessage) {
-                            return "view-refresh-symbolic"
-                        }
-                        if (toolbar.displayWwanMessage) {
-                            return "network-mobile-off"
-                        }
-                        return "edit-none"
-                    }
-                    text: {
-                        if(connectionListPage.layoutMode==="details")return i18n("This connection is no longer available.");
-                        if (toolbar.displayplaneModeMessage) {
-                            return i18n("Airplane mode is enabled")
-                        }
-                        if (toolbar.displayWifiOffMessage) {
-                            if (toolbar.displayWwanMessage) {
-                                return i18n("Wi-Fi and mobile data are deactivated")
-                            }
-                            return i18n("Wi-Fi is deactivated")
-                        }
-                        if (toolbar.displayWifiConnectingMessage) {
-                            return i18n("Looking for Wi-Fi networks")
-                        }
-                        if (toolbar.displayWwanMessage) {
-                            return i18n("Mobile data is deactivated")
-                        }
-                        if (toolbar.searchTextField.text.length > 0) {
-                            return i18n("No matches")
-                        }
-                        if (connectionListPage.layoutMode === "compact" && connectionListPage.category !== "all") return connectionListPage.category === "wifi" ? i18n("No Wi-Fi connections") : i18n("No VPN connections");
-                        if (connectionListPage.nmStatus.connectivity === NMQt.NetworkManager.Full) {
-                            return i18n("No available connections")
-                        }
-                        return nmStatus.checkUnknownReason()
-                    }
-                    explanation: {
-                        if (toolbar.searchTextField.text.length === 0) {
-                            return ""
-                        }
-                        if (toolbar.displayplaneModeMessage) {
-                            return i18nc("@info:placeholder", "Turn off airplane mode to search for networks")
-                        }
-                        if (toolbar.displayWifiOffMessage) {
-                            if (toolbar.displayWwanMessage) {
-                                return i18nc("@info:placeholder", "Turn on Wi-Fi or mobile data to search for networks")
-                            }
-                            return i18nc("@info:placeholder", "Turn on Wi-Fi to search for networks")
-                        }
-                        if (toolbar.displayWwanMessage) {
-                            return i18nc("@info:placeholder", "Turn on mobile data to search for networks")
-                        }
-                    }
+                    iconName: "network-disconnect-symbolic"
+                    text: i18n("This connection is no longer available.")
                 }
             }
 
@@ -307,9 +261,9 @@ ColumnLayout {
         parent:connectionView.contentItem
         visible:connectionListPage.groupedList
         z:-1;radius:24
-        x:0;y:connectionView.headerItem ? connectionView.headerItem.y+connectionView.headerItem.height : 0
+        x:0;y:(connectionView.headerItem?.y ?? 0) + (connectionView.headerItem?.summaryHeight ?? 0)
         width:connectionView.width
-        height:connectionView.count===0 ? Math.max(160,connectionView.height-(connectionView.headerItem?.height || 0)) : Math.max(120,connectionView.contentHeight-(connectionView.headerItem?.height || 0))
+        height:Math.max(0, connectionView.contentHeight - (connectionView.headerItem?.summaryHeight ?? 0))
     }
     Rectangle {
         id:edgeMask; width:scrollView.width;height:scrollView.height;visible:false;layer.enabled:true

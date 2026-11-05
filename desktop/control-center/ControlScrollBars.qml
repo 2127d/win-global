@@ -12,7 +12,7 @@ QtObject {
     readonly property Binding hideBar: Binding {
         target: observer.targetItem
         property: "opacity"
-        when: observer.targetItem instanceof T.ScrollBar
+        when: observer.targetItem instanceof T.ScrollBar && observer.targetItem.sequoiaStyledScrollBar !== true
         value: 0
         restoreMode: Binding.RestoreBindingOrValue
     }

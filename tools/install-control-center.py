@@ -5,6 +5,7 @@ import ctypes.util
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shlex
 import shutil
@@ -204,24 +205,38 @@ def build(destination):
     text = replace(text, '            visible: !systemTrayState.activeApplet\n', '            visible: !systemTrayState.activeApplet && popup.showAllItems\n')
     text = replace(text, 'import QtQuick.Window', 'import QtQuick.Window\nimport "../details" as Details')
     text = replace(text, 'height: trayHeading.height + bottomPadding + container.headingHeight',
-                   '''height: trayHeading.height + 8
+                   '''height: trayHeading.height + 2 * trayHeading.verticalInset
         topInset: 0
         bottomInset: 0
-        leftInset: container.visible ? container.Layout.leftMargin : dashboard.Layout.leftMargin
-        rightInset: container.visible ? container.Layout.rightMargin : dashboard.Layout.rightMargin
+        leftInset: trayNavigation.Layout.leftMargin
+        rightInset: trayNavigation.Layout.rightMargin
         background: Details.DetailSurface { radius: height / 2; elevated: true }''')
     text = replace(text, 'spacing: plasmoidHeading.bottomPadding', 'spacing: 8')
+    # The surface and hit targets share a height on every frame of a page change.
+    text = replace(text, '''        Behavior on height {
+            NumberAnimation { duration: Kirigami.Units.shortDuration / 2; easing.type: Easing.InOutQuad }
+        }''', '')
+    text = replace(text, '        RowLayout {\n            id: trayHeading', '        ControlHeaderRow {\n            id: trayHeading')
+    # Horizontal navigation belongs to the row, including the widget's own switch.
+    start = text.index('        ControlHeaderRow {')
+    end = text.index('        ControlDashboard {', start)
+    header = re.sub(r'^ +KeyNavigation\.(?:left|right): (?:[^\n]*:\n)?[^\n]*\n',
+                    '', text[start:end], flags=re.MULTILINE)
+    text = text[:start] + header + text[end:]
+    text = replace(text, 'icon.name: "application-menu"', 'icon.name: "view-more-symbolic"')
     text = replace(text, '            id: trayHeading', '''            id: trayHeading
             // A taller applet must not stretch the shared header row.
             Layout.fillHeight: false
             Layout.maximumHeight: implicitHeight
-            Layout.topMargin: 4
+            Layout.topMargin: verticalInset
             Layout.leftMargin: plasmoidHeading.leftInset + 6
             Layout.rightMargin: plasmoidHeading.rightInset + 6
-            Layout.bottomMargin: 4
+            Layout.bottomMargin: verticalInset
             spacing: 6''')
-    text = replace(text, '                level: 1', '''                level: 2
+    text = replace(text, '                level: 1', '''                id: headerTitle
+                level: 2
                 font.weight: Font.DemiBold
+                Layout.minimumWidth: 0
                 Layout.fillHeight: true
                 verticalAlignment: Text.AlignVCenter
                 topPadding: 0
@@ -232,6 +247,7 @@ def build(destination):
     text = text.replace('PlasmaComponents.ToolButton {', 'ControlHeaderButton {')
     text = text.replace('implicitWidth: Kirigami.Units.iconSizes.smallMedium', 'implicitWidth: 18')
     text = replace(text, '            Repeater {\n                id: primaryActionButtons', '''            Loader {
+                id: widgetHeaderControl
                 sourceComponent: systemTrayState.activeApplet?.sequoiaHeaderControl ?? null
                 visible: !!item
                 Layout.alignment: Qt.AlignVCenter
@@ -243,6 +259,52 @@ def build(destination):
                    'if (actionsButton.applet === null || actionsButton.applet.sequoiaFooterActions === true)')
     text = replace(text, 'visible: actionsButton.applet && actionsButton.applet.plasmoid.internalAction("configure")',
                    'visible: actionsButton.applet && !actionsButton.applet.sequoiaFooterActions && actionsButton.applet.plasmoid.internalAction("configure")')
+    text = replace(text, '                id: primaryActionButtons\n\n                model: {', '''                id: primaryActionButtons
+
+                readonly property int inlineCount: {
+                    // Use the popup rail, independent of the layout's minimum width.
+                    const gap = trayHeading.spacing;
+                    const step = pinButton.implicitWidth + gap;
+                    const fixed = step + (backButton.visible ? backButton.implicitWidth + gap : 0)
+                        + (configureButton.visible ? configureButton.implicitWidth + gap : 0)
+                        + (widgetHeaderControl.visible ? widgetHeaderControl.implicitWidth + gap : 0);
+                    const titleSpace = Math.min(headerTitle.implicitWidth, Kirigami.Units.gridUnit * 6);
+                    const available = popup.width - trayHeading.Layout.leftMargin - trayHeading.Layout.rightMargin
+                        - fixed - titleSpace;
+                    const slots = Math.max(0, Math.floor(available / step));
+                    if (actionsButton.regularActions.length === 0 && allActions.length <= slots)
+                        return allActions.length;
+                    return Math.max(0, Math.min(allActions.length, slots - 1));
+                }
+                readonly property var overflow: allActions.slice(inlineCount)
+                model: allActions.slice(0, inlineCount)
+                readonly property var allActions: {''')
+    text = replace(text, 'return !action.isSeparator && action.priority === PlasmaCore.Action.HighPriority;',
+                   'return action.visible && !action.isSeparator && action.priority === PlasmaCore.Action.HighPriority;')
+    text = replace(text, 'readonly property var actions: {',
+                   'readonly property var actions: primaryActionButtons.overflow.concat(regularActions)\n                readonly property var regularActions: {')
+    text = replace(text, 'property bool showAsMenu: visibleActions > 1',
+                   'property bool showAsMenu: primaryActionButtons.overflow.length > 0 || visibleActions > 1')
+    # Adapt KDE actions to the inset Quick popup. Providers with a QMenu
+    # hierarchy still need Plasma's native submenu dispatch.
+    text = replace(text, 'visibleActions === 1 && menuItemFactory.object ? menuItemFactory.object.action : null',
+                   'visibleActions === 1 ? actions[0] : null')
+    text = replace(text, 'checked: showAsMenu ? configMenu.status !== PlasmaExtras.Menu.Closed :',
+                   'checked: showAsMenu ? (headerMenu.visible || configMenu.status !== PlasmaExtras.Menu.Closed) :')
+    text = replace(text, '                onToggled: {\n                    if (showAsMenu)', '''                readonly property bool hasNativeSubmenus: actions.some(action => !!action.menu)
+                Details.DetailActionMenu {
+                    id: headerMenu
+                    nativeActions: actionsButton.hasNativeSubmenus ? [] : actionsButton.actions
+                }
+                onAppletChanged: if (headerMenu.visible) headerMenu.close()
+                onToggled: {
+                    if (showAsMenu)''')
+    text = replace(text, '                            configMenu.openRelative();',
+                   '                            if (hasNativeSubmenus) configMenu.openRelative();\n                            else headerMenu.openFor(actionsButton);')
+    text = replace(text, '                            configMenu.close();',
+                   '                            headerMenu.close();\n                            configMenu.close();')
+    text = replace(text, '                    model: actionsButton.actions',
+                   '                    model: actionsButton.hasNativeSubmenus ? actionsButton.actions : []')
     # Keep both pages alive for the outgoing/incoming slide. Layout margins
     # belong to the deck; StackView owns the pages' positions and dimensions.
     start = text.index('        ControlDashboard {')

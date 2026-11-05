@@ -34,6 +34,23 @@ Item {
                 mouseClick(find("networkLayoutButton"));const menu=findChild(preview,"networkLayoutMenu");verify(!!menu);tryCompare(menu,"opened",true,1000,choice.mode);const entry=findChild(preview,choice.id);verify(!!entry);mouseClick(entry);wait(40);compare(preview.fixture.layoutMode,choice.mode);verify(entry.checked);tryCompare(menu,"visible",false,1000);
             }
         }
+        function test_footer_highlights_stay_inside_menu() {
+            mouseClick(find("networkLayoutButton"));
+            const menu = findChild(preview, "networkLayoutMenu");
+            tryCompare(menu, "opened", true);
+            for (let i = 0; i < menu.count; ++i) {
+                const row = menu.itemAt(i);
+                if (!row.enabled) continue;
+                mouseMove(row, row.width / 2, row.height / 2);
+                tryCompare(row.background, "visible", true);
+                const bounds = row.background.mapToItem(menu.background, 0, 0, row.background.width, row.background.height);
+                verify(bounds.x >= 7.5 && bounds.y >= 7.5, row.text);
+                verify(bounds.x + bounds.width <= menu.background.width - 7.5, row.text);
+                verify(bounds.y + bounds.height <= menu.background.height - 7.5, row.text);
+            }
+            menu.close();
+            tryCompare(menu, "visible", false);
+        }
         function test_hotspot_and_qr_buttons_respect_availability(){
             mouseClick(find("networkHotspot"));compare(preview.fixture.lastAction,"hotspot");verify(preview.fixture.hotspotActive);
             preview.fixture.hotspotSupported=false;wait(20);verify(!find("networkHotspot").enabled);mouseClick(find("networkHotspot"));verify(preview.fixture.hotspotActive);

@@ -78,7 +78,7 @@ Details.DetailSurface {
                                 visible: !!modelData.playing || !!modelData.transferring
                                 width: 5; height: 5; radius: 3
                                 anchors.right: parent.right; anchors.bottom: parent.bottom
-                                anchors.margins: 3
+                                anchors.margins: 5
                                 color: Kirigami.Theme.highlightColor
                             }
                         }

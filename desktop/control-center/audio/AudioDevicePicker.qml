@@ -35,22 +35,25 @@ T.ComboBox {
                 highlighted: picker.highlightedIndex === index
                 checked: picker.currentIndex === index
             }
-            popup: QQC.Popup {
+            popup: T.Popup {
                 objectName: "audioDevicePickerMenu"
                 popupType: QQC.Popup.Item
                 y: picker.height + 4
                 width: picker.width
                 padding: 8; margins: 12
                 implicitHeight: pickerList.contentHeight + topPadding + bottomPadding
-                height: Math.min(implicitHeight, Math.max(80,(picker.Window.window?.height || 600) - 24))
+                height: Math.min(implicitHeight, Math.max(1,(picker.Window.window?.height || 600) - 2 * margins))
                 background: AudioMenuSurface {}
                 contentItem: ListView {
                     id: pickerList
                     clip: true; spacing: 2
+                    flickableDirection: Flickable.VerticalFlick
+                    interactive: contentHeight > height
+                    layer.enabled: interactive
                     model: picker.delegateModel
                     currentIndex: picker.highlightedIndex
                     boundsBehavior: Flickable.StopAtBounds
-                    QQC.ScrollBar.vertical: QQC.ScrollBar { policy: QQC.ScrollBar.AsNeeded }
+                    QQC.ScrollBar.vertical: Details.DetailScrollBar {}
                 }
             }
             currentIndex: selector.devices.findIndex(d => d.id === selector.record.id)

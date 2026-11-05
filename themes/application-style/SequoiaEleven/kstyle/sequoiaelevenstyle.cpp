@@ -946,6 +946,14 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
     case PM_ButtonShiftVertical:
         return 0;
 
+    // Qt Quick desktop menus use these metrics as the padding around their list.
+    // QWidget menus already reserve their own panel frame.
+    case PM_MenuHMargin:
+    case PM_MenuVMargin:
+        return qobject_cast<const QMenu *>(widget)
+            ? ParentStyleClass::pixelMetric(metric, option, widget)
+            : Metrics::Menu_FrameWidth;
+
     // menubars
     case PM_MenuBarPanelWidth:
         return 0;
@@ -6040,10 +6048,15 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
         painter->setBrush(color);
         painter->setPen(Qt::NoPen);
         const qreal radius = _helper->frameRadius(0, -1);
-        if (StyleConfigData::cornerRadius() > 1)
-            painter->drawRoundedRect(sunken ? rect.adjusted(2, 2, -2, -2) : rect.adjusted(1, 1, -1, -1), radius, radius);
-        else
-            painter->drawRoundedRect(sunken ? rect.adjusted(1, 1, -1, -1) : rect, radius, radius);
+        // QMenu can keep a wide action rectangle even when the screen constrains
+        // the popup. Round the selection within the actual visible menu frame.
+        const QRect selection = qobject_cast<const QMenu *>(widget)
+            ? rect.intersected(insideMargin(widget->rect(), Metrics::Menu_FrameWidth))
+            : rect;
+        const int inset = (StyleConfigData::cornerRadius() > 1 ? 1 : 0) + (sunken ? 1 : 0);
+        const QRect fill = selection.adjusted(inset, inset, -inset, -inset);
+        if (fill.isValid())
+            painter->drawRoundedRect(fill, radius, radius);
     }
 
     // get rect available for contents

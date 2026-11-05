@@ -15,7 +15,21 @@ ColumnLayout {
     property Item searchHost:null
     function applySearch() {appletProxyModel.setFilterFixedString(layoutMode==="spotlight"?"":search.text);}
     onLayoutModeChanged:Qt.callLater(applySearch)
-    function revealSearch() {Qt.callLater(()=>{search.forceActiveFocus();search.selectAll();});}
+    function revealSearch() { Qt.callLater(focusSearch); }
+    function focusSearch() {
+        if (!search.parent) return;
+        let viewport = search.parent;
+        while (viewport && !(viewport instanceof Flickable)) viewport = viewport.parent;
+        if (viewport) {
+            const top = search.mapToItem(viewport, 0, 0).y;
+            if (top < 8 || top + search.height > viewport.height - 8) {
+                const last = viewport.originY + viewport.contentHeight - viewport.height;
+                viewport.contentY = Math.max(viewport.originY, Math.min(last, viewport.contentY + top - 8));
+            }
+        }
+        search.forceActiveFocus();
+        search.selectAll();
+    }
     signal backRequested()
     property bool hasConnections
     property alias searchTextField:search
@@ -66,6 +80,7 @@ ColumnLayout {
     }
 
     PlasmaExtras.SearchField {
+        focusSequences: [] // The popup also reveals the field when it is scrolled out of view.
         parent:toolbar.searchHost
         visible:!toolbar.backOnly && parent!==null
         width:parent?parent.width:0

@@ -638,8 +638,10 @@ void Helper::renderOutline(QPainter *painter, const QRectF &rect, const int radi
 //______________________________________________________________________________
 void SequoiaEleven::Helper::renderBoxShadow(QPainter *painter, const QRect &rect, int xOffset, int yOffset, int blurRadius, const QColor &, int cornerRadius, bool, TileSet::Tiles) const
 {
-    if (!StyleConfigData::widgetDrawShadow() || blurRadius <= 0)
-    return;
+    // The blur below uses QGraphicsScene, which requires a widgets application.
+    // Qt Quick menus can ask the style to paint a control from QGuiApplication.
+    if (!StyleConfigData::widgetDrawShadow() || blurRadius <= 0 || !qobject_cast<QApplication *>(QCoreApplication::instance()))
+        return;
 
     const QColor shadowColor(0, 0, 0, 40);
 

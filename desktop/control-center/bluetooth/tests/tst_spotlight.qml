@@ -140,6 +140,21 @@ Item {
             verify(!find("bluetoothEmptyAction").visible);
             compare(island.mapToItem(preview,0,0).y,y);
         }
+        function test_keyboard_reveals_last_action_above_footer() {
+            stage.height = 340;
+            preview.view.openDetails("headphones");
+            tryCompare(preview.view, "navigationBusy", false);
+            const flick = find("bluetoothDeviceScroll").contentItem;
+            const footer = find("bluetoothActionIsland");
+            const forget = find("bluetoothForget");
+            flick.contentY = 0;
+            forget.forceActiveFocus(Qt.TabFocusReason);
+            tryVerify(() => {
+                const rect = forget.mapToItem(flick, 0, 0, forget.width, forget.height);
+                return rect.y >= 0 && rect.y + rect.height <= flick.height + 1;
+            });
+            verify(flick.mapToItem(preview, 0, flick.height).y < footer.mapToItem(preview, 0, 0).y);
+        }
         function test_narrow_layout_and_long_names() {
             preview.fixture.change("headphones",{name:"A very long pair of wireless headphones with a long device name"});
             for (const width of [292,418,552]) {

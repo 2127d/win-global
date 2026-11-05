@@ -10,7 +10,7 @@ import "BluetoothDevices.js" as Devices
 
 FocusScope {
     id: view
-    readonly property real naturalHeight: contents.implicitHeight + islandRow.implicitHeight + 44 + (showPowerControl ? powerRow.implicitHeight + 16 : 0)
+    readonly property real naturalHeight: contents.implicitHeight + island.height + 26 + (showPowerControl ? powerRow.implicitHeight + 16 : 0)
     objectName: "bluetoothSpotlightView"
     required property var controller
     property bool showPowerControl: true
@@ -79,19 +79,30 @@ FocusScope {
                 // Keep device surfaces aligned with the header; reserve the
                 // extra viewport width only for their soft outer shadows.
                 anchors.leftMargin: -6; anchors.rightMargin: -6
-                anchors.bottom: island.top; anchors.bottomMargin: -8
+                anchors.bottom: island.top; anchors.bottomMargin: 6
+                leftPadding: 0; rightPadding: 0; topPadding: 0; bottomPadding: 0
                 background: null
                 PC.ScrollBar.horizontal.policy: PC.ScrollBar.AlwaysOff
-                PC.ScrollBar.vertical.policy: PC.ScrollBar.AlwaysOff
-                layer.enabled: GraphicsInfo.api !== GraphicsInfo.Software
-                layer.effect: MultiEffect { maskEnabled: true; maskSource: edgeMask; maskThresholdMin: 0.5; maskSpreadAtMin: 1; autoPaddingEnabled: false }
+                PC.ScrollBar.vertical: Details.DetailScrollBar {
+                    parent: scroll
+                    anchors { right: parent.right; top: parent.top; bottom: parent.bottom; margins: 6 }
+                    z: 2
+                }
+                // Contain glass and focus highlights even with the software renderer.
+                layer.enabled: true
+                layer.effect: GraphicsInfo.api === GraphicsInfo.Software ? null : fadeEffect
+                Component {
+                    id: fadeEffect
+                    MultiEffect { maskEnabled: true; maskSource: edgeMask; maskThresholdMin: 0.5; maskSpreadAtMin: 1; autoPaddingEnabled: false }
+                }
                 contentItem: Flickable {
                     clip: true
                     contentWidth: width
-                    contentHeight: contents.height + 32
+                    contentHeight: contents.y + contents.height + 6
                     boundsBehavior: Flickable.StopAtBounds
                     Details.DetailPageDeck {
                         id: contents
+                        clip: busy
                         x: 6; y: 6
                         width: Math.max(0, scroll.availableWidth - 12)
                         height: implicitHeight
@@ -217,7 +228,7 @@ FocusScope {
                     GradientStop { position: 0; color: scroll.contentItem.contentY > 1 ? "transparent" : "white" }
                     GradientStop { position: edgeMask.fade; color: "white" }
                     GradientStop { position: 1 - edgeMask.fade; color: "white" }
-                    GradientStop { position: 1; color: "transparent" }
+                    GradientStop { position: 1; color: scroll.contentItem.atYEnd ? "white" : "transparent" }
                 }
             }
             Details.DetailSurface {

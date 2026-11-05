@@ -50,6 +50,10 @@ Details.DetailRepresentation {
         sourceModel: full.connectionModel
     }
 
+    // Search filters nearby rows. Status cards and drill-downs need the complete
+    // list even when the current search matches a different network.
+    PlasmaNM.AppletProxyModel { id: statusModel; sourceModel: full.connectionModel }
+
     header: Toolbar {
         id: toolbar
         layoutMode:full.layoutMode
@@ -88,13 +92,17 @@ Details.DetailRepresentation {
         }
     }
 
+    Shortcut {
+        sequence: StandardKey.Find
+        enabled: mainWindow.expanded && full.visible
+        onActivated: {
+            if (stack.depth > 1) stack.pop(null);
+            toolbar.revealSearch();
+        }
+    }
     Keys.forwardTo: [stack.currentItem]
     Keys.onPressed: event => {
-        if (event.modifiers & Qt.ControlModifier && event.key == Qt.Key_F) {
-            if(stack.depth>1)stack.pop(null);
-            toolbar.revealSearch();
-            event.accepted = true;
-        } else if (event.key === Qt.Key_Back || (event.modifiers & Qt.AltModifier && event.key == Qt.Key_Left)) {
+        if (event.key === Qt.Key_Back || (event.modifiers & Qt.AltModifier && event.key == Qt.Key_Left)) {
             if (stack.depth > 1) {
                 stack.pop();
                 event.accepted = true;
@@ -106,10 +114,12 @@ Details.DetailRepresentation {
 
     Details.DetailNavigationStack {
         id: stack
+        layer.enabled: true
         anchors.fill: parent
         initialItem: ConnectionListPage {
             id: connectionListPage
             model: mainWindow.expanded ? appletProxyModel : null
+            summaryModel: mainWindow.expanded ? statusModel : null
             nmStatus: full.nmStatus
             layoutMode: full.layoutMode
             onDetailRequested:name=>stack.push(connectionDetailsComponent,{detailName:name})
@@ -119,7 +129,7 @@ Details.DetailRepresentation {
     Component {
         id:connectionDetailsComponent
         ConnectionListPage {
-            model:appletProxyModel
+            model:statusModel
             nmStatus:full.nmStatus
             layoutMode:"details"
         }
