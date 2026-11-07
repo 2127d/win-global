@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: MIT
+#include <QQuickPaintedItem>
+#include <QSignalSpy>
 // Test-only startup hook for the real application, on a private session bus.
 #include <QBitArray>
 #include <QApplication>
@@ -12,9 +14,23 @@
 #include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QJsonObject>
 #include <QDialog>
 #include <QAbstractButton>
 #include <QSet>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusArgument>
+#include <QDBusVariant>
+#include <QDBusVirtualObject>
+#include <QDBusPendingCall>
+#include <QDBusUnixFileDescriptor>
+#include <QTemporaryFile>
+#include <QPainter>
+#include <QScreen>
+#include <KWindowEffects>
+#include <Plasma/Theme>
+#include <QProcess>
 #include <cstdio>
 #include <cstdlib>
 
@@ -47,6 +63,49 @@ static void open(QObject *nav, const QString &id)
     require(QMetaObject::invokeMethod(nav, "open", Qt::DirectConnection, Q_ARG(QString, id)), "Missing open method");
     QTest::qWait(600);
 }
+class HubWindowProbe : public QDBusVirtualObject {
+public:
+    bool received=false;
+    QString introspect(const QString &) const override { return {}; }
+    bool handleMessage(const QDBusMessage &message,const QDBusConnection &connection) override {
+        fprintf(stderr,"HUB_COMPOSITOR_WINDOWS %s\n",qPrintable(message.arguments().first().toString()));
+        received=true;connection.send(message.createReply());return true;
+    }
+};
+class HubBackdrop : public QWidget {
+public:
+    HubBackdrop() : QWidget(nullptr, Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnBottomHint | Qt::WindowDoesNotAcceptFocus) { setWindowTitle(QStringLiteral("Hub Test Backdrop")); }
+protected:
+    void paintEvent(QPaintEvent *) override {
+        QPainter painter(this);
+        QImage wallpaper(qEnvironmentVariable("SEQUOIA_HUB_WALLPAPER"));
+        if (!wallpaper.isNull()) painter.drawImage(rect(), wallpaper);
+        else {
+            QLinearGradient gradient(0,0,width(),height()); gradient.setColorAt(0,QColor("#76b7a2")); gradient.setColorAt(1,QColor("#61a4c6")); painter.fillRect(rect(),gradient);
+            painter.setPen(QColor("#aaffffff")); for(int x=0;x<width();x+=24) painter.drawLine(x,0,x,height());
+        }
+    }
+};
+static QImage composedCapture(const QString &name) {
+    QTemporaryFile file; require(file.open(), "Cannot create screenshot buffer");
+    auto message=QDBusMessage::createMethodCall("org.kde.KWin.ScreenShot2", "/org/kde/KWin/ScreenShot2", "org.kde.KWin.ScreenShot2", "CaptureWorkspace");
+    message << QVariantMap{{"hide-caller-windows",false},{"include-cursor",false}} << QVariant::fromValue(QDBusUnixFileDescriptor(file.handle()));
+    const auto reply=QDBusConnection::sessionBus().call(message,QDBus::Block,5000);
+    require(reply.type()!=QDBusMessage::ErrorMessage,"Compositor capture failed");
+    const auto map=qdbus_cast<QVariantMap>(reply.arguments().first());
+    const auto bytes=map["height"].toInt()*map["stride"].toInt();
+    for(int i=0;file.size()<bytes && i<200;++i) QTest::qWait(10);
+    file.seek(0); const auto data=file.readAll(); require(data.size()==bytes,"Incomplete screenshot");
+    QImage image(reinterpret_cast<const uchar*>(data.constData()),map["width"].toInt(),map["height"].toInt(),map["stride"].toInt(),QImage::Format(map["format"].toInt()));
+    auto copy=image.copy(); require(copy.save(qEnvironmentVariable("SEQUOIA_SETTINGS_VERIFY")+'/'+name+".png"),"Saving compositor capture failed"); return copy;
+}
+static QStringList loadedProviders() {
+    const auto message=QDBusMessage::createMethodCall("org.kde.KWin", "/Effects", "org.freedesktop.DBus.Properties", "Get");
+    auto request=message; request << QStringLiteral("org.kde.kwin.Effects") << QStringLiteral("loadedEffects");
+    const auto reply=QDBusConnection::sessionBus().call(request,QDBus::Block,5000);
+    require(reply.type()!=QDBusMessage::ErrorMessage,"Cannot read compositor providers");
+    return qdbus_cast<QDBusVariant>(reply.arguments().first()).variant().toStringList();
+}
 static void startup()
 {
     if (qEnvironmentVariable("SEQUOIA_SETTINGS_VERIFY").isEmpty()) return;
@@ -61,11 +120,33 @@ static void startup()
         auto nav = window->findChild<QObject *>(QStringLiteral("settingsNavigation"));
         require(nav, "Missing navigation controller");
         if (qEnvironmentVariableIsSet("SEQUOIA_SETTINGS_RTL")) qApp->setLayoutDirection(Qt::RightToLeft);
+        if (qEnvironmentVariableIsSet("SEQUOIA_HUB_COMPOSITED")) {
+            auto backdrop=new HubBackdrop;
+            backdrop->setGeometry(QGuiApplication::primaryScreen()->geometry());backdrop->show();
+            QTest::qWait(400);
+            require(qEnvironmentVariable("WAYLAND_DISPLAY")==QStringLiteral("sequoia-settings-test"),"Backdrop fixture must use the private compositor");
+            QTemporaryFile script; require(script.open(),"Cannot create backdrop positioning fixture");
+            script.write("for (const w of workspace.windowList()) { print('HUB_WINDOW',w.caption,JSON.stringify(w.frameGeometry),w.minimized,w.keepBelow); if (w.caption.startsWith('Hub Test Backdrop')) { w.keepBelow=true; } else if (w.caption.includes('System Settings')) { workspace.activeWindow=w; } }");script.flush();
+            auto bus=QDBusConnection::sessionBus(); HubWindowProbe probe;
+            require(bus.registerVirtualObject("/HubWindowProbe",&probe),"Register fixture probe");
+            script.write(QString("callDBus('%1','/HubWindowProbe','org.sequoia.Test','windows',JSON.stringify(workspace.windowList().map(w=>({caption:w.caption,geometry:w.frameGeometry,below:w.keepBelow,minimized:w.minimized,opacity:w.opacity}))));").arg(bus.baseService()).toUtf8());script.flush();
+            auto load=QDBusMessage::createMethodCall("org.kde.KWin","/Scripting","org.kde.kwin.Scripting","loadScript");
+            load << script.fileName() << QStringLiteral("hub-backdrop-position");
+            auto reply=QDBusConnection::sessionBus().call(load);
+            require(reply.type()!=QDBusMessage::ErrorMessage,"Loading backdrop fixture failed");
+            auto run=QDBusMessage::createMethodCall("org.kde.KWin","/Scripting/Script"+QString::number(reply.arguments().first().toInt()),"org.kde.kwin.Script","run");
+            bus.asyncCall(run);
+            for(int i=0;i<100 && !probe.received;++i) QTest::qWait(20);
+            require(probe.received,"Compositor fixture probe did not return");
+            bus.unregisterObject("/HubWindowProbe");
+            QTest::qWait(400);
+        }
         window->resize(1100, 790);
         QTest::qWait(200);
         auto capture = [window](const QString &name) {
             const auto directory = qEnvironmentVariable("SEQUOIA_SETTINGS_VERIFY");
-            require(window->grab().save(directory + QLatin1Char('/') + name + QStringLiteral(".png")), "Screenshot failed");
+            if (qEnvironmentVariableIsSet("SEQUOIA_HUB_COMPOSITED")) { window->grab().save(directory + QLatin1Char('/') + name + QStringLiteral("-client.png")); composedCapture(name); }
+            else require(window->grab().save(directory + QLatin1Char('/') + name + QStringLiteral(".png")), "Screenshot failed");
         };
         for (auto quick : window->findChildren<QQuickWidget *>()) require(quick->status() != QQuickWidget::Error && quick->rootObject(), "QML did not load");
         if (qEnvironmentVariableIsSet("SEQUOIA_SETTINGS_STARTUP")) {
@@ -76,6 +157,18 @@ static void startup()
         }
         require(nav->property("home").toBool(), "Application must start on the category overview");
         capture(QStringLiteral("home"));
+        if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) {
+            require(!window->windowFlags().testFlag(Qt::FramelessWindowHint), "Settings must retain the native glass titlebar above its islands");
+            auto chrome = window->findChild<QObject *>(QStringLiteral("appearancePreview"));
+            require(chrome, "Preview controller missing");
+            require(QMetaObject::invokeMethod(chrome, "windowAction", Q_ARG(QString, QStringLiteral("maximize"))), "Maximize action missing");
+            QTest::qWait(200);
+            require(window->isMaximized(), "Maximize did not reach the native window");
+            QMetaObject::invokeMethod(chrome, "windowAction", Q_ARG(QString, QStringLiteral("maximize")));
+            QTest::qWait(200);
+            require(!window->isMaximized(), "Restore failed");
+            window->resize(1100,790);
+        }
         QQuickItem *searchField = nullptr;
         for (auto quick : window->findChildren<QQuickWidget *>()) {
             if (quick->rootObject()) {
@@ -108,12 +201,231 @@ static void startup()
         }
         for (const auto &group : nav->property("groups").toList()) {
             require(call(nav, "browse", group.toMap().value(QStringLiteral("id")).toString()), "Category navigation failed");
+            if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB") && !qEnvironmentVariableIsSet("SEQUOIA_POPUP_ONLY")) capture(QStringLiteral("overview-") + group.toMap().value(QStringLiteral("id")).toString());
             for (const auto &entry : nav->property("entries").toList()) grouped.insert(entry.toMap().value(QStringLiteral("id")).toString());
         }
         require(grouped == all, "Category union does not cover All Settings");
         require(!call(nav, "browse", QStringLiteral("unknown-category")), "Invalid category was accepted");
         require(call(nav, "browse", QStringLiteral("appearance")), "Appearance navigation failed");
         capture(QStringLiteral("appearance"));
+        if (qEnvironmentVariableIsSet("SEQUOIA_VERIFY_LAYOUT")) {
+            QQuickItem *image=nullptr; QObject *scroll=nullptr;
+            for(auto quick:window->findChildren<QQuickWidget *>()) for(auto item:items(quick->rootObject())) {
+                if(item->objectName()=="actualDesktopImage") image=item;
+                if(item->objectName()=="appearanceMainContent") scroll=item;
+            }
+            require(image && scroll,"Missing appearance layout objects");
+            bool stable=true; int changes=0;
+            for(int h=880;h<=1080;h+=4) {
+                window->resize(1630,h); QTest::qWait(120);
+                QSignalSpy spy(image,&QQuickItem::widthChanged);
+                const qreal before=image->width(); QTest::qWait(180);
+                if(spy.count()>0) { stable=false; changes+=spy.count(); fprintf(stderr,"UNSTABLE height=%d width=%.1f -> %.1f changes=%lld availableHeight=%.1f contentHeight=%.1f\n",h,before,image->width(),(long long)spy.count(),scroll->property("availableHeight").toDouble(),scroll->property("contentHeight").toDouble()); }
+            }
+            fprintf(stderr,"Layout width changes after settling: %d\n",changes);
+            require(stable,"Appearance width oscillates at fixed window size");
+            capture(QStringLiteral("stable-desktop-layout"));
+            fprintf(stderr,"PASS: stable appearance geometry across 51 window heights\n");
+            QCoreApplication::exit(0);return;
+        }
+        if (qEnvironmentVariableIsSet("SEQUOIA_VERIFY_DESKTOP")) {
+            auto renderer=window->findChild<QObject *>(QStringLiteral("desktopRenderer"));
+            require(renderer,"Desktop renderer missing");
+            for(int i=0;i<1200 && renderer->property("images").toMap().size()<3 && renderer->property("errors").toMap().isEmpty();++i) QTest::qWait(100);
+            require(renderer->property("errors").toMap().isEmpty(),"Desktop rendering reported an error");
+            require(renderer->property("images").toMap().size()==3,"Three real material previews did not load");
+            window->resize(1630,980); QTest::qWait(200);
+            QQuickPaintedItem *image=nullptr;
+            for(auto quick:window->findChildren<QQuickWidget *>())
+                for(auto item:quick->rootObject()->findChildren<QQuickPaintedItem *>())
+                    if(item->objectName()==QStringLiteral("actualDesktopImage")) image=item;
+            for(auto quick:window->findChildren<QQuickWidget *>())
+                for(auto card:items(quick->rootObject())) if(card->objectName().startsWith("material-")) {
+                    for(auto child:items(card)) if(child->objectName()=="materialDesktopImage") {
+                        const auto bottom=child->mapToItem(card,QPointF(0,child->height())).y();
+                        require(bottom+20<=card->height(),"Material image overflows its card or crowds its label");
+                    }
+                }
+            require(image && image->isVisible() && !image->property("source").toUrl().isEmpty(),"Main desktop image is missing");
+            QImage rounded(QSize(qCeil(image->width()),qCeil(image->height())),QImage::Format_ARGB32_Premultiplied); rounded.fill(Qt::transparent);
+            { QPainter painter(&rounded); image->paint(&painter); }
+            require(qAlpha(rounded.pixel(0,0))==0 && qAlpha(rounded.pixel(rounded.width()-1,0))==0 && qAlpha(rounded.pixel(0,rounded.height()-1))==0 && qAlpha(rounded.pixel(rounded.width()-1,rounded.height()-1))==0,"Desktop corners were not clipped");
+            require(qAlpha(rounded.pixel(rounded.width()/2,rounded.height()/2))==255,"Desktop center is missing");
+            int smooth=0; for(int y=0;y<16;++y) for(int x=0;x<16;++x) { const auto a=qAlpha(rounded.pixel(x,y)); if(a>0 && a<255) ++smooth; }
+            require(smooth>5,"Rounded edges are not antialiased");
+            rounded.save(qEnvironmentVariable("SEQUOIA_SETTINGS_VERIFY")+"/desktop-rounded.png");
+            QTest::qWait(500); capture(QStringLiteral("real-desktop-preview"));
+            fprintf(stderr,"PASS: real desktop images and antialiased rounded corners\n");
+            QCoreApplication::exit(0); return;
+        }
+        if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) {
+            QObject *button = nullptr;
+            QObject *dialog = nullptr;
+            QObject *hub = nullptr;
+            QQuickItem *apply = nullptr;
+            QQuickItem *reset = nullptr;
+            QQuickItem *light = nullptr;
+            QQuickItem *dark = nullptr;
+            QQuickItem *selection = nullptr;
+            QQuickItem *presets = nullptr;
+            QQuickItem *schedule = nullptr;
+            for (auto quick : window->findChildren<QQuickWidget *>()) {
+                if (!quick->rootObject()) continue;
+                for (auto item : items(quick->rootObject())) {
+                    if (item->objectName() == QStringLiteral("desktopTrialButton")) button = item;
+                    if (item->objectName() == QStringLiteral("appearanceApplyButton")) apply = item;
+                    if (item->objectName() == QStringLiteral("appearanceResetButton")) reset = item;
+                    if (item->objectName() == QStringLiteral("appearanceMode-light")) light = item;
+                    if (item->objectName() == QStringLiteral("appearanceMode-dark")) dark = item;
+                    if (item->objectName() == QStringLiteral("appearanceModeSelection")) selection = item;
+                    if (item->objectName() == QStringLiteral("appearancePresets")) presets = item;
+                    if (item->objectName() == QStringLiteral("appearanceScheduleButton")) schedule = item;
+                    if (item->objectName() == QStringLiteral("appearanceHub")) {
+                        hub = item;
+                        dialog = item->property("trialDialog").value<QObject *>();
+                        fprintf(stderr, "Hub dialog property type=%s pointer=%p\n", item->property("trialDialog").typeName(), static_cast<void *>(dialog));
+                    }
+                }
+            }
+            fprintf(stderr, "Trial button=%p dialog=%p\n", static_cast<void *>(button), static_cast<void *>(dialog));
+            require(button && dialog, "Material trial controls missing");
+            require(hub && apply && reset && apply->isVisible(), "Appearance Apply/Reset actions must be visible");
+            require(!apply->isEnabled(), "Apply must start disabled with no pending changes");
+            require(light && dark && selection, "Unified appearance pill missing");
+            for (auto modeButton : {dark, light}) {
+                QMetaObject::invokeMethod(modeButton,"clicked");
+                QTest::qWait(220);
+                require(hub->property("modeEdited").toBool(),"Mode pill did not stage its selection");
+                const auto buttonCenter=modeButton->mapToScene(QPointF(modeButton->width()/2,modeButton->height()/2));
+                const auto selectionCenter=selection->mapToScene(QPointF(selection->width()/2,selection->height()/2));
+                require(qAbs(buttonCenter.x()-selectionCenter.x())<2,"Glass selection did not align with its selected mode");
+            }
+            QMetaObject::invokeMethod(reset,"clicked");
+            QTest::qWait(220);
+            fprintf(stderr,"PASS: unified mode pill stages changes and glass selection aligns after animation\n");
+            require(presets && schedule && presets->height()>=40 && schedule->height()>=40,"Theme and Schedule pills missing or undersized");
+            auto popup=presets->property("popup").value<QObject*>();
+            require(popup,"Theme dropdown popup missing");
+            auto openThemePopup=[&] { QMetaObject::invokeMethod(popup,"open"); QTest::qWait(250); };
+            openThemePopup();
+            auto list=qobject_cast<QQuickItem*>(popup->property("contentItem").value<QObject*>());
+            auto surface=qobject_cast<QQuickItem*>(popup->property("background").value<QObject*>());
+            require(list && surface && popup->property("visible").toBool(),"Theme dropdown did not open");
+            const auto buttonBottom=presets->mapToGlobal(QPointF(0,presets->height()));
+            const auto popupTop=surface->mapToGlobal(QPointF());
+            require(qAbs(popupTop.x()-buttonBottom.x())<2 && popupTop.y()>=buttonBottom.y()+4,"Theme dropdown is not directly below its pill");
+            require(qAbs(surface->width()-presets->width())<2 && surface->height()<=362,"Theme popup size does not fit its pill or viewport");
+            require(list->property("contentHeight").toReal()>list->height(),"Long theme list did not become scrollable");
+            if(qEnvironmentVariableIsSet("SEQUOIA_HUB_COMPOSITED")) {
+                composedCapture(QStringLiteral("theme-dropdown"));
+                auto glass=surface->findChild<QQuickItem*>(QStringLiteral("appearanceThemePopupGlass"));
+                require(glass && glass->isVisible(),"Popup glass shader is missing");
+                const auto withGlass=window->grab().toImage().convertToFormat(QImage::Format_RGB32);
+                glass->setVisible(false);QTest::qWait(200);
+                const auto withoutGlass=window->grab().toImage().convertToFormat(QImage::Format_RGB32);
+                glass->setVisible(true);QTest::qWait(200);
+                double difference=0;
+                for(int y=0;y<withGlass.height();++y) for(int x=0;x<withGlass.width();++x) {
+                    const auto a=withGlass.pixel(x,y),b=withoutGlass.pixel(x,y);
+                    difference+=qAbs(qRed(a)-qRed(b))+qAbs(qGreen(a)-qGreen(b))+qAbs(qBlue(a)-qBlue(b));
+                }
+                require(difference>1000,"Popup shader did not visibly sample the underlying page");
+                fprintf(stderr,"PASS: popup samples and refracts actual page content (pixel difference %.0f)\n",difference);
+            } else capture(QStringLiteral("theme-dropdown"));
+            QTest::keyClick(list->window(),Qt::Key_Escape);
+            QTest::qWait(150);
+            require(!popup->property("visible").toBool() && presets->property("currentIndex").toInt()==0,"Escape changed the theme or did not close the dropdown");
+            openThemePopup();
+            QTest::keyClick(list->window(),Qt::Key_Down);
+            QTest::keyClick(list->window(),Qt::Key_Return);
+            QTest::qWait(200);
+            require(!popup->property("visible").toBool() && presets->property("currentIndex").toInt()==1 && hub->property("modeEdited").toBool(),"Keyboard selection did not stage a saved look");
+            QMetaObject::invokeMethod(reset,"clicked");
+            window->resize(800,600);QTest::qWait(300);
+            openThemePopup();
+            const auto compactBottom=presets->mapToGlobal(QPointF(0,presets->height()));
+            const auto compactTop=surface->mapToGlobal(QPointF());
+            require(qAbs(compactTop.x()-compactBottom.x())<2 && compactTop.y()>=compactBottom.y()+4,"Compact theme popup lost its below-button alignment");
+            QTest::mouseClick(list->window(),Qt::LeftButton,Qt::NoModifier,QPoint(5,5));
+            QTest::qWait(150);
+            require(!popup->property("visible").toBool(),"Clicking outside did not dismiss the theme popup");
+            window->resize(1100,790);QTest::qWait(200);
+            fprintf(stderr,"PASS: below-button glass popup, scrolling, Escape and keyboard preset selection\n");
+            if(qEnvironmentVariableIsSet("SEQUOIA_POPUP_ONLY")) { qApp->quit(); return; }
+            hub->setProperty("selectedMaterial", hub->property("selectedMaterial").toString()==QStringLiteral("glass") ? QStringLiteral("solid") : QStringLiteral("glass"));
+            QTest::qWait(50);
+            require(apply->isEnabled() && reset->isEnabled(), "Material selection did not enable Apply and Reset");
+            QMetaObject::invokeMethod(reset,"clicked");
+            QTest::qWait(50);
+            require(!apply->isEnabled(), "Reset did not discard staged appearance choices");
+            QMetaObject::invokeMethod(button, "clicked");
+            QTest::qWait(200);
+            require(dialog->property("visible").toBool(), "Material confirmation did not open");
+            capture(QStringLiteral("material-confirmation"));
+            QMetaObject::invokeMethod(dialog, "reject");
+            QTest::qWait(100);
+            require(!window->findChild<QObject *>(QStringLiteral("appearancePreview"))->property("busy").toBool(), "Cancel started a desktop trial");
+        }
+        if (qEnvironmentVariableIsSet("SEQUOIA_HUB_COMPOSITED")) {
+            auto controller=window->findChild<QObject *>(QStringLiteral("appearancePreview"));
+            Plasma::Theme livePlasmaTheme;
+            QTest::qWait(1400);
+            fprintf(stderr,"HUB_WINDOW_CLIENT visible=%d exposed=%d opacity=%.2f title=%s\n",window->isVisible(),window->windowHandle()->isExposed(),window->windowOpacity(),qPrintable(window->windowTitle()));
+            window->grab().save(qEnvironmentVariable("SEQUOIA_SETTINGS_VERIFY")+"/client-buffer.png");
+            require(window->property("appearanceBlurRequested").toBool(), "Preview did not request compositor blur");
+            const auto withGlass=composedCapture(QStringLiteral("backdrop-glass"));
+            auto disable=QDBusMessage::createMethodCall("org.kde.KWin","/Effects","org.kde.kwin.Effects","unloadEffect");
+            disable << QStringLiteral("sequoia_liquid_glass_v6");
+            QDBusConnection::sessionBus().call(disable);
+            QTest::qWait(500);
+            const auto withoutGlass=composedCapture(QStringLiteral("backdrop-disabled"));
+            double total=0; int pixels=0;
+            for(int y=0;y<withGlass.height();y+=2) for(int x=0;x<withGlass.width();x+=2) {
+                const auto a=withGlass.pixelColor(x,y),b=withoutGlass.pixelColor(x,y);
+                total+=qAbs(a.red()-b.red())+qAbs(a.green()-b.green())+qAbs(a.blue()-b.blue());pixels+=3;
+            }
+            require(total/pixels > .08, "Backdrop effect has no visible contribution");
+            fprintf(stderr,"PASS: real compositor backdrop contribution %.3f RGB levels per channel\n",total/pixels);
+            auto enable=QDBusMessage::createMethodCall("org.kde.KWin","/Effects","org.kde.kwin.Effects","loadEffect");
+            enable << QStringLiteral("sequoia_liquid_glass_v6");
+            QDBusConnection::sessionBus().call(enable);
+            window->resize(1101,790);window->resize(1100,790);QTest::qWait(300);
+            for(const QString &material : {QStringLiteral("transparent"),QStringLiteral("solid"),QStringLiteral("glass"),QStringLiteral("transparent"),QStringLiteral("glass")}) {
+                QMetaObject::invokeMethod(controller,"trial",Q_ARG(QString,material));
+                for(int i=0;i<150 && controller->property("seconds").toInt()==0;++i) QTest::qWait(100);
+                require(controller->property("seconds").toInt()>0,"Material trial did not become ready");
+                QMetaObject::invokeMethod(controller,"keep");
+                for(int i=0;i<100 && controller->property("busy").toBool();++i) QTest::qWait(100);
+                require(!controller->property("busy").toBool(),"Material keep did not finish");
+                QTest::qWait(1400);
+                const auto loaded=loadedProviders();
+                require(loaded.contains(QStringLiteral("sequoia_liquid_glass_v6"))==(material==QStringLiteral("glass")),"Wrong glass provider state after transition");
+                require(loaded.contains(QStringLiteral("blur"))==(material==QStringLiteral("transparent")),"Wrong standard blur state after transition");
+                require(window->property("appearanceBlurRequested").toBool()==(material!=QStringLiteral("solid")),"Preview backdrop request did not follow material");
+                capture(QStringLiteral("material-")+material);
+            }
+            fprintf(stderr,"PASS: live Glass/Transparent/Solid transitions, including return to Glass twice\n");
+            QMetaObject::invokeMethod(controller,"applyLook",Q_ARG(QString,QStringLiteral("glass")),Q_ARG(QString,QStringLiteral("light")));
+            for(int i=0;i<250 && controller->property("busy").toBool();++i) QTest::qWait(100);
+            require(!controller->property("busy").toBool() && controller->property("colorMode").toString()==QStringLiteral("light"),"Apply did not keep the chosen light palette");
+            require(loadedProviders().contains(QStringLiteral("sequoia_liquid_glass_v6")),"Applying color mode lost Glass");
+            QTest::qWait(1000);
+            require(livePlasmaTheme.themeName()==QStringLiteral("sequoia-eleven-glass-light"),"Plasma retained its old glass theme after Light was applied");
+            QObject *hub = nullptr;
+            for (auto quick : window->findChildren<QQuickWidget *>()) if (quick->rootObject())
+                for (auto item : items(quick->rootObject())) if(item->objectName()==QStringLiteral("appearanceHub")) hub=item;
+            require(hub,"Appearance hub missing during live-update verification");
+            hub->setProperty("selectedMode",QStringLiteral("light"));
+            hub->setProperty("modeEdited",true);
+            require(QProcess::execute(QStringLiteral("plasma-apply-colorscheme"),{QStringLiteral("SequoiaElevenDarkTransparent")})==0,"External color scheme change failed");
+            QTest::qWait(1400);
+            require(controller->property("colorMode").toString()==QStringLiteral("dark") && hub->property("selectedMode").toString()==QStringLiteral("dark") && !hub->property("modeEdited").toBool(),"External theme change left stale appearance selections");
+            require(qApp->palette().window().color().lightness()<128,"Settings did not repaint to the external dark palette");
+            fprintf(stderr,"PASS: live Plasma glass theme reload and external palette/selection synchronization\n");
+            QMetaObject::invokeMethod(controller,"saveLook",Q_ARG(QString,QStringLiteral("Verification look")),Q_ARG(QString,QStringLiteral("glass")),Q_ARG(QString,QStringLiteral("light")));
+            require(!controller->property("savedLooks").toList().isEmpty(),"Save look did not persist a selectable preset");
+            fprintf(stderr,"PASS: staged Apply/Reset, kept Light + Glass, and saved appearance preset\n");
+        }
         // Every module is searchable by stable ID, including category owners.
         for (const auto &id : all) {
             require(call(nav, "search", id), "Search failed");
@@ -152,6 +464,12 @@ static void startup()
         QTimer::singleShot(100, qApp, cancel);
         require(!call(nav, "search", QStringLiteral("keyboard")), "Search ignored Cancel");
         require(nav->property("query").toString() == QStringLiteral("color"), "Canceled search mutated navigation");
+        if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) {
+            QTimer::singleShot(100, qApp, cancel);
+            auto chrome = window->findChild<QObject *>(QStringLiteral("appearancePreview"));
+            QMetaObject::invokeMethod(chrome, "windowAction", Q_ARG(QString, QStringLiteral("close")));
+            require(window->isVisible(), "Custom close discarded unsaved changes after Cancel");
+        }
         // Reset only the test flag; no settings are saved.
         kcm->setProperty("needsSave", false);
         require(back(nav), "Return to search failed");
@@ -234,7 +552,7 @@ static void startup()
             if (!quick->isVisible() || !quick->rootObject()) continue;
             for (auto item : items(quick->rootObject())) {
                 if (item->property("modelData").toMap().value(QStringLiteral("id")) == QStringLiteral("appearance")
-                    && item->inherits("QQuickAbstractButton") && item->width() > 250) { overview = quick; card = item; }
+                    && item->inherits("QQuickAbstractButton") && (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB") ? item->objectName() == QStringLiteral("overviewCategory-appearance") : item->width() > 250)) { overview = quick; card = item; }
             }
         }
         require(overview && card, "Appearance card missing");

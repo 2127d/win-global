@@ -13,6 +13,7 @@
 #include <QJsonObject>
 #include <QCryptographicHash>
 #include <QIcon>
+#include <QSettings>
 #include <cstdlib>
 static void check(bool ok,const char *message) { if(!ok) {qCritical("FAIL: %s",message);std::_Exit(2);} }
 static QVariant eval(QObject *object,const QString &code) {
@@ -38,6 +39,55 @@ static QQuickItem *findInWindows(const QString &name) {
     for(auto w:QGuiApplication::allWindows())if(auto window=qobject_cast<QQuickWindow*>(w))
         if(window->isVisible())if(auto item=visibleItem(visibleItem,window->contentItem(),name))return item;
     return nullptr;
+}
+static void checkCardTransparency(QQuickItem *dashboard) {
+    auto slider=findInWindows("weatherCardTransparency");
+    auto hero=find(dashboard,"weatherHero");
+    auto refresh=find(dashboard,"weatherRefresh");
+    check(slider && hero && refresh,"card transparency setting and forecast are available");
+    const auto style=eval(dashboard,"settingsModel.forecastStyle").toString();
+    const int dynamicDefault=eval(dashboard,"settingsModel.cardTransparency").toInt();
+    const int flatDefault=eval(dashboard,"settingsModel.flatCardTransparency").toInt();
+    const auto controlOpacity=refresh->property("glassOpacity");
+    auto rimSettings=eval(dashboard,"Qt.createQmlObject('import QtQml; import org.sequoia.glass as Glass; QtObject { readonly property real value: Glass.Settings.intensity }',this)").value<QObject*>();
+    check(rimSettings,"shared rim setting is available");
+    const auto rim=rimSettings->property("value");
+    auto prism=findInWindows("weatherPrismaticGlass");
+    check(prism,"prismatic preview switch is available");
+    const bool initialPrism=eval(dashboard,"settingsModel.prismaticGlass").toBool();
+    const auto originalFill=hero->property("fillOpacity");
+    prism->forceActiveFocus();QTest::qWait(50);
+    QTest::keyClick(prism->window(),Qt::Key_Space);QTest::qWait(100);
+    check(hero->property("prismatic").toBool()!=initialPrism,"preview switch updates the glass material live");
+    check(hero->property("fillOpacity")==originalFill && rimSettings->property("value")==rim,"preview preserves transparency and rim preferences");
+    QSettings previewSaved(qEnvironmentVariable("XDG_CONFIG_HOME")+"/kweather/kweatherrc",QSettings::IniFormat);
+    check(previewSaved.value("prismaticGlass",false).toBool()!=initialPrism,"preview choice is saved");
+    QTest::keyClick(prism->window(),Qt::Key_Space);QTest::qWait(100);
+    check(hero->property("prismatic").toBool()==initialPrism,"preview can be reversed immediately");
+    for(const auto mode:{"Dynamic","Flat"}) {
+        eval(dashboard,QString("settingsModel.forecastStyle='%1'").arg(mode));QTest::qWait(100);
+        slider->forceActiveFocus();QTest::qWait(50);
+        const int initial=slider->property("value").toInt();
+        QTest::keyClick(slider->window(),Qt::Key_Right);QTest::qWait(60);
+        check(slider->property("value").toInt()==initial+1,"card transparency supports keyboard adjustment");
+        QSettings saved(qEnvironmentVariable("XDG_CONFIG_HOME")+"/kweather/kweatherrc",QSettings::IniFormat);
+        const QString key=QString(mode)=="Dynamic"?"cardTransparency":"flatCardTransparency";
+        check(saved.value(key).toInt()==initial+1,"card transparency persists for the current forecast style");
+        check(qAbs(hero->property("fillOpacity").toDouble()-(1-(initial+1)/100.))<.001,"keyboard adjustment updates card material live");
+        QTest::mouseClick(slider->window(),Qt::LeftButton,Qt::NoModifier,slider->mapToScene(QPointF(slider->width()*.65,slider->height()/2)).toPoint());QTest::qWait(100);
+        check(slider->property("value").toInt()!=initial+1,"card transparency supports pointer adjustment");
+        check(qAbs(hero->property("fillOpacity").toDouble()-(1-slider->property("value").toDouble()/100.))<.001,"pointer adjustment updates card material live");
+        check(rimSettings->property("value")==rim && refresh->property("glassOpacity")==controlOpacity,"card transparency leaves rims and toolbar glass unchanged");
+        const int persisted=slider->property("value").toInt();
+        saved.sync();
+        check(saved.value(key).toInt()==persisted,"pointer adjustment also persists on disk");
+        eval(dashboard,QString("settingsModel.forecastStyle='%1'").arg(QString(mode)=="Dynamic"?"Flat":"Dynamic"));QTest::qWait(50);
+        eval(dashboard,QString("settingsModel.forecastStyle='%1'").arg(mode));QTest::qWait(50);
+        check(slider->property("value").toInt()==persisted,"switching forecast styles restores each slider value");
+    }
+    eval(dashboard,QString("settingsModel.cardTransparency=%1;settingsModel.flatCardTransparency=%2;settingsModel.forecastStyle='%3';settingsModel.save()").arg(dynamicDefault).arg(flatDefault).arg(style));
+    QTest::qWait(100);
+    delete rimSettings;
 }
 static void checkDesktopHeader(const QString &closeName,const QString &titleName) {
     auto close=findInWindows(closeName);auto title=findInWindows(titleName);
@@ -108,12 +158,55 @@ static void capture(QQuickWindow *w,const QString &name) {
     QTest::qWait(600);
     check(w->grabWindow().save(qEnvironmentVariable("WEATHER_CAPTURE")+"/"+name+".png"),"screenshot");
 }
+static void checkBackgroundGlass(QQuickWindow *window,QQuickItem *dashboard) {
+    if(!eval(dashboard,"settingsModel.prismaticGlass").toBool())return;
+    auto hero=find(dashboard,"weatherHero");check(hero,"adaptive glass card exists");
+    auto backdrop=eval(dashboard,"Qt.createQmlObject('import QtQuick; Rectangle { anchors.fill: parent; z: 100; color: \"#32843f\" }',applicationWindow().background.scenery)").value<QObject*>();
+    check(backdrop,"controlled background fixture exists");
+    for(const auto name:{"green","blue","neutral"}) {
+        const QString kind=QString::fromLatin1(name);
+        backdrop->setProperty("color",QColor(kind=="green"?"#32843f":kind=="blue"?"#254ac0":"#707070"));
+        capture(window,"glass-background-"+kind);
+        const auto frame=window->grabWindow();
+        for(const QPointF local:{QPointF(hero->width()*.5,hero->height()*.5),QPointF(9,9)}) {
+            const auto pos=hero->mapToScene(local)*frame.devicePixelRatio();
+            const auto color=frame.pixelColor(pos.toPoint());
+            if(kind=="green")check(color.green()>color.red()+15 && color.green()>color.blue()+15,"green backdrop colors both glass center and corner");
+            else if(kind=="blue")check(color.blue()>color.red()+15 && color.blue()>color.green()+15,"blue backdrop colors both glass center and corner");
+            else check(qAbs(color.red()-color.green())<6 && qAbs(color.red()-color.blue())<6,"neutral backdrop stays neutral without a purple or rainbow stain");
+        }
+    }
+    eval(backdrop,"Qt.createQmlObject('import QtQuick; Item { anchors.fill: parent; Repeater { model: Math.ceil(parent.width / 12); Rectangle { required property int index; x: index * 12; width: 6; height: parent.height; color: \"#b0b0b0\" } } }',this)");
+    const auto strength=hero->property("refractionStrength"),bevel=hero->property("bevelWidth");
+    hero->setProperty("refractionStrength",18);hero->setProperty("bevelWidth",16);
+    capture(window,"glass-edge-before");const auto before=window->grabWindow();
+    hero->setProperty("refractionStrength",strength);hero->setProperty("bevelWidth",bevel);
+    capture(window,"glass-edge-after");const auto after=window->grabWindow();
+    const qreal scale=after.devicePixelRatio();
+    const auto origin=hero->mapToScene(QPointF());
+    const QRect center(qRound((origin.x()+24)*scale),qRound((origin.y()+24)*scale),qRound((hero->width()-48)*scale),qRound((hero->height()-48)*scale));
+    check(before.copy(center)==after.copy(center),"stronger refraction leaves the card center and its foreground pixels unchanged");
+    int changed=0;
+    for(int y=30;y<hero->height()-30;++y)for(int x=2;x<18;++x) {
+        const QPoint point(qRound((origin.x()+x)*scale),qRound((origin.y()+y)*scale));
+        if(before.pixelColor(point)!=after.pixelColor(point))++changed;
+    }
+    check(changed>100,"stronger edge lens visibly displaces the striped background");
+    delete backdrop;
+    QTest::qWait(100);
+    qInfo("PASS: glass center and rim follow green, blue and neutral backgrounds");
+    qInfo("PASS: stronger edge refraction with an unchanged center");
+}
 static void checkForecastRows(QQuickItem *dashboard) {
     QTest::qWait(150);
     const int count=eval(dashboard,"days.length").toInt();
     for(int i=0;i<count;++i) {
         auto day=find(dashboard,"weatherDay"+QString::number(i));
         check(day,"daily row exists");
+        auto glass=find(day,"weatherDayGlass"+QString::number(i));
+        check(glass,"daily forecast row has its glass selection surface");
+        check(eval(day,"mirrored ? contentItem.x+contentItem.width <= background.x+background.width-11 : contentItem.x >= background.x+11").toBool(),"daily selection label clears the accent marker");
+        check(glass->isVisible()==(i==eval(dashboard,"location.selectedDay").toInt()),"only the selected forecast day shows glass");
         check(eval(day,"modelData.minTemp")==eval(dashboard,QString("location.dayForecasts[%1].minTemp").arg(i)),"daily low follows active forecast");
         check(eval(day,"modelData.maxTemp")==eval(dashboard,QString("location.dayForecasts[%1].maxTemp").arg(i)),"daily high follows active forecast");
         auto bar=find(dashboard,"weatherTemperatureBar"+QString::number(i));
@@ -194,6 +287,9 @@ static void runCompact(QQuickWindow *window,QQuickItem *dashboard) {
     eval(dashboard,"applicationWindow().openSettings()");QTest::qWait(300);
     check(window->property("sequoiaModalAmount").toDouble()==0,"compact pages do not dim the decoration");
     fits(findInWindows("weatherCompactBack"));
+    auto transparency=findInWindows("weatherCardTransparency");check(transparency,"compact transparency slider exists");
+    transparency->forceActiveFocus();QTest::qWait(100);fits(transparency);
+    findInWindows("weatherOpenAbout")->forceActiveFocus();QTest::qWait(100);
     fits(findInWindows("weatherOpenAbout"));
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1")
         check(eval(window,"background.scenery.layer.enabled && !pageStack.layer.enabled").toBool()==(qEnvironmentVariableIntValue("WEATHER_ALPHA")<255),"compact transparent theme blurs scenery while page controls stay sharp");
@@ -372,6 +468,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     // Exercise shader-backed dialogs directly on Wayland. The full forecast
     // interaction suite below uses the deterministic offscreen renderer.
     if(qEnvironmentVariable("WEATHER_RENDERED")=="1") {
+        checkBackgroundGlass(window,dashboard);
         eval(dashboard,"settingsModel.forecastStyle='Flat'");checkStylePill(dashboard);capture(window,"flat-pill");
         eval(dashboard,"settingsModel.forecastStyle='Dynamic'");checkStylePill(dashboard);
         qInfo("Checking Settings and About navigation");
@@ -382,6 +479,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
         check(qAbs(eval(window,"settingsDialogLoader.item.background.color.a").toDouble()*255-qEnvironmentVariableIntValue("WEATHER_ALPHA"))<=1,"settings surface uses the theme opacity");
         checkDesktopHeader("weatherCloseSettings","weatherSettingsDialogTitle");
         capture(window,"settings");
+        checkCardTransparency(dashboard);
         const auto settingsGeometry=eval(window,"[settingsDialogLoader.item.x,settingsDialogLoader.item.y,settingsDialogLoader.item.width,settingsDialogLoader.item.height].join(',')");
         const auto desktopDepth=eval(window,"pageStack.depth");
         auto motion=findInWindows("weatherAnimateScenery");check(motion,"settings switch visible before About");
@@ -463,6 +561,7 @@ static void run(QQuickWindow *window,QQuickItem *dashboard) {
     check(motion,"settings motion switch visible");
     check(find(motion,"sequoiaSwitchTrack"),"settings uses the shared Sequoia switch indicator");
     capture(motion->window(),"settings");
+    checkCardTransparency(dashboard);
     click(motion);
     check(!eval(dashboard,"settingsModel.animateWeather").toBool(),"settings switch saves mouse changes");
     motion->forceActiveFocus();QTest::keyClick(motion->window(),Qt::Key_Space);QTest::qWait(200);

@@ -23,6 +23,22 @@
       <label>Animate weather scenery</label>
       <default>true</default>
     </entry>
+    <entry name="cardTransparency" type="Int">
+      <label>Dynamic card transparency</label>
+      <default>50</default>
+      <min>0</min>
+      <max>100</max>
+    </entry>
+    <entry name="prismaticGlass" type="Bool">
+      <label>Prismatic glass preview</label>
+      <default>false</default>
+    </entry>
+    <entry name="flatCardTransparency" type="Int">
+      <label>Flat card transparency</label>
+      <default>76</default>
+      <min>0</min>
+      <max>100</max>
+    </entry>
     <entry name="temperatureUnits" type="String">
       <label>Temperature Unit</label>
       <default>Use System Default</default>

@@ -62,6 +62,23 @@ behind their rounded backgrounds. Small forecast icons use white foreground ink
 in Dynamic mode and system text color in Flat mode, keeping both light and dark
 themes legible. The large current-weather illustration retains its colors.
 
+Settings → General includes a reversible **Prismatic glass (preview)** switch.
+It uses a neutral reading tint and scenery-colored corner reflections on forecast
+cards, location selection and glass controls. Dynamic scenery also uses subtle
+chromatic dispersion within the existing refracted bevel; foreground text is never
+sampled. Flat mode transmits the desktop through compositor-managed transparency
+and uses neutral highlights: it does not sample a screenshot or hidden scenery. The
+preview defaults off, preserves each mode's card transparency, and uses the shared
+glass rim intensity for its colored reflections. Disabling it restores the original
+material immediately. Software rendering retains the neutral tint and standard rim.
+Forecast cards use a stronger lens confined to an 18-pixel bevel; their central
+texture coordinates and foreground text are unchanged. The selected daily row
+uses a smaller glass surface with the shared rim intensity and a narrow accent
+marker. Per-card refraction samples Dynamic scenery; Flat desktop refraction
+remains compositor-managed.
+Pass `--prismatic` to `tools/verify-kweather.py` to exercise this preview with
+isolated preferences; add `--rendered` for native shader validation.
+
 ## Build and install
 
 ```sh

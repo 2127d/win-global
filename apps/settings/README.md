@@ -131,3 +131,162 @@ discovery/authorization, and all installed settings modules are unchanged. The b
 version. For upgrades, review the upstream changes to module hosting and
 navigation, port this patch, and rerun coverage and unsaved-change checks before
 re-enabling the fork.
+
+## Appearance Hub preview (separate, reversible test)
+
+The preview adds a coordinated Appearance overview and glass category overviews,
+while continuing to discover and open the original KDE modules. It does not
+replace the existing Settings launcher. Quick Switcher is intentionally deferred.
+
+Build and install:
+
+```sh
+python3 tools/build-settings-navigation.py --build-dir .staging/settings-hub-build
+python3 tools/install-settings-hub-preview.py
+~/.local/bin/settings-appearance-preview
+```
+
+The application menu entry is **Appearance Hub Preview**. The launcher checks the
+installed KDE binary fingerprint and opens stock Settings after a KDE upgrade
+until the preview is rebuilt. Normal System Settings remains available throughout.
+The preview uses its own window-geometry group and a separate D-Bus instance.
+
+The preview uses the existing native glass window decoration, with its titlebar
+above the content. The sidebar is an inset, rounded island with a 10 px gutter.
+Overview islands use mostly opaque glass (roughly 84–95% for the current tints)
+and a 3 px beveled edge; the primary window remains glass/transparent. The island
+rims watch the existing Glass Rim Intensity setting without changing opacity.
+Native window actions retain KDE's unsaved-change guard. Search, All Settings, third-party category fallback, authorization, and
+native Apply/Reset/Defaults/Help remain in KDE's existing implementation.
+
+The desktop preview and Solid / Transparent / Liquid Glass cards use real rendered
+frames from the installed KWin, Plasma, and Dolphin. A private D-Bus session,
+Wayland compositor, and temporary XDG configuration clone the primary desktop's
+wallpaper, panels, icons, fonts, application style, and decoration. An unchanged
+selection preserves custom components and colors; staged choices use the same
+material/color recipe as Apply. A representative Files window uses the real
+Dolphin layout. These are cached snapshots, not a feed of currently open windows.
+Both image sizes have antialiased rounded corners and preserve the full frame.
+The Appearance scroll view reserves its vertical scrollbar gutter in both text
+directions. Its viewport width stays constant when overflow changes, preventing
+aspect-ratio previews from oscillating between wider/taller and narrower/shorter
+layouts. `--layout-only --screen-width 3440 --screen-height 1440` in the UI verifier
+checks width stability at 51 window heights around that threshold.
+Configuration changes invalidate the cache; Refresh recaptures changing wallpaper
+or content. While rendering, a loading indicator replaces the image; failures
+show an error rather than an invented fallback. Closing Settings cancels the
+private renderer. Live desktop configuration is never written by the renderer.
+
+The actual preview window explicitly requests the compositor backdrop effect
+while the native decoration supplies the outer window rim.
+**Preview desktop** explains
+the scope before applying the installed Sequoia surface recipe. The guardian
+restores the previous values after 15 seconds, Revert, or a disconnected parent.
+**Keep** retains the look; **Apply** keeps the staged look directly after the
+helper verifies it. **Undo last applied look** in the more menu restores its
+previous values. Apply and Reset enable only when there are staged changes.
+An interrupted pending transaction is recovered on the next preview launch.
+Restoration only touches keys still equal to the trial's values, preserving later
+manual edits. Receipts live in `$XDG_STATE_HOME/sequoia-eleven/appearance-hub`.
+
+The trial changes widget style, window/header tint alpha, decoration library,
+Plasma theme, menu opacity and the V6-glass/blur effect flags. Selecting Light or
+Dark also applies the matching Sequoia palette and disables automatic switching;
+those palette keys are journaled and restored by Revert/Undo. A material-only
+change preserves the existing RGB palette. Both preserve wallpaper, panel/widget
+layout, fonts, icons, window-button
+placement, decoration scale and glass-rim intensity. It does not claim universal
+coverage: GTK/Electron/custom-rendered apps and per-app overrides can retain their
+own appearance, and some running applications need reopening. Light/dark,
+individual components, theme downloads and layout changes remain accessible via
+Quick Settings and the native Global Theme and other component pages.
+
+To remove the preview and undo its last owned material test:
+
+```sh
+python3 tools/install-settings-hub-preview.py --remove
+```
+
+Validation commands:
+
+```sh
+python3 tools/verify-settings-navigation.py --hub --overlay --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+python3 tools/verify-settings-navigation.py --hub --capture-group all --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+python3 tools/verify-settings-navigation.py --hub --dark --rtl --scale 1.5 --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+python3 tools/test-appearance-material.py
+```
+
+GUI checks run under an isolated Wayland compositor and isolated XDG homes.
+Material regression checks use the real configuration writer and journal, with
+desktop notification calls mocked; they cover all three materials, timeout,
+Revert, Keep/Undo, parent disconnection, signals, hard-kill recovery, failed
+application, and later manual edits. The actual live notification/refresh APIs
+were also checked without changing stored settings. Full desktop material changes
+remain an explicit action in the preview.
+
+The revised overview pages use bundled, palette-aware outline icons and grouped
+native controls. Home has eight category tiles; Power has a scalable battery
+illustration; Accessibility has a readable text sample and topic shortcuts;
+System & Accounts groups security, language, maintenance and preferences.
+Power and Accessibility topic shortcuts open the complete native module rather
+than promising an unsupported deep link. Unclassified settings remain visible.
+
+Material provider replacement unloads the outgoing blur provider before loading
+the incoming one: V6 Glass rejects loading while standard Blur is still active.
+The helper checks the resulting provider set; the preview renews its rounded
+blur request after asynchronous effect replacement. Color transparency and
+glass rim intensity remain independent.
+
+Real compositor verification (requires the installed V6 effect and qsb):
+
+```sh
+python3 tools/verify-settings-navigation.py --hub --overlay --composited --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+python3 tools/verify-settings-navigation.py --hub --overlay --composited --dark --capture-group appearance --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+```
+
+These tests paint a wallpaper behind the window in a private KWin session,
+compare captures with and without Glass to prove actual backdrop contribution,
+and exercise Transparent → Solid → Glass → Transparent → Glass through the real
+guarded helper. Screenshots include compositor output, not just the translucent
+application buffer. They also verify the 78-module catalog, native page hosting,
+navigation, and unsaved-change cancellation. No live desktop settings are changed.
+
+The reference Appearance layout keeps material cards and the rendered desktop
+on the left, an ordered component list on the right, and a fixed Help / Defaults /
+Reset / Preview desktop / Apply footer. Compact windows stack the component panel
+without losing the footer. Save look stores named material-and-color-mode presets
+in the application's `appearance-looks` data directory; this is not a full desktop
+layout export. Global Theme selection/downloads, Auto, Schedule, and app overrides
+route to the original KDE modules. Wallpaper and panel-layout preservation are
+checked, read-only indicators because this recipe never replaces those surfaces.
+The rendered preview includes the installed Plasma desktop and a real Files window.
+`tools/verify-desktop-render.py` verifies native rendering and isolation;
+`tools/verify-settings-navigation.py --hub --desktop-preview --composited --overlay --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check` checks image loading and rounded clipping.
+
+Light / Dark / Auto share one pill with a 180 ms selection slide and a 120 ms
+hover fade. Apply still commits staged changes. The preview observes external
+palette/material changes and resets stale selections without applying a new look.
+The material writer uses named KConfig files with `--notify` (an absolute filename
+does not notify watchers registered for the config name), explicitly retaining
+the intended XDG configuration directory. It also refreshes the application style.
+Decoration palette and rim settings are watched and reparsed live. Solid and
+Transparent share the latest Glass decoration geometry, rim and size controls;
+all three retain the same saved Windeco values.
+
+The composited verifier checks the live `Plasma::Theme`, an external native color
+scheme change, palette repainting and selected-mode synchronization. The pill is
+checked in RTL at 150% scale. `tools/preview-decoration.py --dark --material glass
+--live-switch` verifies native dark/light/dark repainting without recreating the
+decoration; pass `--plugin-path` to test staged plugins before installation.
+
+Schedule and the theme/preset selector use matching 42-pixel pill controls. The
+selector opens a bounded, scrollable overlay six pixels below the button. Its
+glass shader samples the actual page beneath it; Transparent uses frosting,
+Glass bends the edges, and Solid/software rendering keeps an opaque readable
+surface. The overlay avoids Qt's native Wayland combo popup positioning issue
+with embedded QQuickWidgets. Its rim follows the same shared intensity setting.
+`--popup-only` on the Settings verifier checks alignment, shader contribution,
+long lists, keyboard selection, Escape, outside-click dismissal and compact
+layout, including RTL at fractional scaling. Preview backdrop callbacks use a
+guarded widget pointer so closing the overview cannot dereference a destroyed
+anchor during application shutdown.

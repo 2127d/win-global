@@ -26,6 +26,8 @@
 #include "sequoiaelevensettings.h"
 
 #include <KSharedConfig>
+#include <KConfigWatcher>
+#include <QTimer>
 
 #include <QObject>
 
@@ -51,6 +53,9 @@ public Q_SLOTS:
     //* reconfigure
     void reconfigure();
 
+Q_SIGNALS:
+    void configurationReloaded();
+
 private:
     //* constructor
     SettingsProvider();
@@ -63,6 +68,9 @@ private:
 
     //* config object
     KSharedConfigPtr m_config;
+    KConfigWatcher::Ptr m_settingsWatcher;
+    KConfigWatcher::Ptr m_paletteWatcher;
+    QTimer m_reloadTimer;
 
     //* singleton
     static SettingsProvider *s_self;

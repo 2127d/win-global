@@ -12,6 +12,8 @@
 #include "kcmmetadatahelpers.h"
 
 #include <QFileInfo>
+#include <QApplication>
+#include <QWindow>
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QLoggingCategory>
@@ -42,6 +44,9 @@ SettingsBase::SettingsBase(SidebarMode::ApplicationMode mode, const QString &sta
     , m_actionCollection(new KActionCollection(this))
     , m_helpMenu(new KHelpMenu(this))
 {
+    if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) {
+        setAttribute(Qt::WA_TranslucentBackground);
+    }
     // Prepare the view area
     stackedWidget = new QStackedWidget(this);
     setCentralWidget(stackedWidget);
@@ -63,7 +68,11 @@ SettingsBase::SettingsBase(SidebarMode::ApplicationMode mode, const QString &sta
     // We can now launch the delayed loading safely
     initApplication();
     // Restore window size and position
-    setAutoSaveSettings();
+    if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) {
+        setAutoSaveSettings(QStringLiteral("AppearanceHubPreviewWindow"));
+    } else {
+        setAutoSaveSettings();
+    }
 }
 
 SettingsBase::~SettingsBase()

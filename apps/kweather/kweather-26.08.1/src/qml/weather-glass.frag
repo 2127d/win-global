@@ -8,6 +8,7 @@ layout(std140, binding = 0) uniform buf {
     float cornerRadius;
     float refractionStrength;
     float bevelWidth;
+    float dispersion;
 };
 layout(binding = 1) uniform sampler2D source;
 float distanceToSurface(vec2 p) {
@@ -30,5 +31,15 @@ void main() {
     vec2 displacement = ray.xy / max(-ray.z,.1)*refractionStrength;
     vec2 uv = clamp(qt_TexCoord0 + displacement / surfaceSize, vec2(.001), vec2(.999));
     float coverage = 1.0-smoothstep(-max(fwidth(distance),.5),0.0,distance);
-    fragColor = texture(source,uv)*coverage*qt_Opacity;
+    vec4 sampleColor = texture(source,uv);
+    if (dispersion > 0.0) {
+        // Dispersion stays in the bevel, strongest around the curved corners.
+        // Never split foreground text: this texture contains only scenery.
+        float corner = smoothstep(.08, .45, abs(outward.x * outward.y));
+        vec2 split = outward * bevel * dispersion * (.35 + .9 * corner) / surfaceSize;
+        sampleColor.r = texture(source,clamp(uv+split,vec2(.001),vec2(.999))).r;
+        sampleColor.b = texture(source,clamp(uv-split,vec2(.001),vec2(.999))).b;
+        sampleColor.rgb = min(sampleColor.rgb,vec3(sampleColor.a));
+    }
+    fragColor = sampleColor*coverage*qt_Opacity;
 }

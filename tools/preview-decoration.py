@@ -10,6 +10,7 @@ from typography import font
 
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--dark',action='store_true')
+parser.add_argument('--live-switch',action='store_true',help='Verify live glass recoloring without recreating the decoration')
 parser.add_argument('--material', choices=['solid', 'transparent', 'glass'])
 parser.add_argument('--radius', type=int, choices=range(-1,33), metavar='-1..32')
 parser.add_argument('--plugin', help='Decoration plugin override for isolated verification')
@@ -66,6 +67,7 @@ def capture():
     else:
         app.quit()
 def check_alpha():
+    global switch_stage
     # Sample the native titlebar away from caption glyphs and window buttons,
     # over an empty client/background so its own alpha remains measurable.
     rendered = view.grabWindow()
@@ -83,6 +85,33 @@ def check_alpha():
     valid = valid and all(abs(a-b) <= 1 for a, b in zip(color.getRgb(), expected))
     print(f'Titlebar RGBA: {color.getRgb()}; canvas palette: {expected}')
     print(f'Titlebar alpha: {alpha}/255')
+    if valid and args.live_switch:
+        assert args.material=='glass'
+        if switch_stage < 2:
+            import subprocess
+            target_dark = not args.dark if switch_stage == 0 else args.dark
+            channels = '31,34,39,168' if target_dark else '242,243,245,148'
+            subprocess.run(['kwriteconfig6','--notify','--file','kdeglobals','--group','Colors:Window','--key','BackgroundNormal',channels],check=True)
+            switch_stage += 1
+            QTimer.singleShot(700, check_switched)
+            return
     app.exit(0 if valid else 1)
+def check_switched():
+    global switch_stage
+    rendered=view.grabWindow();scale=rendered.width()/view.width()
+    actual=rendered.pixelColor(round(300*scale),round(170*scale)).getRgb()
+    target_dark = not args.dark if switch_stage==1 else args.dark
+    expected=(31,34,39,168) if target_dark else (242,243,245,148)
+    valid=all(abs(a-b)<=1 for a,b in zip(actual,expected))
+    print('Live titlebar RGBA:', actual, 'expected:', expected, flush=True)
+    if not valid:app.exit(1);return
+    if switch_stage==1:
+        import subprocess
+        channels='31,34,39,168' if args.dark else '242,243,245,148'
+        subprocess.run(['kwriteconfig6','--notify','--file','kdeglobals','--group','Colors:Window','--key','BackgroundNormal',channels],check=True)
+        switch_stage=2;QTimer.singleShot(700,check_switched)
+    else:
+        print('PASS: live light/dark decoration palette updates without recreation',flush=True);app.quit()
+switch_stage=0
 QTimer.singleShot(1000,capture)
 sys.exit(app.exec())

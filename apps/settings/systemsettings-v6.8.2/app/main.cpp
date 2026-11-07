@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
     aboutData.addAuthor(i18n("Mathias Soeken"), i18n("Developer"), QStringLiteral("msoeken@informatik.uni-bremen.de"));
     aboutData.addAuthor(i18n("Will Stephenson"), i18n("Internal module representation, internal module model"), QStringLiteral("wstephenson@kde.org"));
 
+    if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) aboutData.setDesktopFileName(QStringLiteral("org.sequoia.AppearanceHubPreview"));
     KAboutData::setApplicationData(aboutData);
 
     QCoreApplication::setOrganizationDomain(QStringLiteral("kde.org"));
@@ -147,7 +148,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    KDBusService service(KDBusService::Unique);
+    // Keep the preview separate from the installed Settings instance.
+    KDBusService service(qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB") ? KDBusService::Multiple : KDBusService::Unique);
 
     KCrash::initialize();
 

@@ -35,6 +35,13 @@ SettingsProvider *SettingsProvider::s_self = nullptr;
 SettingsProvider::SettingsProvider()
     : m_config(KSharedConfig::openConfig(QStringLiteral("sequoiaelevenrc")))
 {
+    m_reloadTimer.setSingleShot(true);
+    m_reloadTimer.setInterval(80);
+    m_settingsWatcher = KConfigWatcher::create(m_config);
+    m_paletteWatcher = KConfigWatcher::create(KSharedConfig::openConfig(QStringLiteral("kdeglobals")));
+    for (const auto &watcher : {m_settingsWatcher, m_paletteWatcher})
+        connect(watcher.data(), &KConfigWatcher::configChanged, this, [this] { m_reloadTimer.start(); });
+    connect(&m_reloadTimer, &QTimer::timeout, this, [this] { reconfigure(); Q_EMIT configurationReloaded(); });
     reconfigure();
 }
 
@@ -58,6 +65,8 @@ SettingsProvider *SettingsProvider::self()
 //__________________________________________________________________
 void SettingsProvider::reconfigure()
 {
+    m_config->reparseConfiguration();
+    KSharedConfig::openConfig(QStringLiteral("kdeglobals"))->reparseConfiguration();
     if (!m_defaultSettings) {
         m_defaultSettings = InternalSettingsPtr(new InternalSettings());
         m_defaultSettings->setCurrentGroup(QStringLiteral("Windeco"));

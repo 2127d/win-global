@@ -44,10 +44,15 @@ add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/weather-glass.frag.qsb"
     COMMAND "${SEQUOIA_QSB}" --glsl "100 es,120,150" --hlsl 50 --msl 12
         -o "${CMAKE_CURRENT_BINARY_DIR}/weather-glass.frag.qsb" "${CMAKE_CURRENT_SOURCE_DIR}/qml/weather-glass.frag"
     DEPENDS "qml/weather-glass.frag" VERBATIM)
+add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/weather-prismatic-rim.frag.qsb"
+    COMMAND "${SEQUOIA_QSB}" --glsl "100 es,120,150" --hlsl 50 --msl 12
+        -o "${CMAKE_CURRENT_BINARY_DIR}/weather-prismatic-rim.frag.qsb" "${CMAKE_CURRENT_SOURCE_DIR}/qml/weather-prismatic-rim.frag"
+    DEPENDS "qml/weather-prismatic-rim.frag" VERBATIM)
 qt_add_resources(kweather "weather_glass_shaders"
     PREFIX "/sequoia-weather"
     BASE "${CMAKE_CURRENT_BINARY_DIR}"
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/weather-glass.frag.qsb")
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/weather-glass.frag.qsb"
+          "${CMAKE_CURRENT_BINARY_DIR}/weather-prismatic-rim.frag.qsb")
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 execute_process(COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/../../action-icons.py"
     "${CMAKE_CURRENT_BINARY_DIR}/weather-actions" COMMAND_ERROR_IS_FATAL ANY)

@@ -5,7 +5,13 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
+#include "DesktopRenderController.h"
+#include "DesktopPreviewImage.h"
 #include "SidebarMode.h"
+#include "AppearancePreview.h"
+#include "HubGlyph.h"
+#include "HubIslandRim.h"
+#include "../../../../desktop/glass-material/glassrim.h"
 #include "SettingsNavigation.h"
 
 #include "MenuItem.h"
@@ -121,6 +127,7 @@ public:
     FocusHackWidget *mainWidget = nullptr;
     QQuickWidget *placeHolderWidget = nullptr;
     QHBoxLayout *mainLayout = nullptr;
+    QVBoxLayout *hubContentLayout = nullptr;
     MenuModel *model = nullptr;
     MenuProxyModel *categorizedModel = nullptr;
     MenuProxyModel *searchModel = nullptr;
@@ -602,7 +609,15 @@ void SidebarMode::initWidget()
     d->quickWidget = new QQuickWidget(d->engine.get(), d->mainWidget);
     d->quickWidget->quickWindow()->setTitle(i18n("Sidebar"));
     d->quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) d->quickWidget->setClearColor(Qt::transparent);
 
+    // Use a private URI so the installed glass QML plugin can coexist.
+    qmlRegisterType<DesktopPreviewImage>("org.sequoia.settingsglass", 1, 0, "DesktopImage");
+    d->engine->rootContext()->setContextProperty(QStringLiteral("desktopRenderer"), new DesktopRenderController(this));
+    qmlRegisterType<HubIslandRim>("org.sequoia.settingsglass", 1, 0, "IslandRim");
+    qmlRegisterType<HubGlyph>("org.sequoia.settingsglass", 1, 0, "Glyph");
+    qmlRegisterType<SequoiaGlass::Rim>("org.sequoia.settingsglass", 1, 0, "Rim");
+    d->engine->rootContext()->setContextProperty(QStringLiteral("appearancePreview"), new AppearancePreview(d->mainWidget, this));
     d->navigation = new SettingsNavigation(rootItem(), this);
     connect(d->model, &QAbstractItemModel::dataChanged, d->navigation, &SettingsNavigation::refresh);
     d->engine->rootContext()->setContextProperty(QStringLiteral("navigation"), d->navigation);
@@ -646,10 +661,22 @@ void SidebarMode::initWidget()
 
     d->mainLayout->addWidget(d->quickWidget);
     d->moduleView->hide();
-    d->mainLayout->addWidget(d->moduleView);
+    if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) {
+        auto content = new QWidget(d->mainWidget);
+        d->hubContentLayout = new QVBoxLayout(content);
+        d->hubContentLayout->setContentsMargins(0, 0, 0, 0);
+        d->hubContentLayout->setSpacing(0);
+        d->hubContentLayout->addWidget(d->moduleView);
+        d->mainLayout->addWidget(content, 1);
+    } else {
+        d->mainLayout->addWidget(d->moduleView);
+    }
 
     initPlaceHolderWidget();
     d->placeHolderWidget->show();
+    if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB") && !qEnvironmentVariableIsSet("SEQUOIA_SETTINGS_VERIFY") && startupModule().isEmpty()) {
+        d->navigation->browse(QStringLiteral("appearance"));
+    }
     if (!startupModule().isEmpty()) {
         MenuItem *item = rootItem()->descendantForModule(startupModule());
         if (item) {
@@ -663,6 +690,7 @@ void SidebarMode::initPlaceHolderWidget()
     d->placeHolderWidget = new QQuickWidget(d->engine.get(), d->mainWidget);
     d->placeHolderWidget->quickWindow()->setTitle(i18n("Most Used"));
     d->placeHolderWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) d->placeHolderWidget->setClearColor(Qt::transparent);
     d->placeHolderWidget->engine()->rootContext()->setContextObject(new KLocalizedQmlContext(d->placeHolderWidget));
     d->placeHolderWidget->engine()->rootContext()->setContextProperty(QStringLiteral("systemsettings"), this);
     d->placeHolderWidget->setSource(QUrl(QStringLiteral("qrc:/qt/qml/org/kde/systemsettings/IntroPage.qml")));
@@ -671,7 +699,8 @@ void SidebarMode::initPlaceHolderWidget()
         if (status == QQuickWidget::Error) qCritical() << d->placeHolderWidget->errors();
     });
 
-    d->mainLayout->addWidget(d->placeHolderWidget);
+    if (d->hubContentLayout) d->hubContentLayout->addWidget(d->placeHolderWidget, 1);
+    else d->mainLayout->addWidget(d->placeHolderWidget);
 }
 
 bool SidebarMode::showOverview()

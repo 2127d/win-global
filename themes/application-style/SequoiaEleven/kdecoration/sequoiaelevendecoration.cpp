@@ -268,6 +268,9 @@ bool Decoration::init()
     connect(s.get(), &KDecoration3::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
     // full reconfiguration
+    connect(SettingsProvider::self(), &SettingsProvider::configurationReloaded, this, [this] {
+        reconfigure(); updateButtonsGeometryDelayed(); update();
+    });
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, SettingsProvider::self(), &SettingsProvider::reconfigure, Qt::UniqueConnection);
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
@@ -534,6 +537,7 @@ qreal Decoration::borderSize(bool bottom, qreal scale) const
 //________________________________________________________________
 void Decoration::reconfigure()
 {
+    KSharedConfig::openConfig(QStringLiteral("kdeglobals"))->reparseConfiguration();
     m_internalSettings = SettingsProvider::self()->internalSettings(this);
 
     setScaledCornerRadius();
@@ -548,6 +552,7 @@ void Decoration::reconfigure()
     createShadow();
 
     updateBlur();
+    update();
 }
 
 //________________________________________________________________
@@ -803,7 +808,7 @@ if (m_internalSettings->floatingTitlebar()){
     const auto s = settings();
     const auto cornerPadding = [this, s](int top, bool left) {
         int normal = qRound(s->smallSpacing() * Metrics::TitleBar_SideMargin * decorationScale());
-#ifdef SEQUOIA_GLASS_DECORATION
+#if defined(SEQUOIA_GLASS_DECORATION) || defined(SEQUOIA_SOLID_DECORATION) || defined(SEQUOIA_TRANSPARENT_DECORATION)
         normal = qMax(normal, qRound((left ? 22 : 34) * decorationScale()));
         if (isTopEdge()) return normal;
 #else
@@ -813,7 +818,7 @@ if (m_internalSettings->floatingTitlebar()){
         const qreal radius = m_scaledCornerRadius;
         const qreal dy = qMax(0.0, radius - top);
         const int clearance =
-#ifdef SEQUOIA_GLASS_DECORATION
+#if defined(SEQUOIA_GLASS_DECORATION) || defined(SEQUOIA_SOLID_DECORATION) || defined(SEQUOIA_TRANSPARENT_DECORATION)
             qRound(6 * decorationScale());
 #else
             2;
@@ -822,7 +827,7 @@ if (m_internalSettings->floatingTitlebar()){
     };
 
     const int iconDrop =
-#ifdef SEQUOIA_GLASS_DECORATION
+#if defined(SEQUOIA_GLASS_DECORATION) || defined(SEQUOIA_SOLID_DECORATION) || defined(SEQUOIA_TRANSPARENT_DECORATION)
         qRound(2 * decorationScale());
 #else
         0;
@@ -949,7 +954,7 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
     if (!hideTitleBar())
         paintTitleBar(painter, repaintRegion);
 
-#ifdef SEQUOIA_GLASS_DECORATION
+#if defined(SEQUOIA_GLASS_DECORATION) || defined(SEQUOIA_SOLID_DECORATION) || defined(SEQUOIA_TRANSPARENT_DECORATION)
     if (!isMaximized() && !hideTitleBar() && !m_internalSettings->floatingTitlebar() && s->isAlphaChannelSupported()) {
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
@@ -1124,7 +1129,7 @@ qreal Decoration::decorationScale() const
 int Decoration::titleBarPadding(bool top) const
 {
     qreal padding = settings()->smallSpacing() * (top ? Metrics::TitleBar_TopMargin : Metrics::TitleBar_BottomMargin);
-#ifdef SEQUOIA_GLASS_DECORATION
+#if defined(SEQUOIA_GLASS_DECORATION) || defined(SEQUOIA_SOLID_DECORATION) || defined(SEQUOIA_TRANSPARENT_DECORATION)
     padding += 4.0;
 #endif
     return qRound(padding * decorationScale());

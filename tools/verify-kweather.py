@@ -47,19 +47,22 @@ def main():
     parser.add_argument('--compact',action='store_true',help='Check all auxiliary pages at the smallest supported window size')
     parser.add_argument('--choices',action='store_true',help='Check inline Settings choices, keyboard access and saved values')
     parser.add_argument('--rendered',action='store_true',help='Use the live Wayland renderer to check shader effects with isolated test data')
+    parser.add_argument('--prismatic',action='store_true',help='Enable the reversible prismatic glass preview in the isolated fixture')
     args=parser.parse_args()
     helper=ROOT/'.staging/verify-kweather.so'; source=ROOT/'apps/kweather/tests/verify.cpp'
     flags=shlex.split(subprocess.check_output(['pkg-config','--cflags','--libs','Qt6Widgets','Qt6Quick','Qt6Test','Qt6Network'],text=True))
     if not helper.exists() or source.stat().st_mtime>helper.stat().st_mtime:
         subprocess.run(['c++','-std=c++17','-shared','-fPIC',str(source),'-o',str(helper),*flags],check=True)
-    output=ROOT/(f'preview/kweather-{args.mode}-{args.material}'+('-welcome' if args.welcome else '-empty' if args.empty else '-compact' if args.compact else '')+('-choices' if args.choices else '')+('-rendered' if args.rendered else '')+('-compositing' if args.compositing else '')+('-icons-'+args.icon_theme if args.icon_theme!='breeze' else ''));output.mkdir(parents=True,exist_ok=True)
+    output=ROOT/(f'preview/kweather-{args.mode}-{args.material}'+('-welcome' if args.welcome else '-empty' if args.empty else '-compact' if args.compact else '')+('-choices' if args.choices else '')+('-rendered' if args.rendered else '')+('-compositing' if args.compositing else '')+('-icons-'+args.icon_theme if args.icon_theme!='breeze' else ''))
+    if args.prismatic: output=output.with_name(output.name+"-prismatic")
+    output.mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='sequoia-weather-test-',ignore_cleanup_errors=True) as temp:
         base=Path(temp);env=dict(os.environ)
         for kind in ('CONFIG','DATA','CACHE','STATE','RUNTIME'):
             path=base/kind.lower();path.mkdir(mode=0o700)
             env[f'XDG_{kind}_HOME' if kind!='RUNTIME' else 'XDG_RUNTIME_DIR']=str(path)
         (base/'config/kweather').mkdir()
-        config='[General]\nfirstStartup=false\nforecastStyle=Dynamic\ntemperatureUnits=Celsius\n\n'
+        config='[General]\nfirstStartup=false\nforecastStyle=Dynamic\ntemperatureUnits=Celsius\nprismaticGlass='+str(args.prismatic).lower()+'\n\n'
         config+=fixture(base,40.53,-112.30,'Tooele','weather-showers')+'\n'+fixture(base,36.60,-121.89,'Monterey','weather-clear-night')
         if args.compact:
             for index in range(2,8):

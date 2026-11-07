@@ -16,8 +16,13 @@ Rectangle {
     property real refractionStrength: 12
     property real bevelWidth: 8
     property color tint: atmospheric ? "#142235" : Kirigami.Theme.backgroundColor
+    readonly property bool prismatic: settingsModel.prismaticGlass
     readonly property bool refracting: atmospheric && GraphicsInfo.api !== GraphicsInfo.Software
-    readonly property color surfaceTint: Qt.alpha(tint, Math.min(1, fillOpacity + (pressed ? 0.18 : hovered ? 0.09 : 0)))
+    // Neutral density preserves contrast without dyeing the transmitted scene.
+    readonly property real tintLuminance: tint.r * 0.2126 + tint.g * 0.7152 + tint.b * 0.0722
+    readonly property color materialTint: prismatic
+        ? Qt.rgba(tintLuminance, tintLuminance, tintLuminance, 1) : tint
+    readonly property color surfaceTint: Qt.alpha(materialTint, Math.min(1, fillOpacity + (pressed ? 0.18 : hovered ? 0.09 : 0)))
     radius: height / 2
     // One tint layer: the shader replaces the sampled scene only inside the pill.
     color: refracting ? "transparent" : surfaceTint
@@ -59,6 +64,7 @@ Rectangle {
         property real cornerRadius: surface.radius
         property real refractionStrength: surface.refractionStrength
         property real bevelWidth: surface.bevelWidth
+        property real dispersion: surface.prismatic ? 1.0 : 0.0
         fragmentShader: "qrc:/sequoia-weather/weather-glass.frag.qsb"
     }
     Rectangle {
@@ -68,6 +74,17 @@ Rectangle {
         Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
     }
     Glass.Rim { anchors.fill: parent; radius: surface.radius }
+    ShaderEffect {
+        objectName: "weatherPrismaticRim"
+        anchors.fill: parent
+        visible: surface.prismatic && GraphicsInfo.api !== GraphicsInfo.Software
+        property vector2d surfaceSize: Qt.vector2d(width, height)
+        property real cornerRadius: surface.radius
+        property real rimIntensity: Glass.Settings.intensity
+        property var source: backdrop
+        property real backdropAvailable: surface.refracting ? 1.0 : 0.0
+        fragmentShader: "qrc:/sequoia-weather/weather-prismatic-rim.frag.qsb"
+    }
     Rectangle {
         anchors.fill: parent; anchors.margins: 2; radius: Math.max(0, surface.radius - 2)
         visible: surface.focused

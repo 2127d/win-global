@@ -8,6 +8,7 @@ import shlex
 import subprocess
 import tempfile
 import signal
+import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -17,19 +18,35 @@ parser.add_argument('--startup', help='Exercise an existing module deep link on 
 parser.add_argument('--capture-group', help='Open and capture every native page in a category; use all for every category.')
 parser.add_argument('--third-party', action='store_true')
 parser.add_argument('--debug', action='store_true')
+parser.add_argument('--composited', action='store_true', help='Render the real compositor backdrop and cycle material providers in the isolated session.')
+parser.add_argument('--theme-plugin-path', type=Path, help='Test freshly built style and decoration plugins before system installation.')
+parser.add_argument('--overlay', action='store_true', help='Include the installed Quick islands overlay.')
+parser.add_argument('--hub', action='store_true', help='Verify the separate Appearance Hub preview.')
+parser.add_argument('--layout-only', action='store_true', help='Check appearance geometry stability around the scrolling threshold.')
+parser.add_argument('--screen-width', default='1400')
+parser.add_argument('--screen-height', default='1000')
+parser.add_argument('--desktop-preview', action='store_true', help='Verify real rendered desktop loading and rounded corners.')
+parser.add_argument('--popup-only', action='store_true', help='Focus on the appearance dropdown interactions.')
 parser.add_argument('--dark', action='store_true')
 parser.add_argument('--rtl', action='store_true')
 parser.add_argument('--scale', default='1')
 args = parser.parse_args()
 helper = ROOT / '.staging/verify-settings-navigation.so'
-flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets', 'Qt6QuickWidgets', 'Qt6Quick', 'Qt6Test'], text=True))
-subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/verify-settings-navigation.cpp'), '-o', str(helper), *flags], check=True)
+flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets', 'Qt6QuickWidgets', 'Qt6Quick', 'Qt6Test', 'Qt6DBus'], text=True))
+subprocess.run(['c++', '-shared', '-fPIC', str(ROOT / 'tools/verify-settings-navigation.cpp'), '-o', str(helper), '-I/usr/include/KF6/KWindowSystem', '-lKF6WindowSystem', '-I/usr/include/Plasma', '-I/usr/include/KF6/KConfigCore', '-I/usr/include/KF6', '-I/usr/include/KF6/KConfig', '-I/usr/include/KF6/Kirigami/Platform', '-lPlasma', *flags], check=True)
 mode = 'dark' if args.dark else 'light'
-output = ROOT / 'preview' / ('settings-navigation-' + mode + ('-third-party' if args.third_party else '') + ('-rtl' if args.rtl else '') + ('-' + args.scale if args.scale != '1' else ''))
+output = ROOT / 'preview' / (('settings-hub-' if args.hub else 'settings-navigation-') + mode + ('-composited' if args.composited else '') + ('-third-party' if args.third_party else '') + ('-rtl' if args.rtl else '') + ('-' + args.scale if args.scale != '1' else ''))
 output.mkdir(exist_ok=True)
 with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as temp:
     folder = Path(temp)
     env = dict(os.environ)
+    if args.layout_only: env['SEQUOIA_VERIFY_LAYOUT'] = '1'
+    if args.popup_only: env['SEQUOIA_POPUP_ONLY'] = '1'
+    if args.hub: env['SEQUOIA_APPEARANCE_HUB'] = '1'
+    else: env.pop('SEQUOIA_APPEARANCE_HUB', None)
+    env['QT_FORCE_STDERR_LOGGING'] = '1'
+    env['SEQUOIA_DESKTOP_RENDERING'] = '0'  # Real renderer is verified separately, never recursively.
+    if args.overlay: env['QML_IMPORT_PATH'] = str(Path.home()/'.local/share/sequoia-eleven/quick-islands/qml')
     for kind in ('CONFIG', 'DATA', 'CACHE', 'STATE'):
         path = folder / kind.lower(); path.mkdir()
         env[f'XDG_{kind}_HOME'] = str(path)
@@ -43,9 +60,38 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
         (external / 'sequoia-test-extra.desktop').write_text('[Desktop Entry]\nType=Application\nName=Additional Settings\nComment=Third-party category coverage test\nIcon=preferences-system\nExec=/bin/true\nX-KDE-System-Settings-Parent-Category=unregistered-vendor-category\n')
     (folder / 'data/color-schemes').symlink_to(ROOT / 'themes/color-schemes', target_is_directory=True)
     (folder / 'data/icons').symlink_to(ROOT / 'themes/icons', target_is_directory=True)
+    if args.hub:
+        looks = folder / 'data/systemsettings/appearance-looks'
+        looks.mkdir(parents=True)
+        for i in range(18):
+            (looks / f'{i:02}.json').write_text(json.dumps({'name': f'Saved appearance {i+1} with a long descriptive name', 'material': 'glass', 'mode': 'dark'}))
+
+    if args.composited:
+        assert args.hub, '--composited is for the Appearance Hub'
+        env['SEQUOIA_HUB_COMPOSITED'] = '1'
+        env['KWIN_SCREENSHOT_NO_PERMISSION_CHECKS'] = '1'
+        env['KWIN_COMPOSE'] = 'O2'
+        env['SEQUOIA_HUB_WALLPAPER'] = str(Path.home()/'.local/share/wallpapers/MichiganGlassNatural/contents/images/3440x1440.png')
+        (folder / 'config/kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}Transparent.colors').read_text())
+        (folder / 'config/kwinrc').write_text('[Plugins]\nsequoia_liquid_glass_v6Enabled=true\nblurEnabled=false\n[Windows]\nPlacement=Centered\n[org.kde.kdecoration2]\nlibrary=org.kde.sequoiaeleven.glass-adjustable\n')
+        (folder / 'config/plasma-org.kde.plasma.desktop-appletsrc').write_text('[Containments][1][Wallpaper][org.kde.image][General]\nImage=' + env['SEQUOIA_HUB_WALLPAPER'] + '\n')
+        themes=folder/'data/plasma';themes.mkdir(parents=True,exist_ok=True)
+        (themes/'desktoptheme').symlink_to(Path.home()/'.local/share/plasma/desktoptheme')
+
+    if args.desktop_preview:
+        assert args.hub
+        env['SEQUOIA_VERIFY_DESKTOP'] = '1'
+        env.pop('SEQUOIA_DESKTOP_RENDERING', None)
+        env['XDG_DATA_DIRS'] = str(Path.home()/'.local/share') + ':' + os.environ.get('XDG_DATA_DIRS','/usr/local/share:/usr/share')
+        for name in ('kdeglobals','kwinrc','plasmarc','plasmashellrc','plasma-org.kde.plasma.desktop-appletsrc','sequoiaelevenrc','dolphinrc','kactivitymanagerdrc','kactivitymanagerdstaterc'):
+            source=Path.home()/'.config'/name
+            if source.is_file(): shutil.copy2(source,folder/'config'/name)
+
     env.update(QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software', QT_QPA_PLATFORMTHEME='kde',
                QT_QUICK_CONTROLS_STYLE='org.kde.desktop', QT_STYLE_OVERRIDE='SequoiaEleven', QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'),
                QT_SCALE_FACTOR=args.scale, LC_ALL='C.UTF-8')
+    if args.composited: env.pop('QT_QUICK_BACKEND', None)
+    if args.theme_plugin_path: env['QT_PLUGIN_PATH'] = str(args.theme_plugin_path.resolve()) + ':' + env['QT_PLUGIN_PATH']
     env.pop('LD_PRELOAD', None)
     if args.rtl: env['SEQUOIA_SETTINGS_RTL'] = '1'
     application = [str(args.binary.resolve())] + ([args.startup] if args.startup else [])
@@ -65,13 +111,13 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     bus.write_text('<busconfig><type>session</type><listen>unix:tmpdir=' + str(runtime) + '</listen>'
                    '<policy context="default"><allow send_destination="*"/><allow receive_sender="*"/>'
                    '<allow own="*"/></policy></busconfig>')
-    command = ['dbus-run-session', '--config-file=' + str(bus), '--', 'kwin_wayland', '--virtual', '--width', '1400', '--height', '1000',
+    command = ['dbus-run-session', '--config-file=' + str(bus), '--', 'kwin_wayland', '--virtual', '--width', args.screen_width, '--height', args.screen_height,
                '--inputmethod', '/bin/true', '--no-lockscreen', '--no-global-shortcuts', '--no-kactivities', '--socket', 'sequoia-settings-test',
                '--exit-with-session', str(launcher)]
     with (output / 'verification.log').open('w') as log:
         process = subprocess.Popen(command, env=env, stdout=log, stderr=log, text=True, start_new_session=True)
         try:
-            process.wait(timeout=180 if args.capture_group == 'all' else 60)
+            process.wait(timeout=180 if args.capture_group == 'all' or args.composited or args.desktop_preview else 60)
         finally:
             try: os.killpg(process.pid, signal.SIGTERM)
             except ProcessLookupError: pass
@@ -79,6 +125,15 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     result = subprocess.CompletedProcess(command, process.returncode, (output / 'verification.log').read_text())
     print(result.stdout[-6000:])
     result.check_returncode()
+    if args.layout_only:
+        assert 'PASS: stable appearance geometry' in result.stdout
+        raise SystemExit(0)
+    if args.desktop_preview:
+        assert 'PASS: real desktop images and antialiased rounded corners' in result.stdout
+        raise SystemExit(0)
+    if args.popup_only:
+        assert 'PASS: below-button glass popup' in result.stdout
+        raise SystemExit(0)
     assert 'unique modules; complete category and search coverage' in result.stdout, 'GUI checks did not complete'
     stock = (output / 'stock-modules.txt').read_text()
     fork = (output / 'fork-modules.txt').read_text()

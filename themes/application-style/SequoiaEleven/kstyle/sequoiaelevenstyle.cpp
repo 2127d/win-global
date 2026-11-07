@@ -2381,6 +2381,8 @@ bool Style::eventFilterCommandLinkButton(QCommandLinkButton *button, QEvent *eve
 //_____________________________________________________________________
 void Style::configurationChanged()
 {
+    KSharedConfig::openConfig(QStringLiteral("kdeglobals"))->reparseConfiguration();
+    StyleConfigData::self()->sharedConfig()->reparseConfiguration();
     // reload
     StyleConfigData::self()->load();
 

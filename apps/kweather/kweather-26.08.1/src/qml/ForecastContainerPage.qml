@@ -38,7 +38,7 @@ Kirigami.Page {
     readonly property color toolbarSurface: dynamic ? "#344f65" : Kirigami.Theme.backgroundColor
     readonly property color ink: dynamic ? "#f1f6fc" : Kirigami.Theme.textColor
     readonly property color toolbarGlassTint: Qt.tint(toolbarSurface, Qt.alpha(ink, 0.10))
-    readonly property color muted: dynamic ? "#d4e0ec" : Qt.tint(Kirigami.Theme.textColor, Qt.alpha(Kirigami.Theme.backgroundColor, 0.25))
+    readonly property color muted: dynamic ? "#dce6ef" : Qt.tint(Kirigami.Theme.textColor, Qt.alpha(Kirigami.Theme.backgroundColor, 0.10))
     readonly property color accent: dynamic ? "#ade6f8" : Kirigami.Theme.highlightColor
     readonly property real rangeMin: days.length ? Math.min(...days.map(d=>d.minTemp)) : 0
     readonly property real rangeMax: days.length ? Math.max(...days.map(d=>d.maxTemp)) : 1
@@ -303,7 +303,7 @@ Kirigami.Page {
                                         Caption { text: Formatter.formatHourlyCardDelegateTime(modelData.date,dashboard.location.timeZone); Layout.alignment: Qt.AlignHCenter }
                                         ConditionIcon { objectName: "weatherHourIcon" + index; source: modelData.weatherIcon; implicitWidth: 29; implicitHeight: 29; Layout.alignment: Qt.AlignHCenter }
                                         Heading { text: dashboard.temp(modelData.temperature); Layout.alignment: Qt.AlignHCenter; font.pixelSize: 17 }
-                                        Caption { text: Formatter.formatPrecipitation(modelData.precipitationAmount,settingsModel.precipitationUnits); color: dashboard.accent; Layout.alignment: Qt.AlignHCenter; font.pixelSize: 11 }
+                                        Caption { text: Formatter.formatPrecipitation(modelData.precipitationAmount,settingsModel.precipitationUnits); color: dashboard.dynamic ? dashboard.accent : Qt.tint(Kirigami.Theme.textColor, Qt.alpha(Kirigami.Theme.highlightColor, 0.35)); Layout.alignment: Qt.AlignHCenter; font.pixelSize: 11 }
                                     }
                                     HoverHandler { id: hourHover }
                                     ToolTip.visible: hourHover.hovered
@@ -335,13 +335,45 @@ Kirigami.Page {
                                         objectName: "weatherDay" + index
                                         Layout.fillWidth: true; implicitHeight: 46
                                         padding: 10
+                                        leftPadding: mirrored ? 10 : 16
+                                        rightPadding: mirrored ? 16 : 10
+                                        leftInset: 0; rightInset: 0; topInset: 0; bottomInset: 0
+                                        highlighted: dashboard.location?.selectedDay === day.index
+                                        Accessible.selected: highlighted
                                         Accessible.name: Qt.formatDate(modelData.date,Qt.DefaultLocaleLongDate) + ", " + modelData.weatherDescription + ", " + dashboard.temp(modelData.maxTemp)
                                         onClicked: dashboard.selectDay(index)
-                                        background: Rectangle {
-                                            radius: 13
-                                            color: dashboard.location?.selectedDay === day.index ? Qt.alpha(dashboard.accent,0.13) : day.hovered ? Qt.alpha(dashboard.ink,0.05) : "transparent"
-                                            border.width: day.visualFocus ? 2 : 0; border.color: dashboard.accent
-                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+                                        background: Item {
+                                            Rectangle {
+                                                anchors.fill: parent; radius: 13
+                                                visible: !day.highlighted
+                                                color: day.hovered ? Qt.alpha(dashboard.ink,0.05) : "transparent"
+                                                border.width: day.visualFocus ? 2 : 0; border.color: dashboard.accent
+                                                Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+                                            }
+                                            WeatherGlassSurface {
+                                                objectName: "weatherDayGlass" + day.index
+                                                anchors.fill: parent
+                                                visible: day.highlighted
+                                                atmospheric: dashboard.dynamic
+                                                radius: 13
+                                                refractionStrength: 18
+                                                bevelWidth: 8
+                                                fillOpacity: dashboard.dynamic ? 0.46 : 0.20
+                                                tint: dashboard.dynamic ? "#24282c" : Kirigami.Theme.backgroundColor
+                                                hovered: day.hovered
+                                                pressed: day.down
+                                                focused: day.visualFocus
+                                                Rectangle {
+                                                    anchors.fill: parent; radius: 13
+                                                    color: Qt.alpha(dashboard.accent, 0.06)
+                                                }
+                                                Rectangle {
+                                                    x: day.mirrored ? parent.width - width - 4 : 4
+                                                    anchors.verticalCenter: parent.verticalCenter
+                                                    width: 3; height: 16; radius: 1.5
+                                                    color: dashboard.accent
+                                                }
+                                            }
                                         }
                                         contentItem: RowLayout {
                                             spacing: 12

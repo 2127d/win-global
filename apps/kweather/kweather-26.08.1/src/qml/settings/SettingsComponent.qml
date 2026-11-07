@@ -23,6 +23,13 @@ ColumnLayout {
         if (activeChoice && activeChoice !== choice) activeChoice.expanded = false;
         activeChoice = choice;
     }
+    function revealItem(item) {
+        if (!viewport || !item) return;
+        viewport.cancelFlick();
+        const y = item.mapToItem(viewport.contentItem, 0, 0).y;
+        const target = Math.min(y - 12, Math.max(viewport.contentY, y + item.height + 12 - viewport.height));
+        viewport.contentY = Math.max(viewport.originY, Math.min(target, viewport.contentHeight - viewport.height));
+    }
 
     signal closeRequested()
     signal aboutRequested()
@@ -133,11 +140,78 @@ ColumnLayout {
 
         }
 
+        SwitchDelegate {
+            id: prismaticSwitch
+            objectName: "weatherPrismaticGlass"
+            Layout.fillWidth: true
+            text: i18n("Prismatic glass (preview)")
+            Accessible.description: i18n("Neutral glass that takes its color from the background, with subtle dispersion at refracted edges. Turn off to restore the original glass.")
+            implicitHeight: Math.max(contentItem.implicitHeight, indicator.implicitHeight) + 28
+            leftPadding: mirrored ? indicator.width + 24 : 12
+            rightPadding: mirrored ? 12 : indicator.width + 24
+            topPadding: 14; bottomPadding: 14
+            hoverEnabled: true
+            checked: settingsModel.prismaticGlass
+            onToggled: { settingsModel.prismaticGlass = checked; settingsModel.save(); }
+            onActiveFocusChanged: if (activeFocus) root.revealItem(prismaticSwitch)
+            background: RowBackground { control: prismaticSwitch }
+            indicator: SequoiaSwitchIndicator {
+                control: prismaticSwitch
+                x: prismaticSwitch.mirrored ? 12 : prismaticSwitch.width - width - 12
+                y: (prismaticSwitch.height - height) / 2
+            }
+            contentItem: Label { text: prismaticSwitch.text; wrapMode: Text.WordWrap }
+        }
+        ColumnLayout {
+            readonly property real collapsedHeight: implicitHeight + 24
+            Layout.fillWidth: true
+            Layout.leftMargin: 12
+            Layout.rightMargin: 12
+            Layout.topMargin: 12
+            Layout.bottomMargin: 12
+            spacing: 6
+            RowLayout {
+                Layout.fillWidth: true
+                Label {
+                    text: i18n("Card transparency")
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                }
+                Label { text: i18n("%1%", Math.round(cardTransparencySlider.value)) }
+            }
+            Slider {
+                id: cardTransparencySlider
+                objectName: "weatherCardTransparency"
+                Layout.fillWidth: true
+                from: 0
+                to: 100
+                stepSize: 1
+                live: true
+                readonly property bool dynamicStyle: settingsModel.forecastStyle === "Dynamic"
+                value: dynamicStyle ? settingsModel.cardTransparency : settingsModel.flatCardTransparency
+                Accessible.name: i18n("Card transparency")
+                Accessible.description: i18n("Higher values show more of the background. Glass rim intensity is unchanged.")
+                onActiveFocusChanged: if (activeFocus) root.revealItem(cardTransparencySlider)
+                onMoved: {
+                    if (dynamicStyle) settingsModel.cardTransparency = Math.round(value);
+                    else settingsModel.flatCardTransparency = Math.round(value);
+                    settingsModel.save();
+                }
+            }
+            Label {
+                text: i18n("Show more of the background without changing the glass edges. Flat and Dynamic each remember their own value.")
+                Layout.fillWidth: true
+                wrapMode: Text.WordWrap
+                color: Kirigami.Theme.disabledTextColor
+            }
+        }
+
         FormCard.FormDelegateSeparator {}
 
         FormCard.FormButtonDelegate {
             id: aboutButton
             objectName: "weatherOpenAbout"
+            onActiveFocusChanged: if (activeFocus) root.revealItem(aboutButton)
             background: RowBackground { control: aboutButton }
 
             text: i18n("About")
