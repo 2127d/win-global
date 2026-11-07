@@ -7,6 +7,8 @@
 #include <QImage>
 #include <QPixmapCache>
 #include <QtMath>
+#include <QApplication>
+#include <QStyle>
 
 namespace Gwenview {
 inline constexpr int FloatingPanelInset = 7;
@@ -55,9 +57,11 @@ inline void paintPillSurface(QPainter &painter, const QRectF &bounds, qreal radi
 {
     if (bounds.isEmpty()) return;
     radius = qMin(radius, qMin(bounds.width(), bounds.height()) / 2);
-    const QString key = QStringLiteral("pill/%1/%2/%3/%4/%5")
+    const bool glassTrial = qApp && qApp->style()->objectName().contains(QStringLiteral("glass"), Qt::CaseInsensitive)
+        && palette.color(QPalette::Window).alpha() < 255;
+    const QString key = QStringLiteral("pill/%1/%2/%3/%4/%5/%6")
         .arg(surfaceGeometryKey(bounds, radius)).arg(palette.cacheKey()).arg(backdrop.cacheKey())
-        .arg(surfaceGeometryKey(backdropRect, 0)).arg(translucent);
+        .arg(surfaceGeometryKey(backdropRect, 0)).arg(translucent).arg(glassTrial);
     paintSmoothSurface(painter, bounds.adjusted(-1, -1, 1, 1), key, [&](QPainter &smooth) {
         if (!backdrop.isNull()) {
             QPainterPath clip; clip.addRoundedRect(bounds, radius, radius);
@@ -65,12 +69,18 @@ inline void paintPillSurface(QPainter &painter, const QRectF &bounds, qreal radi
             smooth.drawImage(backdropRect, backdrop); smooth.restore();
         }
         QColor fill = palette.color(QPalette::Window);
-        if (translucent || !backdrop.isNull()) fill.setAlphaF(0.88);
+        if (!glassTrial && (translucent || !backdrop.isNull())) fill.setAlphaF(0.88);
         smooth.setPen(Qt::NoPen); smooth.setBrush(fill);
         smooth.drawRoundedRect(bounds, radius, radius);
         smooth.setBrush(Qt::NoBrush);
-        smooth.setPen(QPen(Sequoia::border(palette), 1));
+        smooth.setPen(QPen(glassTrial ? QColor(255, 255, 255, 122) : Sequoia::border(palette), 1));
         smooth.drawRoundedRect(bounds.adjusted(.5, .5, -.5, -.5), qMax(0.0, radius - .5), qMax(0.0, radius - .5));
+        if (glassTrial) {
+            smooth.setPen(QPen(QColor(255, 255, 255, 36), 2));
+            smooth.drawRoundedRect(bounds.adjusted(2, 2, -2, -2), qMax(0.0, radius - 2), qMax(0.0, radius - 2));
+            smooth.setPen(QPen(QColor(0, 0, 0, 24), 1));
+            smooth.drawRoundedRect(bounds.adjusted(3.5, 3.5, -3.5, -3.5), qMax(0.0, radius - 3.5), qMax(0.0, radius - 3.5));
+        }
     });
 }
 // Paint only the surface's shadow, never blur its contents. The compact card

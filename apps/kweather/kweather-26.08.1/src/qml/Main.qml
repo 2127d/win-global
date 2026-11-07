@@ -58,6 +58,7 @@ Kirigami.AbstractApplicationWindow {
             condition: appwindow.pageStack.currentItem?.location?.currentHourForecast?.weatherIcon || "weather-few-clouds"
             motion: settingsModel.animateWeather
         }
+
     }
 
     pageStack: PageStack {

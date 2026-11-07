@@ -51,7 +51,9 @@
 
 #include <cmath>
 
-#if defined(SEQUOIA_SOLID_DECORATION)
+#if defined(SEQUOIA_GLASS_DECORATION)
+K_PLUGIN_FACTORY_WITH_JSON(SequoiaGlassDecoFactory, "sequoiaeleven-glass.json", registerPlugin<SequoiaEleven::Decoration>(); registerPlugin<SequoiaEleven::Button>();)
+#elif defined(SEQUOIA_SOLID_DECORATION)
 K_PLUGIN_FACTORY_WITH_JSON(SequoiaElevenDecoFactory, "sequoiaeleven-solid.json", registerPlugin<SequoiaEleven::Decoration>(); registerPlugin<SequoiaEleven::Button>();)
 #elif defined(SEQUOIA_TRANSPARENT_DECORATION)
 K_PLUGIN_FACTORY_WITH_JSON(SequoiaElevenDecoFactory, "sequoiaeleven-transparent.json", registerPlugin<SequoiaEleven::Decoration>(); registerPlugin<SequoiaEleven::Button>();)
@@ -194,7 +196,10 @@ QColor Decoration::titleBarColor() const
         color = c->color(group, ColorRole::TitleBar);
     }
 
-#if defined(SEQUOIA_SOLID_DECORATION)
+#if defined(SEQUOIA_GLASS_DECORATION)
+    // Match the live canvas palette, including its trial alpha.
+    color = KSharedConfig::openConfig(QStringLiteral("kdeglobals"))->group(QStringLiteral("Colors:Window")).readEntry("BackgroundNormal", color);
+#elif defined(SEQUOIA_SOLID_DECORATION)
     color.setAlpha(255);
 #elif defined(SEQUOIA_TRANSPARENT_DECORATION)
     color.setAlpha(184);
@@ -333,7 +338,14 @@ void Decoration::updateBlur()
         this->setBlurRegion(blurRegion);
     } else {
         calculateWindowAndTitleBarShapes(true);
+#ifdef SEQUOIA_GLASS_DECORATION
+        // Let KWin's subpixel rounded-box mask clip the backdrop. Converting
+        // the curve to an integer QRegion first discards edge coverage before
+        // the glass shader can antialias it.
+        this->setBlurRegion(QRegion(rect().toRect()));
+#else
         this->setBlurRegion(QRegion(m_windowPath->toFillPolygon().toPolygon()));
+#endif
     }
 }
 
@@ -429,9 +441,9 @@ void Decoration::updateTitleBar()
     auto s = settings();
     const bool maximized = isMaximized();
     const qreal width = maximized ? window()->width() : window()->width() - 2 * s->smallSpacing() * Metrics::TitleBar_SideMargin;
-    const qreal height = (maximized || isTopEdge()) ? borderTop() : borderTop() - s->smallSpacing() * Metrics::TitleBar_TopMargin;
+    const qreal height = (maximized || isTopEdge()) ? borderTop() : borderTop() - titleBarPadding();
     const qreal x = maximized ? 0 : s->smallSpacing() * Metrics::TitleBar_SideMargin;
-    const qreal y = (maximized || isTopEdge()) ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin;
+    const qreal y = (maximized || isTopEdge()) ? 0 : titleBarPadding();
     setTitleBar(QRectF(x, y, width, height));
 }
 
@@ -648,7 +660,13 @@ if (m_internalSettings->floatingTitlebar()){
 #if KDECORATION_VERSION >= KDECORATION_VERSION_CHECK(6, 5, 0)
     // Large top corners extend below the titlebar into the client. Let KWin
     // clip that part of the window as well as the decoration's own paint.
+#ifdef SEQUOIA_GLASS_DECORATION
+    // Publish the actual curve even when it fits inside the titlebar. The
+    // compositor uses this for both subpixel clipping and glass optics.
+    const qreal clientTopRadius = !isTopEdge() ? m_scaledCornerRadius : 0;
+#else
     const qreal clientTopRadius = m_scaledCornerRadius > borderTop() && !isTopEdge() ? m_scaledCornerRadius : 0;
+#endif
     setBorderRadius(KDecoration3::BorderRadius(isLeftEdge() ? 0 : clientTopRadius,
                                                isRightEdge() ? 0 : clientTopRadius,
                                                bottomRightRadius, bottomLeftRadius));
@@ -715,7 +733,7 @@ if (m_internalSettings->floatingTitlebar()){
         auto btn = static_cast<Button *>(button);
 
         // vertical offset reduced to move buttons up
-        const int verticalOffset = (isTopEdge() ? s->smallSpacing() * Metrics::TitleBar_TopMargin : 0) + (isMaximized() ? 0 : 1);
+        const int verticalOffset = (isTopEdge() ? titleBarPadding() : 0) + (isMaximized() ? 0 : 1);
 
         const QSizeF preferredSize = btn->preferredSize();
         const int bHeight = preferredSize.height() + verticalOffset;
@@ -730,10 +748,10 @@ if (m_internalSettings->floatingTitlebar()){
     // left buttons
     if (!m_leftButtons->buttons().isEmpty()) {
         // spacing
-        m_leftButtons->setSpacing(s->smallSpacing() * Metrics::TitleBar_ButtonSpacing);
+        m_leftButtons->setSpacing(qRound(s->smallSpacing() * Metrics::TitleBar_ButtonSpacing * decorationScale()));
 
         // padding
-        int vPadding = (isTopEdge() ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin) + (isMaximized() ? 0 : 1);
+        int vPadding = (isTopEdge() ? 0 : titleBarPadding()) + (isMaximized() ? 0 : 1);
         const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
 
         if (isLeftEdge()) {
@@ -757,10 +775,10 @@ if (m_internalSettings->floatingTitlebar()){
     // right buttons
     if (!m_rightButtons->buttons().isEmpty()) {
         // spacing
-        m_rightButtons->setSpacing(s->smallSpacing() * Metrics::TitleBar_ButtonSpacing);
+        m_rightButtons->setSpacing(qRound(s->smallSpacing() * Metrics::TitleBar_ButtonSpacing * decorationScale()));
 
         // padding
-        int vPadding = (isTopEdge() ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin) + (isMaximized() ? 0 : 1);
+        int vPadding = (isTopEdge() ? 0 : titleBarPadding()) + (isMaximized() ? 0 : 1);
         const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
 
         if (isRightEdge()) {
@@ -783,20 +801,39 @@ if (m_internalSettings->floatingTitlebar()){
     update();
 } else {
     const auto s = settings();
-    const auto cornerPadding = [this, s](int top) {
-        const int normal = s->smallSpacing() * Metrics::TitleBar_SideMargin;
+    const auto cornerPadding = [this, s](int top, bool left) {
+        int normal = qRound(s->smallSpacing() * Metrics::TitleBar_SideMargin * decorationScale());
+#ifdef SEQUOIA_GLASS_DECORATION
+        normal = qMax(normal, qRound((left ? 22 : 34) * decorationScale()));
+        if (isTopEdge()) return normal;
+#else
+        Q_UNUSED(left)
         if (isTopEdge() || m_scaledCornerRadius <= borderTop()) return normal;
+#endif
         const qreal radius = m_scaledCornerRadius;
         const qreal dy = qMax(0.0, radius - top);
-        return qMax(normal, int(std::ceil(radius - std::sqrt(qMax(0.0, radius * radius - dy * dy)))) + 2);
+        const int clearance =
+#ifdef SEQUOIA_GLASS_DECORATION
+            qRound(6 * decorationScale());
+#else
+            2;
+#endif
+        return qMax(normal, int(std::ceil(radius - std::sqrt(qMax(0.0, radius * radius - dy * dy)))) + clearance);
     };
+
+    const int iconDrop =
+#ifdef SEQUOIA_GLASS_DECORATION
+        qRound(2 * decorationScale());
+#else
+        0;
+#endif
 
     // adjust button position
     const auto buttonList = m_leftButtons->buttons() + m_rightButtons->buttons();
     for (KDecoration3::DecorationButton *button : buttonList) {
         auto btn = static_cast<Button *>(button);
 
-        const int verticalOffset = (isTopEdge() ? s->smallSpacing() * Metrics::TitleBar_TopMargin : 0);
+        const int verticalOffset = (isTopEdge() ? titleBarPadding() + iconDrop : 0);
 
         const QSizeF preferredSize = btn->preferredSize();
         const int bHeight = preferredSize.height() + verticalOffset;
@@ -811,11 +848,11 @@ if (m_internalSettings->floatingTitlebar()){
     // left buttons
     if (!m_leftButtons->buttons().isEmpty()) {
         // spacing
-        m_leftButtons->setSpacing(s->smallSpacing() * Metrics::TitleBar_ButtonSpacing);
+        m_leftButtons->setSpacing(qRound(s->smallSpacing() * Metrics::TitleBar_ButtonSpacing * decorationScale()));
 
         // padding
-        const int vPadding = isTopEdge() ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin;
-        const int hPadding = cornerPadding(vPadding);
+        const int vPadding = isTopEdge() ? 0 : titleBarPadding() + iconDrop;
+        const int hPadding = cornerPadding(vPadding, true);
         if (isLeftEdge()) {
             // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
             auto button = static_cast<Button *>(m_leftButtons->buttons().front());
@@ -837,11 +874,11 @@ if (m_internalSettings->floatingTitlebar()){
     // right buttons
     if (!m_rightButtons->buttons().isEmpty()) {
         // spacing
-        m_rightButtons->setSpacing(s->smallSpacing() * Metrics::TitleBar_ButtonSpacing);
+        m_rightButtons->setSpacing(qRound(s->smallSpacing() * Metrics::TitleBar_ButtonSpacing * decorationScale()));
 
         // padding
-        const int vPadding = isTopEdge() ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin;
-        const int hPadding = cornerPadding(vPadding);
+        const int vPadding = isTopEdge() ? 0 : titleBarPadding() + iconDrop;
+        const int hPadding = cornerPadding(vPadding, false);
         if (isRightEdge()) {
             auto button = static_cast<Button *>(m_rightButtons->buttons().back());
 
@@ -888,7 +925,9 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
         painter->setRenderHint(QPainter::Antialiasing);
         painter->setPen(Qt::NoPen);
         QColor frameColor = c->color(c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Frame);
-#if defined(SEQUOIA_SOLID_DECORATION)
+#if defined(SEQUOIA_GLASS_DECORATION)
+        frameColor = titleBarColor();
+#elif defined(SEQUOIA_SOLID_DECORATION)
         frameColor.setAlpha(255);
 #elif defined(SEQUOIA_TRANSPARENT_DECORATION)
         frameColor.setAlpha(184);
@@ -909,6 +948,30 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
 
     if (!hideTitleBar())
         paintTitleBar(painter, repaintRegion);
+
+#ifdef SEQUOIA_GLASS_DECORATION
+    if (!isMaximized() && !hideTitleBar() && !m_internalSettings->floatingTitlebar() && s->isAlphaChannelSupported()) {
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->setClipPath(*m_windowPath, Qt::IntersectClip);
+        painter->setBrush(Qt::NoBrush);
+        // A narrow directional reflection, rather than a bright flat outline.
+        const bool active = c->isActive();
+        const qreal intensity = qBound(0, m_internalSettings->glassRimIntensity(), 200) / 100.0;
+        const auto rimAlpha = [intensity](int value) { return qRound(value * intensity); };
+        QLinearGradient rim(0, 0, size().width() * 0.7, size().height() * 0.45);
+        rim.setColorAt(0, QColor(255, 255, 255, rimAlpha(active ? 48 : 28)));
+        rim.setColorAt(0.45, QColor(255, 255, 255, rimAlpha(active ? 24 : 14)));
+        rim.setColorAt(1, QColor(255, 255, 255, rimAlpha(6)));
+        painter->setPen(QPen(QBrush(rim), 1.0));
+        painter->drawRoundedRect(rect().adjusted(0.5, 0.5, -0.5, -0.5),
+                                 qMax(0.0, m_scaledCornerRadius - 0.5), qMax(0.0, m_scaledCornerRadius - 0.5));
+        painter->setPen(QPen(QColor(0, 0, 0, rimAlpha(active ? 20 : 12)), 1.0));
+        painter->drawRoundedRect(rect().adjusted(1.5, 1.5, -1.5, -1.5),
+                                 qMax(0.0, m_scaledCornerRadius - 1.5), qMax(0.0, m_scaledCornerRadius - 1.5));
+        painter->restore();
+    }
+#endif
 
     if (hasBorders() && !s->isAlphaChannelSupported()) {
         painter->save();
@@ -958,8 +1021,16 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->save();
     painter->setPen(Qt::NoPen);
 
+    // The frame painter's antialiasing state was restored before entering
+    // this function; the titlebar must enable it for its own curved path.
+    painter->setRenderHint(QPainter::Antialiasing);
+
     // render a linear gradient on title area
-    if (c->isActive() && m_internalSettings->drawBackgroundGradient()) {
+    if (c->isActive() && m_internalSettings->drawBackgroundGradient()
+#ifdef SEQUOIA_GLASS_DECORATION
+        && false // The compositor supplies the continuous lighting across the frame.
+#endif
+    ) {
         QLinearGradient gradient(0, 0, 0, m_titleRect.height());
         gradient.setColorAt(0.0, titleBarColor.lighter(120));
         gradient.setColorAt(0.8, titleBarColor);
@@ -1045,9 +1116,23 @@ if (m_internalSettings->floatingTitlebar()){
 }
 
 //________________________________________________________________
+qreal Decoration::decorationScale() const
+{
+    return qBound(80, m_internalSettings->decorationScale(), 140) / 100.0;
+}
+
+int Decoration::titleBarPadding(bool top) const
+{
+    qreal padding = settings()->smallSpacing() * (top ? Metrics::TitleBar_TopMargin : Metrics::TitleBar_BottomMargin);
+#ifdef SEQUOIA_GLASS_DECORATION
+    padding += 4.0;
+#endif
+    return qRound(padding * decorationScale());
+}
+
 int Decoration::buttonSize() const
 {
-    const int baseSize = settings()->gridUnit();
+    const int baseSize = qRound(settings()->gridUnit() * decorationScale());
     switch (m_internalSettings->buttonSize()) {
     case InternalSettings::ButtonTiny:
         return baseSize;
@@ -1066,7 +1151,7 @@ int Decoration::buttonSize() const
 //________________________________________________________________
 int Decoration::captionHeight() const
 {
-    return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing() * (Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin) - 1;
+    return hideTitleBar() ? borderTop() : borderTop() - titleBarPadding() - titleBarPadding(false) - 1;
 }
 
 //________________________________________________________________
@@ -1084,7 +1169,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
                                                                                          : size().width() - m_rightButtons->geometry().x()
                                                              + Metrics::TitleBar_SideMargin * settings()->smallSpacing(), window()->scale());
 
-        const qreal yOffset = KDecoration3::snapToPixelGrid(settings()->smallSpacing() * Metrics::TitleBar_TopMargin, window()->scale());
+        const qreal yOffset = KDecoration3::snapToPixelGrid(titleBarPadding(), window()->scale());
         const QRectF maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight());
 
         switch (m_internalSettings->titleAlignment()) {
@@ -1223,10 +1308,10 @@ QMarginsF Decoration::bordersFor(qreal scale) const
         else
         top += KDecoration3::snapToPixelGrid((baseSize + 4.5) * Metrics::TitleBar_BottomMargin, scale);
         } else {
-        top += KDecoration3::snapToPixelGrid(baseSize * Metrics::TitleBar_BottomMargin, scale);
+        top += KDecoration3::snapToPixelGrid(titleBarPadding(false), scale);
         }
         // padding above
-        top += KDecoration3::snapToPixelGrid(baseSize * Metrics::TitleBar_TopMargin, scale);
+        top += KDecoration3::snapToPixelGrid(titleBarPadding(), scale);
     }
     return QMarginsF(left, top, right, bottom);
 }

@@ -33,6 +33,7 @@
 #include "version.h"
 #include "modalbridge.h"
 #include "weatherlocation.h"
+#include "../../../../desktop/glass-material/glassrim.h"
 
 class AbstractHourlyWeatherForecast;
 class AbstractDailyWeatherForecast;
@@ -56,6 +57,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     }
 #endif
 
+    SequoiaGlass::registerTypes();
     QQmlApplicationEngine engine;
 
     KLocalizedString::setApplicationDomain(QByteArrayLiteral("kweather"));

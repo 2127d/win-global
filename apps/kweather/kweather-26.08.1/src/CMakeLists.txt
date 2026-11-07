@@ -7,6 +7,8 @@
 
 set(kweather_SRCS
     main.cpp
+    ../../../../desktop/glass-material/glassrim.cpp
+    ../../../../desktop/glass-material/glassrim.h
     weatherlocationlistmodel.cpp
     weatherlocationlistmodel.h
     weatherlocation.cpp
@@ -37,6 +39,15 @@ target_link_libraries(kweatherLib
 )
 
 add_executable(kweather ${kweather_SRCS})
+find_program(SEQUOIA_QSB NAMES qsb HINTS /usr/lib64/qt6/bin /usr/lib/qt6/bin REQUIRED)
+add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/weather-glass.frag.qsb"
+    COMMAND "${SEQUOIA_QSB}" --glsl "100 es,120,150" --hlsl 50 --msl 12
+        -o "${CMAKE_CURRENT_BINARY_DIR}/weather-glass.frag.qsb" "${CMAKE_CURRENT_SOURCE_DIR}/qml/weather-glass.frag"
+    DEPENDS "qml/weather-glass.frag" VERBATIM)
+qt_add_resources(kweather "weather_glass_shaders"
+    PREFIX "/sequoia-weather"
+    BASE "${CMAKE_CURRENT_BINARY_DIR}"
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/weather-glass.frag.qsb")
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 execute_process(COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/../../action-icons.py"
     "${CMAKE_CURRENT_BINARY_DIR}/weather-actions" COMMAND_ERROR_IS_FATAL ANY)
@@ -56,6 +67,7 @@ qt_add_qml_module(kweather
     "qml/WeatherSurface.qml"
     "qml/WeatherScrollBar.qml"
     "qml/WeatherAction.qml"
+    "qml/WeatherGlassSurface.qml"
     "qml/WeatherScene.qml"
     "qml/WeatherGlyph.qml"
     "qml/DefaultPage.qml"

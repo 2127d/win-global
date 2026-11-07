@@ -5750,6 +5750,16 @@ bool Style::drawMenuBarEmptyAreaControl(const QStyleOption *option, QPainter *pa
 
     QColor background(palette.color(QPalette::Window));
 
+#ifdef SEQUOIA_GLASS_TRIAL
+    if (background.alpha() < 255) {
+        painter->save();
+        painter->setCompositionMode(QPainter::CompositionMode_Source);
+        painter->fillRect(rect, background);
+        painter->restore();
+        return true;
+    }
+#endif
+
     // menubar and toolbar background should match for consistency
     QColor opacityBackground(_toolsAreaManager->palette().color(QPalette::Window));
 
@@ -6240,7 +6250,11 @@ bool Style::drawToolBarBackgroundControl(const QStyleOption *option, QPainter *p
     const qreal opacity = _translucentWidgets.contains(widget->window()) && !_isOpaque
         ? StyleConfigData::toolBarOpacity() / 100.0 : 1.0;
     _helper->renderIsland(painter, option->rect, option->palette, QPalette::Window,
-                          widget->isActiveWindow(), opacity);
+                          widget->isActiveWindow(), opacity
+#ifdef SEQUOIA_GLASS_TRIAL
+                          , option->palette.color(QPalette::Window).alpha() < 255
+#endif
+                          );
     return true;
 }
 

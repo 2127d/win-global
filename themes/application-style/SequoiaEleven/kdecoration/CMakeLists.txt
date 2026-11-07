@@ -17,12 +17,19 @@ set(sequoiaelevendecoration_SRCS
 )
 ### build library
 kconfig_add_kcfg_files(sequoiaelevendecoration_SRCS sequoiaelevensettings.kcfgc)
-foreach(material IN ITEMS legacy solid transparent)
+set(decoration_materials legacy solid transparent)
+if(SEQUOIA_GLASS_TRIAL)
+    set(decoration_materials glass)
+endif()
+foreach(material IN LISTS decoration_materials)
     set(decoration_target sequoiaelevendecoration)
     set(decoration_id org.kde.sequoiaeleven)
     if(NOT material STREQUAL "legacy")
         string(APPEND decoration_target "_${material}")
         string(APPEND decoration_id ".${material}")
+    endif()
+    if(material STREQUAL "glass")
+        string(APPEND decoration_id "-adjustable")
     endif()
     add_library(${decoration_target} MODULE
         ${sequoiaelevendecoration_SRCS}

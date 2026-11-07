@@ -35,7 +35,8 @@
          <property name="buddy">
           <cstring>titleAlignment</cstring>
          </property>
-        </widget>
+
+            </widget>
        </item>
        <item row="3" column="3">
         <widget class="QComboBox" name="buttonSize">
@@ -66,14 +67,14 @@
          </item>
         </widget>
        </item>
-       <item row="10" column="1" colspan="3">
+       <item row="12" column="1" colspan="3">
         <widget class="QCheckBox" name="roundedCorners">
          <property name="text">
           <string>Round bottom corners with no borders</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="1" colspan="4">
+       <item row="10" column="1" colspan="4">
         <widget class="QCheckBox" name="drawTitleBarSeparator">
          <property name="text">
           <string>Draw separator under active window's titlebar</string>
@@ -93,14 +94,14 @@
          </property>
         </spacer>
        </item>
-       <item row="6" column="1" colspan="4">
+       <item row="8" column="1" colspan="4">
         <widget class="QCheckBox" name="drawBackgroundGradient">
          <property name="text">
           <string>Draw titlebar background gradient</string>
          </property>
         </widget>
        </item>
-       <item row="11" column="1" colspan="4">
+       <item row="13" column="1" colspan="4">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
@@ -123,14 +124,14 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1" colspan="4">
+       <item row="7" column="1" colspan="4">
         <widget class="QCheckBox" name="drawBorderOnMaximizedWindows">
          <property name="text">
           <string>Allow resizing maximized windows from window edges</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1" colspan="4">
+       <item row="6" column="1" colspan="4">
         <widget class="QCheckBox" name="outlineCloseButton">
          <property name="text">
           <string>Draw a circle around close button</string>
@@ -191,7 +192,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="1" colspan="4">
+       <item row="9" column="1" colspan="4">
         <widget class="QCheckBox" name="blurTransparentTitleBar">
          <property name="toolTip">
           <string>Make the title bar translucent and blurred, matched to the toolbar opacity so the top of the window is seamless.</string>
@@ -201,7 +202,7 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="1" colspan="4">
+       <item row="11" column="1" colspan="4">
         <widget class="QCheckBox" name="matchInactiveTitleBar">
          <property name="toolTip">
           <string>Keep the titlebar background and text colors identical whether the window is focused or not, so unfocused windows don't appear lighter or more transparent.</string>
@@ -211,6 +212,28 @@
          </property>
         </widget>
        </item>
+      <item row="4" column="1"><widget class="QLabel" name="decorationScaleLabel"><property name="text"><string>Decoration si&amp;ze:</string></property><property name="buddy"><cstring>decorationScale</cstring></property></widget></item>
+       <item row="4" column="3" colspan="2"><layout class="QHBoxLayout" name="decorationScaleLayout">
+        <item><widget class="QSlider" name="decorationScale">
+         <property name="toolTip"><string>Scales title-bar height, buttons, and spacing.</string></property>
+         <property name="minimum"><number>80</number></property><property name="maximum"><number>140</number></property>
+         <property name="singleStep"><number>5</number></property><property name="pageStep"><number>10</number></property>
+         <property name="value"><number>100</number></property><property name="orientation"><enum>Qt::Horizontal</enum></property>
+         <property name="tickPosition"><enum>QSlider::TicksBelow</enum></property><property name="tickInterval"><number>10</number></property>
+        </widget></item>
+        <item><widget class="QLabel" name="decorationScaleValue"><property name="minimumSize"><size><width>48</width><height>0</height></size></property><property name="text"><string>100%</string></property></widget></item>
+       </layout></item>
+       <item row="5" column="1"><widget class="QLabel" name="glassRimIntensityLabel"><property name="text"><string>Glass &amp;rim intensity:</string></property><property name="buddy"><cstring>glassRimIntensity</cstring></property></widget></item>
+       <item row="5" column="3" colspan="2"><layout class="QHBoxLayout" name="glassRimIntensityLayout">
+        <item><widget class="QSlider" name="glassRimIntensity">
+         <property name="toolTip"><string>Adjusts the polished edge highlight and inset shade without changing the window transparency. 100% is the default.</string></property>
+         <property name="minimum"><number>0</number></property><property name="maximum"><number>200</number></property>
+         <property name="singleStep"><number>10</number></property><property name="pageStep"><number>20</number></property>
+         <property name="value"><number>100</number></property><property name="orientation"><enum>Qt::Horizontal</enum></property>
+         <property name="tickPosition"><enum>QSlider::TicksBelow</enum></property><property name="tickInterval"><number>50</number></property>
+        </widget></item>
+        <item><widget class="QLabel" name="glassRimIntensityValue"><property name="minimumSize"><size><width>48</width><height>0</height></size></property><property name="text"><string>100%</string></property></widget></item>
+       </layout></item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
@@ -425,6 +448,8 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>titleAlignment</tabstop>
   <tabstop>buttonSize</tabstop>
+  <tabstop>decorationScale</tabstop>
+  <tabstop>glassRimIntensity</tabstop>
   <tabstop>outlineCloseButton</tabstop>
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
   <tabstop>drawBackgroundGradient</tabstop>

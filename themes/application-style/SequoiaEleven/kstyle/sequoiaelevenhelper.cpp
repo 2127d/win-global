@@ -18,6 +18,7 @@
  *************************************************************************/
 
 #include "sequoiaelevenhelper.h"
+#include "../../../../desktop/glass-material/glassrim.h"
 
 #include "sequoiaeleven.h"
 #include "sequoiaelevenpropertynames.h"
@@ -492,7 +493,7 @@ void Helper::renderFrame(QPainter *painter, const QRect &rect, const QColor &col
 }
 
 //______________________________________________________________________________
-void Helper::renderIsland(QPainter *painter, const QRect &rect, const QPalette &palette, QPalette::ColorRole role, bool active, qreal opacity) const
+void Helper::renderIsland(QPainter *painter, const QRect &rect, const QPalette &palette, QPalette::ColorRole role, bool active, qreal opacity, bool glassMaterial) const
 {
     const QRectF surface = QRectF(rect).adjusted(Metrics::Island_Inset, Metrics::Island_Inset,
                                                 -Metrics::Island_Inset, -Metrics::Island_Inset);
@@ -510,11 +511,11 @@ void Helper::renderIsland(QPainter *painter, const QRect &rect, const QPalette &
     // Window alpha belongs to the canvas between islands. Paint each island
     // opaquely, even when its Window/Header palette or legacy bar setting is
     // translucent, so wallpaper never bleeds through its content.
-    if (palette.color(QPalette::Window).alpha() < 255) {
+    if (palette.color(QPalette::Window).alpha() < 255 && !glassMaterial) {
         base.setAlpha(255);
         opacity = 1.0;
     }
-    const QColor tint = role == QPalette::Base ? base : KColorUtils::mix(base, Qt::white, dark ? 0.045 : 0.38);
+    const QColor tint = (glassMaterial || role == QPalette::Base) ? base : KColorUtils::mix(base, Qt::white, dark ? 0.045 : 0.38);
     QColor top = tint;
     QColor bottom = base;
     top.setAlphaF(base.alphaF() * qBound(0.0, opacity, 1.0));
@@ -530,7 +531,9 @@ void Helper::renderIsland(QPainter *painter, const QRect &rect, const QPalette &
     painter->drawRoundedRect(surface.adjusted(0.5, 0.5, -0.5, -0.5), radius, radius);
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter->setBrush(Qt::NoBrush);
-    if (KColorScheme::frameContrast() > 0) {
+    if (glassMaterial) {
+        SequoiaGlass::paintRim(painter, surface, radius, SequoiaGlass::Settings::instance()->intensity(), active);
+    } else if (KColorScheme::frameContrast() > 0) {
         painter->setPen(QPen(dark ? QColor(255, 255, 255, 28) : QColor(0, 0, 0, 24), 1));
         painter->drawRoundedRect(surface.adjusted(0.5, 0.5, -0.5, -0.5), radius, radius);
     }
@@ -597,8 +600,13 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
         // render
         painter->drawRoundedRect(frameRect, radius, radius);
 
-        // outline
-        if (outline.isValid()) {
+        // Glass outlines use only the shared rim, so zero really removes it.
+#ifdef SEQUOIA_GLASS_TRIAL
+        const bool glass = color.isValid() && color.alpha() < 255;
+#else
+        const bool glass = false;
+#endif
+        if (outline.isValid() && !glass) {
             painter->setPen(outline);
             painter->setBrush(Qt::NoBrush);
             frameRect = strokedRect(frameRect);
@@ -608,6 +616,9 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
             painter->drawRoundedRect(frameRect, radius, radius);
         }
 
+        if (glass) {
+            SequoiaGlass::paintRim(painter, QRectF(rect), radius, SequoiaGlass::Settings::instance()->intensity());
+        }
     } else {
         painter->setRenderHint(QPainter::Antialiasing, false);
         QRect frameRect(rect);

@@ -20,7 +20,7 @@ namespace KWin
 
 class BackgroundEffectItem;
 
-struct GlassRenderData
+struct ResilientRenderData
 {
     /// Temporary render targets needed for the Dual Kawase algorithm, the first texture
     /// contains not blurred background behind the window, it's cached.
@@ -28,7 +28,7 @@ struct GlassRenderData
     std::vector<std::unique_ptr<GLFramebuffer>> framebuffers;
 };
 
-struct LiquidGlassEffectData
+struct ResilientGlassEffectData
 {
     /// The region that should be blurred behind the window
     std::optional<RegionF> content;
@@ -40,18 +40,18 @@ struct LiquidGlassEffectData
      * The render data per render view, as they can have different
      *  color spaces and even different windows on them
      */
-    std::unordered_map<RenderView *, GlassRenderData> render;
+    std::unordered_map<RenderView *, ResilientRenderData> render;
 
     std::unique_ptr<BackgroundEffectItem> blurItem;
 };
 
-class LiquidGlassEffect : public KWin::Effect
+class ResilientGlassEffect : public KWin::Effect
 {
     Q_OBJECT
 
 public:
-    LiquidGlassEffect();
-    ~LiquidGlassEffect() override;
+    ResilientGlassEffect();
+    ~ResilientGlassEffect() override;
 
     static bool supported();
     static bool enabledByDefault();
@@ -170,10 +170,10 @@ private:
     QList<BlurValuesStruct> blurStrengthValues;
 
     QMap<EffectWindow *, QMetaObject::Connection> windowBlurChangedConnections;
-    std::unordered_map<EffectWindow *, LiquidGlassEffectData> m_windows;
+    std::unordered_map<EffectWindow *, ResilientGlassEffectData> m_windows;
 };
 
-inline bool LiquidGlassEffect::provides(Effect::Feature feature)
+inline bool ResilientGlassEffect::provides(Effect::Feature feature)
 {
     if (feature == Blur) {
         return true;

@@ -25,6 +25,9 @@ with tempfile.TemporaryDirectory(prefix='sequoia-weather-install-test-') as temp
     assert '$ORIGIN/../lib' in dynamic and '.staging' not in dynamic
     manifest=target/'build.json';original=manifest.read_bytes();state=json.loads(original)
     state['upstream_sha256']='updated-flatpak';manifest.write_text(json.dumps(state))
+    assert module.command(data,args)==[str(target/'bin/kweather'),*args]
+    manifest.write_bytes(original)
+    state['payload']={};manifest.write_text(json.dumps(state))
     assert module.command(data,args)==['flatpak','run','org.kde.kweather',*args]
     manifest.write_bytes(original)
     binary=target/'bin/kweather';original=binary.read_bytes();binary.write_bytes(original+b'changed')
@@ -36,4 +39,4 @@ with tempfile.TemporaryDirectory(prefix='sequoia-weather-install-test-') as temp
     subprocess.run([*command,'--remove'],check=True)
     assert launcher.read_text()=='#!/bin/sh\nexit 19\n'
     assert desktop.read_text()=='[Desktop Entry]\nName=Previous weather entry\n'
-print('PASS: private runtime, relocatable library lookup, arguments with spaces, update/tamper fallback, edit protection and restored launchers')
+print('PASS: private runtime, relocatable library lookup, arguments with spaces, Flatpak update independence, tamper fallback, edit protection and restored launchers')

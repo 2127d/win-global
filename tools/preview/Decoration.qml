@@ -22,7 +22,7 @@ Rectangle {
         windowColor: alphaProbe ? "transparent" : (previewDark ? "#252629" : "#f2f3f5")
         Component.onCompleted: {
             client.caption = "Sequoia Eleven"
-            client.active = true
+            client.active = previewActive
             client.closeable = true
             client.minimizable = true
             client.maximizable = true
@@ -36,7 +36,7 @@ Rectangle {
         Text {
             x: 95; y: 190
             width: 670
-            text: "A compact title bar, centered caption, and fixed-size traffic-light controls.\nRendered by the compiled Sequoia Eleven KWin decoration plugin."
+            text: "An adjustable title bar, centered caption, and polished traffic-light controls.\nRendered by the compiled Sequoia Eleven KWin decoration plugin."
             color: previewDark ? "#adb0b8" : "#666b75"
             font.pixelSize: 15; lineHeight: 1.6
         }

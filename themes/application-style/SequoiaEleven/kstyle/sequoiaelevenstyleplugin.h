@@ -29,7 +29,11 @@ class StylePlugin : public QStylePlugin
 {
     Q_OBJECT
 
+#ifdef SEQUOIA_GLASS_TRIAL
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "sequoiaeleven-glass.json")
+#else
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "sequoiaeleven.json")
+#endif
 
 public:
     //* constructor

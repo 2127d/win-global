@@ -49,6 +49,8 @@ set(sequoiaeleven_PART_SRCS
     sequoiaelevenstyle.cpp
     sequoiaelevenstyleplugin.cpp
     sequoiaelevenquickstyle.cpp
+    ../../../../desktop/glass-material/glassrim.cpp
+    ../../../../desktop/glass-material/glassrim.h
     sequoiaeleventileset.cpp
     sequoiaelevenwindowmanager.cpp
     sequoiaeleventoolsareamanager.cpp
@@ -58,6 +60,9 @@ kconfig_add_kcfg_files(sequoiaeleven_PART_SRCS ../kdecoration/sequoiaelevensetti
 kconfig_add_kcfg_files(sequoiaeleven_PART_SRCS sequoiaelevenstyleconfigdata.kcfgc)
 
 add_library(sequoiaeleven${QT_MAJOR_VERSION} MODULE ${sequoiaeleven_PART_SRCS})
+if(SEQUOIA_GLASS_TRIAL)
+    set_target_properties(sequoiaeleven${QT_MAJOR_VERSION} PROPERTIES OUTPUT_NAME sequoiaeleven_glass${QT_MAJOR_VERSION})
+endif()
 
 ################# find Qt modules #################
 if(QT_MAJOR_VERSION EQUAL 6)

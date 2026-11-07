@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(SequoiaGlassWeatherTest LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_AUTORCC ON)
+find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(KF6WindowSystem REQUIRED)
+add_executable(glass-weather-test main.cpp weather.qrc)
+target_link_libraries(glass-weather-test PRIVATE Qt6::Quick KF6::WindowSystem)

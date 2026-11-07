@@ -25,8 +25,17 @@ def main():
     p.add_argument('--output', type=Path, default=ROOT / 'preview/liquid-glass')
     p.add_argument('--headless', action='store_true', help='Capture and verify shader rendering using software OpenGL')
     p.add_argument('--discover', action='store_true', help='Preview the installed Discover theme against a live backdrop')
+    p.add_argument('--app', choices=['discover','gwenview','kweather','popup','weather'], help='Preview a native application')
+    p.add_argument('--weather-binary', type=Path, help='Built standalone weather test executable')
+    p.add_argument('--app-glass', action='store_true', help='Use the clearer app glass trial preset')
+    p.add_argument('--glass-surfaces', action='store_true', help='Test the matching trial title bar and toolbar plugins')
+    p.add_argument('--dark', action='store_true', help='Use the dark transparent palette in Discover')
     p.add_argument('--child', action='store_true', help=argparse.SUPPRESS)
     args = p.parse_args()
+    if args.app=='weather' and not args.weather_binary:p.error('--app weather requires --weather-binary')
+    if args.weather_binary:args.weather_binary=args.weather_binary.resolve()
+    if args.glass_surfaces:args.app_glass=True
+    if args.app:args.discover=True
     args.build_dir=args.build_dir.resolve(); args.output=args.output.resolve()
     args.output.mkdir(parents=True,exist_ok=True)
     if args.child:
@@ -50,7 +59,10 @@ def main():
                     time.sleep(1)
                     env.pop('QT_STYLE_OVERRIDE',None);env.pop('QT_QPA_PLATFORMTHEME',None)
                     launcher=Path.home()/'.local/share/sequoia-eleven/quick-islands/sequoia-quick'
-                    app=subprocess.Popen([str(launcher),'/usr/bin/plasma-discover'],env=env,stdout=preview_log,stderr=preview_log)
+                    application='/usr/bin/plasma-discover' if args.app in (None,'discover') else str(Path.home()/'.local/bin'/args.app)
+                    command=[sys.executable,str(ROOT/'tools/preview-glass-popup.py')] if args.app=='popup' else [str(launcher),application]
+                    if args.app=='weather':command=[str(args.weather_binary)]
+                    app=subprocess.Popen(command,env=env,stdout=preview_log,stderr=preview_log)
                     if args.headless:
                         if fixture.wait(timeout=35):raise RuntimeError('Discover capture failed')
                     else:
@@ -78,17 +90,32 @@ def main():
         if args.discover:
             config=Path(os.environ.get('XDG_CONFIG_HOME',Path.home()/'.config'))/'kdeglobals'
             if config.exists():shutil.copy2(config,base/'config/kdeglobals')
+            if args.app_glass:
+                mode='Dark' if args.dark else 'Light'
+                (base/'config/kdeglobals').write_text((ROOT/f'themes/color-schemes/SequoiaEleven{mode}Transparent.colors').read_text())
+            if args.dark:
+                (base/'config/kdeglobals').write_text((ROOT/'themes/color-schemes/SequoiaElevenDarkTransparent.colors').read_text())
             # The app wrapper and icons remain available from the existing user theme.
             env['XDG_DATA_DIRS']=str(Path.home()/'.local/share')+':/usr/local/share:/usr/share'
         else:env['XDG_DATA_DIRS']='/usr/local/share:/usr/share'
-        (base/'config/kwinrc').write_text('[Plugins]\nsequoia_liquid_glassEnabled=true\nblurEnabled=false\ncontrastEnabled=false\nscaleEnabled=false\nfadingpopupsEnabled=false\n[Windows]\nPlacement=Centered\n[Effect-blur]\nBlurStrength=7\nNoiseStrength=0\nSaturation=110\n')
+        effect_id=next(name for name in ('sequoia_liquid_glass_v6','sequoia_liquid_glass_v5','sequoia_liquid_glass_v4','sequoia_liquid_glass_v3','sequoia_liquid_glass_v2','sequoia_liquid_glass') if (args.build_dir/f'lib/kwin/effects/plugins/{name}.so').exists())
+        (base/'config/kwinrc').write_text('[Plugins]\n'+effect_id+'Enabled=true\nblurEnabled=false\ncontrastEnabled=false\nscaleEnabled=false\nfadingpopupsEnabled=false\n[Windows]\nPlacement=Centered\n[Effect-blur]\nBlurStrength=7\nNoiseStrength=0\nSaturation=110\n')
         env.update(QT_FORCE_STDERR_LOGGING='1',QT_QPA_PLATFORM='offscreen',QT_QPA_PLATFORMTHEME='generic',QT_STYLE_OVERRIDE='Fusion',
                    QT_PLUGIN_PATH=str(args.build_dir/'lib'),KWIN_COMPOSE='O2',KWIN_SCREENSHOT_NO_PERMISSION_CHECKS='1')
         if not args.discover:
             env['QT_QUICK_CONTROLS_STYLE']='Fusion'
             with (base/'config/kwinrc').open('a') as settings:settings.write('[Effect-sequoia_liquid_glass]\nFallbackCornerRadius=28\n')
+        if args.app_glass:
+            from app_glass import edits, apply_settings
+            apply_settings(base/'config',edits(base/'config',surfaces=args.glass_surfaces))
+            if args.app=='popup':
+                from glass_surfaces import build_theme
+                mode='dark' if args.dark else 'light'
+                name='sequoia-eleven-glass-'+mode
+                build_theme(ROOT/'themes/plasma/desktoptheme'/('sequoia-eleven-'+mode),base/'data/plasma/desktoptheme'/name,args.dark)
+                (base/'config/plasmarc').write_text('[Theme]\nname='+name+'\n')
         if args.headless:env['LIBGL_ALWAYS_SOFTWARE']='1'
         subprocess.run(['dbus-run-session','--',sys.executable,__file__,'--child','--build-dir',str(args.build_dir),'--output',str(args.output),
-                        *(['--headless'] if args.headless else []),*(['--discover'] if args.discover else [])],env=env,check=True)
+                        *(['--headless'] if args.headless else []),*(['--discover'] if args.discover else []),*(['--dark'] if args.dark else []),*(['--app-glass'] if args.app_glass else []),*(['--app',args.app] if args.app else []),*(['--glass-surfaces'] if args.glass_surfaces else []),*(['--weather-binary',str(args.weather_binary)] if args.weather_binary else [])],env=env,check=True)
 
 if __name__=='__main__':main()

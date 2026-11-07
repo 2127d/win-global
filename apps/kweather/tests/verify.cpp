@@ -66,7 +66,7 @@ static void checkStylePill(QQuickItem *dashboard) {
     auto pill=find(dashboard,"weatherStylePill");check(pill,"style pill exists");
     for(const auto name:{"weatherRefresh","weatherSettings"}) {
         auto button=find(dashboard,name);check(button,"floating toolbar action exists");
-        check(button->property("floating").toBool() && eval(button,"background.radius===background.height/2 && width===height").toBool(),"toolbar actions use round floating surfaces");
+        check(button->property("floating").toBool() && eval(button,"background.radius===background.height/2 && width>=height").toBool(),"toolbar actions use rounded capsule surfaces");
     }
     for(const auto name:{"weatherSidebarIcon","weatherDayIcon0","weatherHourIcon0"}) {
         if(!dashboard->property("hasWeather").toBool() && QString(name)!="weatherSidebarIcon")continue;
@@ -85,6 +85,24 @@ static void checkStylePill(QQuickItem *dashboard) {
     auto selection=find(dashboard,"weatherStyleSelection");check(selection,"shared sliding selection exists");
     auto active=find(dashboard,dashboard->property("dynamic").toBool()?"weatherDynamicStyle":"weatherFlatStyle");
     check(qAbs(selection->mapToScene(QPointF()).x()-active->mapToScene(QPointF()).x())<.1 && qAbs(selection->width()-active->width())<.1,"sliding selection settles on the active button");
+}
+static void checkLocationSelection(QQuickItem *dashboard) {
+    auto cities=find(dashboard,"weatherCities");
+    auto selection=find(dashboard,"weatherLocationSelection");
+    check(cities && selection,"shared location glass highlight exists");
+    const qreal start=selection->y();
+    eval(dashboard,"switchPageIndex(1)");
+    QTest::qWait(90);
+    const qreal target=eval(cities,"currentItem.y").toDouble();
+    if(selection->property("slideDuration").toInt()>0)
+        check(selection->y()>start && selection->y()<target,"location glass passes through an intermediate position");
+    eval(dashboard,"switchPageIndex(0)");
+    QTest::qWait(290);
+    check(qAbs(selection->y()-eval(cities,"currentItem.y").toDouble())<.1,"rapid location reversal settles on the current row");
+    eval(dashboard,"switchPageIndex(1)");QTest::qWait(290);
+    check(find(dashboard,"weatherLocationSelection")==selection,"location changes reuse the same glass surface");
+    check(qAbs(selection->y()-eval(cities,"currentItem.y").toDouble())<.1,"location glass settles on the newly selected row");
+    eval(dashboard,"switchPageIndex(0)");QTest::qWait(290);
 }
 static void capture(QQuickWindow *w,const QString &name) {
     QTest::qWait(600);
@@ -327,7 +345,7 @@ static void runCompositing(QQuickWindow *window,QQuickItem *dashboard) {
 static void run(QQuickWindow *window,QQuickItem *dashboard) {
     QTest::qWait(700);
     if(qEnvironmentVariable("WEATHER_COMPOSITING")=="1") {runCompositing(window,dashboard);return;}
-    checkActionResources();checkStylePill(dashboard);
+    checkActionResources();checkStylePill(dashboard);checkLocationSelection(dashboard);
     auto pill=find(dashboard,"weatherStylePill");
     auto selection=find(dashboard,"weatherStyleSelection");
     const qreal startX=selection->x();

@@ -26,11 +26,16 @@
 
 namespace SequoiaEleven
 {
+#ifdef SEQUOIA_GLASS_TRIAL
+static constexpr auto styleName = "SequoiaElevenGlass";
+#else
+static constexpr auto styleName = "SequoiaEleven";
+#endif
 
 //_________________________________________________
 QStyle *StylePlugin::create(const QString &key)
 {
-    if (key.toLower() == QStringLiteral("sequoiaeleven")) {
+    if (key.compare(QLatin1String(styleName), Qt::CaseInsensitive) == 0) {
         initializeQuickStyle();
         return new Style;
     }
@@ -40,7 +45,7 @@ QStyle *StylePlugin::create(const QString &key)
 //_________________________________________________
 QStringList StylePlugin::keys() const
 {
-    return QStringList(QStringLiteral("SequoiaEleven"));
+    return QStringList(QString::fromLatin1(styleName));
 }
 
 }

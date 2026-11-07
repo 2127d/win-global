@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Launch the private Sequoia Weather build; fall back to Flatpak after updates."""
+"""Launch the intact private Weather runtime independently of Flatpak updates."""
 import hashlib
 import json
 import os
 from pathlib import Path
-import subprocess
 import sys
 INSTALL_DATA=Path('__SEQUOIA_KWEATHER_DATA__')
 
@@ -12,14 +11,14 @@ def command(data,arguments):
     target=data/'sequoia-eleven/kweather'
     try:
         build=json.loads((target/'build.json').read_text())
-        deployed=Path(subprocess.check_output(['flatpak','info','--show-location','org.kde.kweather'],text=True,stderr=subprocess.DEVNULL).strip())
-        valid=hashlib.sha256((deployed/'files/bin/kweather').read_bytes()).hexdigest()==build['upstream_sha256']
+        # The native app bundles its own engine; the Flatpak is only a fallback.
+        valid='bin/kweather' in build['payload']
         for name,digest in build['payload'].items():
             valid=valid and hashlib.sha256((target/name).read_bytes()).hexdigest()==digest
         valid=valid and os.access(target/'bin/kweather',os.X_OK)
-    except (OSError,ValueError,KeyError,subprocess.SubprocessError): valid=False
+    except (OSError,ValueError,KeyError): valid=False
     if not valid:
-        print('The Sequoia Weather makeover needs rebuilding; opening the installed Flatpak.',file=sys.stderr)
+        print('The Sequoia Weather installation is missing or modified; opening the installed Flatpak.',file=sys.stderr)
         return ['flatpak','run','org.kde.kweather',*arguments]
     return [str(target/'bin/kweather'),*arguments]
 

@@ -89,10 +89,12 @@ preferences and restores any pre-existing user launcher/desktop entry:
 python3 tools/install-kweather.py --remove
 ```
 
-The launcher checks both the stock Flatpak binary and private runtime payload.
-After a Flatpak update, or if the private payload is modified, it opens the
-Flatpak until the makeover is rebuilt. The source and installer match version
-26.08.1; update the fork and manifest deliberately for later releases.
+The launcher checks the private runtime payload and executable. Flatpak updates
+do not disable this independent native build and its bundled weather engine.
+If private runtime files are missing or modified, the launcher opens the Flatpak
+until the installation is repaired. The source remains pinned to version 26.08.1;
+update the fork and source manifest deliberately for later releases. Installation
+uses the current Flatpak desktop entry as metadata, without loading its libraries.
 
 ## Verification
 
@@ -103,7 +105,8 @@ cover forecast loading, unit conversion, day and location selection, native
 dialogs, style switching, window alpha, motion preference, responsive sizing and
 refresh, including failed refreshes that preserve the last forecast. `--empty`
 checks startup without data. `apps/kweather/tests/installation.py` checks runtime
-relocation, update fallback, edited-file protection and reversible installation.
+relocation, independence from Flatpak updates, tamper fallback, edited-file
+protection and reversible installation.
 Locations use distinct temperature ranges to catch stale forecast rows after
 switching cities. Bar geometry is checked at wide and narrow sizes, including
 a zero-range day at the upper endpoint of the temperature scale.

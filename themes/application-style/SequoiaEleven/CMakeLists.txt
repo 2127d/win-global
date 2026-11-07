@@ -41,6 +41,11 @@ include(KDEGitCommitHooks)
 include(GtkUpdateIconCache)
 
 option(FOR_FLATPAK "Build Lightly for Flatpak" OFF)
+option(SEQUOIA_GLASS_TRIAL "Build isolated experimental glass style and decoration" OFF)
+if(SEQUOIA_GLASS_TRIAL)
+    add_compile_definitions(SEQUOIA_GLASS_TRIAL)
+endif()
+
 option(BUILD_QT5 "Build with QT5" OFF)
 option(BUILD_QT6 "Build with QT6" ON)
 

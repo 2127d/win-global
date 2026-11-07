@@ -16,10 +16,14 @@ ki18n_wrap_ui(sequoiaelevendecoration_config_SRCS
     ui/sequoiaelevenexceptionlistwidget.ui
 )
 
-kcoreaddons_add_plugin(kcm_sequoiaelevendecoration SOURCES kcm_sequoiaelevendecoration.cpp ${sequoiaelevendecoration_config_SRCS} INSTALL_NAMESPACE "${KDECORATION_KCM_PLUGIN_DIR}")
-kconfig_add_kcfg_files(kcm_sequoiaelevendecoration ../sequoiaelevensettings.kcfgc)
-target_include_directories(kcm_sequoiaelevendecoration PRIVATE ${CMAKE_SOURCE_DIR}/kdecoration ${CMAKE_BINARY_DIR}/kdecoration/)
-target_link_libraries(kcm_sequoiaelevendecoration
+set(decoration_config_target kcm_sequoiaelevendecoration)
+if(SEQUOIA_GLASS_TRIAL)
+    set(decoration_config_target kcm_sequoiaelevenglassrim)
+endif()
+kcoreaddons_add_plugin(${decoration_config_target} SOURCES kcm_sequoiaelevendecoration.cpp ${sequoiaelevendecoration_config_SRCS} INSTALL_NAMESPACE "${KDECORATION_KCM_PLUGIN_DIR}")
+kconfig_add_kcfg_files(${decoration_config_target} ../sequoiaelevensettings.kcfgc)
+target_include_directories(${decoration_config_target} PRIVATE ${CMAKE_SOURCE_DIR}/kdecoration ${CMAKE_BINARY_DIR}/kdecoration/)
+target_link_libraries(${decoration_config_target}
      PUBLIC
         Qt6::Core
         Qt6::Gui
@@ -34,4 +38,4 @@ target_link_libraries(kcm_sequoiaelevendecoration
         KF6::WindowSystem
         KF6::KCMUtils
 )
-kcmutils_generate_desktop_file(kcm_sequoiaelevendecoration)
+kcmutils_generate_desktop_file(${decoration_config_target})

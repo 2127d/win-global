@@ -37,8 +37,9 @@ Kirigami.Page {
     readonly property var selected: days.length ? days[Math.max(0, Math.min(location.selectedDay, days.length-1))] : null
     readonly property color toolbarSurface: dynamic ? "#344f65" : Kirigami.Theme.backgroundColor
     readonly property color ink: dynamic ? "#f1f6fc" : Kirigami.Theme.textColor
-    readonly property color muted: dynamic ? "#bdd0df" : Kirigami.Theme.disabledTextColor
-    readonly property color accent: dynamic ? "#9bdbf0" : Kirigami.Theme.highlightColor
+    readonly property color toolbarGlassTint: Qt.tint(toolbarSurface, Qt.alpha(ink, 0.10))
+    readonly property color muted: dynamic ? "#d4e0ec" : Qt.tint(Kirigami.Theme.textColor, Qt.alpha(Kirigami.Theme.backgroundColor, 0.25))
+    readonly property color accent: dynamic ? "#ade6f8" : Kirigami.Theme.highlightColor
     readonly property real rangeMin: days.length ? Math.min(...days.map(d=>d.minTemp)) : 0
     readonly property real rangeMax: days.length ? Math.max(...days.map(d=>d.maxTemp)) : 1
     function switchPageIndex(index) { currentIndex = Math.max(0,Math.min(index,WeatherLocationListModel.count-1)); }
@@ -96,21 +97,55 @@ Kirigami.Page {
                     Layout.fillWidth: true; Layout.fillHeight: true
                     model: WeatherLocationListModel.locations
                     spacing: 8; clip: true
+                    currentIndex: dashboard.currentIndex
+                    onCurrentIndexChanged: {
+                        if (currentIndex >= 0 && currentIndex !== dashboard.currentIndex)
+                            dashboard.switchPageIndex(currentIndex);
+                    }
+                    highlightFollowsCurrentItem: false
+                    highlight: WeatherGlassSurface {
+                        objectName: "weatherLocationSelection"
+                        y: cities.currentItem ? cities.currentItem.y : 0
+                        width: cities.width
+                        height: cities.currentItem ? cities.currentItem.height : 88
+                        radius: 20
+                        visible: !!cities.currentItem
+                        atmospheric: dashboard.dynamic
+                        fillOpacity: 0.46
+                        refractionStrength: 18
+                        bevelWidth: 14
+                        tint: Qt.tint(dashboard.dynamic ? "#293744" : Kirigami.Theme.backgroundColor, Qt.alpha(dashboard.accent, 0.16))
+                        hovered: cities.currentItem?.hovered ?? false
+                        pressed: cities.currentItem?.down ?? false
+                        focused: cities.currentItem?.visualFocus ?? false
+                        property bool ready: false
+                        readonly property int slideDuration: Kirigami.Units.longDuration > 0 ? 250 : 0
+                        Component.onCompleted: Qt.callLater(function() { ready = true; })
+                        Behavior on y {
+                            enabled: ready && visible && slideDuration > 0
+                            NumberAnimation { duration: 250; easing.type: Easing.OutCubic }
+                        }
+                    }
                     delegate: ItemDelegate {
                         id: city
                         required property var modelData
                         required property int index
                         width: cities.width; height: 88
                         padding: 12
+                        leftPadding: 22; rightPadding: 22
                         leftInset: 0; rightInset: 0; topInset: 0; bottomInset: 0
                         onClicked: dashboard.switchPageIndex(index)
                         Accessible.name: modelData.name
-                        background: Rectangle {
-                            radius: 18
-                            color: city.index === dashboard.currentIndex ? (dashboard.dynamic ? "#384e6588" : Qt.alpha(Kirigami.Theme.highlightColor,0.12)) : city.hovered ? Qt.alpha(dashboard.ink,0.06) : "transparent"
-                            border.color: city.index === dashboard.currentIndex || city.visualFocus ? Kirigami.Theme.highlightColor : "transparent"
-                            border.width: city.visualFocus ? 2 : 1
-                            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+                        background: Item {
+                            Rectangle {
+                                anchors.fill: parent
+                                visible: city.index !== dashboard.currentIndex
+                                radius: 18
+                                color: city.hovered ? Qt.alpha(dashboard.ink, 0.06) : "transparent"
+                                border.color: city.visualFocus ? Kirigami.Theme.highlightColor : "transparent"
+                                border.width: city.visualFocus ? 2 : 0
+                                Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+                            }
                         }
                         contentItem: ColumnLayout {
                             spacing: 3
@@ -124,8 +159,8 @@ Kirigami.Page {
                     }
                     ScrollBar.vertical: WeatherScrollBar { tint: dashboard.ink }
                 }
-                Action { text: i18n("Add location"); symbol: "list-add"; Layout.fillWidth: true; onClicked: applicationWindow().openAddLocation() }
-                Action { text: i18n("Manage locations"); symbol: "find-location"; Layout.fillWidth: true; onClicked: applicationWindow().openLocationsList() }
+                Action { objectName: "weatherAddLocation"; glass: true; glassOpacity: 0.40; pill: true; implicitHeight: 44; text: i18n("Add location"); symbol: "list-add"; Layout.fillWidth: true; onClicked: applicationWindow().openAddLocation() }
+                Action { objectName: "weatherManageLocations"; glass: true; glassOpacity: 0.40; pill: true; implicitHeight: 44; text: i18n("Manage locations"); symbol: "find-location"; Layout.fillWidth: true; onClicked: applicationWindow().openLocationsList() }
                 Caption { text: i18n("SEQUOIA WEATHER"); font.pixelSize: 9; font.letterSpacing: 1.6; Layout.topMargin: 14; Layout.leftMargin: 10; Layout.bottomMargin: 8 }
             }
         }
@@ -139,7 +174,7 @@ Kirigami.Page {
                     Caption { visible: dashboard.width >= 600; text: dashboard.location?.currentDate || ""; Layout.fillWidth: true; elide: Text.ElideRight }
                 }
                 Action { visible: !dashboard.sidebar; text: i18n("Locations"); symbol: "find-location"; iconOnly: true; onClicked: applicationWindow().openLocationsList() }
-                Rectangle {
+                WeatherGlassSurface {
                     id: stylePill
                     objectName: "weatherStylePill"
                     implicitWidth: styleRow.implicitWidth + 8; implicitHeight: 46; radius: height / 2
@@ -147,20 +182,10 @@ Kirigami.Page {
                     readonly property int slideDuration: Kirigami.Units.longDuration
                     property bool ready: false
                     Component.onCompleted: Qt.callLater(function() { stylePill.ready = true; })
-                    color: dashboard.toolbarSurface
-                    border.width: 1
-                    border.color: Qt.alpha(dashboard.ink, 0.13)
-                    layer.enabled: GraphicsInfo.api !== GraphicsInfo.Software
-                    layer.effect: MultiEffect {
-                        shadowEnabled: true
-                        shadowColor: "#000000"
-                        shadowOpacity: 0.24
-                        shadowBlur: 0.65
-                        shadowVerticalOffset: 4
-                        blurMax: 16
-                    }
-                    Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
-                    Rectangle {
+                    atmospheric: dashboard.dynamic
+                    fillOpacity: 0.48
+                    tint: dashboard.toolbarGlassTint
+                    WeatherGlassSurface {
                         id: styleSelection
                         objectName: "weatherStyleSelection"
                         x: styleRow.x + stylePill.activeButton.x
@@ -168,9 +193,10 @@ Kirigami.Page {
                         width: stylePill.activeButton.width
                         height: stylePill.activeButton.height
                         radius: height / 2
-                        color: dashboard.dynamic ? "#527993" : Qt.tint(Kirigami.Theme.backgroundColor, Qt.alpha(Kirigami.Theme.highlightColor, 0.19))
-                        border.width: 1
-                        border.color: Qt.alpha(dashboard.ink, 0.10)
+                        atmospheric: dashboard.dynamic
+                        fillOpacity: 0.78
+                        tint: Qt.tint(dashboard.toolbarSurface, Qt.alpha(dashboard.accent, 0.32))
+                        shadow: false
                         Behavior on x {
                             enabled: stylePill.ready && stylePill.slideDuration > 0
                             NumberAnimation { duration: stylePill.slideDuration; easing.type: Easing.InOutCubic }
@@ -179,7 +205,6 @@ Kirigami.Page {
                             enabled: stylePill.ready && stylePill.slideDuration > 0
                             NumberAnimation { duration: stylePill.slideDuration; easing.type: Easing.InOutCubic }
                         }
-                        Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
                     }
                     RowLayout {
                         id: styleRow; anchors.centerIn: parent; spacing: 2
@@ -187,8 +212,8 @@ Kirigami.Page {
                         Action { id: dynamicStyle; objectName: "weatherDynamicStyle"; text: i18n("Dynamic"); pill: true; checkable: true; autoExclusive: true; checked: dashboard.dynamic; onClicked: { settingsModel.forecastStyle="Dynamic";settingsModel.save(); } }
                     }
                 }
-                Action { objectName: "weatherRefresh"; floating: true; implicitHeight: stylePill.height; floatingSurface: dashboard.toolbarSurface; topInset: 0; bottomInset: 0; leftInset: 0; rightInset: 0; Layout.alignment: Qt.AlignCenter; text: i18n("Refresh"); symbol: "view-refresh"; iconOnly: true; enabled: !!dashboard.location && !dashboard.location.loading; onClicked: dashboard.location.update() }
-                Action { objectName: "weatherSettings"; floating: true; implicitHeight: stylePill.height; floatingSurface: dashboard.toolbarSurface; topInset: 0; bottomInset: 0; leftInset: 0; rightInset: 0; Layout.alignment: Qt.AlignCenter; text: i18n("Settings"); symbol: "settings-configure"; iconOnly: true; onClicked: applicationWindow().openSettings() }
+                Action { objectName: "weatherRefresh"; floating: true; glass: true; glassOpacity: 0.48; glassTint: dashboard.toolbarGlassTint; implicitHeight: stylePill.height; implicitWidth: dashboard.width < 560 ? implicitHeight : implicitHeight + 12; floatingSurface: dashboard.toolbarSurface; topInset: 0; bottomInset: 0; leftInset: 0; rightInset: 0; Layout.alignment: Qt.AlignCenter; text: i18n("Refresh"); symbol: "view-refresh"; iconOnly: true; enabled: !!dashboard.location && !dashboard.location.loading; onClicked: dashboard.location.update() }
+                Action { objectName: "weatherSettings"; floating: true; glass: true; glassOpacity: 0.48; glassTint: dashboard.toolbarGlassTint; implicitHeight: stylePill.height; implicitWidth: dashboard.width < 560 ? implicitHeight : implicitHeight + 12; floatingSurface: dashboard.toolbarSurface; topInset: 0; bottomInset: 0; leftInset: 0; rightInset: 0; Layout.alignment: Qt.AlignCenter; text: i18n("Settings"); symbol: "settings-configure"; iconOnly: true; onClicked: applicationWindow().openSettings() }
             }
             ScrollView {
                 id: forecastScroll
@@ -220,7 +245,6 @@ Kirigami.Page {
                         Layout.topMargin: 8
                         Layout.leftMargin: parent.inset; Layout.rightMargin: parent.inset; Layout.fillWidth: true
                         implicitHeight: 270
-                        color: dashboard.dynamic ? "#3617253a" : flatSurface
                         ColumnLayout {
                             anchors.left: parent.left; anchors.top: parent.top; anchors.bottom: parent.bottom
                             anchors.margins: 24

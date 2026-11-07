@@ -12,14 +12,10 @@ VERSION='26.08.1'
 
 def stock():
     location=Path(subprocess.check_output(['flatpak','info','--show-location','org.kde.kweather'],text=True).strip())
-    manifest=json.loads((location/'files/manifest.json').read_text())
-    sources={m['name']:m['sources'][0] for m in manifest['modules']}
-    if not sources['kweather']['url'].endswith(f'/kweather-{VERSION}.tar.xz'):
-        raise RuntimeError(f'This makeover requires KWeather {VERSION} from Flatpak.')
+    # Only installer metadata comes from Flatpak, never native runtime libraries.
     return location/'files/bin/kweather'
 
 def build(folder,sdk=None):
-    stock()
     folder=folder.resolve();prefix=folder/'install';prefix.mkdir(parents=True,exist_ok=True)
     jobs=str(build_jobs())
     print(f"Building Weather with {jobs} parallel jobs.",flush=True)

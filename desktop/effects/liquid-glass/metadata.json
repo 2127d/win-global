@@ -1,7 +1,7 @@
 {
   "KPlugin": {
-    "Name": "Sequoia Liquid Glass (Experimental)",
-    "Description": "Refracted backdrop glass with directional lighting. Test separately from Blur.",
+    "Name": "Sequoia Liquid Glass — Smooth Surfaces & Blur Toggle Recovery",
+    "Description": "Broad lens distortion and curved rim refraction with directional lighting. Experimental.",
     "Category": "Appearance",
     "License": "GPL-2.0-or-later",
     "EnabledByDefault": false

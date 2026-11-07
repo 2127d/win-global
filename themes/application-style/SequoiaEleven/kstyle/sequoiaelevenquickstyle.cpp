@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "sequoiaelevenquickstyle.h"
+#include "../../../../desktop/glass-material/glassrim.h"
 
 #include <QCoreApplication>
 #include <QCryptographicHash>
@@ -18,6 +19,7 @@
 namespace SequoiaEleven {
 void initializeQuickStyle()
 {
+    SequoiaGlass::registerTypes();
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     // QApplication creates its native style before applications construct their
     // QML engines. Cover direct commands and KCMLauncher as well as desktop

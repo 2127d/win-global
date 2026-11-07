@@ -174,9 +174,26 @@ void Button::drawIcon(QPainter *painter) const
     // render background
     const QColor backgroundColor(this->backgroundColor());
     if (backgroundColor.isValid()) {
+#ifdef SEQUOIA_GLASS_DECORATION
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(QColor(0, 0, 0, 28));
+        painter->drawEllipse(QRectF(0, 0.8, 18, 18));
+        QLinearGradient fill(0, 0, 0, 18);
+        fill.setColorAt(0, backgroundColor.lighter(108));
+        fill.setColorAt(0.45, backgroundColor);
+        fill.setColorAt(1, backgroundColor.darker(108));
+        painter->setBrush(fill);
+        QLinearGradient edge(0, 0, 0, 18);
+        edge.setColorAt(0, QColor(255, 255, 255, 65));
+        edge.setColorAt(0.5, QColor(0, 0, 0, 22));
+        edge.setColorAt(1, QColor(0, 0, 0, 45));
+        painter->setPen(QPen(QBrush(edge), 0.8));
+        painter->drawEllipse(QRectF(0.4, 0.4, 17.2, 17.2));
+#else
         painter->setPen(Qt::NoPen);
         painter->setBrush(backgroundColor);
         painter->drawEllipse(QRectF(0, 0, 18, 18));
+#endif
     }
 
     // render mark
@@ -199,6 +216,17 @@ void Button::drawIcon(QPainter *painter) const
         }
 
         case DecorationButtonType::Maximize: {
+#ifdef SEQUOIA_GLASS_DECORATION
+            pen.setJoinStyle(Qt::RoundJoin);
+            painter->setPen(pen);
+            if (isChecked()) {
+                painter->drawRect(QRectF(4.5, 6.5, 7, 7));
+                painter->drawPolyline(QPolygonF{QPointF(6.5, 4.5), QPointF(13.5, 4.5), QPointF(13.5, 11.5)});
+            } else {
+                painter->drawLine(QPointF(5, 9), QPointF(13, 9));
+                painter->drawLine(QPointF(9, 5), QPointF(9, 13));
+            }
+#else
             if (isChecked()) {
                 pen.setJoinStyle(Qt::RoundJoin);
                 painter->setPen(pen);
@@ -208,11 +236,16 @@ void Button::drawIcon(QPainter *painter) const
             } else {
                 painter->drawPolyline(QVector<QPointF>{QPointF(4, 11), QPointF(9, 6), QPointF(14, 11)});
             }
+#endif
             break;
         }
 
         case DecorationButtonType::Minimize: {
+#ifdef SEQUOIA_GLASS_DECORATION
+            painter->drawLine(QPointF(5, 9), QPointF(13, 9));
+#else
             painter->drawPolyline(QVector<QPointF>{QPointF(4, 7), QPointF(9, 12), QPointF(14, 7)});
+#endif
             break;
         }
 
@@ -325,7 +358,13 @@ void Button::drawIcon(QPainter *painter) const
 QColor Button::foregroundColor() const
 {
     if (type() == DecorationButtonType::Close || type() == DecorationButtonType::Minimize || type() == DecorationButtonType::Maximize) {
+#ifdef SEQUOIA_GLASS_DECORATION
+        const auto d = qobject_cast<Decoration *>(decoration());
+        const qreal reveal = d && d->internalSettings()->animationsEnabled() ? m_opacity : (isHovered() ? 1.0 : 0.0);
+        return QColor(45, 38, 35, isPressed() ? 235 : qRound(220 * reveal));
+#else
         return (isHovered() || isPressed()) ? QColor(45, 38, 35, 220) : QColor();
+#endif
     }
 
     auto d = qobject_cast<Decoration *>(decoration());

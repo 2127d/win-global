@@ -72,6 +72,8 @@ public:
 
     //* button size
     int buttonSize() const;
+    qreal decorationScale() const;
+    int titleBarPadding(bool top = true) const;
 
     //*@name active state change animation
     //@{

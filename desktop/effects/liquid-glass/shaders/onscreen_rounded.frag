@@ -15,7 +15,7 @@ in vec2 vertex;
 
 out vec4 fragColor;
 
-#include "sequoia_liquid_glass.glsl"
+#include "sequoia_liquid_glass_v6.glsl"
 
 void main(void)
 {

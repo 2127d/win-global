@@ -201,7 +201,7 @@ public:
     void renderFrame(QPainter *, const QRect &, const QColor &color, const bool windowActive, const bool enabled = true) const;
 
     //* inset surface shared by toolbars, dock panels, and framed views
-    void renderIsland(QPainter *, const QRect &, const QPalette &, QPalette::ColorRole role, bool active, qreal opacity = 1.0) const;
+    void renderIsland(QPainter *, const QRect &, const QPalette &, QPalette::ColorRole role, bool active, qreal opacity = 1.0, bool glassMaterial = false) const;
 
     //* side panel frame
     void renderSidePanelFrame(QPainter *, const QRect &, const QColor &outline, Side) const;

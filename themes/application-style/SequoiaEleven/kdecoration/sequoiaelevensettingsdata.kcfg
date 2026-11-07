@@ -49,6 +49,12 @@
   </group>
 
   <group name="Windeco">
+    <entry name="GlassRimIntensity" type="Int">
+      <default>100</default><min>0</min><max>200</max>
+    </entry>
+    <entry name="DecorationScale" type="Int">
+      <default>100</default><min>80</min><max>140</max>
+    </entry>
 
     <!-- border size -->
     <!--

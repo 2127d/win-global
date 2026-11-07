@@ -4,11 +4,18 @@ import QtQuick.Window
 import QtQuick.Effects
 import org.kde.kirigami as Kirigami
 
-Rectangle {
+WeatherGlassSurface {
     id: surface
-    property bool atmospheric: false
     property bool elevated: false
     readonly property color flatSurface: Qt.tint(Kirigami.Theme.backgroundColor, Qt.alpha(Kirigami.Theme.alternateBackgroundColor, 0.55))
+    // Denser than the controls so small forecast labels remain legible even
+    // over the brightest scenery. The rim setting never changes this tint.
+    fillOpacity: atmospheric ? (elevated ? 0.78 : 0.72) : 0.80
+    tint: atmospheric ? "#172638" : flatSurface
+    radius: 24
+    refractionStrength: 18
+    bevelWidth: 16
+    shadow: false
     RectangularShadow {
         objectName: "weatherCardShadow"
         anchors.fill: parent
@@ -19,9 +26,4 @@ Rectangle {
         offset: Qt.vector2d(0, 5)
         color: Qt.rgba(0, 0, 0, surface.atmospheric ? 0.24 : 0.16)
     }
-    radius: 24
-    color: atmospheric ? (elevated ? "#e0192c42" : "#c518293e") : flatSurface
-    border.width: 1
-    border.color: atmospheric ? "#20ffffff" : Qt.alpha(Kirigami.Theme.textColor, 0.08)
-    Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration } }
 }
