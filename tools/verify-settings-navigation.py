@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verify and capture the actual settings fork without touching live configuration."""
 import argparse
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -23,9 +24,11 @@ parser.add_argument('--theme-plugin-path', type=Path, help='Test freshly built s
 parser.add_argument('--overlay', action='store_true', help='Include the installed Quick islands overlay.')
 parser.add_argument('--hub', action='store_true', help='Verify the separate Appearance Hub preview.')
 parser.add_argument('--layout-only', action='store_true', help='Check appearance geometry stability around the scrolling threshold.')
+parser.add_argument('--corners-only', action='store_true', help='Check the application backdrop corners through page and native-window transitions.')
 parser.add_argument('--screen-width', default='1400')
 parser.add_argument('--screen-height', default='1000')
 parser.add_argument('--desktop-preview', action='store_true', help='Verify real rendered desktop loading and rounded corners.')
+parser.add_argument('--panels-only', action='store_true', help='Test panel controls against isolated Plasma panels')
 parser.add_argument('--popup-only', action='store_true', help='Focus on the appearance dropdown interactions.')
 parser.add_argument('--dark', action='store_true')
 parser.add_argument('--rtl', action='store_true')
@@ -41,7 +44,11 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     folder = Path(temp)
     env = dict(os.environ)
     if args.layout_only: env['SEQUOIA_VERIFY_LAYOUT'] = '1'
+    if args.corners_only:
+        assert args.hub and args.composited, '--corners-only requires --hub --composited'
+        env['SEQUOIA_VERIFY_CORNERS'] = '1'
     if args.popup_only: env['SEQUOIA_POPUP_ONLY'] = '1'
+    if args.panels_only: env['SEQUOIA_PANELS_ONLY'] = '1'
     if args.hub: env['SEQUOIA_APPEARANCE_HUB'] = '1'
     else: env.pop('SEQUOIA_APPEARANCE_HUB', None)
     env['QT_FORCE_STDERR_LOGGING'] = '1'
@@ -83,9 +90,18 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
         env['SEQUOIA_VERIFY_DESKTOP'] = '1'
         env.pop('SEQUOIA_DESKTOP_RENDERING', None)
         env['XDG_DATA_DIRS'] = str(Path.home()/'.local/share') + ':' + os.environ.get('XDG_DATA_DIRS','/usr/local/share:/usr/share')
-        for name in ('kdeglobals','kwinrc','plasmarc','plasmashellrc','plasma-org.kde.plasma.desktop-appletsrc','sequoiaelevenrc','dolphinrc','kactivitymanagerdrc','kactivitymanagerdstaterc'):
+        spec=importlib.util.spec_from_file_location('desktop_renderer',ROOT/'apps/settings/appearance-desktop-render.py')
+        renderer=importlib.util.module_from_spec(spec);spec.loader.exec_module(renderer)
+        for name in renderer.CONFIG_FILES:
             source=Path.home()/'.config'/name
-            if source.is_file(): shutil.copy2(source,folder/'config'/name)
+            if source.is_file():
+                (folder/'config'/name).parent.mkdir(parents=True,exist_ok=True)
+                shutil.copy2(source,folder/'config'/name)
+        for name in renderer.STATE_FILES:
+            source=Path.home()/'.local/state'/name
+            if source.is_file(): shutil.copy2(source,folder/'state'/name)
+        weather_cache=Path.home()/'.cache/kweather/cache'
+        if weather_cache.is_dir(): shutil.copytree(weather_cache,folder/'cache/kweather/cache')
 
     env.update(QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software', QT_QPA_PLATFORMTHEME='kde',
                QT_QUICK_CONTROLS_STYLE='org.kde.desktop', QT_STYLE_OVERRIDE='SequoiaEleven', QT_PLUGIN_PATH=str(ROOT / '.staging/desktop/usr/lib64/qt6/plugins'),
@@ -101,6 +117,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
         application = ['gdb', '--batch', '-ex', 'set debuginfod enabled off', '-ex', 'run', '-ex', 'thread apply all bt', '--args', *application]
     launcher = folder / 'launch-test.sh'
     launcher.write_text('#!/bin/sh\nexport QT_QPA_PLATFORM=wayland\n'
+                        + ('plasmashell --no-respawn > '+shlex.quote(str(output/'panels-shell.log'))+' 2>&1 &\n' if args.panels_only else '')
                         + '/usr/bin/systemsettings --list > ' + shlex.quote(str(output / 'stock-modules.txt')) + '\n'
                         + shlex.quote(str(args.binary.resolve())) + ' --list > ' + shlex.quote(str(output / 'fork-modules.txt')) + '\n'
                         + 'export LD_PRELOAD=' + shlex.quote(str(helper))
@@ -125,11 +142,17 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     result = subprocess.CompletedProcess(command, process.returncode, (output / 'verification.log').read_text())
     print(result.stdout[-6000:])
     result.check_returncode()
+    if args.corners_only:
+        assert 'PASS: square application top corners' in result.stdout
+        raise SystemExit(0)
     if args.layout_only:
         assert 'PASS: stable appearance geometry' in result.stdout
         raise SystemExit(0)
     if args.desktop_preview:
         assert 'PASS: real desktop images and antialiased rounded corners' in result.stdout
+        raise SystemExit(0)
+    if args.panels_only:
+        assert 'PASS: panel settings grid' in result.stdout
         raise SystemExit(0)
     if args.popup_only:
         assert 'PASS: below-button glass popup' in result.stdout

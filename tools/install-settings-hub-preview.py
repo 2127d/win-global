@@ -28,11 +28,20 @@ if args.remove:
     print('Removed Appearance Hub Preview. Existing System Settings was untouched.')
     raise SystemExit(0)
 if not args.binary.is_file(): raise SystemExit('Build the preview first.')
+module=args.binary.parent/'qml/org/sequoia/components'
+if not (module/'qmldir').is_file() or not (module/'libsequoiacomponentsplugin.so').is_file():
+    raise SystemExit('Build the shared component library with the preview first.')
 target.mkdir(parents=True,exist_ok=True)
 args.bin_prefix.mkdir(parents=True,exist_ok=True)
 desktop.parent.mkdir(parents=True,exist_ok=True)
 for source,name in [(args.binary,'systemsettings'),(ROOT/'apps/settings/appearance-material.py','appearance-material.py'),(ROOT/'apps/settings/appearance-desktop-render.py','appearance-desktop-render.py')]:
     temp=target/(name+'.new');shutil.copy2(source,temp);temp.replace(target/name)
+# Ship the shared module next to the preview so it is independent of checkout paths.
+for source in module.rglob('*'):
+    if source.is_file():
+        destination=target/'qml/org/sequoia/components'/source.relative_to(module)
+        destination.parent.mkdir(parents=True,exist_ok=True)
+        temp=destination.with_name(destination.name+'.new');shutil.copy2(source,temp);temp.replace(destination)
 manifest = {'upstream_sha256':hashlib.sha256(Path('/usr/bin/systemsettings').read_bytes()).hexdigest(),'version':'6.8.2'}
 (target/'build.json').write_text(json.dumps(manifest,indent=2)+'\n')
 launcher.write_text('''#!/usr/bin/env python3

@@ -8,6 +8,8 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QQmlEngine>
+#include <QQmlContext>
+#include <functional>
 #include <QTest>
 #include <QTimer>
 #include <QFile>
@@ -33,6 +35,23 @@
 #include <QProcess>
 #include <cstdio>
 #include <cstdlib>
+#include <dlfcn.h>
+
+// Observe the actual region sent to the compositor, including updates from the
+// widget style, rather than checking only the preview controller's own state.
+namespace KWindowEffects {
+void enableBlurBehind(QWindow *window, bool enable, const QRegion &region)
+{
+    using EnableBlur = void (*)(QWindow *, bool, const QRegion &);
+    static const auto real = reinterpret_cast<EnableBlur>(dlsym(RTLD_NEXT, "_ZN14KWindowEffects16enableBlurBehindEP7QWindowbRK7QRegion"));
+    if (!real) std::abort();
+    if (window) {
+        window->setProperty("verifiedBlurEnabled", enable);
+        window->setProperty("verifiedBlurRegion", QVariant::fromValue(region));
+    }
+    real(window, enable, region);
+}
+}
 
 static void require(bool condition, const char *message)
 {
@@ -63,6 +82,7 @@ static void open(QObject *nav, const QString &id)
     require(QMetaObject::invokeMethod(nav, "open", Qt::DirectConnection, Q_ARG(QString, id)), "Missing open method");
     QTest::qWait(600);
 }
+#include "verify-appearance-panels.h"
 class HubWindowProbe : public QDBusVirtualObject {
 public:
     bool received=false;
@@ -149,6 +169,37 @@ static void startup()
             else require(window->grab().save(directory + QLatin1Char('/') + name + QStringLiteral(".png")), "Screenshot failed");
         };
         for (auto quick : window->findChildren<QQuickWidget *>()) require(quick->status() != QQuickWidget::Error && quick->rootObject(), "QML did not load");
+        if (qEnvironmentVariableIsSet("SEQUOIA_VERIFY_CORNERS")) {
+            require(!window->windowFlags().testFlag(Qt::FramelessWindowHint), "Native decoration was removed");
+            auto checkCorners = [&] {
+                QTest::qWait(350);
+                auto handle = window->windowHandle();
+                require(handle && handle->property("verifiedBlurEnabled").toBool(), "Glass backdrop was not requested");
+                const auto region = handle->property("verifiedBlurRegion").value<QRegion>();
+                require(region.isEmpty() || (region.contains(QPoint(0, 0)) && region.contains(QPoint(window->width()-1, 0))),
+                        "Application top corners are rounded below the native decoration");
+                if (!region.isEmpty() && !window->isMaximized() && !window->isFullScreen())
+                    require(!region.contains(QPoint(0,window->height()-1)) && !region.contains(QPoint(window->width()-1,window->height()-1)),
+                            "Lower application corners lost their rounding");
+            };
+            for (int pass = 0; pass < 2; ++pass) {
+                for (const auto &group : nav->property("groups").toList()) {
+                    require(call(nav,"browse",group.toMap().value("id").toString()),"Custom page navigation failed");
+                    window->resize(1100 + pass, 790);
+                    checkCorners();
+                }
+                open(nav,QStringLiteral("kcm_landingpage"));
+                checkCorners();
+                require(back(nav),"Cannot return from Quick Settings");
+                checkCorners();
+            }
+            require(call(nav,"browse",QStringLiteral("appearance")),"Cannot reopen Appearance");
+            window->showMaximized(); checkCorners();
+            window->showNormal(); checkCorners();
+            capture(QStringLiteral("client-top-corners"));
+            fprintf(stderr,"PASS: square application top corners across custom pages, Quick Settings, resize and maximize/restore\n");
+            QCoreApplication::exit(0); return;
+        }
         if (qEnvironmentVariableIsSet("SEQUOIA_SETTINGS_STARTUP")) {
             require(nav->property("moduleOpen").toBool(), "Startup deep link did not open a module");
             capture(QStringLiteral("startup"));
@@ -208,6 +259,7 @@ static void startup()
         require(!call(nav, "browse", QStringLiteral("unknown-category")), "Invalid category was accepted");
         require(call(nav, "browse", QStringLiteral("appearance")), "Appearance navigation failed");
         capture(QStringLiteral("appearance"));
+        if (qEnvironmentVariableIsSet("SEQUOIA_PANELS_ONLY")) { verifyAppearancePanels(window,capture); qApp->quit(); return; }
         if (qEnvironmentVariableIsSet("SEQUOIA_VERIFY_LAYOUT")) {
             QQuickItem *image=nullptr; QObject *scroll=nullptr;
             for(auto quick:window->findChildren<QQuickWidget *>()) for(auto item:items(quick->rootObject())) {
@@ -218,6 +270,13 @@ static void startup()
             bool stable=true; int changes=0;
             for(int h=880;h<=1080;h+=4) {
                 window->resize(1630,h); QTest::qWait(120);
+                require(image->width() >= image->height() * 16. / 9. - 1,
+                        "Desktop preview became taller than its landscape frame");
+                for(auto quick:window->findChildren<QQuickWidget *>())
+                    for(auto item:items(quick->rootObject())) if(item->objectName()=="materialDesktopImage") {
+                        require(item->width() >= item->height() * 16. / 9. - 1,
+                                "Material preview became taller than its landscape frame");
+                    }
                 QSignalSpy spy(image,&QQuickItem::widthChanged);
                 const qreal before=image->width(); QTest::qWait(180);
                 if(spy.count()>0) { stable=false; changes+=spy.count(); fprintf(stderr,"UNSTABLE height=%d width=%.1f -> %.1f changes=%lld availableHeight=%.1f contentHeight=%.1f\n",h,before,image->width(),(long long)spy.count(),scroll->property("availableHeight").toDouble(),scroll->property("contentHeight").toDouble()); }
@@ -269,6 +328,9 @@ static void startup()
             QQuickItem *selection = nullptr;
             QQuickItem *presets = nullptr;
             QQuickItem *schedule = nullptr;
+            QQuickItem *more = nullptr;
+            QQuickItem *getThemes = nullptr;
+            QQuickItem *related = nullptr;
             for (auto quick : window->findChildren<QQuickWidget *>()) {
                 if (!quick->rootObject()) continue;
                 for (auto item : items(quick->rootObject())) {
@@ -280,6 +342,9 @@ static void startup()
                     if (item->objectName() == QStringLiteral("appearanceModeSelection")) selection = item;
                     if (item->objectName() == QStringLiteral("appearancePresets")) presets = item;
                     if (item->objectName() == QStringLiteral("appearanceScheduleButton")) schedule = item;
+                    if (item->objectName() == QStringLiteral("appearanceMoreButton")) more = item;
+                    if (item->objectName() == QStringLiteral("appearanceGetThemes")) getThemes = item;
+                    if (item->objectName() == QStringLiteral("appearanceRelatedSettings")) related = item;
                     if (item->objectName() == QStringLiteral("appearanceHub")) {
                         hub = item;
                         dialog = item->property("trialDialog").value<QObject *>();
@@ -304,6 +369,129 @@ static void startup()
             QTest::qWait(220);
             fprintf(stderr,"PASS: unified mode pill stages changes and glass selection aligns after animation\n");
             require(presets && schedule && presets->height()>=40 && schedule->height()>=40,"Theme and Schedule pills missing or undersized");
+            require(more && getThemes && qAbs(more->width()-more->height())<1
+                    && qAbs(more->height()-getThemes->height())<1,"More button must be square and match adjacent pills");
+            auto moreMenu=more->property("menu").value<QObject*>();
+            require(moreMenu,"More menu missing");
+            auto clickMore=[&] {
+                QTest::mouseClick(more->window(),Qt::LeftButton,Qt::NoModifier,
+                                  more->mapToScene(QPointF(more->width()/2,more->height()/2)).toPoint());
+                QTest::qWait(180);
+            };
+            QSignalSpy menuOpened(moreMenu,SIGNAL(opened()));
+            for(int i=0;i<3;++i) {
+                clickMore();
+                require(moreMenu->property("visible").toBool(),"First click did not open More menu");
+                auto background=qobject_cast<QQuickItem*>(moreMenu->property("background").value<QObject*>());
+                require(background,"More menu background missing");
+                const auto right=more->mapToGlobal(QPointF(more->width(),more->height()));
+                const auto menuRight=background->mapToGlobal(QPointF(background->width(),0));
+                require(qAbs(right.x()-menuRight.x())<2 && menuRight.y()>=right.y()+4,
+                        "More menu must extend left from the button's right edge");
+                if(i==0) {
+                    auto content=qobject_cast<QQuickItem*>(moreMenu->property("contentItem").value<QObject*>());
+                    require(content,"More menu content missing");
+                    int pillCount=0;QQuickItem *firstOption=nullptr;
+                    for(auto option:items(content)) {
+                        auto highlight=qobject_cast<QQuickItem*>(option->property("background").value<QObject*>());
+                        if(!highlight || highlight->objectName()!="sequoiaPillHighlight")continue;
+                        ++pillCount;
+                        require(qAbs(highlight->property("radius").toReal()-highlight->height()/2)<1,"More menu highlight must be pill-shaped");
+                        if(!firstOption)firstOption=option;
+                    }
+                    require(pillCount==3 && firstOption,"More menu must use the shared pill highlight on every option");
+                    QTest::mouseMove(more->window(),firstOption->mapToScene(QPointF(firstOption->width()/2,firstOption->height()/2)).toPoint());
+                    QTest::qWait(200);
+                    require(firstOption->property("hovered").toBool(),"More menu highlight did not respond to hover");
+                    capture(QStringLiteral("appearance-more-menu"));
+                }
+                clickMore();
+                require(!moreMenu->property("visible").toBool(),"Second click reopened More menu");
+                require(menuOpened.count()==i+1,"More menu flashed open twice");
+            }
+            clickMore();
+            QTest::keyClick(more->window(),Qt::Key_Escape);QTest::qWait(180);
+            require(!moreMenu->property("visible").toBool(),"Escape did not close More menu");
+            clickMore();
+            QTest::mouseClick(more->window(),Qt::LeftButton,Qt::NoModifier,QPoint(5,5));QTest::qWait(180);
+            require(!moreMenu->property("visible").toBool(),"Outside click did not close More menu");
+            fprintf(stderr,"PASS: circular More button, right-aligned popup, repeated click toggle, Escape and outside dismissal\n");
+            QQuickItem *showMenuButton=nullptr;
+            for(auto quick:window->findChildren<QQuickWidget*>())if(quick->rootObject())for(auto item:items(quick->rootObject()))
+                if(item->objectName()=="settingsShowMenu")showMenuButton=item;
+            require(showMenuButton,"Sidebar Show Menu trigger missing");
+            require(qAbs(showMenuButton->width()-showMenuButton->height())<1 && qAbs(showMenuButton->height()-searchField->height())<1,"Show Menu must be square and match the search field height");
+            const auto searchCenter=searchField->mapToGlobal(QPointF(searchField->width()/2,searchField->height()/2));
+            const auto menuCenter=showMenuButton->mapToGlobal(QPointF(showMenuButton->width()/2,showMenuButton->height()/2));
+            require(qAbs(searchCenter.y()-menuCenter.y())<1,"Show Menu must share the search row");
+            require(qApp->layoutDirection()==Qt::RightToLeft ? menuCenter.x()<searchCenter.x() : menuCenter.x()>searchCenter.x(),"Show Menu must follow the search field");
+            auto sidebarMenu=showMenuButton->property("menu").value<QObject*>();require(sidebarMenu,"Sidebar popup missing");
+            auto clickSidebarMenu=[&] {
+                QTest::mouseClick(showMenuButton->window(),Qt::LeftButton,Qt::NoModifier,
+                    showMenuButton->mapToScene(QPointF(showMenuButton->width()/2,showMenuButton->height()/2)).toPoint());QTest::qWait(180);
+            };
+            QSignalSpy sidebarOpened(sidebarMenu,SIGNAL(opened()));
+            for(int i=0;i<3;++i){
+                clickSidebarMenu();require(sidebarMenu->property("visible").toBool(),"Show Menu did not open");
+                require(sidebarMenu->property("width").toReal()>150 && sidebarMenu->property("height").toReal()>150,"Sidebar popup collapsed");
+                if(i==0)capture(QStringLiteral("sidebar-show-menu"));
+                clickSidebarMenu();require(!sidebarMenu->property("visible").toBool(),"Show Menu reopened after second click");
+                require(sidebarOpened.count()==i+1,"Show Menu flashed open");
+            }
+            clickSidebarMenu();QTest::keyClick(showMenuButton->window(),Qt::Key_Escape);QTest::qWait(180);
+            require(!sidebarMenu->property("visible").toBool(),"Escape did not dismiss sidebar popup");
+            clickSidebarMenu();QTest::mouseClick(showMenuButton->window(),Qt::LeftButton,Qt::NoModifier,QPoint(5,5));QTest::qWait(180);
+            require(!sidebarMenu->property("visible").toBool(),"Outside click did not dismiss sidebar popup");
+            clickSidebarMenu();
+            QQuickItem *highlightAction=nullptr;
+            for(auto item:items(showMenuButton->window()->contentItem()))if(item->objectName()=="settingsAction-highlight_changes")highlightAction=item;
+            require(highlightAction && highlightAction->isVisible(),"Native checkable action missing");
+            auto nativeAction=highlightAction->property("nativeAction").value<QObject*>();require(nativeAction,"Native QAction missing");
+            const bool originalChecked=nativeAction->property("checked").toBool();
+            QSignalSpy nativeTriggered(nativeAction,SIGNAL(triggered(bool)));
+            for(int i=0;i<2;++i){
+                QTest::mouseClick(highlightAction->window(),Qt::LeftButton,Qt::NoModifier,highlightAction->mapToScene(QPointF(highlightAction->width()/2,highlightAction->height()/2)).toPoint());QTest::qWait(180);
+                require(nativeAction->property("checked").toBool()==(i==0 ? !originalChecked : originalChecked),"Native menu check state did not toggle");
+                require(nativeTriggered.count()==i+1,"Native QAction was triggered more than once");
+                if(i==0){clickSidebarMenu();require(highlightAction->property("checked").toBool()==!originalChecked,"Checkmark did not follow QAction");}
+            }
+            fprintf(stderr,"PASS: shared rounded sidebar popup, repeated toggle without flashing, Escape/outside dismissal and native checkable actions\n");
+            require(related && qAbs(related->height()-getThemes->height())<1,"Related settings must match the action pills");
+            auto relatedMenu=related->property("menu").value<QObject*>();
+            require(relatedMenu,"Related settings menu missing");
+            auto clickRelated=[&] {
+                QTest::mouseClick(related->window(),Qt::LeftButton,Qt::NoModifier,
+                                  related->mapToScene(QPointF(related->width()/2,related->height()/2)).toPoint());
+                QTest::qWait(180);
+            };
+            QSignalSpy relatedOpened(relatedMenu,SIGNAL(opened()));
+            for(int h : {980,650}) {
+                window->resize(1100,h);QTest::qWait(250);
+                for(int i=0;i<2;++i) {
+                    const int opens=relatedOpened.count();
+                    clickRelated();
+                    require(relatedMenu->property("visible").toBool(),"Related settings did not open");
+                    auto bg=qobject_cast<QQuickItem*>(relatedMenu->property("background").value<QObject*>());
+                    require(bg,"Related settings glass background missing");
+                    const auto buttonTop=related->mapToGlobal(QPointF());
+                    const auto buttonBottom=related->mapToGlobal(QPointF(related->width(),related->height()));
+                    const auto menuTop=bg->mapToGlobal(QPointF());
+                    const auto menuBottom=bg->mapToGlobal(QPointF(bg->width(),bg->height()));
+                    require(qAbs(menuBottom.x()-buttonBottom.x())<2,"Related menu lost right-edge alignment");
+                    if(h==980) require(menuTop.y()>=buttonBottom.y()+4,"Related menu overlaps its button despite room below");
+                    else require(menuBottom.y()<=buttonTop.y()-4,"Related menu must open above when space below is insufficient");
+                    if(i==0) capture(h==980 ? QStringLiteral("related-menu-below") : QStringLiteral("related-menu-above"));
+                    clickRelated();
+                    require(!relatedMenu->property("visible").toBool() && relatedOpened.count()==opens+1,
+                            "Related settings toggle flashed or reopened");
+                }
+            }
+            window->resize(1100,790);QTest::qWait(200);
+            clickRelated();QTest::keyClick(related->window(),Qt::Key_Escape);QTest::qWait(180);
+            require(!relatedMenu->property("visible").toBool(),"Escape did not dismiss Related settings");
+            clickRelated();QTest::mouseClick(related->window(),Qt::LeftButton,Qt::NoModifier,QPoint(5,5));QTest::qWait(180);
+            require(!relatedMenu->property("visible").toBool(),"Outside click did not dismiss Related settings");
+            fprintf(stderr,"PASS: Related settings pill, below/above placement, repeated toggle, Escape and outside dismissal\n");
             auto popup=presets->property("popup").value<QObject*>();
             require(popup,"Theme dropdown popup missing");
             auto openThemePopup=[&] { QMetaObject::invokeMethod(popup,"open"); QTest::qWait(250); };

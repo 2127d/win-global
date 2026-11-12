@@ -13,11 +13,23 @@
 
 DesktopRenderController::DesktopRenderController(QObject *parent) : QObject(parent) {
     setObjectName(QStringLiteral("desktopRenderer"));
-    m_size = QGuiApplication::primaryScreen() ? QGuiApplication::primaryScreen()->size() : QSize(1600,900);
-    m_size.scale(QSize(3840,2160), Qt::KeepAspectRatio);
+    auto screen = QGuiApplication::primaryScreen();
+    // Wayland's first Qt screen can be a rotated secondary display. Prefer an
+    // available landscape display rather than rendering its portrait geometry.
+    if (screen && screen->size().width() < screen->size().height()) {
+        QScreen *landscape = nullptr;
+        for (auto candidate : QGuiApplication::screens()) {
+            const auto size = candidate->size();
+            if (size.width() > size.height()
+                && (!landscape || size.width() * size.height() > landscape->size().width() * landscape->size().height()))
+                landscape = candidate;
+        }
+        if (landscape) screen = landscape;
+    }
+    m_size = screen ? screen->size() : QSize(1600,900);
     // Keep native resolution for ordinary screens; only bound very large ones.
-    if (QGuiApplication::primaryScreen() && QGuiApplication::primaryScreen()->size().width() <= 3840
-        && QGuiApplication::primaryScreen()->size().height() <= 2160) m_size = QGuiApplication::primaryScreen()->size();
+    if (m_size.width() > 3840 || m_size.height() > 2160)
+        m_size.scale(QSize(3840,2160), Qt::KeepAspectRatio);
     m_fingerprint = fingerprint();
     m_dispatch.setSingleShot(true); m_dispatch.setInterval(300);
     m_debounce.setSingleShot(true); m_debounce.setInterval(750);
@@ -61,7 +73,7 @@ QByteArray DesktopRenderController::fingerprint() {
     const auto directory=QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation);
     if (!m_watcher.directories().contains(directory)) m_watcher.addPath(directory);
     QCryptographicHash hash(QCryptographicHash::Sha256);
-    for (const auto &name : {"kdeglobals","kwinrc","sequoiaelevenrc","plasmarc","plasmashellrc","plasma-org.kde.plasma.desktop-appletsrc","dolphinrc"}) {
+    for (const auto &name : {"kdeglobals","kwinrc","sequoiaelevenrc","plasmarc","plasmashellrc","plasma-org.kde.plasma.desktop-appletsrc","gwenviewrc","kweather/kweatherrc"}) {
         const auto path=directory+QLatin1Char('/')+QLatin1String(name);
         QFile file(path);
         if (file.open(QIODevice::ReadOnly)) { hash.addData(file.readAll()); if (!m_watcher.files().contains(path)) m_watcher.addPath(path); }

@@ -145,9 +145,15 @@ void AppearancePreview::requestBackdrop() {
     QWidget *window = m_anchor->window();
     if (!enabled() || !window->isVisible() || !window->windowHandle()) return;
     QPainterPath shape;
-    shape.addRoundedRect(QRectF(window->rect()), window->isMaximized() ? 0 : 20, window->isMaximized() ? 0 : 20);
+    const int radius = window->isMaximized() || window->isFullScreen() ? 0 : 20;
+    shape.addRoundedRect(QRectF(window->rect()), radius, radius);
+    QRegion region(shape.toFillPolygon().toPolygon());
+    // This region is the application content, below the native titlebar.
+    // Only the lower corners meet the outer frame; the top must join the
+    // decoration squarely, as the native widget style already does for KCMs.
+    region += QRect(0, 0, window->width(), radius);
     const bool blur = m_activeMaterial != QStringLiteral("solid");
-    KWindowEffects::enableBlurBehind(window->windowHandle(), blur, QRegion(shape.toFillPolygon().toPolygon()));
+    KWindowEffects::enableBlurBehind(window->windowHandle(), blur, region);
     window->setProperty("appearanceBlurRequested", blur);
 }
 

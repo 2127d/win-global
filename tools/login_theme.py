@@ -48,14 +48,14 @@ def desktop_mode(config_dir):
     config = read_config(config_dir/'kdedefaults/kdeglobals', config_dir/'kdeglobals')
     scheme = config.get('General', 'ColorScheme', fallback='')
     for mode in ('light', 'dark'):
-        if scheme in (f'SequoiaEleven{mode.title()}{suffix}' for suffix in ('', 'Solid', 'Transparent')):
+        if scheme in (f'SequoiaEleven{mode.title()}{suffix}' for suffix in ('', 'Solid', 'Transparent', 'Glass')):
             return mode
     # A different color scheme is an explicit choice; leave the greeter alone.
     if scheme:
         return None
     package = config.get('KDE', 'LookAndFeelPackage', fallback='')
     return next((mode for mode in ('light', 'dark')
-                 if package in (f'org.sequoia.eleven.{mode}{suffix}' for suffix in ('', '.solid', '.transparent'))), None)
+                 if package in (f'org.sequoia.eleven.{mode}{suffix}' for suffix in ('', '.solid', '.transparent', '.glass'))), None)
 
 
 def apply_appearance(config_dir, assets, mode):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render installed Plasma and Dolphin in a private compositor/configuration."""
+"""Render installed Plasma, Gwenview and Weather in a private compositor/configuration."""
 import argparse
 import configparser
 import ctypes
@@ -19,7 +19,8 @@ import time
 HERE = Path(__file__).resolve().parent
 CONFIG_FILES = ('kdeglobals', 'kwinrc', 'plasmarc', 'plasmashellrc',
                 'plasma-org.kde.plasma.desktop-appletsrc', 'sequoiaelevenrc',
-                'dolphinrc', 'kactivitymanagerdrc', 'kactivitymanagerdstaterc')
+                'gwenviewrc', 'kweather/kweatherrc', 'plasma-localerc', 'kactivitymanagerdrc', 'kactivitymanagerdstaterc')
+STATE_FILES = ('gwenviewstaterc', 'kweatherstaterc')
 
 def config(path):
     result = configparser.ConfigParser(interpolation=None, strict=False, allow_no_value=True)
@@ -38,7 +39,18 @@ def prepare(root, args, source_config, source_data):
     for kind in ('config', 'data', 'cache', 'state', 'runtime'):
         (root/kind).mkdir(mode=0o700)
     for name in CONFIG_FILES:
-        if (source_config/name).is_file(): shutil.copy2(source_config/name, root/'config'/name)
+        if (source_config/name).is_file():
+            destination = root/'config'/name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source_config/name, destination)
+    # Forecasts and image preferences are read from a private copy; preview
+    # applications must never write back to the user's running session.
+    source_state = Path(os.environ.get('XDG_STATE_HOME', Path.home()/'.local/state'))
+    for name in STATE_FILES:
+        if (source_state/name).is_file(): shutil.copy2(source_state/name, root/'state'/name)
+    source_cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache'))
+    if (source_cache/'kweather/cache').is_dir():
+        shutil.copytree(source_cache/'kweather/cache', root/'cache/kweather/cache')
     # Only this display's containments, plus their nested tray containments.
     layout = config(root/'config/plasma-org.kde.plasma.desktop-appletsrc')
     keep = set()
@@ -83,9 +95,29 @@ def prepare(root, args, source_config, source_data):
                 set_entry(kwin, 'Plugins', key, 'false')
     set_entry(kwin, 'Windows', 'Placement', 'Centered')
     for name, cfg in files.items(): save(cfg, root/'config'/name)
-    dolphin = config(root/'config/dolphinrc')
-    set_entry(dolphin, 'General', 'RememberOpenedTabs', 'false')
-    save(dolphin, root/'config/dolphinrc')
+    gwenview = config(root/'config/gwenviewrc')
+    set_entry(gwenview, 'MainWindow', 'MenuBar', 'Disabled')
+    save(gwenview, root/'config/gwenviewrc')
+    weather = config(root/'config/kweather/kweatherrc')
+    set_entry(weather, 'General', 'forecastStyle', 'Flat')
+    (root/'config/kweather').mkdir(exist_ok=True)
+    save(weather, root/'config/kweather/kweatherrc')
+
+
+def sample_applications(data):
+    roots = [data, *(Path(path) for path in os.environ.get('XDG_DATA_DIRS', '/usr/local/share:/usr/share').split(':') if path)]
+    def installed(relative):
+        for root in roots:
+            if (root/relative).is_file(): return root/relative
+        raise RuntimeError('The preview scene needs the installed Sequoia Gwenview and Weather applications: ' + relative)
+    gwenview = installed('sequoia-eleven/gwenview/gwenview')
+    weather = installed('sequoia-eleven/kweather/bin/kweather').parent.parent
+    return [
+        dict(name='gwenview', command=[str(gwenview)], geometry=[.07, .14, .42, .756], environment={}),
+        dict(name='weather', command=[str(weather/'bin/kweather')], geometry=[.505, .14, .42, .756],
+             environment={'QML_IMPORT_PATH': str(weather/'lib/qml'),
+                          'XDG_DATA_DIRS': str(weather/'share') + ':' + str(data) + ':' + os.environ.get('XDG_DATA_DIRS','/usr/local/share:/usr/share')}),
+    ]
 
 def inside(request_path):
     request = json.loads(Path(request_path).read_text())
@@ -104,14 +136,17 @@ def inside(request_path):
     class ReadyProbe(QObject):
         payload = None
         @Slot(str)
-        def ready(self, value): self.payload = json.loads(value)
+        def ready(self, value):
+            if self.payload is None: self.payload = {}
+            item = json.loads(value)
+            self.payload[item['name']] = item
     probe=ReadyProbe()
     qtbus=QDBusConnection.sessionBus()
     if not qtbus.registerObject('/DesktopRenderer',probe,QDBusConnection.ExportAllSlots):
         raise RuntimeError('Cannot verify the rendered application window.')
     children = []
-    def launch(command):
-        process = subprocess.Popen(command)
+    def launch(command, environment=None):
+        process = subprocess.Popen(command, env={**os.environ, **(environment or {})})
         children.append(process)
         return process
     def wait_service(name, timeout=15):
@@ -134,20 +169,38 @@ def inside(request_path):
             except (dbus.DBusException, ValueError): pass
             time.sleep(.1)
         else: raise RuntimeError('The cloned Plasma desktop did not become ready.')
-        dolphin = launch(['/usr/bin/dolphin', '--new-window', str(Path.home())])
-        time.sleep(3)
         width, height = request['width'], request['height']
+        applications = request['applications']
+        for application in applications:
+            process = launch(application['command'], application['environment'])
+            application['pid'] = process.pid
         script = root/'place-app.js'
-        script.write_text(f"function place(w) {{ if (w.pid === {dolphin.pid}) {{ w.frameGeometry = {{x:{round(width*.15)},y:{round(height*.16)},width:{round(width*.64)},height:{round(height*.70)}}}; workspace.activeWindow=w; callDBus('{qtbus.baseService()}','/DesktopRenderer','org.sequoia.DesktopRenderer','ready',JSON.stringify({{application:w.resourceClass,geometry:w.frameGeometry}})); }} }}; workspace.windowAdded.connect(place); for (const w of workspace.windowList()) place(w);")
-        scripting = dbus.Interface(bus.get_object('org.kde.KWin','/Scripting'),'org.kde.kwin.Scripting')
+        # Match the reference: Gwenview on the left, Weather active on the right.
+        # Let the real apps draw every surface using the selected native theme.
+        placements = []
+        for application in applications:
+            x, y, w, h = application['geometry']
+            placements.append(dict(name=application['name'], pid=application['pid'],
+                                   geometry=dict(x=round(width*x), y=round(height*y), width=round(width*w), height=round(height*h))))
+        script.write_text("const samples=" + json.dumps(placements) + ";" +
+            "function report(w,sample) { callDBus('" + qtbus.baseService() + "','/DesktopRenderer','org.sequoia.DesktopRenderer','ready',"
+            "JSON.stringify({name:sample.name,application:w.resourceClass,geometry:w.frameGeometry})); } "
+            "function place(w) { const sample=samples.find(s=>s.pid===w.pid); if (!sample || !w.normalWindow) return; "
+            "w.frameGeometryChanged.connect(()=>report(w,sample)); "
+            "w.setMaximize(false,false); w.frameGeometry=sample.geometry; "
+            "if(sample.name==='weather') workspace.activeWindow=w; " +
+            "report(w,sample); } "
+            "workspace.windowAdded.connect(place); for (const w of workspace.windowList()) place(w);")
         sid = bus.call_blocking('org.kde.KWin','/Scripting','org.kde.kwin.Scripting','loadScript','ss',(str(script),'appearance-sample-placement'))
         dbus.Interface(bus.get_object('org.kde.KWin',f'/Scripting/Script{sid}'),'org.kde.kwin.Script').run()
-        for attempt in range(100):
+        for attempt in range(300):
             app.processEvents()
-            if probe.payload: break
+            if probe.payload and len(probe.payload) == len(applications): break
             time.sleep(.05)
-        else: raise RuntimeError('The native Files window did not become ready.')
-        time.sleep(2)
+        else: raise RuntimeError('The native Gwenview and Weather windows did not become ready.')
+        for attempt in range(60):
+            app.processEvents()
+            time.sleep(.05)
         effects = dbus.Interface(bus.get_object('org.kde.KWin','/Effects'),'org.freedesktop.DBus.Properties')
         loaded = list(effects.Get('org.kde.kwin.Effects','loadedEffects'))
         if request['material']=='glass' and 'sequoia_liquid_glass_v6' not in loaded:
@@ -165,7 +218,7 @@ def inside(request_path):
             temporary=request['output']+'.new.png'
             if image.isNull() or not image.save(temporary): raise RuntimeError('Could not save rendered desktop.')
             os.replace(temporary,request['output'])
-        Path(request['output']+'.json').write_text(json.dumps({'material':request['material'],'mode':request['mode'],'width':width,'height':height,'desktop':inventory,'renderer':'KWin + Plasma + Dolphin','effects':loaded,'application':probe.payload,'palette':QGuiApplication.palette().window().color().getRgb()}))
+        Path(request['output']+'.json').write_text(json.dumps({'material':request['material'],'mode':request['mode'],'width':width,'height':height,'desktop':inventory,'renderer':'KWin + Plasma + Gwenview + Weather','effects':loaded,'applications':probe.payload,'palette':QGuiApplication.palette().window().color().getRgb()}))
     finally:
         qtbus.unregisterObject('/DesktopRenderer')
         for process in reversed(children): process.terminate()
@@ -196,7 +249,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='appearance-desktop-') as temp:
         root=Path(temp)
         prepare(root,args,source_config,source_data)
-        request=dict(root=str(root),output=str(args.output),material=args.material,mode=args.mode,width=args.width,height=args.height)
+        request=dict(root=str(root),output=str(args.output),material=args.material,mode=args.mode,width=args.width,height=args.height,applications=sample_applications(source_data))
         (root/'request.json').write_text(json.dumps(request))
         env=dict(os.environ)
         for key in ('LD_PRELOAD','QT_STYLE_OVERRIDE','QML_IMPORT_PATH','QT_PLUGIN_PATH','QT_SCALE_FACTOR','QT_QUICK_BACKEND','SEQUOIA_APPEARANCE_HUB'):

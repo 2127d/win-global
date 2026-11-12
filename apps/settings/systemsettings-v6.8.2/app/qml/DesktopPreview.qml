@@ -13,7 +13,13 @@ Item {
     readonly property string renderKey: material + "/" + colorMode
     readonly property url renderedImage: desktopRenderer.images[renderKey] || ""
     readonly property string renderError: desktopRenderer.errors[renderKey] || ""
-    implicitHeight: miniature ? 92 : width / desktopRenderer.aspectRatio
+    // Frame the full image in landscape even on portrait-only workstations;
+    // DesktopImage preserves its native proportions without stretching/cropping.
+    readonly property real previewAspectRatio: Math.max(16 / 9, desktopRenderer.aspectRatio)
+    implicitHeight: width / previewAspectRatio
+    Layout.preferredHeight: implicitHeight
+    Layout.minimumHeight: implicitHeight
+    Layout.maximumHeight: implicitHeight
     function requestRender() { if (visible) desktopRenderer.request(material, colorMode, !miniature); }
     Component.onCompleted: Qt.callLater(requestRender)
     onRenderKeyChanged: Qt.callLater(requestRender)

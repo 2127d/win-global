@@ -32,6 +32,22 @@ Plasma panels and desktop widgets retain their existing finishes.
 
 ![Sequoia Eleven light lock screen](preview/lockscreen-light.png)
 
+## Standalone design apps
+
+The canonical app packages now live outside this checkout in
+`../apps/sequoia-component-library` and `../apps/sequoia-motion-lab`. Each has its
+own installer and `dist/` runtime archives. Installed desktop launchers are
+**Sequoia Component Library** and **Sequoia Motion Lab**. The paths under this
+checkout are compatibility entry points and links.
+
+## Shared application components
+
+The [Sequoia component library](desktop/components/library/README.md) provides
+reusable Qt Quick controls in Solid, Transparent and Liquid Glass, each in Light
+and Dark. Appearance Hub uses the shared components. Run
+`python3 tools/component-library.py` to explore the interactive six-variant
+catalog; see its guide before styling new app layouts.
+
 ## Project folders
 
 Control Center, Start menu and Digital Clock now share the
@@ -771,12 +787,12 @@ real KWin effects. Integration into each component happens after palette review.
 
 **Save A/B as candidate** exports all seven timings, category mappings, easing,
 category-specific travel and exit overrides, and reduced-motion policy to a new
-JSON file in `preview/motion-palettes/`.
+JSON file in `~/.local/share/sequoia-eleven/motion-lab/palettes/`.
 Slow playback is only an inspection aid and is not exported. Candidates can mix
 family timings through the per-family controls; choosing a preset again resets
 those edits. Run `python3 tools/motion-lab.py --check` to verify all four palettes
 across all seven families, reverse transitions, finite pulses, and reduced
-motion, and produce `preview/motion-lab.png`. Requires PySide6.
+motion, and produce a verification image in the app cache. Requires PySide6.
 
 ### Applying the approved motion palette
 

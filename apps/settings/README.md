@@ -159,13 +159,19 @@ rims watch the existing Glass Rim Intensity setting without changing opacity.
 Native window actions retain KDE's unsaved-change guard. Search, All Settings, third-party category fallback, authorization, and
 native Apply/Reset/Defaults/Help remain in KDE's existing implementation.
 
+Appearance Hub’s panels, action pills, menus, mode/theme selectors and icon tiles
+now use the [shared component library](../../desktop/components/library/README.md).
+The local QML names are adapters; edit the canonical library to change appearance.
+
 The desktop preview and Solid / Transparent / Liquid Glass cards use real rendered
-frames from the installed KWin, Plasma, and Dolphin. A private D-Bus session,
+frames from the installed KWin, Plasma, Gwenview, and Weather. A private D-Bus session,
 Wayland compositor, and temporary XDG configuration clone the primary desktop's
 wallpaper, panels, icons, fonts, application style, and decoration. An unchanged
 selection preserves custom components and colors; staged choices use the same
-material/color recipe as Apply. A representative Files window uses the real
-Dolphin layout. These are cached snapshots, not a feed of currently open windows.
+material/color recipe as Apply. Gwenview and Weather sit side by side, matching
+the reference scene. Recent images, saved weather locations, window state, and
+forecast caches are copied into the private session; Weather uses its Flat view.
+These are cached snapshots, not a feed of currently open windows.
 Both image sizes have antialiased rounded corners and preserve the full frame.
 The Appearance scroll view reserves its vertical scrollbar gutter in both text
 directions. Its viewport width stays constant when overflow changes, preventing
@@ -290,3 +296,60 @@ long lists, keyboard selection, Escape, outside-click dismissal and compact
 layout, including RTL at fractional scaling. Preview backdrop callbacks use a
 guarded widget pointer so closing the overview cannot dereference a destroyed
 anchor during application shutdown.
+
+### Appearance Hub panel settings
+
+The sidebar has two separate floating `HubPanel` surfaces with a 12 px gap:
+Appearance icons and Related settings above, and the panel selector plus shared
+`S.SettingsGrid` below. Each surface retains 12 px internal padding. A pill selector identifies each live panel by edge,
+screen and stable containment ID. The sidebar uses two control columns at its
+normal width, retains the icon grid's three columns, and scrolls within the window.
+Tiles use the component library's 12 px padding, 8 px gaps and live material theme.
+
+`PanelSettings` calls Plasma's `evaluateScript` asynchronously. `PanelScript.js`
+reads and edits the installed panel scripting API: screen/edge, alignment, length
+mode, visibility, opacity, floating panel/applets, thickness, custom min/max length
+and offset. Changes are immediate, as in KDE Edit Mode; the Appearance Apply/Reset
+buttons still apply only the staged theme. Polling while the hub is visible picks
+up external edits and added/removed panels. Commands capture the selected panel ID,
+coalesce successive slider events, validate values and respect immutable panels.
+The live config is read to distinguish Windows Go Below, which Plasma 6.8's
+`hiding` getter otherwise reports as Always Visible. There are no direct file writes.
+
+Widget arrangement, focus shortcuts, cloning and removal remain in KDE's native
+panel editor, accessible through the grid's **Widgets & more → Edit panel…** tile.
+Those actions are not exposed through the public panel scripting properties.
+The installed edit-mode reference is
+`/usr/share/plasma/shells/org.kde.plasma.desktop/contents/configuration/PanelConfiguration.qml`;
+the matching backend is KDE's `plasma-workspace/v6.8.2/shell/scripting/panel.cpp`.
+
+```sh
+python3 tools/verify-settings-navigation.py --hub --panels-only --composited --overlay --dark --screen-width 1600 --screen-height 1100 --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+```
+
+This starts Plasma on a private bus/compositor with temporary XDG homes, creates
+two fixture panels and exercises real edits, keyboard selection, popup placement,
+external refresh, removed-panel selection and the empty state. Live panels are
+only read during development; mutations occur solely in that isolated session.
+
+The view-navigation sidebar uses the component library's `FullIcons` treatment,
+extracted from Software Center: Home, Quick Settings and category entries bind
+their real selected and hover states. All Settings uses `AppearanceActionPill`
+(the library's `ActionPill`) at its content width, horizontally centered at the
+bottom of the sidebar. Header and action glyphs retain their existing treatment.
+
+The sidebar Show Menu uses `AppearancePopupMenu` / shared `PopupMenu` with a
+20 px rounded, sampled backdrop and the normal material fallback. It maps the
+original KDE `QAction` objects into library `MenuItem`s, including visibility,
+enabled state and checkmarks. The trigger uses `visible ? close() : open()`;
+`CloseOnPressOutsideParent` excludes it from automatic dismissal and prevents
+the second-click reopen flash. The existing native menu remains available to
+legacy pages. The popup regression verifies repeated pointer toggles, Escape,
+outside dismissal and exactly-once dispatch of a native checkable action.
+
+Home, Quick Settings and category page buttons now instantiate the shared
+`NavigationItem` directly. Its source lives in
+`sandbox/apps/sequoia-component-library/qml/NavigationItem.qml`; the Settings
+sidebar only supplies the theme, labels, source glyphs, selected-page bindings
+and callbacks. The library owns the 42 px pill geometry, 8 px symmetric vertical
+padding, Full Icons, hover/focus surfaces and disabled state.

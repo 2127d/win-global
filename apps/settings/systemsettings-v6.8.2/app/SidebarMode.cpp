@@ -6,6 +6,7 @@
  */
 
 #include "DesktopRenderController.h"
+#include "PanelSettings.h"
 #include "DesktopPreviewImage.h"
 #include "SidebarMode.h"
 #include "AppearancePreview.h"
@@ -611,12 +612,15 @@ void SidebarMode::initWidget()
     d->quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
     if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) d->quickWidget->setClearColor(Qt::transparent);
 
+    d->engine->addImportPath(QCoreApplication::applicationDirPath() + QStringLiteral("/qml"));
+
     // Use a private URI so the installed glass QML plugin can coexist.
     qmlRegisterType<DesktopPreviewImage>("org.sequoia.settingsglass", 1, 0, "DesktopImage");
     d->engine->rootContext()->setContextProperty(QStringLiteral("desktopRenderer"), new DesktopRenderController(this));
     qmlRegisterType<HubIslandRim>("org.sequoia.settingsglass", 1, 0, "IslandRim");
     qmlRegisterType<HubGlyph>("org.sequoia.settingsglass", 1, 0, "Glyph");
     qmlRegisterType<SequoiaGlass::Rim>("org.sequoia.settingsglass", 1, 0, "Rim");
+    d->engine->rootContext()->setContextProperty(QStringLiteral("panelSettings"), new PanelSettings(this));
     d->engine->rootContext()->setContextProperty(QStringLiteral("appearancePreview"), new AppearancePreview(d->mainWidget, this));
     d->navigation = new SettingsNavigation(rootItem(), this);
     connect(d->model, &QAbstractItemModel::dataChanged, d->navigation, &SettingsNavigation::refresh);

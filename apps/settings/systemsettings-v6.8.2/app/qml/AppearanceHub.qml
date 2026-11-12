@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 import QtQuick
+import org.sequoia.components 1.0 as S
 import QtQuick.Controls as C
 import QtQuick.Layouts
 import org.kde.kirigami as K
@@ -21,6 +22,7 @@ Item {
             return (ai < 0 ? 100 : ai) - (bi < 0 ? 100 : bi);
         });
     }
+    Binding { target:panelSettings; property:"active"; value:hub.visible && hub.showComponents }
     function reset() { selectedMaterial = appearancePreview.activeMaterial; selectedMode = appearancePreview.colorMode; modeEdited = false; presets.currentIndex = 0; }
     function apply() { appearancePreview.applyLook(selectedMaterial, modeEdited ? selectedMode : "current"); }
     property bool operationWasBusy: false
@@ -42,17 +44,32 @@ Item {
                 K.Heading { text: i18n("Appearance"); level: 1; font.weight: Font.DemiBold }
                 C.Label { text: i18n("One look, all your desktop surfaces"); opacity: .75; Layout.fillWidth: true; wrapMode: Text.WordWrap }
             }
-            C.Button { text: hub.width > 620 ? i18n("Save look…") : ""; icon.name: "document-save"; Accessible.name: i18n("Save look"); onClicked: saveDialog.open() }
-            C.Button { text: hub.width > 620 ? i18n("Get new themes…") : ""; icon.name: "get-hot-new-stuff"; Accessible.name: i18n("Get new themes"); onClicked: navigation.open("kcm_lookandfeel"); C.ToolTip.visible: hovered; C.ToolTip.text: i18n("Browse and download themes in KDE Global Theme") }
-            C.ToolButton { text: "⋯"; Accessible.name: i18n("More appearance options"); onClicked: moreMenu.popup()
-                C.Menu { id: moreMenu
-                    C.MenuItem { text: hub.showComponents ? i18n("Hide appearance components") : i18n("Show appearance components"); onTriggered: hub.showComponents = !hub.showComponents }
-                    C.MenuItem { text: i18n("Undo last applied look"); enabled: !appearancePreview.busy; onTriggered: appearancePreview.trial("restore") }
-                    C.MenuItem { text: i18n("Global Theme…"); onTriggered: navigation.open("kcm_lookandfeel") }
-                }
+            AppearanceActionPill {
+                objectName: "appearanceSaveLook"
+                text: hub.width > 620 ? i18n("Save look…") : ""
+                icon.name: S.Icons.save
+                Accessible.name: i18n("Save look")
+                onClicked: saveDialog.open()
+                C.ToolTip.visible: hovered && !text.length
+                C.ToolTip.text: i18n("Save look")
+            }
+            AppearanceActionPill {
+                objectName: "appearanceGetThemes"
+                text: hub.width > 620 ? i18n("Get new themes…") : ""
+                icon.name: S.Icons.getThemes
+                Accessible.name: i18n("Get new themes")
+                onClicked: navigation.open("kcm_lookandfeel")
+                C.ToolTip.visible: hovered
+                C.ToolTip.text: i18n("Browse and download themes in KDE Global Theme")
+            }
+            AppearanceMoreButton {
+                backdropItem:hub
+                componentsVisible:hub.showComponents
+                onToggleComponents:hub.showComponents=!hub.showComponents
             }
         }
         GridLayout {
+            id: contentLayout
             Layout.fillWidth: true; Layout.fillHeight: true
             columns: hub.wide && hub.showComponents ? 2 : 1
             columnSpacing: 14; rowSpacing: 10
@@ -74,17 +91,42 @@ Item {
                     width: bodyScroll.availableWidth; spacing: 12
                     GridLayout {
                         Layout.fillWidth: true; columns: width > 460 ? 2 : 1
-                        AppearanceThemePill {
-                            id: presets; objectName: "appearancePresets"
-                            backdropItem:hub
-                            Layout.fillWidth: true; Layout.minimumWidth: 0
-                            textRole: "name"
-                            model: [{name:i18n("Sequoia · Custom")}].concat(appearancePreview.savedLooks).concat([{name:i18n("Choose global theme…"), browse:true}])
-                            onActivated: {
-                                const choice = model[currentIndex];
-                                if (choice.browse) { currentIndex = 0; navigation.open("kcm_lookandfeel"); }
-                                else if (choice.material) { hub.selectedMaterial = choice.material; hub.selectedMode = choice.mode; hub.modeEdited = true; }
-                                else hub.reset();
+                        RowLayout {
+                            Layout.fillWidth:true; Layout.minimumWidth:0; spacing:8
+                            C.AbstractButton {
+                                id: appearanceBack
+                                objectName:"appearanceBack"
+                                Layout.minimumWidth:42; Layout.maximumWidth:42
+                                implicitWidth:42; implicitHeight:42
+                                hoverEnabled:true; focusPolicy:Qt.StrongFocus
+                                Accessible.name:i18n("Back to home")
+                                contentItem:K.Icon {
+                                    source:appearanceBack.mirrored ? "go-next" : "go-previous"
+                                    implicitWidth:18; implicitHeight:18
+                                }
+                                padding:12
+                                background:HubPanel {
+                                    radius:height/2
+                                    tint:appearanceBack.down ? .75 : appearanceBack.hovered ? .6 : .35
+                                    emphasized:appearanceBack.visualFocus
+                                    Behavior on color { ColorAnimation { duration:120 } }
+                                }
+                                C.ToolTip.visible:hovered || visualFocus
+                                C.ToolTip.text:i18n("Back to home")
+                                onClicked:navigation.back()
+                            }
+                            AppearanceThemePill {
+                                id: presets; objectName: "appearancePresets"
+                                backdropItem:hub
+                                Layout.fillWidth: true; Layout.minimumWidth: 0
+                                textRole: "name"
+                                model: [{name:i18n("Sequoia · Custom")}].concat(appearancePreview.savedLooks).concat([{name:i18n("Choose global theme…"), browse:true}])
+                                onActivated: {
+                                    const choice = model[currentIndex];
+                                    if (choice.browse) { currentIndex = 0; navigation.open("kcm_lookandfeel"); }
+                                    else if (choice.material) { hub.selectedMaterial = choice.material; hub.selectedMode = choice.mode; hub.modeEdited = true; }
+                                    else hub.reset();
+                                }
                             }
                         }
                         RowLayout {
@@ -131,7 +173,7 @@ Item {
                                 onClicked:hub.selectedMaterial=modelData.id
                                 background:HubPanel { radius:16; emphasized:materialButton.activeFocus || hub.selectedMaterial===materialButton.modelData.id; tint:materialButton.hovered ? .6 : .3 }
                                 contentItem:ColumnLayout {
-                                    DesktopPreview { Layout.fillWidth:true; Layout.preferredHeight:width/desktopRenderer.aspectRatio; miniature:true; material:materialButton.modelData.id; colorMode:hub.modeEdited ? hub.selectedMode : "current" }
+                                    DesktopPreview { Layout.fillWidth:true; miniature:true; material:materialButton.modelData.id; colorMode:hub.modeEdited ? hub.selectedMode : "current" }
                                     RowLayout { Layout.fillWidth:true
                                         C.Label { Layout.fillWidth:true; text:materialButton.modelData.name; font.weight:Font.DemiBold; horizontalAlignment:Text.AlignHCenter; elide:Text.ElideRight }
                                         K.Icon { visible:hub.selectedMaterial===materialButton.modelData.id; source:"emblem-checked"; implicitWidth:16; implicitHeight:16 }
@@ -146,72 +188,126 @@ Item {
                         C.ToolButton { text:i18n("Refresh"); icon.name:"view-refresh"; onClicked:desktopRenderer.refresh() }
                     }
                     HubPanel {
-                        Layout.fillWidth:true; implicitHeight:(width-16)/desktopRenderer.aspectRatio+16; radius:22
-                        DesktopPreview { anchors.fill:parent; anchors.margins:8; material:hub.selectedMaterial; colorMode:hub.modeEdited ? hub.selectedMode : "current" }
+                        objectName:"appearanceDesktopFrame"
+                        Layout.fillWidth:true; implicitHeight:(width-16)/mainDesktopPreview.previewAspectRatio+16; radius:22
+                        Layout.minimumHeight:implicitHeight; Layout.maximumHeight:implicitHeight
+                        DesktopPreview { id:mainDesktopPreview; anchors.fill:parent; anchors.margins:8; material:hub.selectedMaterial; colorMode:hub.modeEdited ? hub.selectedMode : "current" }
                     }
-                    HubPanel {
-                        Layout.fillWidth:true; implicitHeight:keepOptions.implicitHeight+12
-                        Flow { id:keepOptions; anchors.left:parent.left; anchors.right:parent.right; anchors.top:parent.top; anchors.margins:6; spacing:8
-                            C.CheckBox { text:i18n("Keep my wallpaper"); checked:true; enabled:false; palette.disabled.windowText:K.Theme.textColor; palette.disabled.text:K.Theme.textColor }
-                            C.CheckBox { text:i18n("Keep panel & widget layout"); checked:true; enabled:false; palette.disabled.windowText:K.Theme.textColor; palette.disabled.text:K.Theme.textColor }
+                    RowLayout {
+                        objectName:"appearanceOptionsRow"
+                        Layout.fillWidth:true; Layout.minimumWidth:0; spacing:12
+                        HubPanel {
+                            objectName:"appearanceKeepOptions"
+                            Layout.alignment:Qt.AlignVCenter; Layout.fillWidth:true
+                            Layout.minimumWidth:Math.ceil(Math.max(keepWallpaper.implicitWidth,keepLayout.implicitWidth))+32
+                            Layout.maximumWidth:implicitWidth
+                            implicitWidth:Math.ceil(keepWallpaper.implicitWidth+keepLayout.implicitWidth+keepOptions.spacing)+32
+                            implicitHeight:keepOptions.implicitHeight+20
+                            Flow {
+                                id:keepOptions
+                                anchors.left:parent.left; anchors.right:parent.right; anchors.top:parent.top
+                                anchors.leftMargin:16; anchors.rightMargin:16; anchors.topMargin:10; spacing:8
+                                C.CheckBox { id:keepWallpaper; padding:0; text:i18n("Keep my wallpaper"); checked:true; enabled:false; palette.disabled.windowText:K.Theme.textColor; palette.disabled.text:K.Theme.textColor }
+                                C.CheckBox { id:keepLayout; padding:0; text:i18n("Keep panel & widget layout"); checked:true; enabled:false; palette.disabled.windowText:K.Theme.textColor; palette.disabled.text:K.Theme.textColor }
+                            }
+                            C.ToolTip.visible: keepHover.hovered
+                            C.ToolTip.text:i18n("Material and color changes always preserve these. Use Global Theme to replace wallpaper or desktop layout.")
+                            HoverHandler { id:keepHover }
                         }
-                        C.ToolTip.visible: keepHover.hovered
-                        C.ToolTip.text:i18n("Material and color changes always preserve these. Use Global Theme to replace wallpaper or desktop layout.")
-                        HoverHandler { id:keepHover }
+                        C.ItemDelegate {
+                            objectName:"appearanceCompatibility"
+                            Layout.alignment:Qt.AlignVCenter; Layout.fillWidth:true; Layout.minimumWidth:0
+                            Layout.maximumWidth:implicitWidth
+                            text:i18n("App appearance & compatibility"); icon.name:"preferences-desktop-theme-global"
+                            leftPadding:16; rightPadding:16; topPadding:10; bottomPadding:10
+                            leftInset:0; rightInset:0; topInset:0; bottomInset:0
+                            background:HubPanel { tint:.30; emphasized:parent.activeFocus }
+                            onClicked:compatibility.open()
+                        }
+                        Item { Layout.fillWidth:true; Layout.minimumWidth:0; implicitWidth:0 }
                     }
-                    C.ItemDelegate {
-                        Layout.fillWidth:true; text:i18n("App appearance & compatibility"); icon.name:"preferences-desktop-theme-global"; implicitHeight:52
-                        background:HubPanel { tint:.30; emphasized:parent.activeFocus }
-                        onClicked:compatibility.open()
-                    }
-                    C.Label { Layout.fillWidth:true; text:i18n("Your desktop layout with a Files window · Wallpaper and layout are preserved when you apply."); wrapMode:Text.WordWrap; opacity:.65; font.pointSize:K.Theme.smallFont.pointSize }
+                    C.Label { Layout.fillWidth:true; text:i18n("Your desktop layout with Gwenview and Weather · Wallpaper and layout are preserved when you apply."); wrapMode:Text.WordWrap; opacity:.65; font.pointSize:K.Theme.smallFont.pointSize }
                 }
             }
-            HubPanel {
-                id: componentPanel
-                objectName: "appearanceComponentsPanel"
-                visible: hub.showComponents
-                Layout.fillHeight:hub.wide; Layout.fillWidth:!hub.wide
-                Layout.preferredWidth:hub.wide ? 260 : -1
-                Layout.preferredHeight:hub.wide ? -1 : 220
+            C.ScrollView {
+                id:sideScroll
+                objectName:"appearanceSideScroll"
+                visible:hub.showComponents
+                Layout.fillHeight:true; Layout.fillWidth:!hub.wide
+                Layout.alignment:Qt.AlignTop
+                Layout.preferredWidth:hub.wide ? 360 : -1
+                Layout.preferredHeight:0; Layout.minimumHeight:0
+                Layout.maximumHeight:sideIslands.implicitHeight
                 Layout.minimumWidth:0
-                tint:.42
+                contentWidth:availableWidth; clip:true
+                padding:0
+                background:null
+                C.ScrollBar.horizontal.policy:C.ScrollBar.AlwaysOff
                 ColumnLayout {
-                    anchors.fill:parent; anchors.margins:12; spacing:6
-                    RowLayout {
-                        Layout.fillWidth:true
-                        C.Label { Layout.fillWidth:true; text:i18n("Appearance components"); font.weight:Font.DemiBold; wrapMode:Text.WordWrap }
-                        C.ToolButton { icon.name:"window-close"; Accessible.name:i18n("Hide appearance components"); onClicked:hub.showComponents=false }
-                    }
-                    C.ScrollView {
-                        Layout.fillWidth:true; Layout.fillHeight:true; contentWidth:availableWidth
-                        C.ScrollBar.horizontal.policy:C.ScrollBar.AlwaysOff
+                    id:sideIslands
+                    width:sideScroll.availableWidth; spacing:12
+                    HubPanel {
+                        id:componentPanel
+                        objectName:"appearanceComponentsPanel"
+                        Layout.fillWidth:true; Layout.fillHeight:false
+                        implicitHeight:componentContents.implicitHeight+24
+                        tint:.42
                         ColumnLayout {
-                            width:parent.width; spacing:2
-                            Repeater {
-                                model:hub.components
-                                C.ItemDelegate {
-                                    id: componentRow
-                                    required property var modelData
-                                    objectName:"appearanceComponent-"+modelData.id
-                                    Layout.fillWidth:true; Layout.minimumWidth:0; implicitHeight:37
-                                    text:modelData.name
-                                    contentItem:RowLayout {
-                                        K.Icon { source:componentRow.modelData.icon; implicitWidth:21; implicitHeight:21 }
-                                        C.Label { text:componentRow.modelData.name; Layout.fillWidth:true; elide:Text.ElideRight }
-                                        K.Icon { source:"go-next"; implicitWidth:14; implicitHeight:14; opacity:.6 }
+                            id:componentContents
+                            anchors.fill:parent; anchors.margins:12; spacing:8
+                            RowLayout {
+                                Layout.fillWidth:true
+                                C.Label { Layout.fillWidth:true; text:i18n("Appearance components"); font.weight:Font.DemiBold; wrapMode:Text.WordWrap }
+                                C.ToolButton { icon.name:"window-close"; Accessible.name:i18n("Hide appearance components"); onClicked:hub.showComponents=false }
+                            }
+                                GridLayout {
+                                    id:componentGrid
+                                    objectName:"appearanceComponentsGrid"
+                                    Layout.fillWidth:true; Layout.fillHeight:false
+                                    columns:3; uniformCellWidths:true
+                                    columnSpacing:8; rowSpacing:8
+                                    Repeater {
+                                        model:hub.components
+                                        S.IconTile {
+                                            required property var modelData
+                                            objectName:"appearanceComponent-"+modelData.id
+                                            Layout.fillWidth:true; Layout.minimumWidth:0
+                                            theme:AppearanceLibraryTheme {}
+                                            text:modelData.name; iconName:modelData.icon
+                                            onClicked:navigation.open(modelData.id)
+                                        }
                                     }
-                                    onClicked:navigation.open(modelData.id)
+                                }
+                            AppearanceActionPill {
+                                id:relatedButton
+                                objectName:"appearanceRelatedSettings"
+                                property alias menu:relatedMenu
+                                Layout.fillWidth:true
+                                text:i18n("Related settings"); icon.name:S.Icons.related
+                                onClicked:relatedMenu.visible ? relatedMenu.close() : relatedMenu.open()
+                                AppearancePopupMenu {
+                                    id:relatedMenu
+                                    objectName:"appearanceRelatedMenu"
+                                    width:Math.min(implicitWidth,hub.width)
+                                    trigger:relatedButton
+                                    backdropItem:hub
+                                    AppearanceMenuItem { text:i18n("Desktop Effects"); onTriggered:navigation.open("kcm_kwin_effects") }
+                                    AppearanceMenuItem { text:i18n("Task Switcher"); onTriggered:navigation.open("kcm_kwintabbox") }
+                                    AppearanceMenuItem { text:i18n("Screen Locking"); onTriggered:navigation.open("kcm_screenlocker") }
+                                    AppearanceMenuItem { text:i18n("Login Screen"); onTriggered:navigation.open("kcm_plasmalogin") }
                                 }
                             }
                         }
                     }
-                    C.Button { Layout.fillWidth:true; text:i18n("Related settings"); icon.name:"insert-link"; onClicked:relatedMenu.popup()
-                        C.Menu { id:relatedMenu
-                            C.MenuItem { text:i18n("Desktop Effects"); onTriggered:navigation.open("kcm_kwin_effects") }
-                            C.MenuItem { text:i18n("Task Switcher"); onTriggered:navigation.open("kcm_kwintabbox") }
-                            C.MenuItem { text:i18n("Screen Locking"); onTriggered:navigation.open("kcm_screenlocker") }
-                            C.MenuItem { text:i18n("Login Screen"); onTriggered:navigation.open("kcm_plasmalogin") }
+                    HubPanel {
+                        objectName:"appearancePanelSettingsPanel"
+                        Layout.fillWidth:true; Layout.fillHeight:false
+                        implicitHeight:panelContents.implicitHeight+24
+                        tint:.42
+                        AppearancePanelSettings {
+                            id:panelContents
+                            anchors.fill:parent; anchors.margins:12
+                            backdropItem:hub
                         }
                     }
                 }
@@ -223,16 +319,16 @@ Item {
             Layout.fillWidth:true; columns:hub.width>600 ? 2 : 1; columnSpacing:12; rowSpacing:6
             RowLayout {
             Layout.fillWidth:true; spacing:6
-            C.Button { text:i18n("Help"); icon.name:"help-contextual"; onClicked:helpDialog.open() }
-            C.Button { text:i18n("Defaults"); icon.name:"edit-undo"; enabled:!appearancePreview.busy; onClicked:{ hub.selectedMaterial="glass"; hub.selectedMode=appearancePreview.colorMode; hub.modeEdited=false; } }
-            C.Button { objectName:"appearanceResetButton"; text:i18n("Reset"); icon.name:"edit-reset"; enabled:hub.dirty && !appearancePreview.busy; onClicked:hub.reset() }
+            AppearanceActionPill { text:i18n("Help"); icon.name:"help-contextual"; onClicked:helpDialog.open() }
+            AppearanceActionPill { text:i18n("Defaults"); icon.name:"edit-undo"; enabled:!appearancePreview.busy; onClicked:{ hub.selectedMaterial="glass"; hub.selectedMode=appearancePreview.colorMode; hub.modeEdited=false; } }
+            AppearanceActionPill { objectName:"appearanceResetButton"; text:i18n("Reset"); icon.name:"edit-reset"; enabled:hub.dirty && !appearancePreview.busy; onClicked:hub.reset() }
             Item { Layout.fillWidth:true }
             }
             RowLayout { Layout.alignment:Qt.AlignRight; spacing:6
-            C.Button { objectName:"desktopTrialButton"; text:i18n("Preview desktop"); icon.name:"video-display"; visible:!appearancePreview.busy; onClicked:confirmation.open() }
-            C.Button { objectName:"appearanceApplyButton"; text:i18n("Apply"); icon.name:"dialog-ok-apply"; enabled:hub.dirty && !appearancePreview.busy; visible:!appearancePreview.busy; highlighted:enabled; onClicked:hub.apply() }
-            C.Button { text:i18n("Revert (%1)",appearancePreview.seconds); visible:appearancePreview.busy; onClicked:appearancePreview.revert() }
-            C.Button { text:i18n("Keep"); visible:appearancePreview.busy; enabled:appearancePreview.seconds>0; onClicked:appearancePreview.keep() }
+            AppearanceActionPill { objectName:"desktopTrialButton"; text:i18n("Preview desktop"); icon.name:"video-display"; visible:!appearancePreview.busy; onClicked:confirmation.open() }
+            AppearanceActionPill { objectName:"appearanceApplyButton"; text:i18n("Apply"); icon.name:"dialog-ok-apply"; enabled:hub.dirty && !appearancePreview.busy; visible:!appearancePreview.busy; highlighted:enabled; onClicked:hub.apply() }
+            AppearanceActionPill { text:i18n("Revert (%1)",appearancePreview.seconds); visible:appearancePreview.busy; onClicked:appearancePreview.revert() }
+            AppearanceActionPill { text:i18n("Keep"); visible:appearancePreview.busy; enabled:appearancePreview.seconds>0; onClicked:appearancePreview.keep() }
             }
         }
     }

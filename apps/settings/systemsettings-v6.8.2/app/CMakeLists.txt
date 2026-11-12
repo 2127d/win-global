@@ -1,11 +1,16 @@
 
-find_package(Qt6 REQUIRED COMPONENTS Svg)
+find_package(Qt6 REQUIRED COMPONENTS Svg DBus)
+find_package(Plasma REQUIRED)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../../../desktop/components/library" "${CMAKE_CURRENT_BINARY_DIR}/component-library")
 add_executable(systemsettings)
+add_dependencies(systemsettings sequoiacomponentsplugin)
 ecm_add_qml_module(systemsettings URI org.kde.systemsettings GENERATE_PLUGIN_SOURCE)
 
 ki18n_wrap_ui(systemsettings externalModule.ui)
 
 target_sources(systemsettings PRIVATE
+    PanelSettings.cpp
+    PanelSettings.h
     DesktopRenderController.cpp
     DesktopRenderController.h
     DesktopPreviewImage.h
@@ -44,6 +49,12 @@ ecm_target_qml_sources(systemsettings SOURCES
     qml/DesktopPreview.qml
     qml/DesktopPreviewSurface.qml
     qml/AppearanceHub.qml
+    qml/AppearancePanelSettings.qml
+    qml/AppearanceLibraryTheme.qml
+    qml/AppearanceActionPill.qml
+    qml/AppearanceMoreButton.qml
+    qml/AppearancePopupMenu.qml
+    qml/AppearanceMenuItem.qml
     qml/AppearanceModePill.qml
     qml/AppearanceThemePill.qml
     qml/HubOverview.qml
@@ -119,6 +130,8 @@ target_link_libraries(systemsettings PRIVATE
     KF6::I18nQml
     KF6::ColorScheme
     Plasma::Activities
+    Plasma::Plasma
+    Qt::DBus
     Qt::Svg
     Qt::QuickWidgets
     Qt::Qml
@@ -148,3 +161,5 @@ qt_add_resources(systemsettings hub_preview_shaders
     BASE "${CMAKE_CURRENT_BINARY_DIR}"
     FILES "${CMAKE_CURRENT_BINARY_DIR}/desktop-preview.frag.qsb"
 )
+
+qt_add_resources(systemsettings panel_settings_script PREFIX "/settings-hub" FILES PanelScript.js)
