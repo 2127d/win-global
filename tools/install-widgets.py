@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGES = ('org.sequoia.downloads', 'org.sequoia.dockseparator', 'org.sequoia.startmenu', 'org.sequoia.desktopmenu')
+PACKAGES = ('org.sequoia.folderstack', 'org.sequoia.dockseparator', 'org.sequoia.startmenu', 'org.sequoia.desktopmenu')
 
 
 def install_package(source, package_root):
@@ -139,7 +139,7 @@ def main():
         subprocess.run(['systemctl', '--user', 'restart', 'plasma-plasmashell.service'], check=True)
     else:
         print('Before adding widgets, restart Plasma with systemctl --user restart plasma-plasmashell.service, or log out and back in.')
-    print('Existing System Tray and Icons-only Task Manager instances use the overlay. After restarting Plasma, add Downloads Stack, Dock Separator, and Sequoia Start Menu from Add Widgets if needed. Remove and re-add any instances still showing an earlier loading error.')
+    print('Existing System Tray and Icons-only Task Manager instances use the overlay. After restarting Plasma, add Folder Stack, Dock Separator, and Sequoia Start Menu from Add Widgets if needed. Remove and re-add any instances still showing an earlier loading error.')
 
 
 if __name__ == '__main__':

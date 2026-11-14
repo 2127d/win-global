@@ -33,33 +33,21 @@ AppearanceActionPill {
     C.ToolTip.visible: hovered && !menu.visible
     C.ToolTip.text: qsTr("More appearance options")
 
-    component RoundedMenuItem: AppearanceMenuItem {
-        id: menuItem
-        background: S.PillHighlight {
-            theme: menuItem.theme
-            highlighted: menuItem.highlighted
-            hovered: menuItem.hovered
-            pressed: menuItem.down
-            focused: menuItem.visualFocus
-            enabled: menuItem.enabled
-        }
-    }
-
     AppearancePopupMenu {
         id: menu
         objectName: "appearanceMoreMenu"
         trigger: control
         backdropItem: control.backdropItem
-        RoundedMenuItem {
+        AppearancePillMenuItem {
             text: control.componentsVisible ? qsTr("Hide appearance components") : qsTr("Show appearance components")
             onTriggered: control.toggleComponents()
         }
-        RoundedMenuItem {
+        AppearancePillMenuItem {
             text: qsTr("Undo last applied look")
             enabled: !appearancePreview.busy
             onTriggered: appearancePreview.trial("restore")
         }
-        RoundedMenuItem {
+        AppearancePillMenuItem {
             text: qsTr("Global Theme…")
             onTriggered: navigation.open("kcm_lookandfeel")
         }

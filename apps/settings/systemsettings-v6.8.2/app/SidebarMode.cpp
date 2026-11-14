@@ -37,11 +37,39 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
+#include <QQmlAbstractUrlInterceptor>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QQuickWidget>
 #include <QStandardPaths>
+
+// Keep KDE's native KCM backends and their managed configuration lifecycle.
+// Only the preview app substitutes the presentation on its shared QML engine.
+class HubPageUrlInterceptor final : public QObject, public QQmlAbstractUrlInterceptor
+{
+public:
+    explicit HubPageUrlInterceptor(QQmlEngine *engine) : QObject(engine) { engine->addUrlInterceptor(this); }
+    QUrl intercept(const QUrl &url, DataType type) override
+    {
+        if (type == QmlFile && url == QUrl(QStringLiteral("qrc:/kcm/kcm_landingpage/main.qml"))) {
+            return QUrl(QStringLiteral("qrc:/qt/qml/org/kde/systemsettings/QuickSettings.qml"));
+        }
+        if (type == QmlFile && url == QUrl(QStringLiteral("qrc:/kcm/kcm_lookandfeel/main.qml"))) {
+            return QUrl(QStringLiteral("qrc:/qt/qml/org/kde/systemsettings/GlobalTheme.qml"));
+        }
+        if (type == QmlFile && url == QUrl(QStringLiteral("qrc:/kcm/kcm_style/main.qml"))) {
+            return QUrl(QStringLiteral("qrc:/qt/qml/org/kde/systemsettings/ApplicationStyle.qml"));
+        }
+        if (type == QmlFile && url == QUrl(QStringLiteral("qrc:/kcm/kcm_desktoptheme/main.qml"))) {
+            return QUrl(QStringLiteral("qrc:/qt/qml/org/kde/systemsettings/PlasmaStyle.qml"));
+        }
+        if (type == QmlFile && url == QUrl(QStringLiteral("qrc:/kcm/kcm_colors/main.qml"))) {
+            return QUrl(QStringLiteral("qrc:/qt/qml/org/kde/systemsettings/Colors.qml"));
+        }
+        return url;
+    }
+};
 
 FocusHackWidget::FocusHackWidget(QWidget *parent)
     : QWidget(parent)
@@ -238,6 +266,7 @@ void SidebarMode::initEvent()
     d->mainLayout->setContentsMargins(0, 0, 0, 0);
     d->mainLayout->setSpacing(0);
     d->engine = std::make_shared<QQmlEngine>();
+    if (qEnvironmentVariableIntValue("SEQUOIA_APPEARANCE_HUB") == 1) new HubPageUrlInterceptor(d->engine.get());
     qApp->setProperty("__qmlEngine", QVariant::fromValue(d->engine.get()));
     d->moduleView = new ModuleView(d->engine, d->mainWidget);
     connect(d->moduleView, &ModuleView::moduleChanged, this, &SidebarMode::moduleLoaded);
@@ -620,6 +649,7 @@ void SidebarMode::initWidget()
     qmlRegisterType<HubIslandRim>("org.sequoia.settingsglass", 1, 0, "IslandRim");
     qmlRegisterType<HubGlyph>("org.sequoia.settingsglass", 1, 0, "Glyph");
     qmlRegisterType<SequoiaGlass::Rim>("org.sequoia.settingsglass", 1, 0, "Rim");
+    d->engine->rootContext()->setContextProperty(QStringLiteral("moduleActions"), d->moduleView);
     d->engine->rootContext()->setContextProperty(QStringLiteral("panelSettings"), new PanelSettings(this));
     d->engine->rootContext()->setContextProperty(QStringLiteral("appearancePreview"), new AppearancePreview(d->mainWidget, this));
     d->navigation = new SettingsNavigation(rootItem(), this);

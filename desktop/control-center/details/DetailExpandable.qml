@@ -2,7 +2,7 @@
 import QtQuick
 import org.kde.plasma.extras as PlasmaExtras
 
-PlasmaExtras.ExpandableListItem {
+DetailExpandableBase {
     id: control
     property bool grouped:false
     property alias cardSurface: surface

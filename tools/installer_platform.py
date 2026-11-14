@@ -20,7 +20,7 @@ COMPONENTS = {
     'icons': ('Icons', 'Sequoia Tahoe for KDE; default Adwaita icons for native and Flatpak GTK apps. Disables KDE-to-GTK appearance syncing; removal restores it.'),
     'wallpaper': ('Wallpaper', 'Michigan Glass light/dark pair, Natural Colors glass artwork, and classic Sequoia Eleven wallpapers.'),
     'fonts': ('Fonts', 'Adwaita Sans and Nunito.'),
-    'widgets': ('Desktop widgets', 'Custom tray, trash, animated task manager, Start Menu, Downloads Stack, Dock Separator, Kpple Menu and Window Title Fork.'),
+    'widgets': ('Desktop widgets', 'Custom tray, trash, animated task manager, Start Menu, Folder Stack, Dock Separator, Kpple Menu and Window Title Fork.'),
     'global-theme': ('Global Theme, desktop layout & splash', 'Coordinated presets and top bar/dock layout. Includes the styles, colors, icons, wallpaper, fonts and widgets referenced by the presets.'),
     'lockscreen': ('Lock screen', 'Clock, password field and media controls.'),
     'quick-style': ('Qt Quick application styling', 'Shared KDE application surfaces and switches.'),

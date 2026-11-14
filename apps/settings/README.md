@@ -31,6 +31,124 @@ hidden; the native controls and preview contents are retained. The presentation
 is shared by all categories, including pages opened from search or a direct
 link, dynamically opened subpages, and the in-app host for external modules.
 
+## Appearance Hub Quick Settings
+
+The separate Appearance Hub preview restyles Quick Settings with the shared
+Sequoia library while retaining the installed `kcm_landingpage` backend.
+A preview-only QML URL interceptor replaces its main presentation, so KDE still
+owns theme assignments, automatic day/night switching, animation speed,
+file-click behavior, most-used pages, Apply/Reset/Defaults, and unsaved prompts.
+The themed footer calls the original ModuleView actions; native footer buttons
+remain available internally and are displayed again on other modules.
+
+The top-left circular Back button returns through normal navigation, deferring
+the call until its QML click handler finishes because leaving destroys the KCM.
+The sidebar Back button remains. Theme pack pickers use KDE's lazy, variant-filtered
+model, with previews and keyboard navigation. The page reflows its theme cards
+at narrow widths and uses scrolling edge fades without a visible scrollbar.
+
+`ThemePreviewCard`, `ChoiceCard`, and `SliderPill` live in the standalone
+`sandbox/apps/sequoia-component-library` package, with interactive catalog samples
+for Solid, Transparent, and Glass in Light and Dark. Existing pills, circles,
+popups, and highlights are reused.
+
+```sh
+python3 tools/verify-settings-navigation.py --hub --composited --overlay --dark --quick-only --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+```
+
+This isolated check covers native staging/persistence and Reset, light/dark/auto
+selection, theme pack assignments, popup toggling and keyboard navigation,
+slider keys, unsaved-change cancellation, circular back navigation, and compact
+layout. The shared library also checks pointer dragging, disabled choices,
+exclusive cards, and all six material/color combinations.
+
+## Appearance Hub Global Theme
+
+The preview also replaces the presentation of KDE's `kcm_lookandfeel` while
+keeping its native model, configuration skeleton, and apply/save/remove methods.
+Its responsive theme grid uses shared `ThemePreviewCard` controls, with rounded
+local previews, wrapping names, and a rounded actions menu. Theme application
+retains the simple/detailed component choices and the desktop-replacement warning.
+Only the components selected in the confirmation dialog are applied.
+
+Automatic mode retains the light/dark package filters, day/night configuration,
+idle delay, Apply, Reset, and Defaults. Save Current Theme keeps KDE's duplicate
+name validator, image chooser, screenshot maker, and package creation. Theme
+removal still requires confirmation and protects active/system packages; Get New
+uses KDE's existing download action and model-refresh callbacks. Full-screen
+preview remains available. Local Back first returns from selectors/save to the
+main Global Theme page, then leaves through the existing unsaved-change handling.
+The sidebar Back button remains available.
+
+The shared library now includes `RoundedPreview`, `SurfaceDialog`, `CheckPill`,
+`SpinPill`, and `TextFieldPill`. `ThemePreviewCard` uses `RoundedPreview` for both
+single and split artwork, including Quick Settings' Light, Dark, and Automatic
+cards. The preview corners use an antialiased 12 px radius in both renderers.
+
+```sh
+python3 tools/verify-settings-navigation.py --hub --composited --overlay --dark --global-only --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+```
+
+This test uses copied theme fixtures and a temporary KDE defaults directory. It
+applies only fixture colors, verifies component selection and layout warnings,
+checks automatic assignments/idle persistence, saves a temporary theme, removes
+only a copied fixture, tests full-screen preview, and checks compact layout and
+Back. The library catalog verifies rounded alpha corners, input behavior, and
+dialogs across all materials in Light and Dark.
+
+## Appearance Hub Application Style
+
+The preview replaces only the presentation of `kcm_style`. Its native model,
+settings skeleton, Qt/Union previews, style configuration, installation, staged
+uninstall/undo, and Apply/Reset/Defaults remain owned by KDE. The page uses shared
+pill actions, a round Back button, rounded action menus, and a responsive live
+preview gallery. The sidebar Back button remains. Icons and toolbar labels use
+shared check pills and selectors in a themed dialog. The GTK subpage retains its
+native theme model, archive installation, downloads, preview, and removal actions;
+its entry follows KDE's GTK configuration service availability.
+
+`LivePreviewCard` is a new reusable library component on the Rounded rectangle
+catalog page. Hosts provide live content through `previewComponent`; pointer and
+keyboard activation select the card, while its circular actions trigger stays
+independent. All six material/color combinations use the same implementation.
+
+```sh
+python3 tools/verify-settings-navigation.py --hub --composited --overlay --dark --style-only --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+```
+
+The isolated check covers Qt/Union staging, Apply and persisted settings, Reset,
+staged removal/undo of a copied Union fixture, icon/toolbar options, dialog input,
+GTK availability gating, material variants, compact layout, and circular navigation.
+
+The broken Light/Dark Liquid Glass **Global Theme packages** have been retired.
+The generator now maintains only standalone Glass palettes, so builds cannot
+reintroduce those packages. Liquid Glass's compositor effect, native application
+style, decorations, Plasma styles, palettes, and material controls remain intact.
+
+## Appearance Hub Plasma Style
+
+`PlasmaStyle.qml` restyles the installed `kcm_desktoptheme` presentation while
+retaining native search/color filters, live SVG theme previews, theme selection,
+Apply/Reset/Defaults, archive installation and URL drops, download callbacks,
+external theme editing, and staged deletion with undo. Active and system styles
+remain protected by the native model. The circular Back button uses normal
+unsaved-change handling and leaves the sidebar navigation available.
+
+The responsive gallery reuses `LivePreviewCard`, with 360 px maximum card widths.
+Search, filter, actions, menus and the footer use shared Sequoia controls. The new
+`MessagePanel` library component shows installation success/error feedback, with
+information and warning variants in the Rounded rectangle catalog page. It
+supports wrapped text, all six material/color variants, and accessible dismissal.
+
+```sh
+python3 tools/verify-settings-navigation.py --hub --composited --overlay --dark --plasma-only --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+```
+
+The test uses copied Plasma style packages and a private configuration directory.
+It exercises native search/filter/empty state, selection/Apply/Reset, persistence,
+active-theme removal protection, staged removal/undo, installation of a temporary
+archive, popup toggling, unsaved navigation, theme variants, and responsive layout.
+
 ## Build and install
 
 Build dependencies are the Qt 6 and KDE Frameworks development packages listed
@@ -173,8 +291,9 @@ the reference scene. Recent images, saved weather locations, window state, and
 forecast caches are copied into the private session; Weather uses its Flat view.
 These are cached snapshots, not a feed of currently open windows.
 Both image sizes have antialiased rounded corners and preserve the full frame.
-The Appearance scroll view reserves its vertical scrollbar gutter in both text
-directions. Its viewport width stays constant when overflow changes, preventing
+The Appearance scroll view hides its vertical scrollbar while retaining scrolling
+and reserves its gutter in both text directions. Its viewport width stays constant
+when overflow changes, preventing
 aspect-ratio previews from oscillating between wider/taller and narrower/shorter
 layouts. `--layout-only --screen-width 3440 --screen-height 1440` in the UI verifier
 checks width stability at 51 window heights around that threshold.
@@ -257,10 +376,11 @@ guarded helper. Screenshots include compositor output, not just the translucent
 application buffer. They also verify the 78-module catalog, native page hosting,
 navigation, and unsaved-change cancellation. No live desktop settings are changed.
 
-The reference Appearance layout keeps material cards and the rendered desktop
-on the left, an ordered component list on the right, and a fixed Help / Defaults /
-Reset / Preview desktop / Apply footer. Compact windows stack the component panel
-without losing the footer. Save look stores named material-and-color-mode presets
+The Appearance layout uses one vertical scroll: material cards, the desktop
+preview and its options, a horizontal appearance-icon pill, an accent-color pill,
+and the wide panel-settings island. Help / Defaults / Reset / Preview desktop /
+Apply stay in a fixed footer. The icon and accent strips scroll horizontally on
+narrow windows; keyboard focus brings an offscreen option into view. Save look stores named material-and-color-mode presets
 in the application's `appearance-looks` data directory; this is not a full desktop
 layout export. Global Theme selection/downloads, Auto, Schedule, and app overrides
 route to the original KDE modules. Wallpaper and panel-layout preservation are
@@ -299,18 +419,46 @@ anchor during application shutdown.
 
 ### Appearance Hub panel settings
 
-The sidebar has two separate floating `HubPanel` surfaces with a 12 px gap:
-Appearance icons and Related settings above, and the panel selector plus shared
-`S.SettingsGrid` below. Each surface retains 12 px internal padding. A pill selector identifies each live panel by edge,
-screen and stable containment ID. The sidebar uses two control columns at its
-normal width, retains the icon grid's three columns, and scrolls within the window.
-Tiles use the component library's 12 px padding, 8 px gaps and live material theme.
+Appearance icons now share a 58 px pill below the desktop preview options,
+with 8 px inset padding, 42 px icon targets and a circular Related settings button.
+There is no close button; More appearance options can still toggle the strip.
+Related settings uses AppearancePillMenuItem, matching Show Menu and More.
+
+The 58 px accent pill follows the icon strip, then panel settings occupy the full
+preview width. Accent color and Panel settings titles sit above their respective
+surfaces. The panel island keeps 12 px padding and a selector/refresh row.
+Its grid uses up to six columns with 160 px minimum cells, 12 px tile
+padding and 8 px gaps. Hiding the icon strip does not stop panel updates.
+
+Accent swatches stage a custom color and enable the footer Apply/Reset buttons.
+Apply uses KDE’s `plasma-apply-colorscheme --accent-color` command; Reset discards
+the pending color. Custom color opens a chooser initialized to the pending or
+current accent. It uses the library Panel with a 24 px radius,
+ActionPill confirmation buttons and CircleButton color options. The surface follows
+solid/transparent/glass and the host light/dark palette, sampling the page behind
+it for a rounded, masked backdrop blur. The spectrum supports pointer dragging and arrow
+keys; hue and hex entry allow arbitrary opaque colors. Use color stages the
+selection for the footer Apply button; Cancel or Escape leaves it unchanged. The content scrolls
+inside small windows. More colors opens the native Colors module. The backend
+validates the color and effective installed scheme (including KDE's inherited
+kdedefaults), handles failures/timeouts without discarding the pending choice, and
+preserves Sequoia's alpha for window, header and decoration surfaces. It writes
+the chosen custom-accent source/history with KConfig notifications and refreshes
+the palette. Apply disables wallpaper-generated accents before applying a custom
+color, without changing automatic light/dark mode; failed application restores the
+previous accent source. A combined material/mode and accent Apply applies the
+accent after the look finishes. Accent application has its own busy state,
+separate from timed theme trials. Swatches are disabled while an application or
+trial is in progress. The isolated integration check verifies staging/reset,
+inherited schemes, automatic-to-custom selection, palette updates, retry behavior,
+and combined theme/accent changes.
+
 
 `PanelSettings` calls Plasma's `evaluateScript` asynchronously. `PanelScript.js`
 reads and edits the installed panel scripting API: screen/edge, alignment, length
 mode, visibility, opacity, floating panel/applets, thickness, custom min/max length
 and offset. Changes are immediate, as in KDE Edit Mode; the Appearance Apply/Reset
-buttons still apply only the staged theme. Polling while the hub is visible picks
+buttons apply the staged theme and accent choices. Polling while the hub is visible picks
 up external edits and added/removed panels. Commands capture the selected panel ID,
 coalesce successive slider events, validate values and respect immutable panels.
 The live config is read to distinguish Windows Go Below, which Plasma 6.8's
@@ -340,7 +488,7 @@ bottom of the sidebar. Header and action glyphs retain their existing treatment.
 
 The sidebar Show Menu uses `AppearancePopupMenu` / shared `PopupMenu` with a
 20 px rounded, sampled backdrop and the normal material fallback. It maps the
-original KDE `QAction` objects into library `MenuItem`s, including visibility,
+original KDE `QAction` objects into `AppearancePillMenuItem`s, including visibility,
 enabled state and checkmarks. The trigger uses `visible ? close() : open()`;
 `CloseOnPressOutsideParent` excludes it from automatic dismissal and prevents
 the second-click reopen flash. The existing native menu remains available to
@@ -353,3 +501,47 @@ Home, Quick Settings and category page buttons now instantiate the shared
 sidebar only supplies the theme, labels, source glyphs, selected-page bindings
 and callbacks. The library owns the 42 px pill geometry, 8 px symmetric vertical
 padding, Full Icons, hover/focus surfaces and disabled state.
+
+Show Menu sits to the right of the sidebar search field at 42 × 42 px, with an
+8 px gap. Its rows and More appearance options share `AppearancePillMenuItem`,
+which uses the library’s `PillHighlight` for the same glass rim and capsule shape.
+
+The Icon pack card sits immediately below Accent color and above Panel settings.
+It uses the shared ThemeSelector pill, five samples from the selected installed
+pack (with inheritance fallback), and a CircleButton shortcut to the full Icons
+module. The selector and samples share one row with 12 px spacing. The selector
+and popup fit the longest installed pack name, measured at the menu's selected
+font weight, with control padding. Narrow windows constrain the selector and
+allow the sample strip to scroll. Selection applies immediately, validates the installed pack, honors locked
+configuration, writes only Icons/Theme and broadcasts KIconLoader changes using
+the same cache invalidation path as KDE's Icons KCM. Hidden/internal and unsupported
+GNOME-only themes are excluded. The card refreshes installed packs on return to
+Appearance and follows external theme changes through the existing config watcher.
+Selection is disabled during appearance operations or unapplied material choices.
+
+The sidebar header uses the active icon pack's full-color preferences-system icon.
+ScrollEdgeFade masks viewport alpha only where content continues offscreen: 24 px
+at the main/sidebar edges, 16 px for icon/accent/sample strips, and 20 px inside
+the custom color chooser. Fully revealed ends remain opaque. The original
+Flickable retains wheel, touch, focus and keyboard handling; the effect adds no
+input surface or scrollbar. The software renderer keeps normal clipped content
+without a shader effect. The layout check verifies edge conditions, wheel input,
+rendered fading, the header icon and stable preview geometry.
+
+
+The Colors page is a presentation of the native `kcm_colors` backend. It uses
+bounded 360 px LivePreviewCards, SearchField/ThemeSelector filters, the shared
+ColorSwatch and ColorDialog, and a deferred CircleButton back action. Native
+scheme selection, accent source/value, Apply/Reset/Defaults, scheme editing,
+file import, NewStuff events, staged removal and undo remain in KDE. Preview
+colors come from each scheme's actual palettes and KDE's accent/tint functions.
+The accent panel fits its controls and wraps on narrow windows. Color schemes
+start at the upper-left; content scrolls with edge fading and no visible vertical
+scrollbar. The old sidebar Back remains.
+
+`tools/verify-settings-navigation.py --hub --composited --overlay --colors-only`
+uses copied color schemes and private configuration, data, cache and DBus roots.
+It checks native scheme/accent persistence, search/filter/reset, automatic-to-custom
+accent selection, custom chooser validation/cancel/accept, active-scheme protection,
+removal/undo/import, repeated menu toggle, unsaved Back and responsive layouts in
+all six material/mode combinations. No live desktop theme is applied by this test.

@@ -5,13 +5,14 @@ import org.kde.plasma.networkmanagement as PlasmaNM
 import ".." as Network
 Item {
     id:stage;width:418;height:680
+    QtObject { id:mainWindow; property bool expanded:true }
     Network.Preview{id:preview;anchors.fill:parent}
     Network.NetworkRadio{id:radio;visible:false;width:200;title:"Wi-Fi";iconName:"network-wireless-symbolic";checked:false;onToggled:checked=!checked}
     TestCase {
         name:"NetworkLayouts";when:windowShown
         function search(root,name){if(root.objectName===name && root.visible)return root;for(const child of root.children || []){const result=search(child,name);if(result)return result;}return null;}
         function find(name){const item=search(preview,name);verify(!!item,name);return item;}
-        function init(){radio.visible=false;radio.enabled=true;radio.checked=false;stage.width=418;preview.fixture.reset();preview.summary.allNetworks=false;preview.summary.searchText="";preview.scroll.contentItem.contentY=0;wait(40);}
+        function init(){mainWindow.expanded=true;preview.visible=true;radio.visible=false;radio.enabled=true;radio.checked=false;stage.width=418;preview.fixture.reset();preview.summary.allNetworks=false;preview.summary.searchText="";preview.scroll.contentItem.contentY=0;wait(40);}
         function test_radio_mouse_keyboard_and_disabled_state() {
             radio.visible=true;wait(30);const toggle=findChild(radio,"Switch");
             verify(!!toggle);mouseClick(toggle);verify(radio.checked);toggle.forceActiveFocus();keyClick(Qt.Key_Space);verify(!radio.checked);
@@ -33,6 +34,21 @@ Item {
             for(const choice of [{id:"networkLayoutDesk",mode:"desk"},{id:"networkLayoutCompact",mode:"compact"},{id:"networkLayoutSpotlight",mode:"spotlight"}]){
                 mouseClick(find("networkLayoutButton"));const menu=findChild(preview,"networkLayoutMenu");verify(!!menu);tryCompare(menu,"opened",true,1000,choice.mode);const entry=findChild(preview,choice.id);verify(!!entry);mouseClick(entry);wait(40);compare(preview.fixture.layoutMode,choice.mode);verify(entry.checked);tryCompare(menu,"visible",false,1000);
             }
+        }
+        function test_menu_dismisses_when_applet_collapses() {
+            mouseClick(find("networkLayoutButton"));
+            const menu=findChild(preview,"networkLayoutMenu");tryCompare(menu,"opened",true);
+            mainWindow.expanded=false;wait(0);compare(menu.visible,false);
+            mainWindow.expanded=true;wait(40);compare(menu.visible,false);
+        }
+        function test_menu_dismisses_when_popup_content_hides() {
+            mouseClick(find("networkLayoutButton"));
+            const menu=findChild(preview,"networkLayoutMenu");tryCompare(menu,"opened",true);
+            preview.visible=false;wait(0);
+            compare(menu.visible,false);
+            preview.visible=true;wait(40);compare(menu.visible,false);
+            mouseClick(find("networkLayoutButton"));tryCompare(menu,"opened",true);
+            menu.close();tryCompare(menu,"visible",false);
         }
         function test_footer_highlights_stay_inside_menu() {
             mouseClick(find("networkLayoutButton"));
@@ -63,6 +79,73 @@ Item {
             preview.fixture.entries=preview.fixture.entries.slice(1);wait(20);compare(preview.summary.primary.name,"Ethernet");
             preview.fixture.entries=[{row:5,name:"Connecting",icon:"network-wireless-symbolic",type:PlasmaNM.Enums.Wireless,active:false,connecting:true}];wait(20);verify(preview.summary.primary.connecting);
             preview.fixture.entries=[];wait(20);compare(preview.summary.primary,null);verify(!search(preview,"networkPrimaryDetails"));
+        }
+        function test_expanded_action_pills_and_arrow_inset() {
+            preview.fixture.layoutMode="compact";wait(50);
+            const row=find("networkGrouped:0");
+            mouseClick(row.expandToggleControl);tryCompare(row,"expanded",true);wait(250);
+            for (let i=0;i<2;++i) {
+                const button=row.contextualActionAt(i);verify(!!button);
+                verify(button.background.visible);
+                fuzzyCompare(button.background.radius,button.background.height/2,0.5);
+                mouseClick(button);compare(preview.fixture.lastAction,(i===0?"configure:":"share:")+"0");
+            }
+            const configure=row.contextualActionAt(0), share=row.contextualActionAt(1);
+            const configurePoint=configure.mapToItem(row,0,0), sharePoint=share.mapToItem(row,0,0);
+            fuzzyCompare(configurePoint.y,sharePoint.y,0.5);
+            fuzzyCompare(sharePoint.x-configurePoint.x-configure.width,8,0.5);
+            fuzzyCompare(configure.width,configure.implicitWidth,0.5);
+            fuzzyCompare(share.width,share.implicitWidth,0.5);
+            const arrow=row.expandToggleControl;
+            const bounds=arrow.background.mapToItem(row,0,0,arrow.background.width,arrow.background.height);
+            verify(row.width-bounds.x-bounds.width>=12);
+            mouseClick(arrow);tryCompare(row,"expanded",false);
+        }
+        function test_connection_pills_keep_action_and_arrow_gap() {
+            preview.fixture.layoutMode="compact";wait(50);
+            const row=find("networkGrouped:0");
+            const action=row.defaultActionControl;
+            const toggle=findChild(row,"sequoiaExpandToggle");
+            for (const label of ["Connect","Disconnect"]) {
+                row.defaultActionButtonAction.text=label;wait(40);
+                verify(action.background.visible);
+                fuzzyCompare(action.background.radius,action.background.height/2,0.5);
+                const pill=action.background.mapToItem(row,0,0,action.background.width,action.background.height);
+                const arrow=toggle.background.mapToItem(row,0,0,toggle.background.width,toggle.background.height);
+                verify(arrow.x-pill.x-pill.width>=8);
+                mouseClick(action);compare(preview.fixture.lastAction,"connect:0");
+            }
+            row.defaultActionButtonAction.text="Connect";
+        }
+        function test_expand_collapse_hover_is_circular_and_inset() {
+            preview.fixture.layoutMode="compact";wait(50);
+            const row=find("networkGrouped:2");
+            const toggle=findChild(row,"sequoiaExpandToggle");verify(!!toggle);
+            for (const expanded of [true,false]) {
+                mouseClick(toggle);tryCompare(row,"expanded",expanded);
+                mouseMove(toggle,toggle.width/2,toggle.height/2);wait(60);
+                const hover=toggle.background;
+                verify(hover.visible);
+                fuzzyCompare(hover.width,hover.height,0.5);
+                fuzzyCompare(hover.radius,hover.width/2,0.5);
+                const bounds=hover.mapToItem(row.cardSurface,0,0,hover.width,hover.height);
+                verify(bounds.x>=4 && bounds.y>=4);
+                verify(bounds.x+bounds.width<=row.cardSurface.width-4);
+            }
+        }
+        function test_grouped_rows_centered_after_layout_and_resize() {
+            for (const mode of ["desk", "compact"]) for (const width of [292,418,552]) {
+                preview.fixture.layoutMode=mode;stage.width=width;wait(50);
+                preview.groupedView.forceLayout();wait(20);
+                for (let i=0;i<3;++i) {
+                    const row=find("networkGrouped:"+i);
+                    const point=row.mapToItem(preview.groupedView,0,0);
+                    fuzzyCompare(point.x,12,0.5);
+                    fuzzyCompare(preview.groupedView.width-point.x-row.width,12,0.5);
+                    compare(row.icon.toString(),i===0?"network-wireless-symbolic":row.connectionIcon);
+                    compare(row.iconEmblem.toString(),i===0?"preferences-system-bluetooth-symbolic":"");
+                }
+            }
         }
         function test_desk_cards_and_narrow_footer(){
             for(const mode of ["spotlight","desk","compact"])for(const width of [292,418,552]){

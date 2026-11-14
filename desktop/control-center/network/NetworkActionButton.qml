@@ -14,17 +14,7 @@ Details.DetailButton {
     leftPadding: 12
     rightPadding: 12
     font: Kirigami.Theme.defaultFont
-    background: Details.DetailSurface {
-        radius: Math.min(width, height) / 2
-        visible: !button.flat || button.hovered || button.down || button.checked || button.visualFocus
-        shadow.size: button.flat ? 0 : 5
-        hovered: button.hovered && button.enabled
-        pressed: button.down
-        emphasized: button.checked
-        color: button.checked ? Qt.alpha(Kirigami.Theme.highlightColor,0.24) : Qt.alpha(stateColor,dark?0.58:0.46)
-        border.color: button.checked ? Qt.alpha(Kirigami.Theme.highlightColor,0.5) : Qt.rgba(1,1,1,dark?0.22:0.64)
-        focused: button.visualFocus
-    }
+    background: NetworkButtonSurface { control: button }
     contentItem: RowLayout {
         spacing: 6
         Kirigami.Icon {

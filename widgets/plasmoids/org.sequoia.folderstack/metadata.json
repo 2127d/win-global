@@ -1,0 +1,20 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "XxKrustyxX"
+            }
+        ],
+        "Category": "Utilities",
+        "Description": "Folder Stack with Sequoia fan-out and fold-back motion, previews and folder settings",
+        "Icon": "folder-download",
+        "Id": "org.sequoia.folderstack",
+        "License": "GPL-2.0+",
+        "Name": "Folder Stack",
+        "Version": "1.17.1",
+        "Website": "https://github.com/XxKrustyxX/plasma-stack",
+        "BugReportUrl": "https://github.com/XxKrustyxX/plasma-stack/issues"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

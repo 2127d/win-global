@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the trial toolbar matches canvas alpha while regular islands stay opaque."""
+"""Verify toolbars stay opaque in light/dark Glass and regular modes."""
 import os
 os.environ.update(QT_QPA_PLATFORM='offscreen',QT_QPA_PLATFORMTHEME='generic')
 from PySide6.QtWidgets import QApplication,QStyleFactory,QToolBar,QStyleOptionToolBar,QStyle
@@ -18,7 +18,7 @@ for dark in (False,True):
         painter=QPainter(image);style.drawControl(QStyle.CE_ToolBar,option,painter,bar);painter.end()
         pixel=image.pixelColor(180,28)
         print(name,'dark' if dark else 'light',pixel.getRgb(),flush=True)
-        if name=='SequoiaElevenGlass':assert all(abs(a-b)<=1 for a,b in zip(pixel.getRgb(),expected.getRgb()))
-        else:assert pixel.alpha()==255
+        assert pixel.alpha()==255
+        assert palette.color(QPalette.Window).alpha()==expected.alpha(), 'Canvas palette changed'
         bar.deleteLater()
-print('Toolbar canvas match verified in both modes; default style remains opaque.')
+print('Solid toolbar surfaces verified in both modes/styles; canvas alpha preserved.')

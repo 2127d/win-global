@@ -345,8 +345,8 @@ Theme=org.sequoia.eleven.{mode}
             if material == 'transparent':
                 defaults += '\n[kwinrc][Plugins]\nblurEnabled=true\n'
             (package/'contents/defaults').write_text(defaults)
-    from glass_global_themes import build as build_glass_global_themes
-    build_glass_global_themes(ROOT)
+    from glass_global_themes import build as build_glass_palettes
+    build_glass_palettes(ROOT)
     # The portable installer is the supported source distribution. Do not
     # recreate the obsolete source tarball containing preview captures.
     from dist_packages import assets

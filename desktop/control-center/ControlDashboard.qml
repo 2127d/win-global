@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+import "details" as Details
 import QtQuick
 import "SequoiaPopup" as Popup
 import QtQuick.Layouts
@@ -214,6 +215,11 @@ ColumnLayout {
         Popup.GlassToolButton { objectName: "moveTileEarlier"; text: qsTr("Move earlier"); icon.name: "go-previous"; display: PC.AbstractButton.IconOnly; enabled: !!dashboard.selectedSpec; onClicked: dashboard.moveSelected(-1); PC.ToolTip { text: parent.text } }
         Popup.GlassToolButton { objectName: "moveTileLater"; text: qsTr("Move later"); icon.name: "go-next"; display: PC.AbstractButton.IconOnly; enabled: !!dashboard.selectedSpec; onClicked: dashboard.moveSelected(1); PC.ToolTip { text: parent.text } }
         PC.ComboBox {
+            id: sequoiaMenuSelector0
+            property QtObject sequoiaSelectorLifetime: Details.DetailPopupLifetime {
+                popup: sequoiaMenuSelector0.popup
+                owner: sequoiaMenuSelector0
+            }
             objectName: "tileSizePicker"
             implicitWidth: 120
             implicitHeight: Math.max(32, Kirigami.Theme.defaultFont.pointSize * 2 + 12)

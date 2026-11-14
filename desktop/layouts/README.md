@@ -13,7 +13,7 @@ The preset creates these panels on the primary screen:
   two margin separators and the bold 11pt clock with its custom date format.
 - A 64px, centered, content-fitting floating dock that dodges windows: Sequoia
   Start Menu, margin separator, Icons-only Task Manager with the saved launcher
-  order, Dock Separator, Downloads Stack and Trash.
+  order, Dock Separator, Folder Stack and Trash.
 
 The Global Theme component supplies the six required nonstandard pure QML
 widgets. Copies already installed by the user are kept and remain outside the

@@ -143,12 +143,13 @@ def build(destination):
                         'upstream_sha256': compatibility,
                         'files': {str(p.relative_to(package)): digest(p) for p in sorted(package.rglob('*')) if p.is_file()}}
             (package / 'sequoia-package.json').write_text(json.dumps(manifest, indent=2) + '\n')
-        for name in ('org.sequoia.downloads', 'org.sequoia.dockseparator'):
+        for name in ('org.sequoia.folderstack', 'org.sequoia.dockseparator'):
             shutil.copytree(ROOT / 'widgets/plasmoids' / name, packages / name)
-            shutil.copy2(ROOT / 'LICENSE', packages / name / 'LICENSE')
+            if not (packages / name / 'LICENSE').exists():
+                shutil.copy2(ROOT / 'LICENSE', packages / name / 'LICENSE')
         shutil.copytree(ROOT / 'widgets/plasmoids/org.sequoia.startmenu', packages / 'org.sequoia.startmenu')
         destination.mkdir(parents=True, exist_ok=True)
-        archives = {'downloads': 'org.sequoia.downloads', 'separator': 'org.sequoia.dockseparator',
+        archives = {'downloads': 'org.sequoia.folderstack', 'separator': 'org.sequoia.dockseparator',
                     'icons-only-task-manager-animated': IDS['taskmanager'], 'system-tray': IDS['tray'],
                     'start-menu': 'org.sequoia.startmenu'}
         for filename, name in archives.items():

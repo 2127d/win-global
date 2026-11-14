@@ -91,10 +91,10 @@
                 "config": {}
             },
             {
-                "plugin": "org.sequoia.downloads",
+                "plugin": "org.sequoia.folderstack",
                 "config": {
                     "/General": {
-                        "folderUrl": ""
+                        "folder": ""
                     }
                 }
             },

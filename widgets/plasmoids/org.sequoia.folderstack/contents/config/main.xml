@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <!-- Empty means the Downloads folder -->
+    <entry name="folder" type="String"><default></default></entry>
+    <!-- Show the files used most recently in any folder (KDE's Recent Files) instead of the folder -->
+    <entry name="recentFiles" type="Bool"><default>false</default></entry>
+    <!-- 0 = newest first, 1 = name -->
+    <entry name="sortMode" type="Int"><default>0</default></entry>
+    <!-- 0 = fan, 1 = grid, 2 = automatic (fan unless there are more files than fit) -->
+    <entry name="viewMode" type="Int"><default>0</default></entry>
+    <!-- Folders clicked in the grid: 0 = open in place with a back button, 1 = stack on top -->
+    <entry name="subfolderMode" type="Int"><default>0</default></entry>
+    <!-- Bounce the dock icon when a download into the folder finishes -->
+    <entry name="bounceOnDownload" type="Bool"><default>true</default></entry>
+    <!-- Pictures, PDF pages, video frames, album art and office documents instead of plain icons -->
+    <entry name="showPreviews" type="Bool"><default>true</default></entry>
+    <!-- Fan rows tilt to follow the curve (false) or stay level, which keeps the text sharpest (true) -->
+    <entry name="straightLabels" type="Bool"><default>false</default></entry>
+    <entry name="maxItems" type="Int"><default>10</default></entry>
+    <!-- Icon on the dock: an icon name or a picture file. Empty = picked from the folder (Downloads, Documents, ...) -->
+    <entry name="icon" type="String"><default></default></entry>
+    <!-- Dot on files added since the stack was last closed, and how many on the dock icon -->
+    <entry name="markNew" type="Bool"><default>true</default></entry>
+    <!-- When the stack was last closed (seconds since 1970); files that arrive after it are new -->
+    <entry name="lastSeen" type="String"><default></default></entry>
+  </group>
+</kcfg>

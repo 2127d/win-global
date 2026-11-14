@@ -1,4 +1,4 @@
-Eight independent widgets: System Tray (including children and Trash), animated task manager, Downloads, Dock Separator, Start Menu, Analog Clock, Digital Clock and Grid Test.
+Eight independent widgets: System Tray (including children and Trash), animated task manager, Folder Stack, Dock Separator, Start Menu, Analog Clock, Digital Clock and Grid Test.
 
 Run python3 install-widgets.py --check, then python3 install-widgets.py.
 The installer reads all five .tar.gz packages and three .plasmoid packages.

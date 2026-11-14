@@ -9,6 +9,10 @@ import org.kde.kirigami as Kirigami
 // otherwise size that surface separately from the rows painted on top of it.
 T.Menu {
     id: menu
+    property QtObject sequoiaLifetime: DetailPopupLifetime {
+        popup: menu
+        owner: menu.parent
+    }
     popupType: QQC.Popup.Item
     padding: 8
     margins: 12

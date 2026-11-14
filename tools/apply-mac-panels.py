@@ -19,17 +19,27 @@ function settings(widget, group, values) {
     widget.reloadConfig();
 }
 var all = panels();
-var dock = all.find(p => p.location === "bottom" && p.widgets().some(w => w.type === "org.kde.plasma.icontasks"));
+var dock = all.find(p => p.location === "bottom" && p.widgets().some(w => ["org.kde.plasma.icontasks", "org.sequoia.icontasks.animated"].includes(w.type)));
 var bar = all.find(p => p.location === "top" && p.widgets().some(w => w.type === "org.kde.plasma.appmenu"));
 if (!dock || !bar) throw new Error("Expected existing dock and global-menu panel; no changes made.");
 dock.height = 68;
 dock.floating = true;
 dock.alignment = "center";
 dock.lengthMode = "fit";
-var tasks = dock.widgets().find(w => w.type === "org.kde.plasma.icontasks");
+var tasks = dock.widgets().find(w => ["org.kde.plasma.icontasks", "org.sequoia.icontasks.animated"].includes(w.type));
 settings(tasks, ["General"], {iconSpacing: 1, maxStripes: 1, taskHoverEffect: true});
-var downloads = dock.widgets().find(w => w.type === "org.sequoia.downloads") || dock.addWidget("org.sequoia.downloads");
-settings(downloads, ["General"], {folderUrl: DOWNLOADS});
+var legacyDownloads = dock.widgets().find(w => w.type === "org.sequoia.downloads");
+var downloads = dock.widgets().find(w => w.type === "org.sequoia.folderstack") || dock.addWidget("org.sequoia.folderstack");
+var downloadFolder = DOWNLOADS;
+if (legacyDownloads) {
+    legacyDownloads.currentConfigGroup = ["General"];
+    downloadFolder = legacyDownloads.readConfig("folderUrl", DOWNLOADS);
+} else {
+    downloads.currentConfigGroup = ["General"];
+    downloadFolder = downloads.readConfig("folder", DOWNLOADS);
+}
+settings(downloads, ["General"], {folder: downloadFolder});
+if (legacyDownloads) legacyDownloads.remove();
 dock.widgets().filter(w => {
     if (w.type !== "org.kde.plasma.quicklaunch") return false;
     w.currentConfigGroup = ["General"];
@@ -38,7 +48,7 @@ dock.widgets().filter(w => {
 }).forEach(w => w.remove());
 var trash = dock.widgets().find(w => w.type === "org.kde.plasma.trash") || dock.addWidget("org.kde.plasma.trash");
 var separator = dock.widgets().find(w => w.type === "org.sequoia.dockseparator") || dock.addWidget("org.sequoia.dockseparator");
-var dockOrder = dock.widgets().filter(w => !["org.sequoia.downloads", "org.kde.plasma.trash", "org.sequoia.dockseparator", "org.kde.plasma.icontasks"].includes(w.type));
+var dockOrder = dock.widgets().filter(w => !["org.sequoia.folderstack", "org.kde.plasma.trash", "org.sequoia.dockseparator", "org.kde.plasma.icontasks", "org.sequoia.icontasks.animated"].includes(w.type));
 // Keep launcher widgets to the left and the existing task order untouched.
 dockOrder = dockOrder.concat([tasks, separator, downloads, trash]);
 dockOrder.forEach((widget, index) => { widget.index = index; });
@@ -94,7 +104,7 @@ def main():
     backup.mkdir(parents=True)
     for name in ('plasma-org.kde.plasma.desktop-appletsrc', 'plasmashellrc'):
         shutil.copy2(config / name, backup / name)
-    for plugin in ('org.sequoia.dockseparator', 'org.sequoia.downloads'):
+    for plugin in ('org.sequoia.dockseparator', 'org.sequoia.folderstack'):
         target = data / 'plasma/plasmoids' / plugin
         if target.exists():
             shutil.copytree(target, backup / plugin)

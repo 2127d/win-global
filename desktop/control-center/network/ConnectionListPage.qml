@@ -139,10 +139,11 @@ ColumnLayout {
 
             footer: Item {
                 width: connectionView.width
-                height: connectionListPage.groupedList && connectionView.count === 0 ? emptyLabel.implicitHeight : 0
+                height: connectionListPage.groupedList ? (emptyLabel.visible ? emptyLabel.implicitHeight : 0) + 12 : 0
                 clip: true
                 PlasmaComponents3.Label {
                     id: emptyLabel
+                    visible: connectionListPage.groupedList && connectionView.count === 0
                     width: parent.width
                     leftPadding: 16; rightPadding: 16; topPadding: 10; bottomPadding: 12
                     wrapMode: Text.Wrap
@@ -227,7 +228,6 @@ ColumnLayout {
                 listView: connectionView
                 cardSurface.color: cardSurface.stateColor
                 grouped:connectionListPage.groupedList
-                x:grouped?12:0
                 width: connectionView.width-(grouped?24:0)
             }
 

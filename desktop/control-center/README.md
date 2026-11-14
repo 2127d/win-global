@@ -12,6 +12,16 @@ view instances while switching between existing pages; popup sizing still comes
 from the destination's content. Check directions, interruption, and disabled
 motion with `desktop/control-center/tests/tst_navigation.qml`.
 
+Tray menus close with their owning content, window, or applet expansion state.
+`details/DetailPopupLifetime.qml` handles menus and selector popups, including
+immediate dismissal when a hidden window cannot finish its exit animation.
+`DetailInsetMenu` and `DetailNativeMenu` apply this automatically; native menus
+must set `visualParent` to their owning item. The build pass also covers native
+notification file menus and audio context menus whose KDE wrappers have no
+`close()` method, using the small `details/NativeMenus` helper to close only
+native menus transient to that popup. Verify collapse, reopen, and normal actions
+with `python3 tools/verify-tray-menu-lifetimes.py` in an isolated session.
+
 The dashboard has Android-style Quick Settings with an **Edit tiles** button.
 Edit, System Settings, Lock, and Power live in a fixed glass island at the bottom
 of the dialog. In edit mode it holds Cancel and Done. The tile viewport fades at
@@ -326,3 +336,8 @@ Verify with `python3 tools/verify-dock.py` (also `--dark --large --rtl`) and
 all configuration pages, hover styles/intensity, cancellation, press feedback,
 startup motion and disabled motion. Native loading tests use isolated settings
 and a private D-Bus session. See `../WIDGETS.md` for collection export/installation.
+
+Connection desk and Compact connections center their native expandable rows with
+12px equal side insets, including after list relayout. Bluetooth PAN entries use
+the normal Wi-Fi icon with a half-size Bluetooth emblem, matching the summary
+rows without shrinking the Wi-Fi artwork.

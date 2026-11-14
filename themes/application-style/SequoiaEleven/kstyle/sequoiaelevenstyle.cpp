@@ -6249,14 +6249,14 @@ bool Style::drawToolBarBackgroundControl(const QStyleOption *option, QPainter *p
     if (!qobject_cast<const QToolBar *>(widget) || widget->testAttribute(Qt::WA_StyleSheetTarget))
         return true;
 
-    const qreal opacity = _translucentWidgets.contains(widget->window()) && !_isOpaque
-        ? StyleConfigData::toolBarOpacity() / 100.0 : 1.0;
-    _helper->renderIsland(painter, option->rect, option->palette, QPalette::Window,
-                          widget->isActiveWindow(), opacity
-#ifdef SEQUOIA_GLASS_TRIAL
-                          , option->palette.color(QPalette::Window).alpha() < 255
-#endif
-                          );
+    // Toolbars are solid islands in every material, including Liquid Glass.
+    // Preserve the canvas/menu alpha; only this surface gets an opaque palette.
+    QPalette palette(option->palette);
+    QColor surface = palette.color(QPalette::Window);
+    surface.setAlpha(255);
+    palette.setColor(QPalette::Window, surface);
+    _helper->renderIsland(painter, option->rect, palette, QPalette::Window,
+                          widget->isActiveWindow(), 1.0);
     return true;
 }
 

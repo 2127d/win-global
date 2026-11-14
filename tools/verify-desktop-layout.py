@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('theme_installer', ROOT / 'tools/install-theme.py')
 installer = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(installer)
-THEMES = sorted(p.name for p in (ROOT / 'themes/plasma/look-and-feel').iterdir())
+THEMES = sorted(p.name for p in (ROOT / 'themes/plasma/look-and-feel').iterdir() if p.is_dir())
 
 
 def packaging(base):

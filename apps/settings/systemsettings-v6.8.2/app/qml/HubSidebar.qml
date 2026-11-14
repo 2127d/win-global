@@ -29,7 +29,14 @@ HubPanel {
         RowLayout {
             Layout.fillWidth: true
             Layout.preferredHeight: S.Tokens.controlHeight
-            HubIcon { symbol: "settings"; implicitWidth: 24; implicitHeight: 24 }
+            Kirigami.Icon {
+                objectName: "settingsHeaderIcon"
+                source: "preferences-system"
+                Layout.preferredWidth: 28; Layout.preferredHeight: 28
+                Layout.alignment: Qt.AlignVCenter
+                isMask: false
+                Accessible.ignored: true
+            }
             QQC2.Label { text: i18n("System Settings"); font.weight: Font.DemiBold; font.pointSize: Kirigami.Theme.defaultFont.pointSize * 1.05; Layout.fillWidth: true }
 
         }
@@ -79,7 +86,7 @@ HubPanel {
                     Instantiator {
                         model: ["highlight_changes", "show_irrelevant_modules", "report_bug_in_current_module",
                                 "help_report_bug", "help_contents", "help_about_app", "help_about_kde"]
-                        delegate: AppearanceMenuItem {
+                        delegate: AppearancePillMenuItem {
                             required property string modelData
                             property var nativeAction: systemsettings.action(modelData)
                             objectName: "settingsAction-" + modelData
@@ -133,6 +140,11 @@ HubPanel {
         Item { Layout.fillWidth: true; implicitHeight: 1 }
         QQC2.ScrollView {
             id: categoryScroll
+            objectName: "settingsCategoryScroll"
+            property ScrollEdgeFade edgeFade: ScrollEdgeFade {
+                objectName: "settingsCategoryFade"
+                viewport: categoryScroll.contentItem
+            }
             padding: 0
             background: null
             Layout.fillWidth: true

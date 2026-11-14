@@ -1,0 +1,2 @@
+module Sequoia.Tray.NativeMenus
+plugin sequoiatraymenus

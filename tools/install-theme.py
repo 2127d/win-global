@@ -61,7 +61,7 @@ APP_FILES = {
     'org.kde.merkuro.calendar.desktop', 'org.kde.merkuro.desktop',
 }
 LAYOUT_WIDGETS = {
-    'org.sequoia.startmenu', 'org.sequoia.downloads', 'org.sequoia.dockseparator',
+    'org.sequoia.startmenu', 'org.sequoia.folderstack', 'org.sequoia.dockseparator',
     'org.kpple.kppleMenu', 'org.kde.windowtitle.Fork', 'org.sequoia.desktopmenu',
     'org.sequoia.gridtest', 'org.sequoia.analogclock',
 }
@@ -96,6 +96,7 @@ def validate_system_payload(payload, components):
 
 def user_allowed(name):
     return (name in COLOR_FILES or name in {'applications/' + app for app in APP_FILES}
+            or name.startswith('plasma/plasmoids/org.sequoia.downloads/')
             or any(name.startswith(tree + '/') for tree in USER_TREES))
 
 

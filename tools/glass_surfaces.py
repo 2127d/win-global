@@ -84,7 +84,9 @@ def quick_changes(originals=None):
         before=(originals or {}).get(str(path),path.read_text())
         text=before.replace('import QtQuick\n','import QtQuick\nimport org.sequoia.glass as Glass\n',1)
         if name=='ToolBar.qml':
-            after=background(text,'    background: Item {\n        implicitHeight: 44\n        // The canvas supplies the tint once; only the rim is layered here.\n        Glass.Rim { anchors.fill: parent; radius: 14 }\n    }')
+            # Keep the shared opaque island, including when upgrading an active
+            # trial whose previous override removed its fill.
+            after=before
         else:
             needle='        border.width: 1'
             if text.count(needle)!=1:raise RuntimeError('Quick popup changed; review its glass patch.')

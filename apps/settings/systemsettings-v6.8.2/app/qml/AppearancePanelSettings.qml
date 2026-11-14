@@ -11,28 +11,32 @@ ColumnLayout {
     readonly property var panel: panelSettings.selected
     readonly property bool hasPanel: panel.id !== undefined
     readonly property bool vertical: panel.location === "left" || panel.location === "right"
+    readonly property real maximumContentWidth: grid.maximumColumns * 220 + (grid.maximumColumns - 1) * grid.columnSpacing
     spacing: 8
     RowLayout {
         Layout.fillWidth: true
-        C.Label { Layout.fillWidth:true; text:i18n("Panels"); font.weight:Font.DemiBold }
+        Layout.maximumWidth: selector.implicitWidth + refreshButton.implicitWidth + spacing
+        Layout.alignment: Qt.AlignLeft
+        S.ThemeSelector {
+            id: selector
+            objectName:"appearancePanelSelector"
+            Layout.fillWidth:true; Layout.minimumWidth:0
+            theme:controls.theme; backdropItem:controls.backdropItem
+            Accessible.name:i18n("Select panel")
+            model:panelSettings.panels
+            currentIndex:model.findIndex(p => p.id === panelSettings.selectedId)
+            enabled:model.length > 0
+            displayText:controls.hasPanel ? currentText : i18n("No panels available")
+            onActivated:function(index) { panelSettings.selectedId=model[index].id; }
+        }
         S.CircleButton {
+            id: refreshButton
             theme:controls.theme; label:i18n("Refresh panels"); icon.name:"view-refresh"
             enabled:!panelSettings.busy
             onClicked:panelSettings.refresh()
         }
     }
-    S.ThemeSelector {
-        id: selector
-        objectName:"appearancePanelSelector"
-        Layout.fillWidth:true; Layout.minimumWidth:0
-        theme:controls.theme; backdropItem:controls.backdropItem
-        Accessible.name:i18n("Select panel")
-        model:panelSettings.panels
-        currentIndex:model.findIndex(p => p.id === panelSettings.selectedId)
-        enabled:model.length > 0
-        displayText:controls.hasPanel ? currentText : i18n("No panels available")
-        onActivated:function(index) { panelSettings.selectedId=model[index].id; }
-    }
+
     C.Label {
         Layout.fillWidth:true; wrapMode:Text.WordWrap
         visible:!controls.hasPanel || panelSettings.error.length > 0 || controls.panel.locked === true
@@ -45,7 +49,7 @@ ColumnLayout {
         enabled:!controls.panel.locked
         Layout.fillWidth:true; Layout.fillHeight:false
         theme:controls.theme; backdropItem:controls.backdropItem
-        maximumColumns:3; minimumCellWidth:140
+        maximumColumns:6; minimumCellWidth:160
         model:!controls.hasPanel ? [] : [
             {key:"location", label:i18n("Position"), type:"choice", value:controls.panel.location,
                 options:[{name:i18n("Top"),value:"top"},{name:i18n("Bottom"),value:"bottom"},{name:i18n("Left"),value:"left"},{name:i18n("Right"),value:"right"}]},

@@ -55,6 +55,11 @@ Window { width: 360; height: 90; visible: true; color: "transparent"
             assert all(not frame.isNull() for frame in seq),label
             center=[frame.pixelColor(frame.width()//2,frame.height()//2).getRgb() for frame in seq]
             assert len(set(center))==1,(label,'center changed',center)
+            if label=='toolbar':
+                assert center[0][3]==255,center
+                assert all(pixels(frame)==pixels(seq[0]) for frame in seq),'Solid toolbar acquired a glass rim'
+                print('PASS', 'dark' if dark else 'light',label,'remains solid through rim changes')
+                continue
             assert pixels(seq[0])!=pixels(seq[1])!=pixels(seq[2]),(label,'rim did not update')
             assert pixels(seq[0])==pixels(seq[3]),(label,'zero did not restore')
             print('PASS', 'dark' if dark else 'light',label,'live 0→50→200→0, center',center[0])

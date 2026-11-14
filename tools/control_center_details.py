@@ -3,6 +3,7 @@
 import re
 import shutil
 from pathlib import Path
+from control_center_expandable import build_expandable
 
 APPLETS = ('volume', 'brightness', 'battery', 'bluetooth', 'networkmanagement',
            'notifications', 'clipboard', 'devicenotifier', 'printmanager', 'cameraindicator')
@@ -11,7 +12,7 @@ APPLETS = ('volume', 'brightness', 'battery', 'bluetooth', 'networkmanagement',
 def style_details(destination, source, plugin_dir, extract, replace):
     shared = destination / 'details'
     shutil.copytree(source / 'details', shared)
-    dependencies = []
+    dependencies = [build_expandable(shared / "DetailExpandableBase.qml")]
     for name in APPLETS:
         plugin = plugin_dir / f'org.kde.plasma.{name}.so'
         if not plugin.exists():

@@ -10,7 +10,7 @@ from PySide6.QtCore import QLibraryInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 QML = Path(QLibraryInfo.path(QLibraryInfo.QmlImportsPath))
-MODULES = ('org/kde/kirigami', 'org/kde/desktop', 'org/kde/ksysguard/page', 'org/kde/kcmutils')
+MODULES = ('org/kde/kirigami', 'org/kde/desktop', 'org/kde/ksysguard/page', 'org/kde/kcmutils', 'org/kde/newstuff')
 
 
 def replace(text, old, new):
@@ -384,6 +384,8 @@ def _build(destination):
               'anchors.margins: model.data.noMargins ? model.data.showBackground : Kirigami.Units.largeSpacing',
               'anchors.margins: model.data.showBackground ? 12 : (model.data.noMargins ? 0 : Kirigami.Units.largeSpacing)'),
               'radius: Kirigami.Units.cornerRadius', 'radius: 14'))
+    from newstuff_style import build as build_newstuff
+    build_newstuff(ROOT, destination, fingerprints, replace)
     from discover_islands import build as build_discover
     build_discover(ROOT, destination, fingerprints)
     from merkuro_islands import build as build_merkuro

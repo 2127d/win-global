@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+import "details" as Details
 import QtQuick
 import org.kde.plasma.plasmoid
 import org.kde.plasma.extras as PlasmaExtras
@@ -63,8 +64,9 @@ ControlTile {
             wheel.accepted = false;
         }
     }
-    PlasmaExtras.Menu {
+    Details.DetailNativeMenu {
         id: backgroundMenu
+        visualParent: card
         PlasmaExtras.MenuItem {
             text: qsTr("Quit %1").arg(card.title)
             icon: "application-exit"

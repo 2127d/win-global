@@ -42,12 +42,19 @@ target_sources(systemsettings PRIVATE
 
 ecm_target_qml_sources(systemsettings SOURCES
     qml/HubIcon.qml
+    qml/ScrollEdgeFade.qml
     qml/BatteryHero.qml
     qml/HubTile.qml
     qml/CategoryOverview.qml
     qml/HubPanel.qml
     qml/DesktopPreview.qml
     qml/DesktopPreviewSurface.qml
+    qml/Colors.qml
+    qml/PlasmaStyle.qml
+    qml/ApplicationStyle.qml
+    qml/GlobalTheme.qml
+    qml/QuickSettings.qml
+    qml/QuickThemeCard.qml
     qml/AppearanceHub.qml
     qml/AppearancePanelSettings.qml
     qml/AppearanceLibraryTheme.qml
@@ -55,6 +62,10 @@ ecm_target_qml_sources(systemsettings SOURCES
     qml/AppearanceMoreButton.qml
     qml/AppearancePopupMenu.qml
     qml/AppearanceMenuItem.qml
+    qml/AppearancePillMenuItem.qml
+    qml/AppearanceAccentBar.qml
+    qml/AppearanceIconPackCard.qml
+    qml/AppearanceColorDialog.qml
     qml/AppearanceModePill.qml
     qml/AppearanceThemePill.qml
     qml/HubOverview.qml

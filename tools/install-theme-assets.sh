@@ -35,7 +35,7 @@ cp -R -- "$source_dir"/themes/plasma/look-and-feel/org.sequoia.eleven.* "$data_d
 # Only supply missing layout widgets. This staging helper must not overwrite a
 # separately installed/customized widget; the main installer tracks ownership.
 mkdir -p -- "$data_dir/plasma/plasmoids"
-for widget in org.sequoia.startmenu org.sequoia.downloads org.sequoia.dockseparator org.sequoia.desktopmenu org.kpple.kppleMenu org.kde.windowtitle.Fork; do
+for widget in org.sequoia.startmenu org.sequoia.folderstack org.sequoia.dockseparator org.sequoia.desktopmenu org.kpple.kppleMenu org.kde.windowtitle.Fork; do
     if [[ ! -e "$data_dir/plasma/plasmoids/$widget" && ! -L "$data_dir/plasma/plasmoids/$widget" ]]; then
         cp -R -- "$source_dir/widgets/plasmoids/$widget" "$data_dir/plasma/plasmoids/"
     fi

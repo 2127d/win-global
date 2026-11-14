@@ -59,6 +59,10 @@ PC.Control {
         }
         PC.ComboBox {
             id: codeType
+            property QtObject sequoiaSelectorLifetime: Details.DetailPopupLifetime {
+                popup: codeType.popup
+                owner: codeType
+            }
             Layout.alignment: Qt.AlignHCenter
             Layout.maximumWidth: parent.width
             // Avoid the background loader feeding animated page width back

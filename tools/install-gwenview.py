@@ -18,6 +18,21 @@ builder = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(builder)
 
 
+def desktop_entry(text, values):
+    """Update only the main desktop group, preserving translations/actions."""
+    lines = text.splitlines()
+    start = lines.index('[Desktop Entry]') + 1
+    end = next((i for i in range(start, len(lines)) if lines[i].startswith('[')), len(lines))
+    body = [line for line in lines[start:end] if line.split('=', 1)[0] not in values]
+    return '\n'.join([*lines[:start], *body, *(f'{key}={value}' for key, value in values.items()), *lines[end:]]) + '\n'
+
+
+def refresh_launchers(data):
+    # Staged/test installations must never refresh the live account's cache.
+    if data == Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share').absolute():
+        subprocess.run(['kbuildsycoca6', '--noincremental'], check=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--prefix', type=Path, default=Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share'))
@@ -36,13 +51,15 @@ def main():
     target = data.relative_to(root) / 'sequoia-eleven/gwenview'
     launcher = bins.relative_to(root) / 'gwenview'
     desktop = data.relative_to(root) / 'applications/org.kde.gwenview.desktop'
-    allowed = {str(launcher), str(desktop), *(str(target / name) for name in ('gwenview', 'libgwenviewlib.so.5', 'build.json'))}
+    importer = data.relative_to(root) / 'applications/org.kde.gwenview_importer.desktop'
+    allowed = {str(launcher), str(desktop), str(importer), *(str(target / name) for name in ('gwenview', 'libgwenviewlib.so.5', 'build.json'))}
     receipt = Receipt(root, str(target / 'installation'), allowed.__contains__)
     receipt.validate(force=args.force)
     if args.check:
         return
     if args.remove:
         receipt.uninstall(force=args.force)
+        refresh_launchers(data)
         print('Removed the Gwenview override and restored the previous launcher.')
         return
     if builder.installed_version() != builder.VERSION:
@@ -75,13 +92,17 @@ def main():
         desktop_source = (root / desktop) if (root / desktop).is_file() else Path('/usr/share/applications/org.kde.gwenview.desktop')
         desktop_text = desktop_source.read_text()
         executable = str(root / launcher).replace('\\', '\\\\').replace('"', '\\"').replace('`', '\\`').replace('$', '\\$')
-        lines = desktop_text.splitlines()
-        in_main = False
-        for index, line in enumerate(lines):
-            if line.startswith('['): in_main = line == '[Desktop Entry]'
-            if in_main and line.startswith('Exec='): lines[index] = 'Exec="' + executable + '" %U'
         (stage / desktop).parent.mkdir(parents=True, exist_ok=True)
-        (stage / desktop).write_text('\n'.join(lines) + '\n')
+        (stage / desktop).write_text(desktop_entry(desktop_text, {
+            'Exec': '"' + executable + '" %U', 'StartupWMClass': 'gwenview',
+        }))
+        # The upstream importer claims StartupWMClass=gwenview. Plasma then
+        # associates viewer windows with the importer and relaunches that app.
+        importer_source = (root / importer) if (root / importer).is_file() else Path('/usr/share/applications/org.kde.gwenview_importer.desktop')
+        if importer_source.is_file():
+            (stage / importer).write_text(desktop_entry(importer_source.read_text(), {
+                'StartupWMClass': 'gwenview_importer',
+            }))
         env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QT_QPA_PLATFORMTHEME='generic', QT_STYLE_OVERRIDE='Fusion')
         env.pop('LD_PRELOAD', None)
         env['XDG_CONFIG_HOME'] = str(stage / 'config')
@@ -89,6 +110,7 @@ def main():
         result = subprocess.check_output([str(stage / target / 'gwenview'), '--version'], env=env, text=True, timeout=15)
         if result.strip().split()[-1] != builder.VERSION: raise RuntimeError('Unexpected built version.')
         receipt.install(stage, force=args.force)
+    refresh_launchers(data)
     print(f'Installed: {root / launcher}. Close and reopen Gwenview to use the new interface.')
 
 

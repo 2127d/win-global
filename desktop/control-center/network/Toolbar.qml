@@ -79,7 +79,7 @@ ColumnLayout {
         }
     }
 
-    PlasmaExtras.SearchField {
+    Details.DetailSearchField {
         focusSequences: [] // The popup also reveals the field when it is scrolled out of view.
         parent:toolbar.searchHost
         visible:!toolbar.backOnly && parent!==null

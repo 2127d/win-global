@@ -17,7 +17,9 @@ def style_network(destination, source, replace):
     path.write_text(text)
 
     path = directory / 'ConnectionItem.qml'
-    text = replace(path.read_text(), 'appletProxyModel.setData(appletProxyModel.index(index, 0), delay, PlasmaNM.NetworkModel.DelayModelUpdatesRole);',
+    text = replace(path.read_text(), 'Details.DetailExpandable {', 'NetworkListItem {')
+    text = replace(text, '    icon: model.ConnectionIcon', '    connectionType: model.Type\n    connectionIcon: model.ConnectionIcon')
+    text = replace(text, 'appletProxyModel.setData(appletProxyModel.index(index, 0), delay, PlasmaNM.NetworkModel.DelayModelUpdatesRole);',
                    'listView.model.setData(listView.model.index(index, 0), delay, PlasmaNM.NetworkModel.DelayModelUpdatesRole);')
     # The actions-to-content divider belongs to KDE's expandable delegate.
     # Hide it only while the Speed/Details content occupies its loader.

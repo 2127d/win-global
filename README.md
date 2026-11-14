@@ -266,7 +266,7 @@ and explicit per-app icon overrides can still take precedence. No per-Flatpak
 workaround or app list is required, so newly installed GTK Flatpaks use the same
 shared preference. Alternate prefixes and system roots never activate this change.
 
-The Desktop widgets component installs missing Start Menu, Downloads Stack, Dock
+The Desktop widgets component installs missing Start Menu, Folder Stack, Dock
 Separator, Kpple Menu and Window Title Fork packages. Separately installed copies
 are preserved through installation, refresh and removal. It also builds the
 native tray, trash and animated task-manager forks, with their runtime dependencies.
@@ -608,22 +608,19 @@ the running shell's helper library in place; use the installer, which replaces
 the installation directory. `python3 tools/verify-dock.py` checks the staged
 overlay in a private Wayland/D-Bus session.
 
-Downloads is a compact fan popup: up to ten newest files or folders, with
-40px theme icons on the right and horizontal, crisp filename labels on the left.
-The curved, tilted stack has a transparent, unblurred backdrop, and “See more in File
-Manager” sits above the files. Rows unfold from the folder with staggered motion,
-then travel and shrink back into it before the popup hides or opens a file.
-It follows live folder
-changes, hides dotfiles, supports arrow keys/Enter/Space/Escape, and reduces its
-entry count on short displays. Install it on an already configured dock with
-`python3 tools/install-downloads-stack.py`; only the matching Downloads shortcut
-is replaced. Build the style first with `tools/build-desktop.sh`; the installer
-also installs a user-local style and a Plasma service override for the blur opt-out.
-Restart Plasma to load updates. It saves backups under
-`$XDG_DATA_HOME/sequoia-eleven/backups/before-downloads-fan-*` (normally under
-`~/.local/share`).
-`tools/verify-downloads-stack.py` checks temporary files without opening them;
-`tools/verify-downloads-native.py` checks the real Plasma popup.
+Folder Stack replaces the former Downloads Stack in the default dock. It keeps
+Folder Stack’s previews, grid view, recent-file mode, subfolder navigation and
+configuration, with Sequoia’s staggered fan-out and animated fold-back. Fan
+surfaces stay transparent between the files. Motion follows KDE’s animation speed.
+The fork is bundled as `org.sequoia.folderstack`, with its original GPL license
+and attribution; existing upstream Folder Stack instances are left untouched.
+
+Run `python3 tools/install-folder-stack.py` to install and migrate existing
+Downloads Stack instances in place, retaining their folders and panel positions.
+It backs up the package and panel configuration before making changes. The old
+`install-downloads-stack.py` command delegates to this replacement installer.
+`tools/verify-folder-stack.py` exercises opening, folding, rapid toggles and grid
+mode in a private Plasma session.
 
 The native dock Trash uses the icon pack's regular empty/full bin artwork,
 following the selected light or dark icon theme. This is included in the

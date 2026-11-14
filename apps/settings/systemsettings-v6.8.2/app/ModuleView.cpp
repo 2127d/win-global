@@ -291,6 +291,10 @@ ModuleView::~ModuleView()
 void ModuleView::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
+    // Hub pages draw their own themed controls on the shared window canvas,
+    // like Appearance. Other native KCMs retain their enclosing content island.
+    const auto active = d->mPages.value(d->mPageWidget->currentPage());
+    if (active && active->property("sequoiaCustomPresentation").toBool()) return;
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(Qt::NoPen);
@@ -382,6 +386,16 @@ void ModuleView::addModule(MenuItem *item, const QStringList &args)
         }
         for (auto quick : quickWidgets) {
             prepareFloatingSurface(quick);
+            if (qEnvironmentVariableIntValue("SEQUOIA_APPEARANCE_HUB") == 1 && quick->rootObject()) {
+                QList<QQuickItem *> children{quick->rootObject()};
+                for (qsizetype i = 0; i < children.size(); ++i) {
+                    children.append(children[i]->childItems());
+                    if ((children[i]->objectName() == QLatin1String("quickSettingsHub") || children[i]->objectName() == QLatin1String("globalThemeHub") || children[i]->objectName() == QLatin1String("applicationStyleHub") || children[i]->objectName() == QLatin1String("plasmaStyleHub") || children[i]->objectName() == QLatin1String("colorsHub"))) {
+                        kcm->setProperty("sequoiaCustomPresentation", true);
+                        break;
+                    }
+                }
+            }
             // Header delegates finish constructing at the next event turn.
             QTimer::singleShot(0, quick, [quick] { prepareFloatingSurface(quick); });
         }
@@ -643,7 +657,12 @@ void ModuleView::updateButtons()
     d->mHelp->setEnabled(buttons & KCModule::Help);
     d->mHelp->setVisible(buttons & KCModule::Help);
 
-    d->mButtons->setVisible(buttons != KCModule::NoAdditionalButton);
+    // The redesigned hub pages render library buttons, but still calls the
+    // same ModuleView slots. Preserve the native actions for save prompts/shortcuts.
+    const bool customFooter = qEnvironmentVariableIntValue("SEQUOIA_APPEARANCE_HUB") == 1
+        && activeModule && activeModule->property("sequoiaCustomPresentation").toBool();
+    d->mButtons->setVisible(buttons != KCModule::NoAdditionalButton && !customFooter);
+    update();
 }
 
 void ModuleView::keyPressEvent(QKeyEvent *event)

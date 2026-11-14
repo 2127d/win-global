@@ -21,6 +21,9 @@ PAYLOAD = (
     'apps/settings', 'apps/gwenview', 'apps/kcalc', 'apps/kweather',
 )
 EXCLUDED = {'.git', '.staging', '__pycache__', 'CMakeFiles', 'CMakeCache.txt'}
+# The shared app lives beside win-global during development. Embed its sources
+# at the existing reference path so the extracted installer is self-contained.
+EMBEDDED_SOURCES = ('desktop/components/library', 'tools/motion-lab')
 INTRO = '''SEQUOIA ELEVEN — INSTALLER
 
 1. Extract this entire archive to a writable folder on a KDE Plasma 6 computer.
@@ -54,7 +57,7 @@ You can also run python3 uninstall-gui.py to choose components to remove.
 The custom System Tray, Trash, animated task manager, layout widgets, Analog Clock
 and adaptive grid test widget are included. The Digital Clock review package's
 sources and standalone builder are included too. Native widgets are built for the destination machine. Pinned applications must be
-installed separately. Downloads uses your own Downloads folder. The theme uses
+installed separately. Folder Stack uses your own Downloads folder. The theme uses
 its bundled Michigan Glass light/dark wallpaper. Select the package and use
 "Based on whether the Plasma style is light or dark" for automatic switching.
 The Wallpaper component also includes Michigan Glass Natural Colors (a single
@@ -80,7 +83,12 @@ def include(member):
     relative = Path(member.name).relative_to(NAME)
     if any(part in EXCLUDED for part in relative.parts) or relative.suffix in ('.pyc', '.pyo'):
         return None
+    if any(relative.is_relative_to(Path(entry)) and any(part in {'.build', 'dist'} for part in relative.parts)
+           for entry in EMBEDDED_SOURCES):
+        return None
     if member.issym():
+        if str(relative) in EMBEDDED_SOURCES:
+            return None  # Added below as a real source directory, not a local link.
         source = ROOT / relative
         target = source.resolve(strict=True)
         if not any(target == ROOT / entry or target.is_relative_to(ROOT / entry) for entry in PAYLOAD):
@@ -116,6 +124,9 @@ def main():
             archive.addfile(info, io.BytesIO(data))
             for entry in PAYLOAD:
                 archive.add(ROOT / entry, arcname=NAME + '/' + entry, filter=include)
+            for entry in EMBEDDED_SOURCES:
+                if (ROOT / entry).is_symlink():
+                    archive.add((ROOT / entry).resolve(strict=True), arcname=NAME + '/' + entry, filter=include)
         with tarfile.open(incoming, 'r:xz') as archive:
             members = archive.getmembers()
             count = sum(m.isfile() or m.issym() for m in members)

@@ -101,7 +101,7 @@ plugin=org.kde.plasma.notifications
     except ValueError: pass
     else: raise AssertionError('Incomplete archive accepted')
     # A failed system update must restore every target already changed.
-    sentinel = applets / 'org.sequoia.downloads/previous-install'
+    sentinel = applets / 'org.sequoia.folderstack/previous-install'
     sentinel.write_text('preserve')
     real_copy = installer.copy
     calls = 0
@@ -120,7 +120,7 @@ plugin=org.kde.plasma.notifications
     assert sentinel.read_text() == 'preserve'
     # An earlier user-local copy must not shadow the system package.
     local_data = root / 'local-data'
-    local = local_data / 'plasma/plasmoids/org.sequoia.downloads'
+    local = local_data / 'plasma/plasmoids/org.sequoia.folderstack'
     local.mkdir(parents=True); (local / 'old').touch()
     hook = config / 'systemd/user/plasma-plasmashell.service.d/50-sequoia-control-center.conf'
     hook.parent.mkdir(parents=True); hook.write_text('# Sequoia Eleven Control Center\n')
@@ -151,7 +151,7 @@ plugin=org.kde.plasma.notifications
         known = ','.join([p.stem for p in installer.plugin_directory().glob('*.so')]
                          + list(packages) + ['org.kde.kdeconnect', 'org.kde.plasma.vault'])
         cases = [(name, probe, {}, 'PASS: loaded installed widget') for name in
-                 ('org.sequoia.downloads', 'org.sequoia.dockseparator', 'org.sequoia.startmenu', 'org.sequoia.icontasks.animated',
+                 ('org.sequoia.folderstack', 'org.sequoia.dockseparator', 'org.sequoia.startmenu', 'org.sequoia.icontasks.animated',
                   'org.sequoia.systemtray', 'org.sequoia.notifications', 'org.sequoia.trash')]
         cases.append(('org.sequoia.systemtray', probe, {'SEQUOIA_VERIFY_TRAY_DEFAULTS': '1'},
                       'PASS: fresh tray loads custom notifications, volume and clipboard'))

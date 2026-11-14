@@ -168,6 +168,14 @@ with tempfile.TemporaryDirectory(prefix='gwenview-install-test-') as temp:
     launcher.write_text('#!/bin/sh\nexit 19\n'); launcher.chmod(0o755)
     command = ['python3', str(ROOT / 'tools/install-gwenview.py'), '--prefix', str(data), '--bin-prefix', str(bins), '--skip-build']
     subprocess.run(command, check=True)
+    desktop = data / 'applications/org.kde.gwenview.desktop'
+    importer = data / 'applications/org.kde.gwenview_importer.desktop'
+    assert '\nStartupWMClass=gwenview\n' in desktop.read_text()
+    assert '\nStartupWMClass=gwenview_importer\n' in importer.read_text()
+    assert '\nNoDisplay=true\n' in importer.read_text()
+    # Reinstalling must not duplicate identity keys or lose the original backup.
+    subprocess.run(command, check=True)
+    assert desktop.read_text().count('\nStartupWMClass=') == 1
     spec = importlib.util.spec_from_file_location('gwenview_launcher', ROOT / 'apps/gwenview/launch.py')
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     arguments = ['image with spaces.png', '--fullscreen']
@@ -180,4 +188,5 @@ with tempfile.TemporaryDirectory(prefix='gwenview-install-test-') as temp:
     assert 'not found' not in dependencies and 'sequoia-gwenview-sdk' not in dependencies
     subprocess.run([*command, '--remove'], check=True)
     assert launcher.read_text() == '#!/bin/sh\nexit 19\n'
+    assert not desktop.exists() and not importer.exists()
 print('PASS: private library loading, argument forwarding, upgrade fallback, reversible installation')

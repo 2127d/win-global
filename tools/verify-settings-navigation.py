@@ -29,6 +29,11 @@ parser.add_argument('--screen-width', default='1400')
 parser.add_argument('--screen-height', default='1000')
 parser.add_argument('--desktop-preview', action='store_true', help='Verify real rendered desktop loading and rounded corners.')
 parser.add_argument('--panels-only', action='store_true', help='Test panel controls against isolated Plasma panels')
+parser.add_argument('--colors-only', action='store_true', help='Exercise the redesigned Colors page')
+parser.add_argument('--plasma-only', action='store_true', help='Exercise the redesigned Plasma Style page')
+parser.add_argument('--style-only', action='store_true', help='Exercise the redesigned Application Style page')
+parser.add_argument('--global-only', action='store_true', help='Exercise the redesigned Global Theme page')
+parser.add_argument('--quick-only', action='store_true', help='Exercise the redesigned native Quick Settings page')
 parser.add_argument('--popup-only', action='store_true', help='Focus on the appearance dropdown interactions.')
 parser.add_argument('--dark', action='store_true')
 parser.add_argument('--rtl', action='store_true')
@@ -47,6 +52,11 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     if args.corners_only:
         assert args.hub and args.composited, '--corners-only requires --hub --composited'
         env['SEQUOIA_VERIFY_CORNERS'] = '1'
+    if args.colors_only: env['SEQUOIA_COLORS_ONLY'] = '1'
+    if args.plasma_only: env['SEQUOIA_PLASMA_ONLY'] = '1'
+    if args.style_only: env['SEQUOIA_STYLE_ONLY'] = '1'
+    if args.global_only: env['SEQUOIA_GLOBAL_ONLY'] = '1'
+    if args.quick_only: env['SEQUOIA_QUICK_ONLY'] = '1'
     if args.popup_only: env['SEQUOIA_POPUP_ONLY'] = '1'
     if args.panels_only: env['SEQUOIA_PANELS_ONLY'] = '1'
     if args.hub: env['SEQUOIA_APPEARANCE_HUB'] = '1'
@@ -60,13 +70,45 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     (folder / 'config/kdeglobals').write_text((ROOT / f'themes/color-schemes/SequoiaEleven{mode.title()}Solid.colors').read_text() + f'\n[Icons]\nTheme=SequoiaTahoe-{mode}\n')
     runtime = folder / 'runtime'; runtime.mkdir(mode=0o700)
     env['XDG_RUNTIME_DIR'] = str(runtime)
+    defaults = folder / 'system-config'
+    defaults.mkdir()
+    (defaults / 'kdeglobals').write_text('[General]\nColorScheme=BreezeDark\n')
+    env['XDG_CONFIG_DIRS'] = (str(folder / 'config/kdedefaults') + ':' if args.global_only else '') + str(defaults) + ':/etc/xdg'
     env['LIBGL_ALWAYS_SOFTWARE'] = '1'
     if args.third_party:
         external = folder / 'data/plasma/systemsettings/externalmodules'
         external.mkdir(parents=True)
         (external / 'sequoia-test-extra.desktop').write_text('[Desktop Entry]\nType=Application\nName=Additional Settings\nComment=Third-party category coverage test\nIcon=preferences-system\nExec=/bin/true\nX-KDE-System-Settings-Parent-Category=unregistered-vendor-category\n')
-    (folder / 'data/color-schemes').symlink_to(ROOT / 'themes/color-schemes', target_is_directory=True)
+    if args.colors_only:
+        shutil.copytree(ROOT/'themes/color-schemes',folder/'data/color-schemes')
+        base=(ROOT/'themes/color-schemes/SequoiaElevenLightSolid.colors').read_text()
+        (folder/'data/color-schemes/SequoiaTestRemovable.colors').write_text(base.replace('Name=Sequoia Eleven Light Solid','Name=Disposable test colors'))
+        fixture=folder/'SequoiaTestInstalled.colors'
+        fixture.write_text(base.replace('Name=Sequoia Eleven Light Solid','Name=Installed test colors'))
+        env['SEQUOIA_COLORS_INSTALL_FIXTURE']=str(fixture)
+    else:
+        (folder / 'data/color-schemes').symlink_to(ROOT / 'themes/color-schemes', target_is_directory=True)
     (folder / 'data/icons').symlink_to(ROOT / 'themes/icons', target_is_directory=True)
+    if args.style_only:
+        fixture = folder / 'data/union/styles/sequoia-test-removable'
+        shutil.copytree('/usr/share/union/styles/breeze', fixture)
+        metadata = json.loads((fixture / 'metadata.json').read_text())
+        metadata['name'] = 'Removable Union test style'
+        (fixture / 'metadata.json').write_text(json.dumps(metadata))
+    if args.global_only:
+        shutil.copytree(ROOT / 'themes/plasma/look-and-feel', folder / 'data/plasma/look-and-feel')
+        fixture = folder / 'data/plasma/look-and-feel/org.sequoia.test.removable'
+        shutil.copytree(ROOT / 'themes/plasma/look-and-feel/org.sequoia.eleven.dark.transparent', fixture)
+        metadata = json.loads((fixture / 'metadata.json').read_text())
+        metadata['KPlugin'].update(Id='org.sequoia.test.removable', Name='Removable test theme')
+        (fixture / 'metadata.json').write_text(json.dumps(metadata))
+        layout = fixture / 'contents/layouts'
+        layout.mkdir(exist_ok=True)
+        (layout / 'org.kde.plasma.desktop-layout.js').write_text('// Isolated test layout; never applied.\n')
+    if args.quick_only:
+        packs = folder / 'data/plasma'
+        packs.mkdir(parents=True, exist_ok=True)
+        (packs / 'look-and-feel').symlink_to(ROOT / 'themes/plasma/look-and-feel', target_is_directory=True)
     if args.hub:
         looks = folder / 'data/systemsettings/appearance-looks'
         looks.mkdir(parents=True)
@@ -83,7 +125,22 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
         (folder / 'config/kwinrc').write_text('[Plugins]\nsequoia_liquid_glass_v6Enabled=true\nblurEnabled=false\n[Windows]\nPlacement=Centered\n[org.kde.kdecoration2]\nlibrary=org.kde.sequoiaeleven.glass-adjustable\n')
         (folder / 'config/plasma-org.kde.plasma.desktop-appletsrc').write_text('[Containments][1][Wallpaper][org.kde.image][General]\nImage=' + env['SEQUOIA_HUB_WALLPAPER'] + '\n')
         themes=folder/'data/plasma';themes.mkdir(parents=True,exist_ok=True)
-        (themes/'desktoptheme').symlink_to(Path.home()/'.local/share/plasma/desktoptheme')
+        if not args.plasma_only:
+            (themes/'desktoptheme').symlink_to(Path.home()/'.local/share/plasma/desktoptheme')
+
+    if args.plasma_only:
+        # Native removal/install must operate only on copies in this private data home.
+        shutil.copytree(Path.home()/'.local/share/plasma/desktoptheme', folder/'data/plasma/desktoptheme')
+        fixture = folder/'data/plasma/desktoptheme/sequoia-test-removable'
+        shutil.copytree(ROOT/'themes/plasma/desktoptheme/sequoia-eleven-dark', fixture)
+        metadata = json.loads((fixture/'metadata.json').read_text())
+        metadata['KPlugin'].update(Id='sequoia-test-removable', Name='Disposable Plasma style')
+        (fixture/'metadata.json').write_text(json.dumps(metadata))
+        install_fixture = folder/'install/sequoia-test-installed'
+        shutil.copytree(ROOT/'themes/plasma/desktoptheme/sequoia-eleven-light', install_fixture)
+        metadata['KPlugin'].update(Id='sequoia-test-installed', Name='Installed Plasma test style')
+        (install_fixture/'metadata.json').write_text(json.dumps(metadata))
+        env['SEQUOIA_PLASMA_INSTALL_FIXTURE'] = shutil.make_archive(str(folder/'install-test'), 'gztar', folder/'install')
 
     if args.desktop_preview:
         assert args.hub
@@ -142,6 +199,25 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     result = subprocess.CompletedProcess(command, process.returncode, (output / 'verification.log').read_text())
     print(result.stdout[-6000:])
     result.check_returncode()
+    if args.plasma_only:
+        assert 'PASS: Plasma Style' in result.stdout
+        assert not any(error in result.stdout for error in ('TypeError:', 'ReferenceError:', 'Error loading QML', 'Unable to assign', 'Binding loop')), 'Plasma Style emitted QML errors'
+        raise SystemExit(0)
+    if args.style_only:
+        assert 'PASS: Application Style' in result.stdout
+        assert not any(error in result.stdout for error in ('TypeError:', 'ReferenceError:', 'Error loading QML', 'Unable to assign')), 'Application Style emitted QML errors'
+        raise SystemExit(0)
+    if args.colors_only:
+        assert 'PASS: Colors native' in result.stdout
+        assert not any(error in result.stdout for error in ('TypeError:', 'ReferenceError:', 'Error loading QML', 'Unable to assign')), 'Colors emitted QML errors'
+        raise SystemExit(0)
+    if args.global_only:
+        assert 'PASS: Global Theme' in result.stdout
+        assert not any(error in result.stdout for error in ('TypeError:', 'ReferenceError:', 'Error loading QML', 'Unable to assign')), 'Global Theme emitted QML errors'
+        raise SystemExit(0)
+    if args.quick_only:
+        assert 'PASS: Quick Settings' in result.stdout
+        raise SystemExit(0)
     if args.corners_only:
         assert 'PASS: square application top corners' in result.stdout
         raise SystemExit(0)

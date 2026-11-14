@@ -15,7 +15,7 @@ NetworkActionButton {
     readonly property string signalLabel:record.signal?(record.signal>=70?qsTr("Strong signal"):record.signal>=40?qsTr("Good signal"):qsTr("Weak signal")):""
     contentItem:RowLayout {
         spacing:10
-        Kirigami.Icon{source:record.type===PlasmaNM.Enums.Wireless?"network-wireless-symbolic":record.icon;Layout.preferredWidth:22;Layout.preferredHeight:22}
+        NetworkIcon{connectionType:record.type;connectionIcon:record.type===PlasmaNM.Enums.Wireless?"network-wireless-symbolic":record.icon;Layout.preferredWidth:22;Layout.preferredHeight:22}
         ColumnLayout {
             Layout.fillWidth:true;spacing:2
             PC.Label{Layout.fillWidth:true;text:record.name;textFormat:Text.PlainText;elide:Text.ElideRight;font.weight:Font.Medium}

@@ -30,7 +30,7 @@ widgets/start-menu.tar.gz
   Standalone Sequoia Start Menu for the widget archive installer.
 
 widgets/downloads.tar.gz
-  Downloads widget; also included in the matching bundle.
+  Folder Stack with Sequoia fan motion (legacy archive filename); also included in the matching bundle.
 
 widgets/separator.tar.gz
   Dock Separator widget; also included in the matching bundle.

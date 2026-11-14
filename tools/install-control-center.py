@@ -25,6 +25,8 @@ from control_center_vaults import style_vaults
 from control_center_power import style_power
 from control_center_clipboard import style_clipboard
 from control_center_network import style_network
+from control_center_search import style_search_fields
+from control_center_menus import style_menu_lifetimes, build_menu_helper
 from control_center_weather import style_weather
 from control_center_contacts import style_contacts
 from control_center_dock import style_dock
@@ -447,6 +449,9 @@ def build(destination):
     dependencies += style_contacts(destination, SOURCE, PLUGIN.parent, extract, replace)
     dependencies += style_dock(destination, SOURCE, PLUGIN.parent, extract, replace)
     style_notifications(destination, SOURCE, replace)
+    style_search_fields(destination)
+    build_menu_helper(destination / 'details')
+    style_menu_lifetimes(destination)
     (destination / 'manifest.json').write_text(json.dumps({'fingerprints': {
         str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in dependencies
     }}, indent=2) + '\n')

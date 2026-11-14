@@ -53,7 +53,7 @@ Item {
                 Layout.fillWidth:true;spacing:12
                 Rectangle {
                     Layout.preferredWidth:56;Layout.preferredHeight:56;radius:20;color:Qt.alpha(Kirigami.Theme.highlightColor,0.16)
-                    Kirigami.Icon {anchors.centerIn:parent;width:28;height:28;source:summary.primary?.icon || "network-disconnect-symbolic"}
+                    NetworkIcon {anchors.centerIn:parent;width:28;height:28;connectionType:summary.primary?.type ?? PlasmaNM.Enums.UnknownConnectionType;connectionIcon:summary.primary?.icon || "network-disconnect-symbolic"}
                 }
                 ColumnLayout {
                     Layout.fillWidth:true;spacing:3

@@ -21,15 +21,15 @@ ColumnLayout {
             list.forceActiveFocus(); event.accepted = true;
         }
     }
-    PE.SearchField {
+    Details.DetailSearchField {
         id: search
         objectName: "contactsSearch"
         Layout.fillWidth: true
         implicitHeight: Math.max(40, contentHeight + 16)
         topPadding: 8
         bottomPadding: 8
-        leftPadding: 36
-        rightPadding: 36
+        leftPadding: Math.max(36, _iconWidth + Kirigami.Units.smallSpacing)
+        rightPadding: leftPadding
         placeholderText: i18n("Search contacts")
         Accessible.name: placeholderText
         background: Details.DetailSurface { radius: height / 2; focused: search.activeFocus }

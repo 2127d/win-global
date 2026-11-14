@@ -15,7 +15,7 @@ FocusScope {
     LayoutMirroring.enabled: Qt.application.layoutDirection === Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
     FontMetrics { id: searchMetrics; font: search.font }
-    PlasmaExtras.SearchField {
+    Details.DetailSearchField {
         id: search; objectName: "printerSearch"
         anchors { top: parent.top; left: parent.left; right: parent.right }
         implicitHeight: Math.max(40, searchMetrics.height + 20)

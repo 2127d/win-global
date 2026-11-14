@@ -17,7 +17,7 @@ PACKAGES = {
     'sequoia-eleven-wallpaper-2.0.0.tar.gz': 'Michigan Glass light/dark pair and Natural Colors artwork; native KDE packages with eight sizes, up to 3440x1440.',
     'sequoia-tahoe-icons-2.0.0.tar.gz': 'Standalone icon family with light/dark variants and licenses.',
     'widgets/start-menu.tar.gz': 'Standalone Sequoia Start Menu for the widget archive installer.',
-    'widgets/downloads.tar.gz': 'Downloads widget; also included in the matching bundle.',
+    'widgets/downloads.tar.gz': 'Folder Stack with Sequoia fan motion (legacy archive filename); also included in the matching bundle.',
     'widgets/separator.tar.gz': 'Dock Separator widget; also included in the matching bundle.',
     'widgets/icons-only-task-manager-animated.tar.gz': 'Animated task manager with native compatibility manifest.',
     'widgets/system-tray.tar.gz': 'System Tray including its styled child widgets and Trash; native compatibility checked before installation.',
@@ -98,7 +98,7 @@ def widget_bundle():
         checksum(DIST / manager)
         (stage / 'READ-ME.txt').write_text(
             'Eight independent widgets: System Tray (including children and Trash), '
-            'animated task manager, Downloads, Dock Separator, Start Menu, Analog Clock, '
+            'animated task manager, Folder Stack, Dock Separator, Start Menu, Analog Clock, '
             'Digital Clock and Grid Test.\n\n'
             'Run python3 install-widgets.py --check, then python3 install-widgets.py.\n'
             'The installer reads all five .tar.gz packages and three .plasmoid packages.\n'

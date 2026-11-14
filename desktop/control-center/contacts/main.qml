@@ -10,6 +10,9 @@ import org.kde.merkuro.contact
 
 PlasmoidItem {
     id: contactApplet
+    property QtObject sequoiaPopupScope: QtObject {
+        property bool expanded: contactApplet.expanded
+    }
     objectName: "sequoiaContactsApplet"
     // Akonadi can wait synchronously for its service during login. Never
     // construct the contacts database model while Plasma preloads applets.

@@ -625,3 +625,11 @@ cards and page into the dialog, keeping Ownership and the footer below the
 larger controls while leaving horizontal resizing available. Native dropdown
 walkthroughs also count fully visible rows in combo lists, distinguishing a
 legitimate single-choice printer list from a clipped multi-choice popup.
+
+The installer keeps viewer and importer launcher identities separate:
+`org.kde.gwenview.desktop` advertises `StartupWMClass=gwenview`, while a
+reversible user override corrects the importer's upstream class to
+`gwenview_importer`. This prevents Plasma from matching viewer windows to the
+importer when relaunching from the taskbar. Both original desktop entries are
+preserved by the installation receipt; install/remove refreshes the live
+account's application cache.

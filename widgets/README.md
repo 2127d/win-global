@@ -121,7 +121,7 @@ settings and the restart in your own session.
 Your existing System Tray and Icons-only Task Manager keep their IDs, settings,
 positions and pinned applications. Add **Sequoia System Tray** and
 **Icons-Only Task Manager Animated** yourself through **Add Widgets** when ready.
-**Downloads Stack**, **Dock Separator**, and **Sequoia Start Menu** are also available there.
+**Folder Stack**, **Dock Separator**, and **Sequoia Start Menu** are also available there.
 
 The Start menu has pinned apps, activity-based recommendations, Category/List/Grid
 views, search, and button-driven page animations. Its gear opens layout, pinned-app,
@@ -158,7 +158,7 @@ architecture and Qt/KDE versions. The installer checks Qt and upstream file
 fingerprints **before making changes** and rejects incompatible archives.
 These packages were built on Fedora 44 with Plasma 6.7.5 and Qt 6.11.2.
 Rebuild the archives after relevant KDE updates or for another supported machine.
-The pure QML Downloads, Separator, and Start Menu packages do not need native adapters.
+The pure QML Folder Stack, Separator, and Start Menu packages do not need native adapters.
 
 Use the supplied script for the full collection: Plasma's local-file widget
 installer alone cannot install the native adapter libraries in the other two
@@ -208,3 +208,5 @@ python3 tools/verify-widget-archives.py --folder ~/sandbox/widgets --functional
 
 KDE source files retain their copyright and SPDX notices; license texts are
 included in each derived package. Sequoia's original additions are MIT licensed.
+
+`downloads.tar.gz` now contains `org.sequoia.folderstack` (GPL-2.0-or-later), the Folder Stack fork with Sequoia fan motion. The filename is retained for existing distribution scripts.

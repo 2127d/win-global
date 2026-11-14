@@ -11,6 +11,10 @@ import "../details" as Details
 T.ComboBox {
             hoverEnabled: true
             id: picker
+            property QtObject sequoiaSelectorLifetime: Details.DetailPopupLifetime {
+                popup: picker.popup
+                owner: picker
+            }
             readonly property var selector: picker
             required property var record
             required property var devices
