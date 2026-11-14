@@ -8,6 +8,8 @@ import "../details" as Details
 
 Details.DetailExpandable {
     id: networkRow
+    // Shared by attached rows and the standalone connection details popup.
+    contentPadding: 12
     // Keep KDE's action and keyboard handling; use the shared network pill surface.
     NetworkButtonSurface {
         id: actionSurface

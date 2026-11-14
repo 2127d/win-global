@@ -23,6 +23,7 @@
 #include "sequoiaelevenanimations.h"
 #include "sequoiaelevenblurhelper.h"
 #include "sequoiaelevenframeshadow.h"
+#include "sequoiaelevenfilepicker.h"
 #include "sequoiaelevenmdiwindowshadow.h"
 #include "sequoiaelevenmnemonics.h"
 #include "sequoiaelevenpropertynames.h"
@@ -677,6 +678,7 @@ void Style::polish(QWidget *widget)
 
     // base class polishing
     ParentStyleClass::polish(widget);
+    FilePicker::polish(widget);
 }
 
 //______________________________________________________________
@@ -775,6 +777,7 @@ void Style::polishScrollArea(QAbstractScrollArea *scrollArea)
 //_______________________________________________________________
 void Style::unpolish(QWidget *widget)
 {
+    FilePicker::unpolish(widget);
     // register widget to animations
     _animations->unregisterWidget(widget);
     _frameShadowFactory->unregisterWidget(widget);
@@ -833,6 +836,7 @@ void Style::unpolish(QWidget *widget)
 
 int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
+    if (metric == PM_ToolBarExtensionExtent && FilePicker::contains(widget)) return 42;
     // handle special cases
     switch (metric) {
     // frame width
@@ -1203,6 +1207,8 @@ QRect Style::subElementRect(SubElement element, const QStyleOption *option, cons
     case SE_RadioButtonContents:
         return checkBoxContentsRect(option, widget);
     case SE_LineEditContents:
+        if (FilePicker::contains(widget) && !(widget->parentWidget() && qobject_cast<const QComboBox *>(widget->parentWidget())))
+            return lineEditContentsRect(option, widget).adjusted(8, 0, -8, 0);
         return lineEditContentsRect(option, widget);
     case SE_ProgressBarGroove:
         return progressBarGrooveRect(option, widget);
@@ -1267,6 +1273,28 @@ QRect Style::subControlRect(ComplexControl element, const QStyleOptionComplex *o
 //______________________________________________________________
 QSize Style::sizeFromContents(ContentsType element, const QStyleOption *option, const QSize &size, const QWidget *widget) const
 {
+    if (FilePicker::contains(widget)) {
+        // Match library Tokens.controlHeight, preserving font-driven growth.
+        QSize result;
+        switch (element) {
+        case CT_PushButton: result = pushButtonSizeFromContents(option, size, widget); break;
+        case CT_ToolButton: result = toolButtonSizeFromContents(option, size, widget); break;
+        case CT_LineEdit: result = lineEditSizeFromContents(option, size, widget); break;
+        case CT_ComboBox: result = comboBoxSizeFromContents(option, size, widget); break;
+        default: break;
+        }
+        if (result.isValid()) {
+            result.setHeight(qMax(42, result.height()));
+            result.rwidth() += 16;
+            if (element == CT_ToolButton) {
+                const auto button = qobject_cast<const QToolButton *>(widget);
+                if (button && button->toolButtonStyle() == Qt::ToolButtonIconOnly
+                    && button->popupMode() != QToolButton::MenuButtonPopup)
+                    result.setWidth(result.height());
+            }
+            return result;
+        }
+    }
     switch (element) {
     case CT_CheckBox:
         return checkBoxSizeFromContents(option, size, widget);
@@ -1352,6 +1380,14 @@ QStyle::SubControl Style::hitTestComplexControl(ComplexControl control, const QS
 //______________________________________________________________
 void Style::drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    if (element == PE_PanelLineEdit && FilePicker::contains(widget)) {
+        // The combo already paints the pill. QCommonStyle otherwise fills its
+        // frameless editor with an opaque rectangle over the glass surface.
+        const auto edit = qobject_cast<const QLineEdit *>(widget);
+        if (edit && !edit->hasFrame() && qobject_cast<const QComboBox *>(edit->parentWidget())) return;
+        drawFrameLineEditPrimitive(option, painter, widget);
+        return;
+    }
     StylePrimitive fcn;
     switch (element) {
     case PE_PanelButtonCommand:
@@ -3281,6 +3317,7 @@ QRect Style::comboBoxSubControlRect(const QStyleOptionComplex *option, SubContro
         QRect arrowRect(rect.right() - Metrics::MenuButton_IndicatorWidth + 1, rect.top(), Metrics::MenuButton_IndicatorWidth, rect.height());
 
         arrowRect = centerRect(arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth);
+        if (FilePicker::contains(widget)) arrowRect.translate(-8, 0);
         return visualRect(option, arrowRect);
     }
 
@@ -3293,6 +3330,8 @@ QRect Style::comboBoxSubControlRect(const QStyleOptionComplex *option, SubContro
         if (!flat && rect.height() >= option->fontMetrics.height() + 2 * frameWidth) {
             labelRect.adjust(frameWidth, frameWidth, 0, -frameWidth);
         }
+
+        if (FilePicker::contains(widget)) labelRect.adjust(8, 0, -8, 0);
 
         return visualRect(option, labelRect);
     }
@@ -4213,6 +4252,10 @@ bool Style::drawFramePrimitive(const QStyleOption *option, QPainter *painter, co
 //______________________________________________________________
 bool Style::drawFrameLineEditPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    if (FilePicker::contains(widget)) {
+        FilePicker::paintPill(painter, option, QPalette::Base);
+        return true;
+    }
     // copy palette and rect
     const auto &palette(option->palette);
     const auto &rect(option->rect);
@@ -4578,6 +4621,10 @@ bool Style::drawIndicatorHeaderArrowPrimitive(const QStyleOption *option, QPaint
 //______________________________________________________________
 bool Style::drawPanelButtonCommandPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    if (FilePicker::contains(widget)) {
+        FilePicker::paintPill(painter, option);
+        return true;
+    }
     // cast option and check
     const auto buttonOption(qstyleoption_cast<const QStyleOptionButton *>(option));
     if (!buttonOption)
@@ -4632,6 +4679,12 @@ bool Style::drawPanelButtonCommandPrimitive(const QStyleOption *option, QPainter
 //______________________________________________________________
 bool Style::drawPanelButtonToolPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    if (FilePicker::contains(widget)) {
+        // Toolbar surfaces remain solid, including their circular controls.
+        FilePicker::paintPill(painter, option, QPalette::Button,
+                             widget->parentWidget() && qobject_cast<const QToolBar *>(widget->parentWidget()));
+        return true;
+    }
     // copy palette and rect
     const auto &palette(option->palette);
     auto rect(option->rect);
@@ -6256,7 +6309,7 @@ bool Style::drawToolBarBackgroundControl(const QStyleOption *option, QPainter *p
     surface.setAlpha(255);
     palette.setColor(QPalette::Window, surface);
     _helper->renderIsland(painter, option->rect, palette, QPalette::Window,
-                          widget->isActiveWindow(), 1.0);
+                          widget->isActiveWindow(), 1.0, false, FilePicker::contains(widget));
     return true;
 }
 
@@ -7857,7 +7910,9 @@ bool Style::drawComboBoxComplexControl(const QStyleOptionComplex *option, QPaint
 
     // frame
     if (option->subControls & SC_ComboBoxFrame) {
-        if (editable) {
+        if (FilePicker::contains(widget)) {
+            FilePicker::paintPill(painter, option, editable ? QPalette::Base : QPalette::Button);
+        } else if (editable) {
             flat |= (rect.height() <= 2 * Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth);
             if (flat) {
                 const auto &background = palette.color(QPalette::Base);

@@ -9,7 +9,8 @@ NetworkActionButton {
     id:row
     required property var record
     objectName:"networkAvailable:"+record.row
-    flat:true;implicitHeight:Math.max(56,implicitContentHeight+16);leftPadding:8;rightPadding:8
+    flat:true;implicitHeight:Math.max(56,implicitContentHeight+topPadding+bottomPadding)
+    leftPadding:12;rightPadding:12;topPadding:12;bottomPadding:12
     Accessible.name:record.name
     readonly property string securityLabel:record.saved?qsTr("Saved"):record.securityKnown===false?"":record.security || (record.secured?qsTr("Secured"):qsTr("Open network"))
     readonly property string signalLabel:record.signal?(record.signal>=70?qsTr("Strong signal"):record.signal>=40?qsTr("Good signal"):qsTr("Weak signal")):""

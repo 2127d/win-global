@@ -7,6 +7,7 @@ Every archive has a matching .sha256 file. Verify it from that archive’s folde
 
 Sequoia-Eleven-Installer.tar.xz
   Recommended complete installer, editable sources, grid/picker integration; builds native components on the destination machine.
+  Includes the optional QRCA makeover (26.08.2), with the Sequoia component library, normal/Wi-Fi launchers and reversible removal.
 
 sequoia-widgets.tar.gz
   Widget-only bundle: eight widget archives and installer. Native widgets require matching Qt/KDE. Grid placement needs the main installer’s Plasma style.

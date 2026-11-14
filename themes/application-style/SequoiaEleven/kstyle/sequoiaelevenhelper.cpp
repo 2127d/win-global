@@ -493,7 +493,7 @@ void Helper::renderFrame(QPainter *painter, const QRect &rect, const QColor &col
 }
 
 //______________________________________________________________________________
-void Helper::renderIsland(QPainter *painter, const QRect &rect, const QPalette &palette, QPalette::ColorRole role, bool active, qreal opacity, bool glassMaterial) const
+void Helper::renderIsland(QPainter *painter, const QRect &rect, const QPalette &palette, QPalette::ColorRole role, bool active, qreal opacity, bool glassMaterial, bool pill) const
 {
     const QRectF surface = QRectF(rect).adjusted(Metrics::Island_Inset, Metrics::Island_Inset,
                                                 -Metrics::Island_Inset, -Metrics::Island_Inset);
@@ -501,7 +501,8 @@ void Helper::renderIsland(QPainter *painter, const QRect &rect, const QPalette &
         return;
 
     const bool dark = isDarkTheme(palette);
-    const qreal radius = qMin(qreal(Metrics::Island_Radius), qMin(surface.width(), surface.height()) / 2);
+    const qreal halfExtent = qMin(surface.width(), surface.height()) / 2;
+    const qreal radius = pill ? halfExtent : qMin(qreal(Metrics::Island_Radius), halfExtent);
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
     if (StyleConfigData::widgetDrawShadow())

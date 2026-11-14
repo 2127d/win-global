@@ -40,6 +40,7 @@ set(sequoiaeleven_PART_SRCS
     sequoiaelevenaddeventfilter.cpp
     sequoiaelevenblurhelper.cpp
     sequoiaelevenframeshadow.cpp
+    sequoiaelevenfilepicker.cpp
     sequoiaelevenhelper.cpp
     sequoiaelevenmdiwindowshadow.cpp
     sequoiaelevenmnemonics.cpp

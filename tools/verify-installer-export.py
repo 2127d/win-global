@@ -28,7 +28,7 @@ def main():
                          'themes/wallpapers/MichiganGlassNatural/metadata.json',
                          'themes/wallpapers/MichiganGlassNatural/contents/images/3440x1440.png'):
             assert (project / relative).is_file(), relative
-        for name in ('settings', 'gwenview', 'kcalc'):
+        for name in ('settings', 'gwenview', 'kcalc', 'kweather', 'qrca'):
             assert list((project / 'apps' / name).glob('*/CMakeLists.txt')), name
         for path in project.rglob('*'):
             if path.is_symlink():

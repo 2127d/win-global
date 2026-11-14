@@ -90,6 +90,8 @@ import org.kde.kirigami as Kirigami
  */
 Item {
     id: listItem
+    // Individual consumers can inset the header and expanded content together.
+    property real contentPadding: Kirigami.Units.smallSpacing
 
     /*!
       \qmlproperty icon ExpandableListItem::icon
@@ -489,7 +491,7 @@ Item {
                 id: mainRowLayout
 
                 Layout.fillWidth: true
-                Layout.margins: Kirigami.Units.smallSpacing
+                Layout.margins: listItem.contentPadding
                 // Otherwise it becomes taller when the button appears
                 Layout.minimumHeight: defaultActionButton.height
 
@@ -632,7 +634,7 @@ Item {
                 ColumnLayout {
                     id: expandedViewLayout
                     anchors.fill: parent
-                    anchors.margins: Kirigami.Units.smallSpacing
+                    anchors.margins: listItem.contentPadding
 
                     spacing: Kirigami.Units.smallSpacing
 

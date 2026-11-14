@@ -18,12 +18,12 @@ PAYLOAD = (
     'themes/application-style', 'themes/color-schemes', 'themes/fonts',
     'themes/icons', 'themes/lockscreen', 'themes/login-screen',
     'themes/plasma', 'themes/wallpapers',
-    'apps/settings', 'apps/gwenview', 'apps/kcalc', 'apps/kweather',
+    'apps/settings', 'apps/gwenview', 'apps/kcalc', 'apps/kweather', 'apps/qrca',
 )
 EXCLUDED = {'.git', '.staging', '__pycache__', 'CMakeFiles', 'CMakeCache.txt'}
 # The shared app lives beside win-global during development. Embed its sources
 # at the existing reference path so the extracted installer is self-contained.
-EMBEDDED_SOURCES = ('desktop/components/library', 'tools/motion-lab')
+EMBEDDED_SOURCES = ('desktop/components/library', 'tools/motion-lab', 'apps/qrca')
 INTRO = '''SEQUOIA ELEVEN — INSTALLER
 
 1. Extract this entire archive to a writable folder on a KDE Plasma 6 computer.
@@ -64,7 +64,7 @@ The Wallpaper component also includes Michigan Glass Natural Colors (a single
 daytime appearance) and retains the classic Sequoia Eleven background.
 
 This archive includes the theme, layout, installer and sources for the optional
-Settings/Gwenview/KCalc/Weather makeovers. It excludes build caches, SDKs, screenshots, backups,
+Settings/Gwenview/KCalc/Weather/QRCA makeovers. It excludes build caches, SDKs, screenshots, backups,
 and Firefox projects.
 
 The installer supports Arch, Fedora, Ubuntu and Debian when their releases
@@ -81,9 +81,11 @@ See README.md and desktop/layouts/README.md for details.
 
 def include(member):
     relative = Path(member.name).relative_to(NAME)
+    if str(relative) == 'desktop/control-center/details/NativeMenus/libsequoiatraymenus.so':
+        return None  # Built for the destination system by the tray installer.
     if any(part in EXCLUDED for part in relative.parts) or relative.suffix in ('.pyc', '.pyo'):
         return None
-    if any(relative.is_relative_to(Path(entry)) and any(part in {'.build', 'dist'} for part in relative.parts)
+    if any(relative.is_relative_to(Path(entry)) and any(part.startswith('.build') or part == 'dist' for part in relative.parts)
            for entry in EMBEDDED_SOURCES):
         return None
     if member.issym():
@@ -91,7 +93,10 @@ def include(member):
             return None  # Added below as a real source directory, not a local link.
         source = ROOT / relative
         target = source.resolve(strict=True)
-        if not any(target == ROOT / entry or target.is_relative_to(ROOT / entry) for entry in PAYLOAD):
+        inside_embedded_source = any(
+            relative.is_relative_to(Path(entry)) and target.is_relative_to((ROOT / entry).resolve(strict=True))
+            for entry in EMBEDDED_SOURCES)
+        if not inside_embedded_source and not any(target == ROOT / entry or target.is_relative_to(ROOT / entry) for entry in PAYLOAD):
             raise RuntimeError(f'Link points outside the installer payload: {relative}')
         if Path(member.linkname).is_absolute():
             raise RuntimeError(f'Nonportable absolute symlink: {relative}')

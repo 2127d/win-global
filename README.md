@@ -64,7 +64,7 @@ All components remain in this `win-global` repository:
 | `themes/` | Application and Plasma styles, global themes, colors, Firefox styling, login and lock screens, icons, fonts, and wallpapers |
 | `widgets/` | Standalone plasmoids and native widget fork sources |
 | `desktop/` | Control center, desktop layouts, taskbar, and widget picker |
-| `apps/` | Settings, Gwenview, KCalc, and Weather application forks |
+| `apps/` | Settings, Gwenview, KCalc, Weather, and QRCA application forks |
 | `tools/` | Build, install, export, preview, and verification scripts |
 | `docs/` | [Deployment](docs/DEPLOYMENT.md), [desktop repair](docs/DESKTOP-REPAIR.md), and [validation history](docs/VALIDATION.md) |
 | `preview/` | Screenshots and visual review artifacts |
@@ -160,7 +160,7 @@ The native Qt wizard guides you through:
    is detected and checked before invoking its package manager.
 2. **Components:** choose the complete desktop or individual components.
    The complete-desktop option checks and grays out the standard theme choices; turning it
-   off restores your individual choices. **Settings**, **Gwenview**, **KCalc** and **Weather** makeovers
+   off restores your individual choices. **Settings**, **Gwenview**, **KCalc**, **Weather**, and **QRCA** makeovers
    are separate, optional choices, including when installing no theme components.
    **Desktop widgets** can be installed on their own. Selecting **Global Theme,
    desktop layout & splash** automatically includes its required application style,
@@ -331,7 +331,7 @@ Open **Uninstall Sequoia Eleven.desktop**, or run as the same desktop user:
 ```
 
 The graphical uninstaller lets you select the whole theme, individual components,
-and the Settings/Gwenview/KCalc/Weather makeovers. Review the selection before clicking
+and the Settings/Gwenview/KCalc/Weather/QRCA makeovers. Review the selection before clicking
 **Remove selected components**, then follow progress and save the log if needed.
 Use **Open Appearance Settings** to select another theme first, and replace any
 Sequoia panel widgets you intend to remove. Removing a component also removes
@@ -536,6 +536,12 @@ in Flat mode. Locations, forecasts and unit preferences keep KDE's native models
 Select **Weather makeover**, or use `tools/build-kweather.py` and
 `tools/install-kweather.py --skip-build`. The original Flatpak remains available;
 first installation imports its saved locations without overwriting native settings.
+The [QRCA makeover](apps/qrca/README.md) adds Sequoia Scan and Create pages,
+pill navigation, rounded panels, and themed result dialogs while keeping KDE's
+scanner, QR export, clipboard, and Wi-Fi features. Its source package lives in
+`sandbox/apps/qrca`, and the portable installer embeds it. Select **QRCA makeover**
+(Qrca 26.08.2), or use `tools/build-qrca.py` and `tools/install-qrca.py`.
+
 The [KCalc makeover](apps/kcalc/README.md) adds rounded keys, calculation history
 above the input, live inline answers, a visible mode selector, and automatic
 sizing when switching calculator modes.
@@ -930,6 +936,15 @@ padding keep controls clear of the rounded edges. Applications that draw their
 own surfaces can retain their own layouts. The surface tint and
 shadow suggest glass; actual backdrop blur depends on the application and KWin.
 To update an already installed theme, run `./install.sh` and restart applications.
+
+Native file/folder choosers use Sequoia pill actions and fields, circular toolbar
+controls, and 12px outer padding. Solid and Transparent keep opaque controls;
+Liquid Glass uses the shared optical rim while toolbars remain solid. The scope
+requires a Qt/KDE chooser dialog (including KDE's desktop portal), so Dolphin and
+other ordinary file-explorer windows retain their existing styling. Verify all
+six appearances with `python3 tools/verify-file-pickers.py --portal`; supplying
+`--baseline-plugins PATH` also compares ordinary windows against a previous
+native-style build pixel for pixel.
 
 ## License
 

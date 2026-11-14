@@ -32,6 +32,7 @@ OPTIONAL_COMPONENTS = {'animation-kit', 'modal-dimming'}
 APPS = {'settings': ('Settings makeover', 'Requires System Settings 6.8.2.'),
         'gwenview': ('Gwenview makeover', 'Requires Gwenview 26.08.2.'),
         'kcalc': ('KCalc makeover', 'Modern keys and mode-aware resizing. Requires KCalc 26.08.2.'),
+        'qrca': ('QRCA makeover', 'Sequoia scanner, creator and QR export. Requires Qrca 26.08.2.'),
         'kweather': ('Weather makeover', 'Atmospheric skies and Sequoia forecast cards. Requires KWeather 26.08.1 from Flatpak.')}
 NATIVE = {'application-style', 'decorations'}
 
@@ -211,6 +212,20 @@ def packages_for(distro, components, apps=()):
                      'arch': ['gmp', 'mpfr', 'libmpc'],
                      'ubuntu': ['libgmp-dev', 'libmpfr-dev', 'libmpc-dev'],
                      'debian': ['libgmp-dev', 'libmpfr-dev', 'libmpc-dev']}[distro]
+    if 'qrca' in apps:
+        packages += {
+            'fedora': ['qt6-qtmultimedia-devel', 'qt6-qtsvg-devel', 'qt6-qtshadertools',
+                       'kf6-kcontacts-devel', 'kf6-prison-devel', 'kf6-networkmanager-qt-devel',
+                       'kf6-kirigami-addons-devel', 'NetworkManager-libnm-devel'],
+            'arch': ['qt6-multimedia', 'qt6-svg', 'qt6-shadertools', 'kcontacts', 'prison',
+                     'networkmanager-qt', 'kirigami-addons'],
+            'ubuntu': ['qt6-multimedia-dev', 'qt6-svg-dev', 'qt6-shader-baker',
+                       'libkf6contacts-dev', 'libkf6prison-dev', 'libkf6networkmanagerqt-dev',
+                       'kirigami-addons-dev', 'libnm-dev'],
+            'debian': ['qt6-multimedia-dev', 'qt6-svg-dev', 'qt6-shader-baker',
+                       'libkf6contacts-dev', 'libkf6prison-dev', 'libkf6networkmanagerqt-dev',
+                       'kirigami-addons-dev', 'libnm-dev'],
+        }[distro]
     if 'kweather' in apps:
         packages += {
             'fedora': ['flatpak', 'qt6-qtcharts-devel', 'qt6-qtpositioning-devel', 'qt6-qtsvg-devel',
@@ -284,7 +299,7 @@ def app_problem(app):
         except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError):
             pass
         return 'Weather makeover requires KWeather 26.08.1 installed through Flatpak (org.kde.kweather).'
-    executable, required = {'settings': ('systemsettings', '6.8.2'), 'gwenview': ('gwenview', '26.08.2'), 'kcalc': ('kcalc', '26.08.2')}[app]
+    executable, required = {'settings': ('systemsettings', '6.8.2'), 'gwenview': ('gwenview', '26.08.2'), 'kcalc': ('kcalc', '26.08.2'), 'qrca': ('qrca', '26.08.2')}[app]
     version = application_version(executable)
     if version != required:
         return f'{APPS[app][0]} requires {executable} {required}; found {version or "not installed"}.'
