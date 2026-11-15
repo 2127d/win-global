@@ -19,6 +19,8 @@
 #include <QLoggingCategory>
 #include <QMenu>
 #include <QMenuBar>
+#include <QPainter>
+#include <QPaintEvent>
 #include <QScreen>
 #include <QTimer>
 #include <QUrlQuery>
@@ -73,6 +75,20 @@ SettingsBase::SettingsBase(SidebarMode::ApplicationMode mode, const QString &sta
     } else {
         setAutoSaveSettings();
     }
+}
+
+void SettingsBase::paintEvent(QPaintEvent *event)
+{
+    KMainWindow::paintEvent(event);
+    if (!qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) return;
+
+    // The preview keeps an alpha-enabled native window across material changes.
+    // Hosted pages deliberately expose this canvas. Own its painting rather
+    // than relying on a widget-style event filter that a global theme can remove.
+    QPainter painter(this);
+    painter.setClipRegion(event->region());
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
+    painter.fillRect(rect(), palette().color(QPalette::Window));
 }
 
 SettingsBase::~SettingsBase()

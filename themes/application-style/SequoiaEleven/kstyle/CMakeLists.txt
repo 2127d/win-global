@@ -41,6 +41,7 @@ set(sequoiaeleven_PART_SRCS
     sequoiaelevenblurhelper.cpp
     sequoiaelevenframeshadow.cpp
     sequoiaelevenfilepicker.cpp
+    sequoiaelevenpickerpreview.cpp
     sequoiaelevenhelper.cpp
     sequoiaelevenmdiwindowshadow.cpp
     sequoiaelevenmnemonics.cpp
@@ -92,6 +93,8 @@ if( SEQUOIAELEVEN_HAVE_QTQUICK )
 endif()
 
 ################# link KDE Frameworks #################
+find_package(KF${QT_MAJOR_VERSION}KIO REQUIRED)
+target_link_libraries(sequoiaeleven${QT_MAJOR_VERSION} PRIVATE KF${QT_MAJOR_VERSION}::KIOFileWidgets)
 target_link_libraries(sequoiaeleven${QT_MAJOR_VERSION}
     PRIVATE
     KF${QT_MAJOR_VERSION}::CoreAddons

@@ -65,7 +65,8 @@ void DesktopRenderController::stop() {
     m_closing=true; m_dispatch.stop(); m_debounce.stop(); m_queue.clear();
     if (m_worker.state()!=QProcess::NotRunning) {
         m_worker.terminate();
-        if (!m_worker.waitForFinished(6000)) { m_worker.kill(); m_worker.waitForFinished(1000); }
+        // Allow the supervisor to reap clients before stopping KWin and its private bus.
+        if (!m_worker.waitForFinished(25000)) { m_worker.kill(); m_worker.waitForFinished(1000); }
     }
 }
 

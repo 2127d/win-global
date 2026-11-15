@@ -11,6 +11,7 @@ import re
 import shlex
 import shutil
 import signal
+import select
 import subprocess
 import sys
 import tempfile
@@ -119,6 +120,107 @@ def sample_applications(data):
                           'XDG_DATA_DIRS': str(weather/'share') + ':' + str(data) + ':' + os.environ.get('XDG_DATA_DIRS','/usr/local/share:/usr/share')}),
     ]
 
+class PreviewCancelled(Exception):
+    """Unwind the private renderer without interrupting dependency cleanup."""
+
+
+def stop_process(process, timeout=2):
+    if process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+    print(f'preview-stop: {Path(process.args[0]).name} pid={process.pid} exit={process.returncode}', flush=True)
+
+
+def signal_worker(root):
+    # The private worker records its birth time as well as its PID, so a stale
+    # marker can never target an unrelated process after PID reuse.
+    try:
+        record = json.loads((root/'worker.json').read_text())
+        pid = int(record['pid'])
+        fd = os.pidfd_open(pid)
+        try:
+            birth = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[19]
+            if birth == record['birth']:
+                signal.pidfd_send_signal(fd, signal.SIGTERM)
+                return pid
+        finally:
+            os.close(fd)
+    except (FileNotFoundError, ProcessLookupError):
+        pass
+
+
+def kill_remaining_clients(group, worker_pid=None):
+    # Last resort after the worker's grace period. Keep the compositor and bus
+    # alive until remaining clients are dead, even if the worker itself hung.
+    stopped = []
+    worker_fd = None
+    for entry in Path('/proc').iterdir():
+        if not entry.name.isdigit() or int(entry.name) == group:
+            continue
+        try:
+            fd = os.pidfd_open(int(entry.name))
+            try:
+                fields = (entry/'stat').read_text().rsplit(')', 1)[1].split()
+                if int(fields[2]) == group:
+                    if int(entry.name) == worker_pid:
+                        worker_fd = os.dup(fd)
+                    else:
+                        signal.pidfd_send_signal(fd, signal.SIGKILL)
+                        stopped.append(os.dup(fd))
+            finally:
+                os.close(fd)
+        except (FileNotFoundError, ProcessLookupError, PermissionError):
+            pass
+
+    # pidfds become readable only after exit; don't remove dependencies while a
+    # signaled client is still running its last instructions.
+    try:
+        deadline = time.monotonic() + 2
+        pending = list(stopped)
+        while pending and time.monotonic() < deadline:
+            ready, _, _ = select.select(pending, [], [], max(0, deadline - time.monotonic()))
+            pending = [fd for fd in pending if fd not in ready]
+        if pending:
+            print('preview-stop: some killed clients did not exit within two seconds', flush=True)
+    finally:
+        for fd in stopped:
+            os.close(fd)
+        # KWin exits when its session worker exits. Keep even a hung worker
+        # alive until its clients are gone so the compositor cannot leave first.
+        if worker_fd is not None:
+            try:
+                signal.pidfd_send_signal(worker_fd, signal.SIGKILL)
+                select.select([worker_fd], [], [], 2)
+            except ProcessLookupError:
+                pass
+            finally:
+                os.close(worker_fd)
+
+
+def stop_session(process, root):
+    if process.poll() is not None:
+        print(f'preview-stop: kwin_wayland pid={process.pid} exit={process.returncode}', flush=True)
+        return
+    (root/'cancel').touch()
+    worker_pid = signal_worker(root)
+    try:
+        # --exit-with-session lets KWin exit only after the worker has reaped
+        # its applications, Plasma, and Activity Manager, in that order.
+        process.wait(timeout=12)
+    except subprocess.TimeoutExpired:
+        print('preview-stop: worker grace period expired; stopping remaining private clients', flush=True)
+        kill_remaining_clients(process.pid, worker_pid)
+        try:
+            process.wait(timeout=2)
+        except subprocess.TimeoutExpired:
+            stop_process(process)
+    print(f'preview-stop: kwin_wayland pid={process.pid} exit={process.returncode}', flush=True)
+
+
 def inside(request_path):
     request = json.loads(Path(request_path).read_text())
     root = Path(request['root'])
@@ -126,6 +228,23 @@ def inside(request_path):
             or os.environ.get('WAYLAND_DISPLAY') != 'appearance-preview'
             or str(root/'runtime') not in os.environ.get('DBUS_SESSION_BUS_ADDRESS', '')):
         raise RuntimeError('Desktop renderer must run in its private session.')
+    cancelled = False
+    def cancel(signum=None, frame=None):
+        nonlocal cancelled
+        cancelled = True
+    def check_cancelled():
+        if cancelled:
+            raise PreviewCancelled()
+    signal.signal(signal.SIGTERM, cancel)
+    signal.signal(signal.SIGINT, cancel)
+    marker = root/'worker.json'
+    temporary = marker.with_suffix('.new')
+    birth = Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()[19]
+    temporary.write_text(json.dumps({'pid': os.getpid(), 'birth': birth}))
+    temporary.replace(marker)
+    if cancelled or (root/'cancel').exists():
+        marker.unlink(missing_ok=True)
+        return
     import dbus
     from PySide6.QtGui import QGuiApplication, QImage
     from PySide6.QtCore import QObject, Slot, ClassInfo
@@ -148,14 +267,19 @@ def inside(request_path):
     def launch(command, environment=None):
         process = subprocess.Popen(command, env={**os.environ, **(environment or {})})
         children.append(process)
+        # Check only after registering the child: a signal during Popen must
+        # never leave an application outside our orderly cleanup sequence.
+        check_cancelled()
         return process
     def wait_service(name, timeout=15):
         end = time.monotonic()+timeout
         while time.monotonic()<end:
+            check_cancelled()
             if bus.name_has_owner(name): return
             time.sleep(.1)
         raise RuntimeError(f'{name} did not start in the desktop renderer.')
     try:
+        check_cancelled()
         launch(['/usr/libexec/kactivitymanagerd'])
         wait_service('org.kde.ActivityManager')
         launch(['/usr/bin/plasmashell', '--no-respawn', '--shell-plugin', 'org.kde.plasma.desktop'])
@@ -163,6 +287,7 @@ def inside(request_path):
         shell = dbus.Interface(bus.get_object('org.kde.plasmashell','/PlasmaShell'), 'org.kde.PlasmaShell')
         # Render readiness is checked against actual desktop/panel objects.
         for attempt in range(80):
+            check_cancelled()
             try:
                 inventory = json.loads(str(shell.evaluateScript('print(JSON.stringify({desktops:desktops().length,panels:panels().length}));')))
                 if inventory['desktops'] > 0: break
@@ -194,11 +319,13 @@ def inside(request_path):
         sid = bus.call_blocking('org.kde.KWin','/Scripting','org.kde.kwin.Scripting','loadScript','ss',(str(script),'appearance-sample-placement'))
         dbus.Interface(bus.get_object('org.kde.KWin',f'/Scripting/Script{sid}'),'org.kde.kwin.Script').run()
         for attempt in range(300):
+            check_cancelled()
             app.processEvents()
             if probe.payload and len(probe.payload) == len(applications): break
             time.sleep(.05)
         else: raise RuntimeError('The native Gwenview and Weather windows did not become ready.')
         for attempt in range(60):
+            check_cancelled()
             app.processEvents()
             time.sleep(.05)
         effects = dbus.Interface(bus.get_object('org.kde.KWin','/Effects'),'org.freedesktop.DBus.Properties')
@@ -210,6 +337,7 @@ def inside(request_path):
             result = capture.CaptureWorkspace(dbus.Dictionary({'include-cursor':False},signature='sv'),dbus.types.UnixFd(stream.fileno()))
             size = int(result['height'])*int(result['stride'])
             for attempt in range(100):
+                check_cancelled()
                 if os.fstat(stream.fileno()).st_size >= size: break
                 time.sleep(.02)
             stream.seek(0); pixels=stream.read()
@@ -220,11 +348,13 @@ def inside(request_path):
             os.replace(temporary,request['output'])
         Path(request['output']+'.json').write_text(json.dumps({'material':request['material'],'mode':request['mode'],'width':width,'height':height,'desktop':inventory,'renderer':'KWin + Plasma + Gwenview + Weather','effects':loaded,'applications':probe.payload,'palette':QGuiApplication.palette().window().color().getRgb()}))
     finally:
+        # Repeated refresh/close requests must not interrupt this sequence.
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
         qtbus.unregisterObject('/DesktopRenderer')
-        for process in reversed(children): process.terminate()
         for process in reversed(children):
-            try: process.wait(timeout=3)
-            except subprocess.TimeoutExpired: process.kill()
+            stop_process(process)
+        marker.unlink(missing_ok=True)
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
@@ -236,11 +366,23 @@ def main():
     parser.add_argument('--width',type=int,default=1600)
     parser.add_argument('--height',type=int,default=900)
     args=parser.parse_args()
-    if args.session: inside(args.session); return
+    if args.session:
+        try:
+            inside(args.session)
+        except PreviewCancelled:
+            pass
+        return
     if not args.material or not args.mode or not args.output: parser.error('Material, mode and output are required.')
     if not (640<=args.width<=7680 and 480<=args.height<=4320): parser.error('Invalid preview dimensions.')
     args.output=args.output.resolve();args.output.parent.mkdir(parents=True,exist_ok=True)
-    # Stop the private compositor if Settings is killed rather than closed.
+    # Cancellation is handled by the supervisor, never by signaling the whole
+    # process group (which would tear down D-Bus beneath still-running clients).
+    cancelled = 0
+    def cancel(signum, frame):
+        nonlocal cancelled
+        cancelled = signum
+    signal.signal(signal.SIGTERM, cancel)
+    signal.signal(signal.SIGINT, cancel)
     parent=os.getppid()
     ctypes.CDLL(None).prctl(1,signal.SIGTERM,0,0,0)
     if os.getppid()!=parent: raise SystemExit(1)
@@ -261,21 +403,39 @@ def main():
         launch.chmod(0o700)
         bus=root/'bus.conf'
         bus.write_text('<busconfig><type>session</type><listen>unix:tmpdir='+str(root/'runtime')+'</listen><policy context="default"><allow send_destination="*"/><allow receive_sender="*"/><allow own="*"/></policy></busconfig>')
-        command=['dbus-run-session','--config-file='+str(bus),'--','kwin_wayland','--virtual','--width',str(args.width),'--height',str(args.height),'--inputmethod','/bin/true','--no-lockscreen','--no-global-shortcuts','--no-kactivities','--socket','appearance-preview','--exit-with-session',str(launch)]
+        command=['kwin_wayland','--virtual','--width',str(args.width),'--height',str(args.height),'--inputmethod','/bin/true','--no-lockscreen','--no-global-shortcuts','--no-kactivities','--socket','appearance-preview','--exit-with-session',str(launch)]
         with Path(str(args.output)+'.log').open('w') as log:
-            process=subprocess.Popen(command,env=env,stdout=log,stderr=log,start_new_session=True)
-            def stop(signum=None, frame=None):
-                try: os.killpg(process.pid,signal.SIGTERM)
-                except ProcessLookupError: pass
-                if signum is not None: raise SystemExit(128+signum)
-            signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
+            # Own D-Bus separately: it must be the last process stopped, both
+            # after successful captures and on refresh, close, or timeout.
+            daemon = subprocess.Popen(['dbus-daemon', '--nofork', '--config-file='+str(bus), '--print-address=1'],
+                                      stdout=subprocess.PIPE, stderr=log, text=True, start_new_session=True)
+            process = None
             try:
-                process.wait(timeout=75)
-                if process.returncode or not args.output.is_file(): raise RuntimeError('The isolated desktop renderer failed. See '+str(args.output)+'.log')
+                if not select.select([daemon.stdout], [], [], 5)[0]:
+                    raise RuntimeError('The private preview bus did not start.')
+                address = daemon.stdout.readline().strip()
+                if not address or daemon.poll() is not None:
+                    raise RuntimeError('The private preview bus failed to start.')
+                env['DBUS_SESSION_BUS_ADDRESS'] = address
+                if not cancelled:
+                    process = subprocess.Popen(command, env=env, stdout=log, stderr=log, start_new_session=True)
+                    deadline = time.monotonic() + 75
+                    while process.poll() is None and not cancelled and time.monotonic() < deadline:
+                        time.sleep(.1)
+                    if not cancelled:
+                        if process.poll() is None:
+                            raise RuntimeError('The isolated desktop renderer timed out.')
+                        if process.returncode or not args.output.is_file():
+                            raise RuntimeError('The isolated desktop renderer failed. See '+str(args.output)+'.log')
             finally:
-                stop()
-                try: process.wait(timeout=5)
-                except subprocess.TimeoutExpired: os.killpg(process.pid,signal.SIGKILL);process.wait()
+                if process is not None:
+                    stop_session(process, root)
+                    # Reap ancillary clients left behind by normally exiting apps.
+                    kill_remaining_clients(process.pid)
+                stop_process(daemon)
+                daemon.stdout.close()
+            if cancelled:
+                raise SystemExit(128 + cancelled)
         print(json.dumps({'image':str(args.output),'material':args.material,'mode':args.mode}))
 
 if __name__=='__main__': main()

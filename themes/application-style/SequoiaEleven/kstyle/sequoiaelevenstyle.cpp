@@ -4622,7 +4622,10 @@ bool Style::drawIndicatorHeaderArrowPrimitive(const QStyleOption *option, QPaint
 bool Style::drawPanelButtonCommandPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
     if (FilePicker::contains(widget)) {
-        FilePicker::paintPill(painter, option);
+        QStyleOption pill(*option);
+        if (widget->inherits("KDEPrivate::KUrlNavigatorButton"))
+            pill.rect = FilePicker::breadcrumbHoverRect(widget);
+        FilePicker::paintPill(painter, &pill);
         return true;
     }
     // cast option and check
@@ -4885,6 +4888,12 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
     const auto viewItemOption = qstyleoption_cast<const QStyleOptionViewItem *>(option);
     if (!viewItemOption)
         return false;
+
+    const QWidget *viewWidget = widget ? widget : viewItemOption->widget;
+    if (viewWidget && viewWidget->inherits("KFilePlacesView") && FilePicker::contains(viewWidget)) {
+        FilePicker::paintNavigation(painter, option);
+        return true;
+    }
 
     // try cast widget
     const auto abstractItemView = qobject_cast<const QAbstractItemView *>(widget);

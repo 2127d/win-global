@@ -356,6 +356,16 @@ System & Accounts groups security, language, maintenance and preferences.
 Power and Accessibility topic shortcuts open the complete native module rather
 than promising an unsupported deep link. Unclassified settings remain visible.
 
+The Appearance Hub paints its shared window canvas explicitly from the live
+application palette. Solid backgrounds remain opaque after native Global Theme
+application or widget-style replacement; Transparent and Glass retain their
+exact palette alpha. This is independent of the overview's material switcher.
+Verify this path across every customized appearance page with:
+
+```sh
+python3 tools/verify-settings-navigation.py --hub --canvas-only --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check
+```
+
 Material provider replacement unloads the outgoing blur provider before loading
 the incoming one: V6 Glass rejects loading while standard Blur is still active.
 The helper checks the resulting provider set; the preview renews its rounded
@@ -386,6 +396,12 @@ layout export. Global Theme selection/downloads, Auto, Schedule, and app overrid
 route to the original KDE modules. Wallpaper and panel-layout preservation are
 checked, read-only indicators because this recipe never replaces those surfaces.
 The rendered preview includes the installed Plasma desktop and a real Files window.
+Preview shutdown waits for Weather and Gwenview, then Plasma, then Activity Manager,
+then the private compositor, and finally its private D-Bus daemon. Refresh and close
+cancel the render worker without signaling the whole session; a bounded fallback
+stops hung clients while their dependencies remain available. The live desktop
+session is never targeted. `tools/verify-desktop-render-shutdown.py` checks completion,
+startup/render cancellation, repeated cancellation, hung-worker cleanup, and core dumps.
 `tools/verify-desktop-render.py` verifies native rendering and isolation;
 `tools/verify-settings-navigation.py --hub --desktop-preview --composited --overlay --binary .staging/settings-hub-build/bin/systemsettings --skip-install-check` checks image loading and rounded clipping.
 

@@ -37,6 +37,7 @@ public:
     void reloadStartupModule();
 
 protected:
+    void paintEvent(QPaintEvent *event) override;
     QSize sizeHint() const override;
     bool event(QEvent *e) override;
 

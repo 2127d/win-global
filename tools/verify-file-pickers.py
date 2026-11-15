@@ -12,12 +12,23 @@ ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--baseline-plugins', type=Path, help='Previous plugins for pixel-exact non-picker regression checks')
 parser.add_argument('--portal', action='store_true', help='Also exercise the real KDE desktop portal backend')
+parser.add_argument('--mode', choices=('light', 'dark'), help='Limit verification to one color mode')
+parser.add_argument('--material', choices=('solid', 'transparent', 'glass'), help='Limit verification to one material')
 args = parser.parse_args()
 with tempfile.TemporaryDirectory(prefix='sqp-') as temporary:
     root = Path(temporary)
     binary = root / 'verify-file-pickers'
-    flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets', 'Qt6Test'], text=True))
-    subprocess.run(['c++', '-w', '-fPIC', str(ROOT / 'tools/verify-file-pickers.cpp'), '-o', str(binary), *flags], check=True)
+    (root / 'CMakeLists.txt').write_text(f'''cmake_minimum_required(VERSION 3.22)
+project(PickerVerification LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Test)
+find_package(KF6KIO REQUIRED)
+add_executable(verify-file-pickers "{ROOT / 'tools/verify-file-pickers.cpp'}")
+target_link_libraries(verify-file-pickers PRIVATE Qt6::Widgets Qt6::Test KF6::KIOFileWidgets)
+''')
+    subprocess.run(['cmake', '-S', str(root), '-B', str(root / 'build'), '-G', 'Ninja'], check=True, capture_output=True)
+    subprocess.run(['cmake', '--build', str(root / 'build')], check=True, capture_output=True)
+    binary = root / 'build/verify-file-pickers'
     hook = root / 'portal-probe.so'
     if args.portal:
         portal_flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets', 'Qt6Test', 'Qt6DBus'], text=True))
@@ -26,8 +37,8 @@ with tempfile.TemporaryDirectory(prefix='sqp-') as temporary:
     (fixture / 'Documents').mkdir(parents=True)
     (fixture / 'example.txt').write_text('File selection fixture.\n')
     (fixture / 'second.txt').write_text('Second file.\n')
-    for mode in ('light', 'dark'):
-        for material in ('solid', 'transparent', 'glass'):
+    for mode in ([args.mode] if args.mode else ('light', 'dark')):
+        for material in ([args.material] if args.material else ('solid', 'transparent', 'glass')):
             config = root / f'{mode}-{material}'
             config.mkdir()
             (config / 'runtime').mkdir(mode=0o700)

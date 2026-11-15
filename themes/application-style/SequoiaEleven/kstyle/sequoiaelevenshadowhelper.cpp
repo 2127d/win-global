@@ -19,6 +19,7 @@
  *************************************************************************/
 
 #include "sequoiaelevenshadowhelper.h"
+#include "sequoiaelevenfilepicker.h"
 
 #include "sequoiaeleven.h"
 #include "sequoiaelevenboxshadowrenderer.h"
@@ -222,7 +223,7 @@ TileSet ShadowHelper::shadowTiles(QWidget *widget)
 
     if (params.isNone()) {
         return TileSet();
-    } else if (_shadowTiles.isValid()) {
+    } else if (_shadowTiles.isValid() && qFuzzyCompare(_shadowRadius, qreal(FilePicker::popupRadius(widget) ? FilePicker::popupRadius(widget) : _helper.frameRadius()))) {
         return _shadowTiles;
     }
 
@@ -244,7 +245,9 @@ TileSet ShadowHelper::shadowTiles(QWidget *widget)
     const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
-    const qreal frameRadius = _helper.frameRadius();
+    const qreal frameRadius = FilePicker::popupRadius(widget) ? FilePicker::popupRadius(widget) : _helper.frameRadius();
+    _shadowRadius = frameRadius;
+    _tiles.clear();
 
     BoxShadowRenderer shadowRenderer;
     shadowRenderer.setBorderRadius(frameRadius);

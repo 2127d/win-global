@@ -204,6 +204,7 @@ static void startup()
             fprintf(stderr,"PASS: square application top corners across custom pages, Quick Settings, resize and maximize/restore\n");
             QCoreApplication::exit(0); return;
         }
+#include "verify-appearance-canvas.inc"
 #include "verify-colors-page.inc"
         if (qEnvironmentVariableIsSet("SEQUOIA_PLASMA_ONLY")) {
             open(nav,QStringLiteral("kcm_desktoptheme"));QTest::qWait(800);

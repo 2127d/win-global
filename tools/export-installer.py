@@ -18,12 +18,12 @@ PAYLOAD = (
     'themes/application-style', 'themes/color-schemes', 'themes/fonts',
     'themes/icons', 'themes/lockscreen', 'themes/login-screen',
     'themes/plasma', 'themes/wallpapers',
-    'apps/settings', 'apps/gwenview', 'apps/kcalc', 'apps/kweather', 'apps/qrca',
+    'apps/settings', 'apps/gwenview', 'apps/kcalc', 'apps/kweather', 'apps/qrca', 'apps/merkuro',
 )
 EXCLUDED = {'.git', '.staging', '__pycache__', 'CMakeFiles', 'CMakeCache.txt'}
 # The shared app lives beside win-global during development. Embed its sources
 # at the existing reference path so the extracted installer is self-contained.
-EMBEDDED_SOURCES = ('desktop/components/library', 'tools/motion-lab', 'apps/qrca')
+EMBEDDED_SOURCES = ('desktop/components/library', 'tools/motion-lab', 'apps/qrca', 'apps/merkuro')
 INTRO = '''SEQUOIA ELEVEN — INSTALLER
 
 1. Extract this entire archive to a writable folder on a KDE Plasma 6 computer.

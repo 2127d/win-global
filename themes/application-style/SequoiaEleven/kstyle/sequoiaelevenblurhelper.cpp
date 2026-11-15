@@ -29,6 +29,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "sequoiaelevenblurhelper.h"
+#include "sequoiaelevenfilepicker.h"
 #include "sequoiaelevenpropertynames.h"
 #include "sequoiaelevenstyleconfigdata.h"
 
@@ -249,7 +250,8 @@ QRegion BlurHelper::blurRegion(QWidget *widget) const
     QRect rect = widget->rect();
     if ((qobject_cast<QMenu *>(widget) && !widget->testAttribute(Qt::WA_X11NetWmWindowTypeMenu)) // not a detached menu
              || widget->inherits("QComboBoxPrivateContainer")) {
-        return roundedRegion(rect, StyleConfigData::cornerRadius() + 1, true, true, true, true);
+        const int pickerRadius = FilePicker::popupRadius(widget);
+        return roundedRegion(rect, pickerRadius ? pickerRadius : StyleConfigData::cornerRadius() + 1, true, true, true, true);
     } else {
         // blur entire window
         if (widget->palette().color(QPalette::Window).alpha() < 255){

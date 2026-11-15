@@ -189,6 +189,7 @@ private:
 
     //* tileset
     TileSet _shadowTiles;
+    qreal _shadowRadius = -1;
 
     //* number of tiles
     enum {

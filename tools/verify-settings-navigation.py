@@ -29,6 +29,7 @@ parser.add_argument('--screen-width', default='1400')
 parser.add_argument('--screen-height', default='1000')
 parser.add_argument('--desktop-preview', action='store_true', help='Verify real rendered desktop loading and rounded corners.')
 parser.add_argument('--panels-only', action='store_true', help='Test panel controls against isolated Plasma panels')
+parser.add_argument('--canvas-only', action='store_true', help='Check page backgrounds after native global-theme and style changes')
 parser.add_argument('--colors-only', action='store_true', help='Exercise the redesigned Colors page')
 parser.add_argument('--plasma-only', action='store_true', help='Exercise the redesigned Plasma Style page')
 parser.add_argument('--style-only', action='store_true', help='Exercise the redesigned Application Style page')
@@ -52,6 +53,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     if args.corners_only:
         assert args.hub and args.composited, '--corners-only requires --hub --composited'
         env['SEQUOIA_VERIFY_CORNERS'] = '1'
+    if args.canvas_only: env['SEQUOIA_CANVAS_ONLY'] = '1'
     if args.colors_only: env['SEQUOIA_COLORS_ONLY'] = '1'
     if args.plasma_only: env['SEQUOIA_PLASMA_ONLY'] = '1'
     if args.style_only: env['SEQUOIA_STYLE_ONLY'] = '1'
@@ -73,7 +75,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     defaults = folder / 'system-config'
     defaults.mkdir()
     (defaults / 'kdeglobals').write_text('[General]\nColorScheme=BreezeDark\n')
-    env['XDG_CONFIG_DIRS'] = (str(folder / 'config/kdedefaults') + ':' if args.global_only else '') + str(defaults) + ':/etc/xdg'
+    env['XDG_CONFIG_DIRS'] = (str(folder / 'config/kdedefaults') + ':' if args.global_only or args.canvas_only else '') + str(defaults) + ':/etc/xdg'
     env['LIBGL_ALWAYS_SOFTWARE'] = '1'
     if args.third_party:
         external = folder / 'data/plasma/systemsettings/externalmodules'
@@ -95,7 +97,7 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
         metadata = json.loads((fixture / 'metadata.json').read_text())
         metadata['name'] = 'Removable Union test style'
         (fixture / 'metadata.json').write_text(json.dumps(metadata))
-    if args.global_only:
+    if args.global_only or args.canvas_only:
         shutil.copytree(ROOT / 'themes/plasma/look-and-feel', folder / 'data/plasma/look-and-feel')
         fixture = folder / 'data/plasma/look-and-feel/org.sequoia.test.removable'
         shutil.copytree(ROOT / 'themes/plasma/look-and-feel/org.sequoia.eleven.dark.transparent', fixture)
@@ -199,6 +201,9 @@ with tempfile.TemporaryDirectory(prefix='sequoia-settings-verification-') as tem
     result = subprocess.CompletedProcess(command, process.returncode, (output / 'verification.log').read_text())
     print(result.stdout[-6000:])
     result.check_returncode()
+    if args.canvas_only:
+        assert 'PASS: appearance canvas' in result.stdout
+        raise SystemExit(0)
     if args.plasma_only:
         assert 'PASS: Plasma Style' in result.stdout
         assert not any(error in result.stdout for error in ('TypeError:', 'ReferenceError:', 'Error loading QML', 'Unable to assign', 'Binding loop')), 'Plasma Style emitted QML errors'

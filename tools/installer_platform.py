@@ -117,7 +117,7 @@ def build_jobs():
         pass
     return max(1, os.cpu_count() or 1)
 
-_KF = 'kcolorscheme kconfig kconfigwidgets kcoreaddons kguiaddons ki18n kiconthemes kwindowsystem kcmutils'
+_KF = 'kcolorscheme kconfig kconfigwidgets kcoreaddons kguiaddons ki18n kiconthemes kwindowsystem kcmutils kio'
 _APP_KF = 'kauth kcrash kitemviews kitemmodels kio kservice kwidgetsaddons kxmlgui kdbusaddons kjobwidgets kparts knotifications'
 
 def debian_kf_package(name):

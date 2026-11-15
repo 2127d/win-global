@@ -561,8 +561,9 @@ transitions. Navigation retains inset spacing and selection highlights. Forms
 and unframed list/grid pages share their native host's glass canvas; explicitly
 framed content views remain solid. The sidebar treatment follows the shared
 component, independent of the application's name.
-Merkuro Calendar (RPM) also uses a continuous floating sidebar, inset month/week/
-schedule/task surfaces, and an aligned menu/header. Its installed QML is extracted
+[Merkuro Calendar's makeover](apps/merkuro/README.md) combines Today, Month + Agenda,
+Week, Schedule and Tasks in one native app. Floating sidebar and content cards
+use the Sequoia library with the app background visible around each surface. Its installed QML is extracted
 into the version-checked overlay; a small launcher-scoped Qt URL interceptor
 loads that copy while the RPM executable and calendar services remain native.
 The installer builds this helper when Merkuro is installed (requires a C++
@@ -941,7 +942,15 @@ Native file/folder choosers use Sequoia pill actions and fields, circular toolba
 controls, and 12px outer padding. Solid and Transparent keep opaque controls;
 Liquid Glass uses the shared optical rim while toolbars remain solid. The scope
 requires a Qt/KDE chooser dialog (including KDE's desktop portal), so Dolphin and
-other ordinary file-explorer windows retain their existing styling. Verify all
+other ordinary file-explorer windows retain their existing styling.
+KDE choosers also have inset circular breadcrumb arrow/edit controls, matching
+folder hover pills, pill sidebar navigation with vertically centered icons,
+rounded content-sized file-type and breadcrumb-editor menus, and a rounded
+file-list header with no dividers above or below the file view. The categorized
+preview uses a rounded image and padded cards. It follows a single valid file
+or folder selection for the chooser's mode,
+ignores hover, and returns its space to the list when the selection is cleared.
+The native Preview Panel toggle is preserved. Verify all
 six appearances with `python3 tools/verify-file-pickers.py --portal`; supplying
 `--baseline-plugins PATH` also compares ordinary windows against a previous
 native-style build pixel for pixel.
