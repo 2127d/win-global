@@ -25,7 +25,7 @@
     </entry>
     <entry name="cardTransparency" type="Int">
       <label>Dynamic card transparency</label>
-      <default>50</default>
+      <default>14</default>
       <min>0</min>
       <max>100</max>
     </entry>
@@ -35,7 +35,7 @@
     </entry>
     <entry name="flatCardTransparency" type="Int">
       <label>Flat card transparency</label>
-      <default>76</default>
+      <default>14</default>
       <min>0</min>
       <max>100</max>
     </entry>

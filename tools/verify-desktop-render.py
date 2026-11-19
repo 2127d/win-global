@@ -36,7 +36,7 @@ with tempfile.TemporaryDirectory(prefix='desktop-render-test-') as temp:
             assert application['geometry']==dict(x=x,y=202,width=1445,height=1089),data
         assert data['desktop']['desktops']>=1 and data['desktop']['panels']>=1,data
         assert ('sequoia_liquid_glass_v6' in data['effects'])==(material=='glass'),data
-        assert ('blur' in data['effects'])==(material=='transparent'),data
+        assert ('blur' in data['effects'])==(material!='glass'),data
         assert (sum(data['palette'][:3])<384)==(mode=='dark'),data
         assert data['palette'][3]==(255 if material=='solid' else (192 if mode=='dark' else 184) if material=='transparent' else (168 if mode=='dark' else 148)),data
         assert image.stat().st_size>10000

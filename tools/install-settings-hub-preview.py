@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+from glass_surfaces import ensure_appearance_themes
 
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
@@ -31,6 +32,9 @@ if not args.binary.is_file(): raise SystemExit('Build the preview first.')
 module=args.binary.parent/'qml/org/sequoia/components'
 if not (module/'qmldir').is_file() or not (module/'libsequoiacomponentsplugin.so').is_file():
     raise SystemExit('Build the shared component library with the preview first.')
+# These shared assets also serve the live desktop; retain them on Hub removal.
+# The old glass trial only generated whichever color mode had been tried.
+ensure_appearance_themes(args.prefix)
 target.mkdir(parents=True,exist_ok=True)
 args.bin_prefix.mkdir(parents=True,exist_ok=True)
 desktop.parent.mkdir(parents=True,exist_ok=True)

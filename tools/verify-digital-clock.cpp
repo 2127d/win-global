@@ -160,6 +160,11 @@ static void start() {
                         "calendar content island stays opaque and follows live light/dark palette changes");
                 require(eval(today, "Kirigami.Theme.textColor.toString()").toString() == QString::fromLatin1(text),
                         "calendar dates follow live light/dark text changes");
+                for (const auto name : {"sequoiaHeroDate", "sequoiaHeaderWeekday", "sequoiaHeaderDay"}) {
+                    auto label = named(view, name);
+                    require(label && label->isVisible() && label->property("color").value<QColor>() == QColor(text)
+                            && label->opacity() == 1, "glass header labels retain full theme contrast in light and dark");
+                }
             }
             eval(calendar, QStringLiteral("Kirigami.Theme.backgroundColor = '%1'; Kirigami.Theme.textColor = '%2'")
                  .arg(originalBackground, originalText));
@@ -177,11 +182,32 @@ static void start() {
             fprintf(stderr, "PASS: calendar date highlight responds to changing desktop accents\n");
             require(eval(calendar, "showClocks").toBool(), "world clocks visible");
             require(!named(view, "sequoiaHeroTime")->property("text").toString().isEmpty(), "live hero time");
+            auto switcher = named(view, "sequoiaCalendarViewSwitcher");
+            require(switcher && named(view, "glassPillSelection"), "shared glass calendar switcher loaded");
+            for (const int index : {1, 2, 0}) {
+                auto tab = eval(switcher, QStringLiteral("itemAt(%1)").arg(index)).value<QObject *>();
+                auto item = qobject_cast<QQuickItem *>(tab);
+                require(item, "calendar glass tab exists");
+                QTest::mouseClick(view, Qt::LeftButton, Qt::NoModifier,
+                    item->mapToScene(QPointF(item->width()/2, item->height()/2)).toPoint());
+                QTest::qWait(300);
+                require(eval(month, "currentIndex").toInt() == index, "glass tab click switches calendar view");
+                require(eval(switcher, "currentIndex").toInt() == index, "glass selection follows calendar view");
+                if (index == 2) require(view->grabWindow().save(qEnvironmentVariable("SEQUOIA_CLOCK_CAPTURE") + "-glass-years.png"), "save glass year switcher");
+            }
+            eval(switcher, "itemAt(1).forceActiveFocus(Qt.TabFocusReason)");
+            QTest::keyClick(view, Qt::Key_Space);
+            QTest::qWait(300);
+            require(eval(month, "currentIndex").toInt() == 1, "glass calendar tab keyboard activation");
+            eval(month, "viewHeader.todayButton.animateClick()");
+            QTest::qWait(300);
+            require(eval(switcher, "currentIndex").toInt() == 0, "glass selection follows external calendar navigation");
+            fprintf(stderr, "PASS: shared glass pill switcher, mouse and keyboard activation, and external calendar synchronization\n");
             const auto originalMonth = eval(month, "selectedMonth").toString();
-            eval(month, "nextView()");
+            eval(month, "viewHeader.nextButton.animateClick()");
             QTest::qWait(350);
             require(eval(month, "selectedMonth").toString() != originalMonth, "next month navigation");
-            eval(month, "previousView()");
+            eval(month, "viewHeader.previousButton.animateClick()");
             QTest::qWait(350);
             require(eval(month, "selectedMonth").toString() == originalMonth, "previous month navigation");
             eval(month, "showYearView()");

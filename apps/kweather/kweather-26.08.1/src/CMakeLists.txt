@@ -39,6 +39,7 @@ target_link_libraries(kweatherLib
 )
 
 add_executable(kweather ${kweather_SRCS})
+add_dependencies(kweather sequoiacomponentsplugin)
 find_program(SEQUOIA_QSB NAMES qsb HINTS /usr/lib64/qt6/bin /usr/lib/qt6/bin REQUIRED)
 add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/weather-glass.frag.qsb"
     COMMAND "${SEQUOIA_QSB}" --glsl "100 es,120,150" --hlsl 50 --msl 12

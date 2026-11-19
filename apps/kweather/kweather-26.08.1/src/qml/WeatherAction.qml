@@ -5,6 +5,7 @@ import QtQuick.Effects
 import QtQuick.Controls
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import org.sequoia.components as S
 import "qrc:/sequoia-weather/ActionIcons.js" as ActionIcons
 
 Button {
@@ -41,10 +42,19 @@ Button {
             }
             color: control.floating ? Qt.tint(control.floatingSurface, Qt.alpha(control.ink, control.down ? 0.14 : control.hovered ? 0.08 : 0))
                   : control.selected ? (control.atmospheric ? "#345776" : Qt.alpha(Kirigami.Theme.highlightColor, 0.16))
-                  : control.down ? Qt.alpha(control.ink, 0.14) : control.hovered ? Qt.alpha(control.ink, 0.08) : "transparent"
+                  : "transparent"
             border.width: control.visualFocus ? 2 : control.floating ? 1 : 0
             border.color: control.visualFocus ? Kirigami.Theme.highlightColor : Qt.alpha(control.ink, 0.13)
             Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+        }
+        S.MenuHighlight {
+            anchors.fill: parent
+            radius: parent.radius
+            enabled: !control.glass && !control.floating && !control.selected
+            hovered: control.hovered
+            pressed: control.down
+            focused: control.visualFocus
+            theme.mode: control.atmospheric ? "dark" : "system"
         }
         WeatherGlassSurface {
             anchors.fill: parent

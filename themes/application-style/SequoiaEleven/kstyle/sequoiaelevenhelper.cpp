@@ -583,7 +583,7 @@ void Helper::renderSidePanelFrame(QPainter *painter, const QRect &rect, const QC
 }
 
 //______________________________________________________________________________
-void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline, bool roundCorners) const
+void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline, bool roundCorners, qreal surfaceRadius) const
 {
     // set brush
     if (color.isValid())
@@ -594,7 +594,7 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
     if (roundCorners) {
         painter->setRenderHint(QPainter::Antialiasing);
         QRectF frameRect(rect);
-        qreal radius(frameRadius(PenWidth::NoPen));
+        qreal radius(surfaceRadius >= 0 ? surfaceRadius : frameRadius(PenWidth::NoPen));
 
         painter->setPen(Qt::NoPen);
 
@@ -611,7 +611,9 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
             painter->setPen(outline);
             painter->setBrush(Qt::NoBrush);
             frameRect = strokedRect(frameRect);
-            radius += 0.5; // enhance pixel aligment
+            // The stroke center is inset half a pixel: shrink its radius by
+            // the same amount so its outer edge follows the antialiased fill.
+            radius = qMax(qreal(0), radius - 0.5);
             painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
 
             painter->drawRoundedRect(frameRect, radius, radius);

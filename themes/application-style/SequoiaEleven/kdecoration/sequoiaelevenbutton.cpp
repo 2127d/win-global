@@ -216,7 +216,6 @@ void Button::drawIcon(QPainter *painter) const
         }
 
         case DecorationButtonType::Maximize: {
-#ifdef SEQUOIA_GLASS_DECORATION
             pen.setJoinStyle(Qt::RoundJoin);
             painter->setPen(pen);
             if (isChecked()) {
@@ -226,26 +225,11 @@ void Button::drawIcon(QPainter *painter) const
                 painter->drawLine(QPointF(5, 9), QPointF(13, 9));
                 painter->drawLine(QPointF(9, 5), QPointF(9, 13));
             }
-#else
-            if (isChecked()) {
-                pen.setJoinStyle(Qt::RoundJoin);
-                painter->setPen(pen);
-
-                painter->drawPolygon(QVector<QPointF>{QPointF(4, 9), QPointF(9, 4), QPointF(14, 9), QPointF(9, 14)});
-
-            } else {
-                painter->drawPolyline(QVector<QPointF>{QPointF(4, 11), QPointF(9, 6), QPointF(14, 11)});
-            }
-#endif
             break;
         }
 
         case DecorationButtonType::Minimize: {
-#ifdef SEQUOIA_GLASS_DECORATION
             painter->drawLine(QPointF(5, 9), QPointF(13, 9));
-#else
-            painter->drawPolyline(QVector<QPointF>{QPointF(4, 7), QPointF(9, 12), QPointF(14, 7)});
-#endif
             break;
         }
 

@@ -96,6 +96,10 @@ endif()
 
 ecm_find_qmlmodule(org.kde.kholidays 1.0)
 add_definitions(-DQT_NO_CONTEXTLESS_CONNECT)
+# Bundle the same surfaces used by Appearance Hub with Weather's private runtime.
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../../desktop/components/library" sequoia-components EXCLUDE_FROM_ALL)
+install(DIRECTORY "${CMAKE_BINARY_DIR}/bin/qml/org/sequoia/components"
+    DESTINATION "${KDE_INSTALL_LIBDIR}/qml/org/sequoia")
 add_subdirectory(src)
 
 ki18n_install(po)

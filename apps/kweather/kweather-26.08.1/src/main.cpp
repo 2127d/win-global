@@ -59,6 +59,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     SequoiaGlass::registerTypes();
     QQmlApplicationEngine engine;
+    engine.addImportPath(QCoreApplication::applicationDirPath() + QStringLiteral("/../lib/qml"));
+    engine.addImportPath(QCoreApplication::applicationDirPath() + QStringLiteral("/qml"));
 
     KLocalizedString::setApplicationDomain(QByteArrayLiteral("kweather"));
 

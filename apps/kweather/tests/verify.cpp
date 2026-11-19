@@ -123,7 +123,12 @@ static void checkStylePill(QQuickItem *dashboard) {
         auto icon=find(dashboard,name);check(icon,"foreground weather symbol exists");
         check(icon->property("isMask").toBool() && icon->property("color").value<QColor>()==dashboard->property("ink").value<QColor>(),"small weather symbols follow the active mode's foreground color");
     }
-    check(find(find(dashboard,"weatherHero"),"weatherCardShadow"),"weather cards have a dedicated background shadow");
+    auto hero=find(dashboard,"weatherHero");
+    check(!find(hero,"weatherCardShadow") && !hero->property("shadow").toBool(),"weather cards do not cast boxy shadows");
+    auto libraryPanel=find(hero,"weatherLibraryPanel");
+    check(libraryPanel && libraryPanel->isVisible(),"forecast cards use the shared Appearance Hub panel");
+    check(eval(hero,"tint === theme.windowColor").toBool(),"card tint follows the shared light/dark palette");
+    check(eval(libraryPanel,"border.width === 1 && border.color.a > .09").toBool(),"shared card edge remains visible without a shadow");
     check(qAbs(pill->property("radius").toDouble()-pill->height()/2)<.01,"style selector has full capsule radius");
     for(const auto name:{"weatherFlatStyle","weatherDynamicStyle"}) {
         auto button=find(dashboard,name);

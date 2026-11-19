@@ -57,7 +57,9 @@ output = ROOT / ('preview/gwenview-' + ('dialogs-' if args.dialog_preview else '
 # long and can leave an error dialog blocking actual compositor input tests.
 # KRecentFilesAction intentionally ignores /tmp URLs; keep isolated fixtures
 # outside the system temporary directory so persistence is actually exercised.
-with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=ROOT / '.staging') as temp:
+# Native popup tests need short Unix socket paths; they do not exercise the
+# recent-file history that requires fixtures outside /tmp.
+with tempfile.TemporaryDirectory(prefix='gwenview-test-', dir=None if args.native_menus else ROOT / '.staging') as temp:
     base = Path(temp)
     env = dict(os.environ, KCOREADDONS_NO_XDG_DESKTOP_PORTAL='1', QT_NO_XDG_DESKTOP_PORTAL='1')
     if args.dialog_preview:

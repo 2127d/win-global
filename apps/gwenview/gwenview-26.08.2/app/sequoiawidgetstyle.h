@@ -48,7 +48,10 @@ private:
 class SequoiaWidgetStyle : public QProxyStyle
 {
 public:
-    explicit SequoiaWidgetStyle(const QString &base) : QProxyStyle(base) { setObjectName(base); }
+    explicit SequoiaWidgetStyle(const QString &base) : QProxyStyle(base) {
+        setObjectName(base);
+        setProperty("sequoiaSharedMenus", baseStyle()->property("sequoiaSharedMenus"));
+    }
     void polish(QWidget *widget) override
     {
         QProxyStyle::polish(widget);
@@ -131,7 +134,7 @@ public:
                 QProxyStyle::drawControl(CE_PushButtonLabel, &label, painter, widget); return;
             }
         }
-        if (element == CE_MenuItem) {
+        if (element == CE_MenuItem && !property("sequoiaSharedMenus").toBool()) {
             if (auto item = qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
                 auto copy = *item;
                 if (item->state & State_Selected) {

@@ -60,6 +60,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QScrollBar>
+#include <QScreen>
 #include <QSplitterHandle>
 #include <QStackedLayout>
 #include <QSurfaceFormat>
@@ -71,6 +72,9 @@
 #include <QTreeView>
 #include <QWidgetAction>
 #include <QWindow>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+#include <private/qhighdpiscaling_p.h>
+#endif
 #include <QQuickWidget>
 #include <QTimer>
 #include <KWindowSystem>
@@ -223,6 +227,7 @@ Style::Style()
 #endif
 {
     // use DBus connection to update on sequoiaeleven configuration change
+    setProperty("sequoiaSharedMenus", true);
     auto dbus = QDBusConnection::sessionBus();
     dbus.connect(QString(),
                  QStringLiteral("/SequoiaElevenStyle"),
@@ -630,9 +635,10 @@ void Style::polish(QWidget *widget)
         widget->parentWidget()->setAutoFillBackground(false);
 
     } else if (qobject_cast<QMenu *>(widget)) {
+        addEventFilter(widget);
         setTranslucentBackground(widget);
 
-        if (widget->testAttribute(Qt::WA_TranslucentBackground) && StyleConfigData::menuOpacity() < 100) {
+        if (widget->testAttribute(Qt::WA_TranslucentBackground)) {
             _blurHelper->registerWidget(widget->window(), _isDolphin);
         }
 
@@ -950,13 +956,17 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
     case PM_ButtonShiftVertical:
         return 0;
 
-    // Qt Quick desktop menus use these metrics as the padding around their list.
-    // QWidget menus already reserve their own panel frame.
+    case PM_MenuPanelWidth:
+        return 0;
+    case PM_SubMenuOverlap:
+        // QWidget anchors from the action's inclusive right edge, inside the
+        // parent padding. Positive values move outward (unlike Quick overlap).
+        return Metrics::Menu_ContentInset + 1 + Metrics::Menu_SubmenuGap;
+
+    // Keep the native action area eight pixels inside the rounded surface.
     case PM_MenuHMargin:
     case PM_MenuVMargin:
-        return qobject_cast<const QMenu *>(widget)
-            ? ParentStyleClass::pixelMetric(metric, option, widget)
-            : Metrics::Menu_FrameWidth;
+        return Metrics::Menu_ContentInset;
 
     // menubars
     case PM_MenuBarPanelWidth:
@@ -1119,6 +1129,8 @@ int Style::styleHint(StyleHint hint, const QStyleOption *option, const QWidget *
         return true;
     case SH_Menu_MouseTracking:
         return true;
+    case SH_Menu_Mask:
+        return false;
     case SH_Menu_Scrollable: {
         if (StyleConfigData::scrollableMenu()) {
             return true;
@@ -1786,6 +1798,57 @@ void Style::drawItemText(QPainter *painter,
 
 bool Style::eventFilter(QObject *object, QEvent *event)
 {
+    if (event->type() == QEvent::Show) {
+        if (auto menu = qobject_cast<QMenu *>(object)) {
+            if (auto handle = menu->windowHandle(); handle && handle->property("sequoiaSubmenuAnchor").toBool()) {
+                for (const auto key : {"_q_waylandPopupAnchorRect", "_q_waylandPopupAnchor", "_q_waylandPopupGravity", "_q_waylandPopupConstraintAdjustment"})
+                    handle->setProperty(key, QVariant());
+                handle->setProperty("sequoiaSubmenuAnchor", false);
+            }
+            // Qt's screen-edge fallback aligns to the parent action rectangle
+            // without the submenu offset. Restore the visible-surface gap
+            // before the popup is mapped, keeping Qt's chosen side and y.
+            for (auto owner : menu->menuAction()->associatedObjects()) {
+                auto parentMenu = qobject_cast<QMenu *>(owner);
+                if (!parentMenu || !parentMenu->isVisible()
+                    || parentMenu->activeAction() != menu->menuAction()) continue;
+                const QRect parent = parentMenu->geometry();
+                const QRect screen = parentMenu->screen()->availableGeometry();
+                const int right = parent.right() + 1 + Metrics::Menu_SubmenuGap;
+                const int left = parent.left() - menu->width() - Metrics::Menu_SubmenuGap;
+                const bool fitsRight = right + menu->width() <= screen.right() + 1;
+                const bool fitsLeft = left >= screen.left();
+                const bool opensRight = menu->geometry().center().x() >= parent.center().x();
+                if (opensRight ? fitsRight : fitsLeft)
+                    menu->move(opensRight ? right : left, menu->y());
+                else if (opensRight ? fitsLeft : fitsRight)
+                    menu->move(opensRight ? left : right, menu->y());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
+                if (Helper::isWayland()) {
+                    // Wayland positions popups from the action anchor, ignoring
+                    // QWidget::move(). Expand that anchor to the parent surface
+                    // plus the gap, and let KWin flip/slide it at output edges.
+                    if (!menu->windowHandle()) menu->winId();
+                    auto handle = menu->windowHandle();
+                    auto transient = handle->transientParent();
+                    if (transient) {
+                        const QPoint origin = transient->mapFromGlobal(parentMenu->mapToGlobal(QPoint()));
+                        const QRect anchor(origin + QPoint(-Metrics::Menu_SubmenuGap, menu->y() - parent.y()),
+                                           QSize(parent.width() + 2 * Metrics::Menu_SubmenuGap, 1));
+                        const bool rightSide = menu->geometry().center().x() >= parent.center().x();
+                        const Qt::Edges side = rightSide ? Qt::RightEdge : Qt::LeftEdge;
+                        handle->setProperty("_q_waylandPopupAnchorRect", QHighDpi::toNativeLocalPosition(anchor, transient));
+                        handle->setProperty("_q_waylandPopupAnchor", QVariant::fromValue(Qt::Edges(Qt::TopEdge | side)));
+                        handle->setProperty("_q_waylandPopupGravity", QVariant::fromValue(Qt::Edges(Qt::BottomEdge | side)));
+                        handle->setProperty("_q_waylandPopupConstraintAdjustment", 1u | 2u | 4u | 8u);
+                        handle->setProperty("sequoiaSubmenuAnchor", true);
+                    }
+                }
+#endif
+                break;
+            }
+        }
+    }
     if (auto dockWidget = qobject_cast<QDockWidget *>(object)) {
         return eventFilterDockWidget(dockWidget, event);
     } else if (auto subWindow = qobject_cast<QMdiSubWindow *>(object)) {
@@ -4845,19 +4908,23 @@ bool Style::drawPanelMenuPrimitive(const QStyleOption *option, QPainter *painter
         return true;
 
     const auto &palette(option->palette);
-    const auto outline(_helper->isDarkTheme(palette) ? QColor(255, 255, 255, 30) : QColor());
+    auto outline = palette.color(QPalette::WindowText);
+    outline.setAlphaF(0.13);
     const bool hasAlpha(_helper->hasAlphaChannel(widget));
     // auto background( _helper->frameBackgroundColor( palette ) );
-    auto background(palette.color(QPalette::Base));
+    auto background(palette.color(QPalette::Window));
 
     painter->save();
 
     if (hasAlpha) {
         painter->setCompositionMode(QPainter::CompositionMode_Source);
-        background.setAlphaF(StyleConfigData::menuOpacity() / 100.0);
+        painter->fillRect(option->rect, Qt::transparent);
+        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+        // Menus share the application material, including fully opaque Solid.
+        // Local image-view backgrounds must not become a second menu material.
     }
 
-    _helper->renderMenuFrame(painter, option->rect, background, outline, hasAlpha);
+    _helper->renderMenuFrame(painter, option->rect, background, outline, hasAlpha, Metrics::Menu_SurfaceRadius);
 
     painter->restore();
 
@@ -6109,7 +6176,7 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
     const bool selected(enabled && (state & State_Selected));
     const bool sunken(enabled && (state & (State_On | State_Sunken)));
     const bool reverseLayout(option->direction == Qt::RightToLeft);
-    const bool useStrongFocus(StyleConfigData::menuItemDrawStrongFocus());
+    const bool useStrongFocus(false);
 
     _animations->inputWidgetEngine().updateState(widget, AnimationHover, selected);
     _animations->inputWidgetEngine().buttonAnimationMode(widget);
@@ -6117,17 +6184,18 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
 
     // render hover and focus
     if (selected || sunken) {
-        const auto color = useStrongFocus ? _helper->focusColor(palette).darker(sunken ? 120 : 0) : _helper->separatorColor(palette);
+        auto color = palette.color(QPalette::Highlight);
+        color.setAlphaF(0.14);
         painter->setRenderHints(QPainter::Antialiasing);
         painter->setBrush(color);
         painter->setPen(Qt::NoPen);
-        const qreal radius = _helper->frameRadius(0, -1);
+        const qreal radius = Metrics::Menu_RowRadius;
         // QMenu can keep a wide action rectangle even when the screen constrains
         // the popup. Round the selection within the actual visible menu frame.
         const QRect selection = qobject_cast<const QMenu *>(widget)
-            ? rect.intersected(insideMargin(widget->rect(), Metrics::Menu_FrameWidth))
+            ? rect.intersected(insideMargin(widget->rect(), Metrics::Menu_ContentInset))
             : rect;
-        const int inset = (StyleConfigData::cornerRadius() > 1 ? 1 : 0) + (sunken ? 1 : 0);
+        const int inset = 1;
         const QRect fill = selection.adjusted(inset, inset, -inset, -inset);
         if (fill.isValid())
             painter->drawRoundedRect(fill, radius, radius);
@@ -6221,7 +6289,24 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
         // icon state
         const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
         const qreal dpr = painter->device() ? painter->device()->devicePixelRatioF() : qApp->devicePixelRatio();
-        const QPixmap pixmap = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), dpr, mode, iconState);
+        QPixmap pixmap = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), dpr, mode, iconState);
+        // Match the reference's symbolic glyphs without recoloring photo or
+        // color-preview icons supplied by an application.
+        if (!menuItemOption->icon.name().isEmpty()) {
+            const QImage pixels = pixmap.toImage();
+            int colored = 0, visible = 0, darkest = 255, lightest = 0;
+            for (int y = 0; y < pixels.height(); ++y) for (int x = 0; x < pixels.width(); ++x) {
+                const QColor c = pixels.pixelColor(x, y);
+                if (c.alpha() < 30) continue;
+                ++visible;
+                darkest = qMin(darkest, c.lightness()); lightest = qMax(lightest, c.lightness());
+                if (qMax(c.red(), qMax(c.green(), c.blue())) - qMin(c.red(), qMin(c.green(), c.blue())) > 35) ++colored;
+            }
+            if (visible > 0 && colored * 20 < visible && lightest - darkest < 40) {
+                QPainter tint(&pixmap); tint.setCompositionMode(QPainter::CompositionMode_SourceIn);
+                tint.fillRect(pixmap.rect(), palette.color(enabled ? QPalette::Active : QPalette::Disabled, QPalette::WindowText));
+            }
+        }
         drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
     }
 

@@ -98,6 +98,12 @@ def main():
         print(f'Other Qt Quick apps: {launcher} APPLICATION')
     # Refresh only for the active user's data directory, not staging/test prefixes.
     if prefix == Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share').resolve():
+        if not args.remove and any(app in args.apps for app in ('merkuro', 'merkuro-legacy')):
+            from merkuro_settings import install_position_memory
+            if install_position_memory(Path(os.environ.get('XDG_CONFIG_HOME') or Path.home() / '.config')):
+                qdbus = shutil.which('qdbus6') or shutil.which('qdbus-qt6')
+                if qdbus:
+                    subprocess.run([qdbus, 'org.kde.KWin', '/KWin', 'org.kde.KWin.reconfigure'], check=False)
         cache = shutil.which('kbuildsycoca6')
         if cache:
             subprocess.run([cache, '--noincremental'], check=True)

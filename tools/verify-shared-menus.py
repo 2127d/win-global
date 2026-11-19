@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+"""Exercise ordinary QMenus; no application-specific menu painter or proxy."""
+import argparse
+import configparser
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def render(args):
+    from PySide6.QtCore import QPoint, Qt
+    from PySide6.QtGui import QActionGroup, QColor, QIcon, QKeySequence, QPalette
+    from PySide6.QtTest import QTest
+    from PySide6.QtWidgets import QApplication, QMenu, QStyle, QStyleFactory
+    app = QApplication([])
+    style = QStyleFactory.create('SequoiaElevenGlass' if args.material == 'glass' else 'SequoiaEleven')
+    assert style and style.property('sequoiaSharedMenus'), 'Shared native style was not loaded'
+    app.setStyle(style)
+    palette = app.palette()
+    cfg = configparser.ConfigParser(); cfg.optionxform = str
+    cfg.read(Path(os.environ['XDG_CONFIG_HOME'])/'kdeglobals')
+    for role, section, key in [(QPalette.Window, 'Colors:Window', 'BackgroundNormal'),
+                               (QPalette.WindowText, 'Colors:Window', 'ForegroundNormal'),
+                               (QPalette.Text, 'Colors:View', 'ForegroundNormal'),
+                               (QPalette.Highlight, 'Colors:Selection', 'BackgroundNormal')]:
+        palette.setColor(role, QColor(*map(int, cfg[section][key].split(','))))
+    palette.setColor(QPalette.Base, palette.color(QPalette.Window))
+    palette.setColor(QPalette.Button, palette.color(QPalette.Window))
+    palette.setColor(QPalette.ButtonText, palette.color(QPalette.WindowText))
+    palette.setColor(QPalette.Disabled, QPalette.Text, QColor(128,128,128))
+    palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(128,128,128))
+    app.setPalette(palette)
+    if args.rtl: app.setLayoutDirection(Qt.RightToLeft)
+    QIcon.setThemeName('breeze-dark' if args.dark else 'breeze')
+    menu = QMenu()
+    toggle = menu.addAction(QIcon.fromTheme('view-fullscreen'), 'Full Screen Mode')
+    toggle.setCheckable(True); toggle.setShortcut(QKeySequence('Ctrl+Shift+F'))
+    menu.addSeparator()
+    menu.addAction(QIcon.fromTheme('go-previous'), 'Previous')
+    menu.addAction(QIcon.fromTheme('go-next'), 'Next')
+    menu.addSeparator()
+    group = QActionGroup(menu); group.setExclusive(True)
+    actual = menu.addAction(QIcon.fromTheme('zoom-original'), 'Zoom to Actual Size')
+    fit = menu.addAction(QIcon.fromTheme('zoom-fit-best'), 'Zoom to Fit')
+    for action in (actual, fit): action.setCheckable(True); group.addAction(action)
+    fit.setChecked(True)
+    menu.addSeparator()
+    submenu = menu.addMenu(QIcon.fromTheme('color-management'), 'Background Color Mode')
+    colors = QActionGroup(submenu); colors.setExclusive(True)
+    for label in ('Follow color scheme', 'Light Mode', 'Neutral Mode', 'Dark Mode'):
+        action = submenu.addAction(label); action.setCheckable(True); colors.addAction(action)
+    colors.actions()[0].setChecked(True)
+    menu.addSeparator()
+    copy = menu.addAction(QIcon.fromTheme('edit-copy'), 'Copy'); copy.setShortcut(QKeySequence.Copy)
+    disabled = menu.addAction('Unavailable action'); disabled.setEnabled(False)
+    menu.popup(QPoint(120, 80)); QTest.qWait(150)
+    menu.setActiveAction(submenu.menuAction())
+    QTest.keyClick(menu, Qt.Key_Left if args.rtl else Qt.Key_Right); QTest.qWait(250)
+    assert submenu.isVisible(), 'Keyboard navigation did not open submenu'
+    parent_rect, child_rect = menu.geometry(), submenu.geometry()
+    gap = max(child_rect.left() - parent_rect.right() - 1, parent_rect.left() - child_rect.right() - 1)
+    assert gap >= 6, f'Submenu overlaps its parent: gap={gap}, parent={parent_rect}, child={child_rect}'
+    image = menu.grab().toImage()
+    assert image.pixelColor(0, 0).alpha() == 0, 'Popup corners were not transparent'
+    expected = palette.color(QPalette.Window).alpha()
+    assert abs(image.pixelColor(menu.width()//2, 3).alpha() - expected) <= 1, 'Menu material alpha changed'
+    dpr = image.devicePixelRatio()
+    edge = int(24 * dpr)
+    partial = [image.pixelColor(x,y).alpha() for y in range(edge) for x in range(edge)
+               if 0 < image.pixelColor(x,y).alpha() < expected]
+    assert len(partial) >= 12, 'Rounded edge lost antialiased alpha coverage'
+    assert menu.actionGeometry(toggle).left() >= 8
+    assert menu.actionGeometry(toggle).top() >= 8
+    assert menu.actionGeometry(toggle).height() >= 30
+    stem = ('dark' if args.dark else 'light') + '-' + args.material + ('-rtl' if args.rtl else '')
+    image.save(str(args.output/(stem+'.png')))
+    submenu.grab().save(str(args.output/(stem+'-submenu.png')))
+    QTest.keyClick(submenu, Qt.Key_Escape); QTest.qWait(30)
+    assert not submenu.isVisible() and menu.isVisible(), 'Escape did not return to parent menu'
+    menu.setActiveAction(toggle); QTest.keyClick(menu, Qt.Key_Return); QTest.qWait(30)
+    assert toggle.isChecked(), 'Native toggle did not activate'
+    menu.popup(QPoint(120,80)); menu.setActiveAction(actual)
+    QTest.keyClick(menu, Qt.Key_Return); QTest.qWait(30)
+    assert actual.isChecked() and not fit.isChecked(), 'Exclusive actions did not remain exclusive'
+    menu.popup(QPoint(120,80)); QTest.qWait(30)
+    QTest.mouseClick(menu, Qt.LeftButton, Qt.NoModifier, menu.actionGeometry(disabled).center())
+    assert menu.isVisible(), 'Disabled action dismissed the menu'
+    menu.close()
+    print('PASS:', stem, 'native submenu, Escape, toggles, radio actions, disabled actions, padding, separated submenus, antialiased corners and material')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--plugins', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--child', action='store_true')
+    parser.add_argument('--dark', action='store_true')
+    parser.add_argument('--rtl', action='store_true')
+    parser.add_argument('--material', choices=('solid','transparent','glass'), default='solid')
+    args = parser.parse_args(); args.output.mkdir(parents=True, exist_ok=True)
+    if args.child: render(args)
+    else:
+        for mode, material, rtl in [(m,s,False) for m in ('Light','Dark') for s in ('solid','transparent','glass')] + [('Dark','solid',True)]:
+            with tempfile.TemporaryDirectory(prefix='shared-menu-test-') as temp:
+                cfg = configparser.ConfigParser(); cfg.optionxform = str
+                cfg.read(ROOT/f'themes/color-schemes/SequoiaEleven{mode}{"Solid" if material=="solid" else "Transparent"}.colors')
+                alpha = 255 if material=='solid' else (168 if mode=='Dark' else 148) if material=='glass' else 192 if mode=='Dark' else 184
+                rgb = cfg['Colors:Window']['BackgroundNormal'].split(',')[:3]
+                cfg['Colors:Window']['BackgroundNormal'] = ','.join(rgb+[str(alpha)])
+                with (Path(temp)/'kdeglobals').open('w') as stream: cfg.write(stream, space_around_delimiters=False)
+                env = dict(os.environ, XDG_CONFIG_HOME=temp, XDG_CONFIG_DIRS=temp, QT_QPA_PLATFORM='offscreen',
+                           QT_QPA_PLATFORMTHEME='generic', QT_PLUGIN_PATH=str(args.plugins.resolve()), QT_STYLE_OVERRIDE='Fusion')
+                subprocess.run([sys.executable, __file__, '--child', '--plugins', str(args.plugins), '--output', str(args.output),
+                                '--material', material, *(['--dark'] if mode=='Dark' else []), *(['--rtl'] if rtl else [])], env=env, check=True)

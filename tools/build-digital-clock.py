@@ -2,6 +2,7 @@
 """Build the standalone Sequoia Digital Clock review package."""
 import json
 from popup_components import sync
+from widget_library_components import sync as sync_library
 from pathlib import Path
 import zipfile
 import xml.etree.ElementTree as ET
@@ -13,6 +14,7 @@ SOURCE = ROOT / 'widgets/plasmoids/org.sequoia.digitalclock'
 
 def build():
     sync(check=True)
+    sync_library(check=True)
     metadata = json.loads((SOURCE / 'metadata.json').read_text())
     assert metadata['KPlugin']['Id'] == SOURCE.name
     ET.parse(SOURCE / 'contents/config/main.xml')

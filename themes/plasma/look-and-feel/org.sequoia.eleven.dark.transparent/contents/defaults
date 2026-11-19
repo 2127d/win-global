@@ -33,3 +33,4 @@ Theme=org.sequoia.eleven.dark
 
 [kwinrc][Plugins]
 blurEnabled=true
+sequoia_liquid_glass_v6Enabled=false

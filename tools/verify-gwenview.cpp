@@ -1758,6 +1758,10 @@ static void requirePopupBlur(QWidget *popup)
     require(handle->property("verifiedVisibleBlur").toBool() == transparentMenusExpected(), "blur region follows transparent/solid material");
     if (transparentMenusExpected()) {
         require(region.contains(popup->rect().center()), "transparent menu requests blur behind its body");
+        if (qobject_cast<QMenu *>(popup) && popup->style()->property("sequoiaSharedMenus").toBool()) {
+            require(!region.contains(QPoint(0, 0)) && popup->rect().contains(region.boundingRect()), "shared menu blur follows rounded surface");
+            return;
+        }
         if (region.contains(QPoint(14, 14))) {
             const QRect bounds = region.boundingRect();
             fprintf(stderr, "BLUR DETAIL: %s %s size=%dx%d region=%d,%d,%d,%d alpha=%d\n", popup->metaObject()->className(), qPrintable(popup->objectName()), popup->width(), popup->height(), bounds.x(), bounds.y(), bounds.width(), bounds.height(), popup->palette().color(QPalette::Window).alpha());
@@ -1773,6 +1777,18 @@ static void verifyPopupOpening(QMenu *menu, const QPoint &anchor, const QString 
     const auto requestMs = request.elapsed();
     const QRect nativeGeometry = menu->geometry();
     QTest::qWait(25);
+    if (menu->style()->property("sequoiaSharedMenus").toBool()) {
+        require(!menu->property("gwenviewFloatingPopup").toBool() && !menu->graphicsEffect(), "shared style owns menu without app-local painting");
+        requirePopupBlur(menu);
+        require(menu->grab().save(output + '/' + name + "-opening.png"), "capture shared menu");
+        QTest::keyClick(menu, Qt::Key_Down);
+        require(menu->activeAction() && menu->geometry() == nativeGeometry, "native menu keyboard navigation preserves geometry");
+        QTest::keyClick(menu, Qt::Key_Escape);
+        require(!menu->isVisible(), "native menu Escape dismisses");
+        for (int i = 0; i < 3; ++i) { menu->popup(anchor); menu->close(); }
+        require(requestMs < 60, "shared menu opening is immediate");
+        return;
+    }
     auto animation = menu->findChild<QVariantAnimation *>("popupEntranceAnimation");
     auto effect = menu->findChild<QGraphicsEffect *>("popupEntranceEffect");
     require(animation && animation->duration() == 200 && !effect && !menu->graphicsEffect()
@@ -2099,6 +2115,12 @@ static void verifyPopupLifecycle(QWidget *window)
                 require(child, "context submenu available");
                 menu->setActiveAction(child); QTest::keyClick(menu, Qt::Key_Right); QTest::qWait(70);
                 requirePopupMaterial(child->menu(), "recreated context submenu is usable with theme material");
+                if (menu->style()->property("sequoiaSharedMenus").toBool()) {
+                    const QRect parentRect = menu->geometry(), childRect = child->menu()->geometry();
+                    const int gap = qMax(childRect.left() - parentRect.right() - 1, parentRect.left() - childRect.right() - 1);
+                    fprintf(stderr, "SUBMENU GAP: %d parent=%d,%d,%d,%d child=%d,%d,%d,%d\n", gap, parentRect.x(), parentRect.y(), parentRect.width(), parentRect.height(), childRect.x(), childRect.y(), childRect.width(), childRect.height());
+                    require(gap >= 6, "native context submenus remain separated from their parent");
+                }
                 QTest::keyClick(child->menu(), Qt::Key_Escape);
                 QTest::keyClick(menu, Qt::Key_Escape); inspected = true;
             });
@@ -2136,13 +2158,14 @@ static void verifyFloatingPopups(QWidget *window, const QString &output)
 {
     QApplication::setActiveWindow(window);
     auto checkSurface = [&](QWidget *popup, const QString &name) {
-        require(popup && popup->isVisible() && popup->property("gwenviewFloatingPopup").toBool(), "native popup uses floating surface");
+        const bool sharedMenu = qobject_cast<QMenu *>(popup) && popup->style()->property("sequoiaSharedMenus").toBool();
+        require(popup && popup->isVisible() && (sharedMenu || popup->property("gwenviewFloatingPopup").toBool()), "native popup uses shared or app-specific surface");
         QTest::qWait(60);
         requirePopupBlur(popup);
         QImage shot = popup->grab().toImage();
         require(shot.pixelColor(0, 0).alpha() == 0, "popup outer corners are transparent");
         const qreal dpr = shot.devicePixelRatio();
-        require(shot.pixelColor(14 * dpr, 14 * dpr).alpha() < 100 && shot.pixelColor(30 * dpr, 30 * dpr).alpha() > 200,
+        require(shot.pixelColor((sharedMenu ? 2 : 14) * dpr, (sharedMenu ? 2 : 14) * dpr).alpha() < 100 && shot.pixelColor(30 * dpr, 30 * dpr).alpha() > 200,
                 "popup body has rounded corners and readable themed content");
         require(shot.pixelColor(shot.width() / 2, shot.height() - qRound(12 * dpr)).alpha() > 0, "popup has a visible floating shadow below the surface");
         require((popup->palette().color(QPalette::Window).lightness() < 128)
@@ -2166,7 +2189,8 @@ static void verifyFloatingPopups(QWidget *window, const QString &output)
         for (auto action : menu->actions()) if (action->isCheckable() && !action->isChecked() && action->isEnabled()) { choice = action; break; }
         require(choice, "sort menu retains native checkable actions");
         const QRect actionRect = menu->actionGeometry(choice);
-        require(actionRect.left() >= 14 && actionRect.right() <= menu->width() - 14, "menu hit areas stay inside the floating body");
+        const int inset = menu->style()->property("sequoiaSharedMenus").toBool() ? 8 : 14;
+        require(actionRect.left() >= inset && actionRect.right() <= menu->width() - inset, "menu hit areas stay inside the rounded body");
         QTest::mouseClick(menu, Qt::LeftButton, Qt::NoModifier, actionRect.center()); QTest::qWait(80);
         require(choice->isChecked() && !menu->isVisible(), "native menu mouse selection commits and dismisses");
     }
@@ -2199,7 +2223,9 @@ static void verifyFloatingPopups(QWidget *window, const QString &output)
             auto menu = qobject_cast<QMenu *>(QApplication::activePopupWidget());
             require(menu, "native context menu is open");
             auto entrance = menu->findChild<QVariantAnimation *>("popupEntranceAnimation");
-            require(entrance && entrance->state() == QAbstractAnimation::Running, "right-click menu animates in normal and fullscreen views");
+            require(menu->style()->property("sequoiaSharedMenus").toBool()
+                    ? !entrance : entrance && entrance->state() == QAbstractAnimation::Running,
+                    "right-click menu uses shared presentation or legacy entrance");
             QTest::qWait(100);
             checkSurface(menu, full ? "context-fullscreen" : "context-normal");
             QAction *submenu = nullptr;
@@ -2208,7 +2234,9 @@ static void verifyFloatingPopups(QWidget *window, const QString &output)
             menu->setActiveAction(submenu); QTest::keyClick(menu, Qt::Key_Right); QTest::qWait(25);
             require(submenu->menu()->isVisible(), "keyboard opens native submenu");
             auto submenuEntrance = submenu->menu()->findChild<QVariantAnimation *>("popupEntranceAnimation");
-            require(submenuEntrance && submenuEntrance->state() == QAbstractAnimation::Running, "submenu shares the opening animation");
+            require(submenu->menu()->style()->property("sequoiaSharedMenus").toBool()
+                    ? !submenuEntrance : submenuEntrance && submenuEntrance->state() == QAbstractAnimation::Running,
+                    "submenu shares its parent menu presentation");
             QTest::qWait(100);
             checkSurface(submenu->menu(), full ? "submenu-fullscreen" : "submenu-normal");
             QTest::keyClick(submenu->menu(), Qt::Key_Escape); QTest::qWait(30);

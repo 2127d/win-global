@@ -144,6 +144,17 @@ protected:
             }
         }
         const bool menu = qobject_cast<QMenu *>(widget);
+        // Current Sequoia styles own native menus. Keep the old renderer only
+        // as a fallback when this application runs with an older/other style.
+        if (menu && qApp->style()->property("sequoiaSharedMenus").toBool()) {
+            // Image/fullscreen views deliberately override their canvas palette.
+            // Keep that app-specific palette policy, but let QStyle own all
+            // menu painting, geometry, shadows, blur and input handling.
+            if (event->type() == QEvent::PaletteChange || event->type() == QEvent::StyleChange
+                || event->type() == QEvent::Polish || event->type() == QEvent::Show)
+                syncPalette(widget);
+            return false;
+        }
         const bool comboPopup = widget->inherits("QComboBoxPrivateContainer");
         const bool commandPopup = widget->inherits("KCommandBar");
         if ((menu || comboPopup || commandPopup) && widget->property("gwenviewFloatingPopup").toBool()
@@ -296,7 +307,8 @@ private:
                     popup->setStyleSheet(sheet);
                 }
             }
-            if (!popup->property("gwenviewFloatingPopup").toBool()) continue;
+            if (!popup->property("gwenviewFloatingPopup").toBool()
+                && !(qobject_cast<QMenu *>(popup) && qApp->style()->property("sequoiaSharedMenus").toBool())) continue;
             syncPalette(popup);
             // A style repolish can restore a list viewport background. The
             // outer container is the sole material layer, even while open.

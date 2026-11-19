@@ -7,6 +7,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import "../SequoiaPopup" as Popup
+import "../SequoiaControls" as Shared
 import QtQuick.Layouts
 import QtQuick.Templates as T
 
@@ -102,22 +103,16 @@ Item {
         RowLayout {
             spacing: 0
             Layout.alignment: Qt.AlignBottom
-            PlasmaComponents.TabBar {
+            Shared.GlassPillSwitcher {
+                objectName: "sequoiaCalendarViewSwitcher"
                 id: tabBar
-                spacing: 2
-                padding: 3
-                implicitHeight: Math.max(38, implicitContentHeight + topPadding + bottomPadding)
-                background: Rectangle { radius: height / 2; color: Qt.alpha(Kirigami.Theme.textColor, 0.055) }
-
-                // Each tab draws its own rounded selection background.
-                // Hide Plasma's additional rectangular ListView highlight.
-                Binding {
-                    target: tabBar.contentItem
-                    property: "highlight"
-                    value: null
-                }
-
                 currentIndex: root.swipeView.currentIndex
+                onCurrentIndexChanged: {
+                    if (currentIndex < 0 || currentIndex === root.swipeView.currentIndex) return;
+                    if (currentIndex === 0) root.monthViewRoot.showMonthView();
+                    else if (currentIndex === 1) root.monthViewRoot.showYearView();
+                    else root.monthViewRoot.showDecadeView();
+                }
                 Layout.fillWidth: true
                 Layout.bottomMargin: root.isDigitalClock ? 0 : Kirigami.Units.smallSpacing
 
@@ -134,51 +129,21 @@ Item {
                     }
                 }
 
-                PlasmaComponents.TabButton {
-                    topPadding: 8
-                    bottomPadding: 8
-                    implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
-                    background: Rectangle {
-                        radius: height / 2
-                        color: parent.checked ? Kirigami.Theme.backgroundColor : parent.hovered ? Qt.alpha(Kirigami.Theme.textColor, 0.05) : "transparent"
-                        border.width: parent.activeFocus ? 1 : 0
-                        border.color: Kirigami.Theme.highlightColor
-                    }
-                    Accessible.onPressAction: clicked()
+                Shared.GlassPillTab {
                     text: i18nd("plasmashellprivateplugin", "Days");
                     onClicked: (root.monthViewRoot as MonthView).showMonthView();
                     display: T.AbstractButton.TextOnly
                     Keys.onReturnPressed: animateClick()
                     Keys.onEnterPressed: animateClick()
                 }
-                PlasmaComponents.TabButton {
-                    topPadding: 8
-                    bottomPadding: 8
-                    implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
-                    background: Rectangle {
-                        radius: height / 2
-                        color: parent.checked ? Kirigami.Theme.backgroundColor : parent.hovered ? Qt.alpha(Kirigami.Theme.textColor, 0.05) : "transparent"
-                        border.width: parent.activeFocus ? 1 : 0
-                        border.color: Kirigami.Theme.highlightColor
-                    }
-                    Accessible.onPressAction: clicked()
+                Shared.GlassPillTab {
                     text: i18nd("plasmashellprivateplugin", "Months");
                     onClicked: (root.monthViewRoot as MonthView).showYearView();
                     display: T.AbstractButton.TextOnly
                     Keys.onReturnPressed: animateClick()
                     Keys.onEnterPressed: animateClick()
                 }
-                PlasmaComponents.TabButton {
-                    topPadding: 8
-                    bottomPadding: 8
-                    implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
-                    background: Rectangle {
-                        radius: height / 2
-                        color: parent.checked ? Kirigami.Theme.backgroundColor : parent.hovered ? Qt.alpha(Kirigami.Theme.textColor, 0.05) : "transparent"
-                        border.width: parent.activeFocus ? 1 : 0
-                        border.color: Kirigami.Theme.highlightColor
-                    }
-                    Accessible.onPressAction: clicked()
+                Shared.GlassPillTab {
                     text: i18nd("plasmashellprivateplugin", "Years");
                     onClicked: (root.monthViewRoot as MonthView).showDecadeView();
                     display: T.AbstractButton.TextOnly
@@ -189,6 +154,8 @@ Item {
 
             Loader {
                 id: dateManipulationButtonsForDigitalClock
+                Layout.leftMargin: 4
+                Layout.rightMargin: 4
 
                 readonly property T.AbstractButton previousButton: (item as ButtonsGroup)?.previousButton ?? null
                 readonly property T.AbstractButton todayButton: (item as ButtonsGroup)?.todayButton ?? null
@@ -202,8 +169,22 @@ Item {
 
     // ------------------------------------------ UI ends ------------------------------------------------- //
 
+    component NavigationButton: Popup.HeaderButton {
+        id: control
+        implicitWidth: 34
+        implicitHeight: 34
+        background: Shared.GlassPillSurface {
+            selected: true
+            surfaceColor: Qt.tint(Kirigami.Theme.backgroundColor,
+                                 Qt.alpha(Kirigami.Theme.textColor, control.down ? .10 : control.hovered ? .05 : 0))
+            border.width: control.visualFocus ? 2 : 1
+            border.color: control.visualFocus ? Kirigami.Theme.highlightColor
+                                             : Qt.rgba(1, 1, 1, dark ? .22 : .64)
+        }
+    }
+
     component ButtonsGroup: RowLayout {
-        spacing: 0
+        spacing: 4
 
         readonly property alias previousButton: previousButton
         readonly property alias todayButton: todayButton
@@ -211,7 +192,7 @@ Item {
 
         KeyNavigation.up: root.configureButton
 
-        Popup.HeaderButton {
+        NavigationButton {
             id: previousButton
             text: {
                 switch ((root.monthViewRoot as MonthView).calendarViewDisplayed) {
@@ -236,8 +217,11 @@ Item {
             PlasmaComponents.ToolTip { text: previousButton.text  }
         }
 
-        Popup.HeaderButton {
+        NavigationButton {
             id: todayButton
+            leftPadding: 10
+            rightPadding: 10
+            implicitWidth: Math.max(34, implicitContentWidth + leftPadding + rightPadding)
             text: i18ndc("plasmashellprivateplugin", "Reset calendar to today", "Today")
             Accessible.description: i18nd("plasmashellprivateplugin", "Reset calendar to today")
             KeyNavigation.right: nextButton
@@ -247,7 +231,7 @@ Item {
             Keys.onEnterPressed: animateClick()
         }
 
-        Popup.HeaderButton {
+        NavigationButton {
             id: nextButton
             text: {
                 switch ((root.monthViewRoot as MonthView).calendarViewDisplayed) {

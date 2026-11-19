@@ -65,6 +65,10 @@ enum Metrics {
 
     // menu items
     Menu_FrameWidth = 4,
+    Menu_SurfaceRadius = 24,
+    Menu_ContentInset = 8,
+    Menu_SubmenuGap = 6,
+    Menu_RowRadius = 13,
     MenuItem_MarginWidth = 5,
     MenuItem_MarginHeight = 0,
     MenuItem_ItemSpacing = 4,

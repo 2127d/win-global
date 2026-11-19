@@ -248,6 +248,15 @@ QRegion BlurHelper::blurRegion(QWidget *widget) const
         return QRegion();
 
     QRect rect = widget->rect();
+    if (qobject_cast<QMenu *>(widget)) {
+        // A nonempty off-window region keeps KDE's surface-lifetime tracking
+        // while requesting no blur for Solid, including live mode changes.
+        if (widget->palette().color(QPalette::Window).alpha() == 255)
+            return QRegion(QRect(-1, -1, 1, 1));
+        // Compositor regions have binary coverage. Keep that stair-stepped
+        // mask inside the painted antialiased edge rather than outside it.
+        return roundedRegion(rect.adjusted(1, 1, -1, -1), Metrics::Menu_SurfaceRadius - 1, true, true, true, true);
+    }
     if ((qobject_cast<QMenu *>(widget) && !widget->testAttribute(Qt::WA_X11NetWmWindowTypeMenu)) // not a detached menu
              || widget->inherits("QComboBoxPrivateContainer")) {
         const int pickerRadius = FilePicker::popupRadius(widget);

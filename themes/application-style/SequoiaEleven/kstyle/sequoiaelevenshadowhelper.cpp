@@ -220,10 +220,12 @@ bool ShadowHelper::eventFilter(QObject *object, QEvent *event)
 TileSet ShadowHelper::shadowTiles(QWidget *widget)
 {
     CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
+    const qreal frameRadius = isMenu(widget) ? Metrics::Menu_SurfaceRadius
+        : FilePicker::popupRadius(widget) ? FilePicker::popupRadius(widget) : _helper.frameRadius();
 
     if (params.isNone()) {
         return TileSet();
-    } else if (_shadowTiles.isValid() && qFuzzyCompare(_shadowRadius, qreal(FilePicker::popupRadius(widget) ? FilePicker::popupRadius(widget) : _helper.frameRadius()))) {
+    } else if (_shadowTiles.isValid() && qFuzzyCompare(_shadowRadius, frameRadius)) {
         return _shadowTiles;
     }
 
@@ -245,7 +247,6 @@ TileSet ShadowHelper::shadowTiles(QWidget *widget)
     const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
-    const qreal frameRadius = FilePicker::popupRadius(widget) ? FilePicker::popupRadius(widget) : _helper.frameRadius();
     _shadowRadius = frameRadius;
     _tiles.clear();
 

@@ -20,8 +20,7 @@ def stage(destination):
     destination.mkdir(parents=True,exist_ok=True)
     for relative in ('org/kde/newstuff','org/sequoia/components'):
         shutil.copytree(source/relative,destination/relative,symlinks=True,dirs_exist_ok=True)
-    # Other applications get stock desktop controls with only the toolbar
-    # surface changed. Do not inject unrelated Kirigami or Plasma overrides.
+    # Other applications get the shared toolbar and menu presentation. Do not inject unrelated Kirigami or Plasma overrides.
     desktop=destination/'org/kde/desktop'
     shutil.copytree(QML/'org/kde/desktop',desktop,dirs_exist_ok=True)
     for path in desktop.rglob('*'):
@@ -30,6 +29,8 @@ def stage(destination):
         elif path.name=='qmldir':
             path.write_text(''.join(line for line in path.read_text().splitlines(True) if not line.startswith('prefer ')))
     shutil.copy2(source/'org/kde/desktop/ToolBar.qml',desktop/'ToolBar.qml')
+    for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'private/SwitchIndicator.qml'):
+        shutil.copy2(source/'org/kde/desktop'/name, desktop/name)
     island=destination/'org/sequoia/eleven';island.mkdir(parents=True,exist_ok=True)
     shutil.copy2(ROOT/'themes/application-style/quick/Island.qml',island/'Island.qml')
     (island/'qmldir').write_text('module org.sequoia.eleven\nIsland 1.0 Island.qml\n')
@@ -63,6 +64,7 @@ target=data/'sequoia-eleven/newstuff/qml'
 paths=[target,quick/'org/kde/newstuff',quick/'org/sequoia/components',quick/'manifest.json',
        quick/'org/kde/desktop/ToolBar.qml',quick/'org/kde/desktop/Popup.qml',STATE,
        style_dir/'sequoiaeleven6.so',style_dir/'sequoiaeleven_glass6.so']
+paths += [quick/'org/kde/desktop'/name for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'private/SwitchIndicator.qml')]
 records=[]
 for i,path in enumerate(paths):
     record={'path':str(path),'backup':str(backup/str(i)) if path.exists() else None};records.append(record)
@@ -81,6 +83,9 @@ try:
             prepared.rename(dest)
     current=json.loads((quick/'manifest.json').read_text());current['sources'].update(shared_sources)
     pending=quick/'manifest.json.new';pending.write_text(json.dumps(current,indent=2)+'\n');pending.replace(quick/'manifest.json')
+    for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'private/SwitchIndicator.qml'):
+        pending=quick/'org/kde/desktop'/(name+'.new')
+        shutil.copy2(source/'org/kde/desktop'/name,pending);pending.replace(quick/'org/kde/desktop'/name)
     from glass_surfaces import refresh_quick
     refresh_quick()
     for name in ('sequoiaeleven6.so','sequoiaeleven_glass6.so'):

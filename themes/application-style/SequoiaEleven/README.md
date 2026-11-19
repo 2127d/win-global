@@ -16,6 +16,24 @@ Forked from the ***lightly*** theme, this style brings a fresh and unique look t
 
 The main goal is to provide a style for **Qt applications**.
 
+Sequoia's native context menus use the shared Gwenview presentation: 24px
+surfaces, 8px content insets, rounded accent selections, symbolic icon tinting,
+switches for independent actions and radio indicators for exclusive actions.
+The surface uses the application Window palette, including its material alpha;
+the native shadow and blur regions follow the same rounded outline.
+
+Applications should create ordinary `QMenu`, `QAction` and `QActionGroup`
+objects. No custom menu painter, stylesheet, shadow gutter or proxy style is
+required. The native style advertises the `sequoiaSharedMenus` property for
+applications that retain a fallback for older styles. App-specific canvas
+palettes can still be kept separate from their menu palettes.
+
+Qt Quick applications use ordinary `QtQuick.Controls.Menu` and `MenuItem`
+through the desktop QML overlay. The shared Sequoia `PopupMenu` and `MenuItem`
+components use the same geometry, action indicators and colors. Solid mode
+keeps application menus opaque while standard KWin Blur remains enabled for
+translucent Plasma panels.
+
 Other than that we maintain a style for **Plasma window decorations** and a **color scheme**.
 
 Most changes are optional, if you don't like them, you can turn them off in the settings.

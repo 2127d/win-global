@@ -100,9 +100,11 @@ PlasmaExtras.Representation {
                 elide: Text.ElideRight
             }
             PlasmaComponents.Label {
+                objectName: "sequoiaHeroDate"
                 Layout.fillWidth: true
                 text: Qt.formatDate(headerClock.dateTime, Qt.locale(), Locale.LongFormat)
-                color: Kirigami.Theme.disabledTextColor
+                // This text sits directly on glass, not an opaque content card.
+                color: Kirigami.Theme.textColor
                 elide: Text.ElideRight
             }
         }
@@ -114,17 +116,19 @@ PlasmaExtras.Representation {
             Column {
                 anchors.centerIn: parent
                 PlasmaComponents.Label {
+                    objectName: "sequoiaHeaderWeekday"
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: Qt.formatDate(headerClock.dateTime, "ddd")
                     font.pixelSize: Kirigami.Theme.smallFont.pixelSize
-                    color: Kirigami.Theme.linkColor
+                    color: Kirigami.Theme.textColor
                 }
                 PlasmaComponents.Label {
+                    objectName: "sequoiaHeaderDay"
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: Qt.formatDate(headerClock.dateTime, "d")
                     font.pixelSize: Kirigami.Theme.defaultFont.pixelSize * 1.5
                     font.weight: Font.DemiBold
-                    color: Kirigami.Theme.linkColor
+                    color: Kirigami.Theme.textColor
                 }
             }
         }

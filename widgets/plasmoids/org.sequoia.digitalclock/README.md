@@ -7,6 +7,11 @@ card surface with 18px corners and a soft drop shadow. Its background and text
 follow live light/dark theme changes, while date highlights and focus accents
 track the active desktop palette, including wallpaper-derived accents.
 
+The Days / Months / Years selector uses the component library’s `GlassPillSwitcher`
+and `GlassPillTab`: a translucent glass track, sliding raised selection, and native
+tab keyboard/accessibility behavior. Its pure-QML sources are bundled verbatim
+by `tools/widget_library_components.py`, keeping the plasmoid self-contained.
+
 The package ID is `org.sequoia.digitalclock`. It coexists with KDE's clock and has
 independent settings. It does not migrate, replace, or edit existing panel clocks.
 

@@ -8,6 +8,7 @@ import QtQuick.Effects
 import org.kde.kirigami as Kirigami
 import org.kde.kholidays
 import org.kde.kweather
+import org.sequoia.components as S
 
 Kirigami.Page {
     id: dashboard
@@ -56,6 +57,10 @@ Kirigami.Page {
     component Caption: Label { color: dashboard.muted; font.pixelSize: 12 }
     component Action: WeatherAction { atmospheric: dashboard.dynamic }
     component Surface: WeatherSurface { atmospheric: dashboard.dynamic }
+    component HoverSurface: S.MenuHighlight {
+        theme.mode: dashboard.dynamic ? "dark" : "system"
+        color: Qt.alpha(dashboard.accent, .20)
+    }
     // Small forecast symbols use foreground ink; the large weather illustration keeps its colors.
     component ConditionIcon: Kirigami.Icon { color: dashboard.ink; isMask: true }
     component Metric: Surface {
@@ -111,10 +116,11 @@ Kirigami.Page {
                         radius: 20
                         visible: !!cities.currentItem
                         atmospheric: dashboard.dynamic
-                        fillOpacity: 0.46
+                        panelMaterial: true
+                        fillOpacity: 0.20
                         refractionStrength: 18
                         bevelWidth: 14
-                        tint: Qt.tint(dashboard.dynamic ? "#293744" : Kirigami.Theme.backgroundColor, Qt.alpha(dashboard.accent, 0.16))
+                        tint: dashboard.accent
                         hovered: cities.currentItem?.hovered ?? false
                         pressed: cities.currentItem?.down ?? false
                         focused: cities.currentItem?.visualFocus ?? false
@@ -137,14 +143,13 @@ Kirigami.Page {
                         onClicked: dashboard.switchPageIndex(index)
                         Accessible.name: modelData.name
                         background: Item {
-                            Rectangle {
+                            HoverSurface {
                                 anchors.fill: parent
-                                visible: city.index !== dashboard.currentIndex
+                                enabled: city.index !== dashboard.currentIndex
+                                hovered: city.hovered
+                                pressed: city.down
+                                focused: city.visualFocus
                                 radius: 18
-                                color: city.hovered ? Qt.alpha(dashboard.ink, 0.06) : "transparent"
-                                border.color: city.visualFocus ? Kirigami.Theme.highlightColor : "transparent"
-                                border.width: city.visualFocus ? 2 : 0
-                                Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
                             }
                         }
                         contentItem: ColumnLayout {
@@ -343,30 +348,27 @@ Kirigami.Page {
                                         Accessible.name: Qt.formatDate(modelData.date,Qt.DefaultLocaleLongDate) + ", " + modelData.weatherDescription + ", " + dashboard.temp(modelData.maxTemp)
                                         onClicked: dashboard.selectDay(index)
                                         background: Item {
-                                            Rectangle {
+                                            HoverSurface {
                                                 anchors.fill: parent; radius: 13
-                                                visible: !day.highlighted
-                                                color: day.hovered ? Qt.alpha(dashboard.ink,0.05) : "transparent"
-                                                border.width: day.visualFocus ? 2 : 0; border.color: dashboard.accent
-                                                Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
+                                                enabled: !day.highlighted
+                                                hovered: day.hovered
+                                                pressed: day.down
+                                                focused: day.visualFocus
                                             }
                                             WeatherGlassSurface {
                                                 objectName: "weatherDayGlass" + day.index
                                                 anchors.fill: parent
                                                 visible: day.highlighted
                                                 atmospheric: dashboard.dynamic
+                                                panelMaterial: true
                                                 radius: 13
                                                 refractionStrength: 18
                                                 bevelWidth: 8
-                                                fillOpacity: dashboard.dynamic ? 0.46 : 0.20
-                                                tint: dashboard.dynamic ? "#24282c" : Kirigami.Theme.backgroundColor
+                                                fillOpacity: 0.20
+                                                tint: dashboard.accent
                                                 hovered: day.hovered
                                                 pressed: day.down
                                                 focused: day.visualFocus
-                                                Rectangle {
-                                                    anchors.fill: parent; radius: 13
-                                                    color: Qt.alpha(dashboard.accent, 0.06)
-                                                }
                                                 Rectangle {
                                                     x: day.mirrored ? parent.width - width - 4 : 4
                                                     anchors.verticalCenter: parent.verticalCenter

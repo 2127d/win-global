@@ -207,7 +207,7 @@ public:
     void renderSidePanelFrame(QPainter *, const QRect &, const QColor &outline, Side) const;
 
     //* menu frame
-    void renderMenuFrame(QPainter *, const QRect &, const QColor &color, const QColor &outline, bool roundCorners = true) const;
+    void renderMenuFrame(QPainter *, const QRect &, const QColor &color, const QColor &outline, bool roundCorners = true, qreal surfaceRadius = -1) const;
 
     //* outline for widgets
     void renderOutline(QPainter *painter, const QRectF &rect, const int radius, const int outlineStrength) const;

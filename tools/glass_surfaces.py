@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import tempfile
 import xml.etree.ElementTree as ET
 from build import Svg
 
@@ -52,6 +53,27 @@ def build_theme(base, destination, dark):
                 s.frame('blurred-mask','#ffffff',radius)
             s.shadow(radius);s.save(destination/folder/(filename+'.svg'))
     return destination.name
+
+
+def ensure_appearance_themes(data):
+    """Supply both Hub choices without replacing an existing/customized theme."""
+    themes = data / 'plasma/desktoptheme'
+    themes.mkdir(parents=True, exist_ok=True)
+    for mode in ('light', 'dark'):
+        destination = themes / ('sequoia-eleven-glass-' + mode)
+        if (destination / 'metadata.json').is_file():
+            continue
+        if destination.exists():
+            raise RuntimeError(f'Incomplete Plasma theme at {destination}; restore its metadata before installing.')
+        base = themes / ('sequoia-eleven-' + mode)
+        if not base.is_dir():
+            base = ROOT / 'themes/plasma/desktoptheme' / base.name
+        # Publish the complete assets together; a preview must not see a
+        # half-written theme while the Hub is being installed.
+        with tempfile.TemporaryDirectory(prefix='.appearance-themes-', dir=themes) as temp:
+            staged = Path(temp) / destination.name
+            build_theme(base, staged, mode == 'dark')
+            staged.rename(destination)
 
 
 def prepare(dark):

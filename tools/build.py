@@ -342,8 +342,8 @@ Theme=org.sequoia.eleven.{mode}
             defaults = (original/'contents/defaults').read_text()
             defaults = defaults.replace(f'ColorScheme=SequoiaEleven{mode.title()}', f'ColorScheme={scheme_id}')
             defaults = defaults.replace('library=org.kde.sequoiaeleven', f'library=org.kde.sequoiaeleven.{material}')
-            if material == 'transparent':
-                defaults += '\n[kwinrc][Plugins]\nblurEnabled=true\n'
+            # Desktop panels remain translucent with either application material.
+            defaults += '\n[kwinrc][Plugins]\nblurEnabled=true\nsequoia_liquid_glass_v6Enabled=false\n'
             (package/'contents/defaults').write_text(defaults)
     from glass_global_themes import build as build_glass_palettes
     build_glass_palettes(ROOT)

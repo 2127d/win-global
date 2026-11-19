@@ -19,6 +19,11 @@ QDBUS = '/usr/lib64/qt6/bin/qdbus'
 EFFECT = 'sequoia_liquid_glass_v6'
 
 
+def data_file(relative):
+    roots = [DATA, *(Path(path) for path in os.environ.get('XDG_DATA_DIRS', '/usr/local/share:/usr/share').split(':') if path)]
+    return next((root / relative for root in roots if (root / relative).is_file()), None)
+
+
 def read(file, group, key):
     config = configparser.ConfigParser(interpolation=None, strict=False, allow_no_value=True)
     config.optionxform = str
@@ -58,8 +63,7 @@ def plan(material, color_mode='current'):
     palette = {}
     if color_mode != 'current':
         scheme = 'SequoiaEleven' + mode.title() + ('Solid' if material == 'solid' else 'Transparent')
-        candidates = [DATA / 'color-schemes' / (scheme + '.colors'), Path('/usr/share/color-schemes') / (scheme + '.colors')]
-        source = next((p for p in candidates if p.is_file()), None)
+        source = data_file(Path('color-schemes') / (scheme + '.colors'))
         if source is None:
             raise RuntimeError('The matching Sequoia color scheme is not installed.')
         config = configparser.ConfigParser(interpolation=None, strict=False)
@@ -73,19 +77,33 @@ def plan(material, color_mode='current'):
     decoration = 'org.kde.sequoiaeleven.' + ('glass-adjustable' if material == 'glass' else material)
     theme = 'sequoia-eleven-' + ('glass-' if material == 'glass' else '') + mode
     plugin = Path('/usr/lib64/qt6/plugins/org.kde.kdecoration3') / (decoration + '.so')
-    if not plugin.is_file() or not (DATA / 'plasma/desktoptheme' / theme / 'metadata.json').is_file():
-        raise RuntimeError('The matching Sequoia decoration or Plasma theme is not installed.')
+    if not plugin.is_file():
+        raise RuntimeError(f'The Sequoia window decoration {decoration} is not installed.')
+    if data_file(Path('plasma/desktoptheme') / theme / 'metadata.json') is None:
+        raise RuntimeError(f'The Plasma theme {theme} is not installed. Reinstall Appearance Hub to restore its Light and Dark themes.')
     alpha = 255 if material == 'solid' else (192 if dark else 184) if material == 'transparent' else (168 if dark else 148)
     desired = [('kdeglobals', 'KDE', 'widgetStyle', style),
                ('kwinrc', 'org.kde.kdecoration2', 'library', decoration),
                ('kwinrc', 'Plugins', EFFECT + 'Enabled', str(material == 'glass').lower()),
-               ('kwinrc', 'Plugins', 'blurEnabled', str(material == 'transparent').lower()),
+               # Solid applies to application surfaces. Plasma panels retain
+               # translucent artwork and still need their compositor blur.
+               ('kwinrc', 'Plugins', 'blurEnabled', str(material != 'glass').lower()),
                ('plasmarc', 'Theme', 'name', theme),
                ('sequoiaelevenrc', 'Style', 'MenuOpacity', str(100 if material == 'solid' else 72 if material == 'transparent' else 44))]
     if color_mode != 'current':
         desired.extend(('kdeglobals', group, key, value) for (group, key), value in palette.items())
         desired.extend([('kdeglobals', 'General', 'ColorScheme', scheme),
                         ('kdeglobals', 'KDE', 'AutomaticLookAndFeel', 'false')])
+    else:
+        current_scheme = read('kdeglobals', 'General', 'ColorScheme')
+        sequoia_schemes = {'SequoiaEleven' + tone + surface
+                          for tone in ('Light', 'Dark') for surface in ('', 'Solid', 'Transparent')}
+        if current_scheme in sequoia_schemes:
+            # The native menu style also reads this identifier. Leaving it on
+            # Transparent overrides MenuOpacity=100 after a Solid transition.
+            # Change only the identifier; keep custom RGB/accent colors intact.
+            scheme = 'SequoiaEleven' + mode.title() + ('Solid' if material == 'solid' else 'Transparent')
+            desired.append(('kdeglobals', 'General', 'ColorScheme', scheme))
     for group in ('Colors:Window', 'Colors:Header'):
         for key in ('BackgroundNormal', 'BackgroundAlternate'):
             original = palette.get((group, key)) or read('kdeglobals', group, key) or color

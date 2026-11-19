@@ -30,3 +30,7 @@ BorderSize=None
 [ksplashrc][KSplash]
 Engine=KSplashQML
 Theme=org.sequoia.eleven.light
+
+[kwinrc][Plugins]
+blurEnabled=true
+sequoia_liquid_glass_v6Enabled=false

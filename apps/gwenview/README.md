@@ -561,10 +561,17 @@ bridge is left intact; its actual KDE window receives the shell. Settings keep
 all KConfig controls, with section headings outside centered 22px cards.
 
 An app-local widget style applies the same controls, focus rings, switch-shaped
-checkboxes, menu selections and hover feedback without modifying the desktop
+checkboxes and hover feedback without modifying the desktop
 style for other applications. Browser/sidebar/viewer/thumbnail surfaces, editing
 panels and fullscreen/HUD controls use the shared radii, flatter materials and
 softer shadows. Native image pixels and file operations remain unchanged.
+
+Native menus now delegate to the shared Sequoia application style when it
+advertises `sequoiaSharedMenus`. Gwenview retains only its image/fullscreen
+palette isolation for those menus; the style supplies their surface, selection,
+icons, padding, shadow and blur. The former floating-menu renderer remains a
+compatibility fallback for older styles. Combo lists and custom dialog surfaces
+continue using the app-specific presentation.
 
 Validation uses the dialog/menu walkthrough in both themes, native Wayland popup
 checks at 125%, file-picker resize/reopen checks, and normal/fullscreen previews.

@@ -154,7 +154,21 @@ KCM.SimpleKCM {
                         }
                     }
                     S.ActionPill {
-                        id: customAccentButton; objectName: "colorsCustomAccent"; theme: root.theme; text: i18n("Custom color…"); icon.name: "color-picker"
+                        id: customAccentButton; objectName: "colorsCustomAccent"; theme: root.theme; text: i18n("Custom color…")
+                        height: 42
+                        contentItem: RowLayout {
+                            spacing: customAccentButton.spacing
+                            opacity: customAccentButton.enabled ? 1 : .45
+                            Rectangle {
+                                objectName: "colorsCustomAccentSwatch"
+                                implicitWidth: 18; implicitHeight: 18; radius: 9
+                                color: root.accent || root.theme.accentColor
+                                border.width: 1; border.color: Qt.alpha(customAccentButton.theme.textColor, .3)
+                            }
+                            C.Label { text: customAccentButton.text; color: customAccentButton.theme.textColor; font: customAccentButton.font }
+                        }
+                        C.ToolTip.visible: hovered || visualFocus
+                        C.ToolTip.text: i18n("Selected accent: %1", String(root.accent || root.theme.accentColor))
                         onClicked: { colorDialog.chooseColor(root.accent || (Qt.colorEqual(kcm.lastUsedCustomAccentColor,"transparent") ? "#3daee9" : kcm.lastUsedCustomAccentColor)); colorDialog.open(); }
                     }
                 }

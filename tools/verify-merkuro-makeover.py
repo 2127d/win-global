@@ -7,6 +7,7 @@ parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--overlay',type=Path,default=ROOT/'.staging/merkuro-makeover')
 parser.add_argument('--mode',choices=['light','dark'],default='light')
 parser.add_argument('--material',choices=['solid','transparent','glass'],default='solid')
+parser.add_argument('--settings-only',action='store_true')
 args=parser.parse_args()
 helper=ROOT/'.staging/verify-merkuro-makeover.so'
 flags=shlex.split(subprocess.check_output(['pkg-config','--cflags','--libs','Qt6Quick','Qt6Test'],text=True))
@@ -34,6 +35,7 @@ with tempfile.TemporaryDirectory(prefix='mm-') as temp:
     (root/'data/icons').symlink_to(Path.home()/'.local/share/icons')
     bus=root/'bus.conf';bus.write_text('<busconfig><type>session</type><listen>unix:tmpdir='+str(root/'runtime')+'</listen><policy context="default"><allow send_destination="*"/><allow receive_sender="*"/><allow own="*"/></policy></busconfig>')
     env=dict(os.environ,QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QT_QPA_PLATFORMTHEME='kde',QT_FORCE_STDERR_LOGGING='1',SEQUOIA_MERKURO_VERIFY=str(output),AKONADI_INSTANCE='sequoia-preview-'+uuid.uuid4().hex[:10])
+    if args.settings_only:env['SEQUOIA_MERKURO_SETTINGS_VERIFY']='1'
     for kind in ('CONFIG','DATA','CACHE','STATE','RUNTIME'):env['XDG_'+kind+('_DIR' if kind=='RUNTIME' else '_HOME')]=str(root/kind.lower())
     for key in ('LD_PRELOAD','QT_STYLE_OVERRIDE','QT_PLUGIN_PATH','QML_IMPORT_PATH','QML2_IMPORT_PATH','KDE_APPLICATIONS_AS_SCOPE'):env.pop(key,None)
     command=['dbus-run-session','--config-file='+str(bus),'--','python3',str(ROOT/'tools/quick-preview-session.py'),'env','LD_PRELOAD='+str(helper),str(args.overlay.resolve()/'sequoia-quick'),'merkuro-calendar']
@@ -41,6 +43,25 @@ with tempfile.TemporaryDirectory(prefix='mm-') as temp:
     text=(output/'verify.log').read_text()
     errors=[line for line in text.split('MAKEOVER FINISHED')[0].splitlines() if any(x in line for x in ('ReferenceError','TypeError','is not a type','Cannot assign','Unable to assign','Binding loop','MAKEOVER FAIL','failed to load component'))]
     assert result.returncode==0 and not errors, '\n'.join(errors) or text[-5000:]
+    if args.settings_only:
+        assert 'MAKEOVER SETTINGS PASS' in text,text[-5000:]
+        env['SEQUOIA_MERKURO_SETTINGS_RESTART']='1'
+        with (output/'verify-settings-restart.log').open('w') as log:
+            restarted=subprocess.run(command,env=env,stdout=log,stderr=log,timeout=60)
+        restart_text=(output/'verify-settings-restart.log').read_text()
+        assert restarted.returncode==0 and 'MAKEOVER SETTINGS RESTART PASS' in restart_text,restart_text[-5000:]
+        print('PASS: settings size, last page and independent scroll positions survive closing and application restart')
+        print('PASS: native settings pages, glass cards, navigation, and holiday selector',args.mode,args.material)
+        print(output)
+        raise SystemExit(0)
     assert text.count('MAKEOVER PASS:')==7,text[-3000:]
+    # Relaunch with the same isolated settings and verify the saved choice is
+    # restored in a new application process, not just an existing page instance.
+    env['SEQUOIA_MERKURO_RESTART']='1'
+    with (output/'verify-restart.log').open('w') as log:
+        restarted=subprocess.run(command,env=env,stdout=log,stderr=log,timeout=60)
+    restart_text=(output/'verify-restart.log').read_text()
+    assert restarted.returncode==0 and 'MAKEOVER RESTART PASS' in restart_text, restart_text[-5000:]
+    print('PASS: saved Month, Week, and Schedule layouts restored after application restart')
     print('PASS:',args.mode,args.material,'Month, Today, Week, Schedule, Tasks, compact layout, native create action')
     print(output)

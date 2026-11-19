@@ -4,6 +4,7 @@ import QtQuick.Window
 import QtQuick.Effects
 import org.kde.kirigami as Kirigami
 import org.sequoia.glass as Glass
+import org.sequoia.components as S
 
 Rectangle {
     id: surface
@@ -11,21 +12,28 @@ Rectangle {
     property bool hovered: false
     property bool pressed: false
     property bool focused: false
-    property bool shadow: true
+    property bool shadow: false
+    property bool panelMaterial: false
+    property real rimOpacity: 1
+    property S.Theme theme: S.Theme { mode: surface.atmospheric ? "dark" : "system" }
     property real fillOpacity: 0.22
     property real refractionStrength: 12
     property real bevelWidth: 8
-    property color tint: atmospheric ? "#142235" : Kirigami.Theme.backgroundColor
+    property color tint: theme.buttonColor
     readonly property bool prismatic: settingsModel.prismaticGlass
     readonly property bool refracting: atmospheric && GraphicsInfo.api !== GraphicsInfo.Software
     // Neutral density preserves contrast without dyeing the transmitted scene.
     readonly property real tintLuminance: tint.r * 0.2126 + tint.g * 0.7152 + tint.b * 0.0722
     readonly property color materialTint: prismatic
         ? Qt.rgba(tintLuminance, tintLuminance, tintLuminance, 1) : tint
-    readonly property color surfaceTint: Qt.alpha(materialTint, Math.min(1, fillOpacity + (pressed ? 0.18 : hovered ? 0.09 : 0)))
+    readonly property color surfaceTint: Qt.alpha(Qt.tint(materialTint,
+        Qt.alpha(theme.accentColor, pressed ? .20 : hovered ? .10 : 0)),
+        Math.min(1, (hovered || pressed ? Math.max(.44, fillOpacity) : fillOpacity) + (pressed ? .20 : hovered ? .10 : 0)))
     radius: height / 2
     // One tint layer: the shader replaces the sampled scene only inside the pill.
-    color: refracting ? "transparent" : surfaceTint
+    color: refracting || panelMaterial ? "transparent" : surfaceTint
+    border.width: panelMaterial ? 0 : 1
+    border.color: Qt.alpha(theme.textColor, .16)
     Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
     RectangularShadow {
         anchors.fill: parent; z: -1
@@ -69,15 +77,25 @@ Rectangle {
     }
     Rectangle {
         anchors.fill: parent; radius: surface.radius
-        visible: surface.refracting
+        visible: surface.refracting && !surface.panelMaterial
         color: surface.surfaceTint
         Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration } }
     }
-    Glass.Rim { anchors.fill: parent; radius: surface.radius }
+    S.Panel {
+        objectName: "weatherLibraryPanel"
+        anchors.fill: parent
+        visible: surface.panelMaterial
+        theme: surface.theme
+        radius: surface.radius
+        // Keep the transparency slider literal; the default matches Hub's 86% fill.
+        color: surface.surfaceTint
+    }
+    S.NativeRim { anchors.fill: parent; radius: surface.radius; opacity: surface.rimOpacity; visible: !surface.panelMaterial }
     ShaderEffect {
         objectName: "weatherPrismaticRim"
         anchors.fill: parent
         visible: surface.prismatic && GraphicsInfo.api !== GraphicsInfo.Software
+        opacity: surface.rimOpacity
         property vector2d surfaceSize: Qt.vector2d(width, height)
         property real cornerRadius: surface.radius
         property real rimIntensity: Glass.Settings.intensity

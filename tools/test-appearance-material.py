@@ -10,6 +10,9 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
+
+from glass_surfaces import ensure_appearance_themes
 
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = ROOT / 'apps/settings/appearance-material.py'
@@ -19,6 +22,41 @@ m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 m.refresh=lambda:None
 m.main()
 '''
+
+class ThemeTests(unittest.TestCase):
+    def test_install_supplies_both_modes_and_preserves_existing_assets(self):
+        with tempfile.TemporaryDirectory() as temp:
+            data = Path(temp)
+            themes = data / 'plasma/desktoptheme'
+            light = themes / 'sequoia-eleven-glass-light'
+            light.mkdir(parents=True)
+            (light/'metadata.json').write_text('{"custom": true}')
+            ensure_appearance_themes(data)
+            dark = themes / 'sequoia-eleven-glass-dark'
+            self.assertEqual(json.loads((dark/'metadata.json').read_text())['KPlugin']['Id'], dark.name)
+            self.assertTrue((dark/'translucent/dialogs/background.svg').is_file())
+            self.assertEqual((light/'metadata.json').read_text(), '{"custom": true}')
+            (dark/'custom-marker').write_text('keep')
+            ensure_appearance_themes(data)
+            self.assertEqual((dark/'custom-marker').read_text(), 'keep')
+
+    def test_material_finds_themes_in_xdg_data_dirs_and_reports_missing_mode(self):
+        spec = importlib.util.spec_from_file_location('material_paths', HELPER)
+        m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            m.DATA = root/'user'
+            m.CONFIG = root/'config'
+            shared = root/'shared'
+            theme = shared/'plasma/desktoptheme/sequoia-eleven-glass-light/metadata.json'
+            theme.parent.mkdir(parents=True)
+            theme.write_text('{}')
+            with patch.dict(os.environ, XDG_DATA_DIRS=str(shared)):
+                changes = m.plan('glass')
+                self.assertTrue(any(e['after'] == 'sequoia-eleven-glass-light' for e in changes))
+                theme.unlink()
+                with self.assertRaisesRegex(RuntimeError, 'Plasma theme sequoia-eleven-glass-light'):
+                    m.plan('glass')
 
 class TrialTests(unittest.TestCase):
     def setUp(self):
@@ -31,7 +69,7 @@ class TrialTests(unittest.TestCase):
         (self.base/'data/color-schemes').symlink_to(ROOT/'themes/color-schemes')
         themes = self.base / 'data/plasma'; themes.mkdir()
         (themes / 'desktoptheme').symlink_to(Path.home()/'.local/share/plasma/desktoptheme')
-        (self.base/'config/kdeglobals').write_text('[Colors:Window]\nBackgroundNormal=31,34,39,150\n[KDE]\nwidgetStyle=SequoiaElevenGlass\n[Icons]\nTheme=keep-icons\n[General]\nfont=keep-font\n')
+        (self.base/'config/kdeglobals').write_text('[Colors:Window]\nBackgroundNormal=31,34,39,150\n[KDE]\nwidgetStyle=SequoiaElevenGlass\n[Icons]\nTheme=keep-icons\n[General]\nfont=keep-font\nColorScheme=SequoiaElevenDarkTransparent\nAccentColor=120,80,160\n')
         (self.base/'config/kwinrc').write_text('[Plugins]\nsequoia_liquid_glass_v6Enabled=true\nblurEnabled=false\n[org.kde.kdecoration2]\nlibrary=org.kde.sequoiaeleven.glass-adjustable\nButtonsOnLeft=XIA\n')
         (self.base/'config/sequoiaelevenrc').write_text('[Windeco]\nGlassRimIntensity=67\nDecorationScale=115\n')
         (self.base/'config/plasmarc').write_text('[Theme]\nname=sequoia-eleven-glass-dark\n')
@@ -73,6 +111,17 @@ class TrialTests(unittest.TestCase):
             self.assertEqual(values['kdeglobals'][('KDE','AutomaticLookAndFeel')],'false')
             self.assertEqual(values['kdeglobals'][('General','font')],'keep-font')
             self.finish(p,'revert');self.restored()
+    def test_current_color_material_keeps_menu_preset_and_palette_in_sync(self):
+        for material in ('solid', 'transparent', 'glass'):
+            p=self.start(material);self.ready(p)
+            values=self.values()
+            self.assertEqual(values['kdeglobals'][('General','ColorScheme')],
+                             'SequoiaElevenDark' + ('Solid' if material=='solid' else 'Transparent'))
+            self.assertEqual(values['kdeglobals'][('Colors:Window','BackgroundNormal')].split(',')[:3], ['31','34','39'])
+            self.assertEqual(values['kdeglobals'][('General','AccentColor')], '120,80,160')
+            self.assertEqual(values['sequoiaelevenrc'][('Style','MenuOpacity')],
+                             '100' if material=='solid' else '72' if material=='transparent' else '44')
+            self.finish(p,'revert');self.restored()
     def test_timeout(self):
         p=self.start();self.ready(p);self.finish(p);self.restored()
     def test_parent_disappears(self):
@@ -111,7 +160,7 @@ class TrialTests(unittest.TestCase):
         for material in ['glass','transparent','solid','glass','glass','transparent','glass']:
             for entry in m.plan(material): m.write(entry,entry['after'])
             m.sync_effects()
-            self.assertEqual(loaded,{m.EFFECT} if material=='glass' else {'blur'} if material=='transparent' else set())
+            self.assertEqual(loaded,{m.EFFECT} if material=='glass' else {'blur'})
 
     def test_failed_apply_restores(self):
         child=CHILD.replace('m.refresh=lambda:None','''calls=0
