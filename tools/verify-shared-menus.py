@@ -2,6 +2,7 @@
 """Exercise ordinary QMenus; no application-specific menu painter or proxy."""
 import argparse
 import configparser
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -11,9 +12,71 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def check_live_updates(app, style):
+    from PySide6.QtCore import QObject, QEvent, QPoint, QSize, Qt
+    from PySide6.QtTest import QTest
+    from PySide6.QtWidgets import QLabel, QMenu, QWidgetAction
+    import shiboken6
+
+    class Events(QObject):
+        def __init__(self, menu):
+            super().__init__(); self.resizes = 0; self.hides = 0
+            menu.installEventFilter(self)
+        def eventFilter(self, obj, event):
+            if event.type() == QEvent.Resize: self.resizes += 1
+            if event.type() == QEvent.Hide: self.hides += 1
+            return False
+
+    menu = QMenu()
+    first = menu.addAction('Initial action')
+    embedded = QWidgetAction(menu)
+    label = QLabel('Embedded control'); embedded.setDefaultWidget(label); menu.addAction(embedded)
+    menu.popup(QPoint(140, 100)); QTest.qWait(80)
+    events = Events(menu)
+    original_min, original_max = menu.minimumSize(), menu.maximumSize()
+    initial = menu.size()
+    actions = [menu.addAction('A much longer dynamically discovered context action ' + str(i)) for i in range(9)]
+    first.setText('Updated first action')
+    assert menu.size() == initial, 'Action discovery exposed intermediate menu sizes'
+    QTest.qWait(80)
+    assert menu.isVisible() and events.hides == 0, 'Live updates remapped the popup'
+    assert events.resizes == 1, f'Action batch resized {events.resizes} times'
+    assert menu.width() > initial.width(), 'Live menu failed to grow'
+    assert label.isVisible() and embedded.defaultWidget() == label, 'Embedded widget action was lost'
+    assert menu.minimumSize() == original_min and menu.maximumSize() == original_max
+    events.resizes = 0
+    for action in actions: menu.removeAction(action)
+    first.setText('Short')
+    QTest.qWait(80)
+    assert menu.width() < initial.width() + 10 and events.resizes == 1, 'Menu did not shrink to its final contents'
+    assert menu.actionGeometry(embedded).bottom() < menu.height(), 'Final action layout is clipped'
+    menu.addAction('Pending change'); menu.hide(); QTest.qWait(30)
+    assert menu.updatesEnabled() and menu.minimumSize() == original_min and menu.maximumSize() == original_max
+    menu.popup(QPoint(140,100)); QTest.qWait(40)
+    menu.addAction('Pending style replacement')
+    style.unpolish(menu)
+    assert menu.updatesEnabled() and menu.maximumSize() == original_max, 'Unpolish left menu frozen'
+    style.polish(menu); menu.hide(); menu.popup(QPoint(140,100)); QTest.qWait(40)
+    menu.addAction('Pending destruction'); shiboken6.delete(menu); QTest.qWait(30)
+
+    parent = QMenu(); child = parent.addMenu('Dynamic submenu'); child.addAction('Small')
+    parent.popup(QPoint(140,100)); QTest.qWait(60)
+    parent.setActiveAction(child.menuAction())
+    QTest.keyClick(parent, Qt.Key_Left if app.layoutDirection() == Qt.RightToLeft else Qt.Key_Right)
+    QTest.qWait(100)
+    child_events = Events(child)
+    for i in range(5): child.addAction('A wider submenu action ' + str(i))
+    QTest.qWait(80)
+    a,b = parent.geometry(), child.geometry()
+    assert child.isVisible() and child_events.hides == 0 and child_events.resizes == 1
+    assert max(b.left()-a.right()-1,a.left()-b.right()-1) >= 6, 'Growing submenu lost its surface gap'
+    QTest.keyClick(child, Qt.Key_Escape); QTest.keyClick(parent, Qt.Key_Escape)
+    assert not child.isVisible() and not parent.isVisible(), 'Updated menus lost keyboard dismissal'
+
+
 def render(args):
     from PySide6.QtCore import QPoint, Qt
-    from PySide6.QtGui import QActionGroup, QColor, QIcon, QKeySequence, QPalette
+    from PySide6.QtGui import QAction, QActionGroup, QColor, QIcon, QKeySequence, QPalette
     from PySide6.QtTest import QTest
     from PySide6.QtWidgets import QApplication, QMenu, QStyle, QStyleFactory
     app = QApplication([])
@@ -49,7 +112,10 @@ def render(args):
     for action in (actual, fit): action.setCheckable(True); group.addAction(action)
     fit.setChecked(True)
     menu.addSeparator()
-    submenu = menu.addMenu(QIcon.fromTheme('color-management'), 'Background Color Mode')
+    submenu = QMenu(menu)
+    # KDE KActionMenu owns an action separate from QMenu.menuAction().
+    branch = QAction(QIcon.fromTheme('color-management'), 'Background Color Mode', menu)
+    branch.setMenu(submenu); menu.addAction(branch)
     colors = QActionGroup(submenu); colors.setExclusive(True)
     for label in ('Follow color scheme', 'Light Mode', 'Neutral Mode', 'Dark Mode'):
         action = submenu.addAction(label); action.setCheckable(True); colors.addAction(action)
@@ -58,7 +124,7 @@ def render(args):
     copy = menu.addAction(QIcon.fromTheme('edit-copy'), 'Copy'); copy.setShortcut(QKeySequence.Copy)
     disabled = menu.addAction('Unavailable action'); disabled.setEnabled(False)
     menu.popup(QPoint(120, 80)); QTest.qWait(150)
-    menu.setActiveAction(submenu.menuAction())
+    menu.setActiveAction(branch)
     QTest.keyClick(menu, Qt.Key_Left if args.rtl else Qt.Key_Right); QTest.qWait(250)
     assert submenu.isVisible(), 'Keyboard navigation did not open submenu'
     parent_rect, child_rect = menu.geometry(), submenu.geometry()
@@ -90,7 +156,8 @@ def render(args):
     QTest.mouseClick(menu, Qt.LeftButton, Qt.NoModifier, menu.actionGeometry(disabled).center())
     assert menu.isVisible(), 'Disabled action dismissed the menu'
     menu.close()
-    print('PASS:', stem, 'native submenu, Escape, toggles, radio actions, disabled actions, padding, separated submenus, antialiased corners and material')
+    check_live_updates(app, style)
+    print('PASS:', stem, 'native submenu, Escape, toggles, radio actions, disabled actions, padding, separated submenus, antialiased corners, material and live action batches')
 
 
 if __name__ == '__main__':
@@ -112,7 +179,9 @@ if __name__ == '__main__':
                 rgb = cfg['Colors:Window']['BackgroundNormal'].split(',')[:3]
                 cfg['Colors:Window']['BackgroundNormal'] = ','.join(rgb+[str(alpha)])
                 with (Path(temp)/'kdeglobals').open('w') as stream: cfg.write(stream, space_around_delimiters=False)
-                env = dict(os.environ, XDG_CONFIG_HOME=temp, XDG_CONFIG_DIRS=temp, QT_QPA_PLATFORM='offscreen',
+                screen = Path(temp)/'screen.json'
+                screen.write_text(json.dumps({'screens':[{'name':'menus','width':2400,'height':1800,'logicalDpi':96,'logicalBaseDpi':96,'dpr':1}]}))
+                env = dict(os.environ, XDG_CONFIG_HOME=temp, XDG_CONFIG_DIRS=temp, QT_QPA_PLATFORM='offscreen:configfile='+str(screen),
                            QT_QPA_PLATFORMTHEME='generic', QT_PLUGIN_PATH=str(args.plugins.resolve()), QT_STYLE_OVERRIDE='Fusion')
                 subprocess.run([sys.executable, __file__, '--child', '--plugins', str(args.plugins), '--output', str(args.output),
                                 '--material', material, *(['--dark'] if mode=='Dark' else []), *(['--rtl'] if rtl else [])], env=env, check=True)

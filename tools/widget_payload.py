@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import shutil
 import tempfile
+import global_menu
 
 ROOT = Path(__file__).resolve().parents[1]
 NAMES = {'org.sequoia.' + name for name in (
@@ -21,7 +22,8 @@ def module(filename):
 
 
 def allowed(name, plugin_dir):
-    return (name in {f'usr/{plugin_dir}/plasma/applets/{n}.so' for n in NAMES}
+    return (name == f'usr/{plugin_dir}/plasma/applets/{global_menu.PLUGIN}'
+            or name in {f'usr/{plugin_dir}/plasma/applets/{n}.so' for n in NAMES}
             or any(name.startswith(f'usr/share/plasma/plasmoids/{n}/') for n in NAMES))
 
 
@@ -55,3 +57,4 @@ def stage(destination, plugin_dir):
             native = destination / 'usr' / plugin_dir / 'plasma/applets'
             native.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source / 'contents/native' / (name + '.so'), native / (name + '.so'))
+        global_menu.stage(destination, plugin_dir)

@@ -476,6 +476,7 @@ def perform(args):
         config = Path(os.environ.get('XDG_CONFIG_HOME') or Path.home() / '.config')
         widget_payload.module('install-widget-archives').retire_local_copies(
             widget_payload.NAMES, args.prefix, config)
+        widget_payload.global_menu.retire_user_override(args.prefix)
     if 'modal-dimming' in components and args.system_root == Path('/'):
         live_prefix = Path(os.environ.get('XDG_DATA_HOME') or Path.home() / '.local/share').absolute()
         if args.prefix == live_prefix:

@@ -125,12 +125,12 @@ def debian_kf_package(name):
 
 BUILD = {
     'fedora': ['cmake', 'gcc-c++', 'ninja-build', 'extra-cmake-modules', 'pkgconf-pkg-config',
-               'qt6-qtbase-devel', 'qt6-qtdeclarative-devel', 'kf6-kirigami-devel',
+               'qt6-qtbase-devel', 'qt6-qtbase-private-devel', 'qt6-qtdeclarative-devel', 'kf6-kirigami-devel',
                'kf6-frameworkintegration-devel', *('kf6-' + p + '-devel' for p in _KF.split())],
     'arch': ['cmake', 'gcc', 'ninja', 'extra-cmake-modules', 'pkgconf', 'qt6-base',
              'qt6-declarative', 'kirigami', 'frameworkintegration', *_KF.split()],
     'debian': ['cmake', 'g++', 'ninja-build', 'extra-cmake-modules', 'pkg-config',
-               'qt6-base-dev', 'qt6-declarative-dev', 'libkirigami-dev',
+               'qt6-base-dev', 'qt6-base-private-dev', 'qt6-declarative-dev', 'libkirigami-dev',
                'libkf6style-dev', *(debian_kf_package(p) for p in _KF.split())],
 }
 BUILD['ubuntu'] = BUILD['debian']
@@ -153,6 +153,10 @@ def packages_for(distro, components, apps=()):
                       'ubuntu': 'libkdecorations3-dev', 'debian': 'libkdecorations3-dev'}[distro]]
     if 'widgets' in selected:
         packages += GUI_PACKAGES[distro] + ['plasma-workspace', 'plasma-desktop', 'plasma-nm', 'plasma-pa', 'powerdevil']
+        packages += {'fedora': ['libplasma-devel', 'plasma-workspace-devel', 'kf6-kitemmodels-devel'],
+                     'arch': ['libplasma', 'kitemmodels'],
+                     'ubuntu': ['libplasma-dev', 'plasma-workspace-dev', 'libkf6itemmodels-dev'],
+                     'debian': ['libplasma-dev', 'plasma-workspace-dev', 'libkf6itemmodels-dev']}[distro]
         packages += ['bluedevil', 'kdeplasma-addons']
         packages += [{'fedora': 'plasma-print-manager', 'arch': 'print-manager',
                       'ubuntu': 'print-manager', 'debian': 'print-manager'}[distro]]

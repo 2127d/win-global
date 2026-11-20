@@ -13,7 +13,7 @@ runtime = Path(env['XDG_RUNTIME_DIR'])
 assert runtime.parent.parent == Path(tempfile.gettempdir()) and runtime.parent.name.startswith('gwenview-test-')
 (Path(env['XDG_CONFIG_HOME']) / 'kwinrc').write_text('[Plugins]\nblurEnabled=' + ('false' if env.get('SEQUOIA_GWENVIEW_TEST_BLUR') == '0' else 'true') + '\n')
 compositor_env = dict(env, QT_QPA_PLATFORM='offscreen', KWIN_SCREENSHOT_NO_PERMISSION_CHECKS='1')
-for key in ('LD_PRELOAD', 'WAYLAND_DISPLAY', 'DISPLAY', 'QT_PLUGIN_PATH'):
+for key in ('LD_PRELOAD', 'WAYLAND_DISPLAY', 'DISPLAY', 'QT_PLUGIN_PATH', 'QT_SCALE_FACTOR', 'QT_SCREEN_SCALE_FACTORS'):
     compositor_env.pop(key, None)
 with (runtime.parent / 'compositor.log').open('w') as log:
     compositor = subprocess.Popen(['kwin_wayland', '--virtual', '--width', '1600', '--height', '1200',
@@ -39,10 +39,11 @@ with (runtime.parent / 'compositor.log').open('w') as log:
             time.sleep(.2)
             root = Path(__file__).resolve().parents[1]
             probe = root / '.staging/gwenview-global-menu-probe.so'
-            flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets'], text=True))
+            flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Widgets', 'Qt6Quick', 'Qt6Test', 'Qt6DBus'], text=True))
+            flags += ['-I' + str(root / '.staging/test-sdk'), '-l:libei.so.1']
             subprocess.run(['c++', '-shared', '-fPIC', str(root / 'tools/test-support/gwenview-global-menu-probe.cpp'), '-o', str(probe), *flags], check=True)
             shell_log = (runtime.parent / 'global-menu.log').open('w+')
-            shell_env = dict(env, LD_PRELOAD=str(probe), SEQUOIA_GLOBAL_MENU_PROBE='1', KCOREADDONS_NO_XDG_DESKTOP_PORTAL='1', QT_NO_XDG_DESKTOP_PORTAL='1')
+            shell_env = dict(env, LD_PRELOAD=str(probe), SEQUOIA_GLOBAL_MENU_PROBE='1', QT_FORCE_STDERR_LOGGING='1', KCOREADDONS_NO_XDG_DESKTOP_PORTAL='1', QT_NO_XDG_DESKTOP_PORTAL='1')
             shell = subprocess.Popen(['plasmashell', '--no-respawn'], env=shell_env, stdout=shell_log, stderr=shell_log)
             for attempt in range(100):
                 query = subprocess.run(['qdbus-qt6', 'org.kde.plasmashell', '/PlasmaShell', 'org.kde.PlasmaShell.evaluateScript', 'print(desktops().length);'], capture_output=True, text=True)

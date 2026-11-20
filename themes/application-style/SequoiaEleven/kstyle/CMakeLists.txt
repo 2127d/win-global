@@ -44,6 +44,7 @@ set(sequoiaeleven_PART_SRCS
     sequoiaelevenpickerpreview.cpp
     sequoiaelevenhelper.cpp
     sequoiaelevenmdiwindowshadow.cpp
+    sequoiaelevenmenutransition.cpp
     sequoiaelevenmnemonics.cpp
     sequoiaelevenpropertynames.cpp
     sequoiaelevenshadowhelper.cpp

@@ -801,7 +801,9 @@ motion, and produce a verification image in the app cache. Requires PySide6.
 ### Applying the approved motion palette
 
 Select **Animation kit — Your palette** in the installer to apply the custom
-Motion Lab preset. This option is unchecked by default, including with
+Motion Lab preset. Popup translations retain compositor blur and contrast during
+opening and closing, including Liquid Glass. Material roles are restored when
+an animation finishes or another effect takes over. This option is unchecked by default, including with
 **Install the complete desktop**. It includes the widgets and Qt Quick styling
 used by the palette. Applying it restarts Plasma.
 

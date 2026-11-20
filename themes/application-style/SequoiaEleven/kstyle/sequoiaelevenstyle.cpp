@@ -26,6 +26,7 @@
 #include "sequoiaelevenfilepicker.h"
 #include "sequoiaelevenmdiwindowshadow.h"
 #include "sequoiaelevenmnemonics.h"
+#include "sequoiaelevenmenutransition.h"
 #include "sequoiaelevenpropertynames.h"
 #include "sequoiaelevenshadowhelper.h"
 #include "sequoiaelevensplitterproxy.h"
@@ -72,9 +73,6 @@
 #include <QTreeView>
 #include <QWidgetAction>
 #include <QWindow>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
-#include <private/qhighdpiscaling_p.h>
-#endif
 #include <QQuickWidget>
 #include <QTimer>
 #include <KWindowSystem>
@@ -634,8 +632,8 @@ void Style::polish(QWidget *widget)
         widget->setAutoFillBackground(false);
         widget->parentWidget()->setAutoFillBackground(false);
 
-    } else if (qobject_cast<QMenu *>(widget)) {
-        addEventFilter(widget);
+    } else if (auto menu = qobject_cast<QMenu *>(widget)) {
+        MenuTransition::install(menu);
         setTranslucentBackground(widget);
 
         if (widget->testAttribute(Qt::WA_TranslucentBackground)) {
@@ -821,9 +819,11 @@ void Style::unpolish(QWidget *widget)
         widget->setProperty("_sequoia_page_list_width", QVariant());
     }
 
+    if (auto menu = qobject_cast<QMenu *>(widget)) MenuTransition::remove(menu);
+
     // remove event filter
     if (qobject_cast<QAbstractScrollArea *>(widget) || qobject_cast<QDockWidget *>(widget) || qobject_cast<QMdiSubWindow *>(widget)
-        || widget->inherits("QComboBoxPrivateContainer")) {
+        || qobject_cast<QMenu *>(widget) || widget->inherits("QComboBoxPrivateContainer")) {
         widget->removeEventFilter(this);
     }
 
@@ -1798,57 +1798,6 @@ void Style::drawItemText(QPainter *painter,
 
 bool Style::eventFilter(QObject *object, QEvent *event)
 {
-    if (event->type() == QEvent::Show) {
-        if (auto menu = qobject_cast<QMenu *>(object)) {
-            if (auto handle = menu->windowHandle(); handle && handle->property("sequoiaSubmenuAnchor").toBool()) {
-                for (const auto key : {"_q_waylandPopupAnchorRect", "_q_waylandPopupAnchor", "_q_waylandPopupGravity", "_q_waylandPopupConstraintAdjustment"})
-                    handle->setProperty(key, QVariant());
-                handle->setProperty("sequoiaSubmenuAnchor", false);
-            }
-            // Qt's screen-edge fallback aligns to the parent action rectangle
-            // without the submenu offset. Restore the visible-surface gap
-            // before the popup is mapped, keeping Qt's chosen side and y.
-            for (auto owner : menu->menuAction()->associatedObjects()) {
-                auto parentMenu = qobject_cast<QMenu *>(owner);
-                if (!parentMenu || !parentMenu->isVisible()
-                    || parentMenu->activeAction() != menu->menuAction()) continue;
-                const QRect parent = parentMenu->geometry();
-                const QRect screen = parentMenu->screen()->availableGeometry();
-                const int right = parent.right() + 1 + Metrics::Menu_SubmenuGap;
-                const int left = parent.left() - menu->width() - Metrics::Menu_SubmenuGap;
-                const bool fitsRight = right + menu->width() <= screen.right() + 1;
-                const bool fitsLeft = left >= screen.left();
-                const bool opensRight = menu->geometry().center().x() >= parent.center().x();
-                if (opensRight ? fitsRight : fitsLeft)
-                    menu->move(opensRight ? right : left, menu->y());
-                else if (opensRight ? fitsLeft : fitsRight)
-                    menu->move(opensRight ? left : right, menu->y());
-#if QT_VERSION >= QT_VERSION_CHECK(6, 10, 0)
-                if (Helper::isWayland()) {
-                    // Wayland positions popups from the action anchor, ignoring
-                    // QWidget::move(). Expand that anchor to the parent surface
-                    // plus the gap, and let KWin flip/slide it at output edges.
-                    if (!menu->windowHandle()) menu->winId();
-                    auto handle = menu->windowHandle();
-                    auto transient = handle->transientParent();
-                    if (transient) {
-                        const QPoint origin = transient->mapFromGlobal(parentMenu->mapToGlobal(QPoint()));
-                        const QRect anchor(origin + QPoint(-Metrics::Menu_SubmenuGap, menu->y() - parent.y()),
-                                           QSize(parent.width() + 2 * Metrics::Menu_SubmenuGap, 1));
-                        const bool rightSide = menu->geometry().center().x() >= parent.center().x();
-                        const Qt::Edges side = rightSide ? Qt::RightEdge : Qt::LeftEdge;
-                        handle->setProperty("_q_waylandPopupAnchorRect", QHighDpi::toNativeLocalPosition(anchor, transient));
-                        handle->setProperty("_q_waylandPopupAnchor", QVariant::fromValue(Qt::Edges(Qt::TopEdge | side)));
-                        handle->setProperty("_q_waylandPopupGravity", QVariant::fromValue(Qt::Edges(Qt::BottomEdge | side)));
-                        handle->setProperty("_q_waylandPopupConstraintAdjustment", 1u | 2u | 4u | 8u);
-                        handle->setProperty("sequoiaSubmenuAnchor", true);
-                    }
-                }
-#endif
-                break;
-            }
-        }
-    }
     if (auto dockWidget = qobject_cast<QDockWidget *>(object)) {
         return eventFilterDockWidget(dockWidget, event);
     } else if (auto subWindow = qobject_cast<QMdiSubWindow *>(object)) {

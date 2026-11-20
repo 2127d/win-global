@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/KDE/plasma-workspace",
+  "ref": "v6.8.2",
+  "paths": [
+    "applets/appmenu",
+    "libdbusmenuqt"
+  ]
+}

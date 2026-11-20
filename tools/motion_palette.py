@@ -60,6 +60,49 @@ def kwin_effect(name, text):
             '                { type: Effect.Opacity, from: 1.0, to: 0.0 },\n'
             '                { type: Effect.Translation, from: {value1: 0, value2: 0}, to: {value1: 0, value2: -8} }\n'
             '            ]')
+        # Unlike upstream's opacity-only fade, our translation needs the same
+        # material roles as KWin's scale effect. Otherwise Blur/Glass skips the
+        # transformed surface, flashing the sharp wallpaper at both ends.
+        text = replace(text, '    loadConfig: function () {', '''    setupMaterial: function (window) {
+        if (!window.sequoiaPopupMaterial) {
+            window.sequoiaPopupMaterial = {
+                blur: window.data(Effect.WindowForceBlurRole),
+                contrast: window.data(Effect.WindowForceBackgroundContrastRole)
+            };
+        }
+        window.setData(Effect.WindowForceBlurRole, true);
+        window.setData(Effect.WindowForceBackgroundContrastRole, true);
+    },
+    cleanupMaterial: function (window) {
+        var previous = window.sequoiaPopupMaterial;
+        if (!previous) { return; }
+        delete window.sequoiaPopupMaterial;
+        window.setData(Effect.WindowForceBlurRole, previous.blur === undefined ? null : previous.blur);
+        window.setData(Effect.WindowForceBackgroundContrastRole, previous.contrast === undefined ? null : previous.contrast);
+    },
+    slotAnimationEnded: function (window, attribute) {
+        // Both tracks share a start/duration; release after the translation.
+        if (attribute !== Effect.Translation) { return; }
+        fadingPopupsEffect.cleanupMaterial(window);
+        delete window.fadeInAnimation;
+        delete window.fadeOutAnimation;
+    },
+    loadConfig: function () {''')
+        text = replace(text, '        window.fadeInAnimation = animate({',
+            '        fadingPopupsEffect.setupMaterial(window);\n        window.fadeInAnimation = animate({')
+        text = replace(text, '        window.fadeOutAnimation = animate({', '''        if (window.fadeInAnimation) {
+            cancel(window.fadeInAnimation);
+            delete window.fadeInAnimation;
+            fadingPopupsEffect.cleanupMaterial(window);
+        }
+        fadingPopupsEffect.setupMaterial(window);
+        window.fadeOutAnimation = animate({''')
+        for name_of_animation in ('fadeInAnimation', 'fadeOutAnimation'):
+            marker = '                delete window.' + name_of_animation + ';'
+            text = replace(text, marker, marker + '\n                fadingPopupsEffect.cleanupMaterial(window);')
+        text = replace(text, '        effect.configChanged.connect(fadingPopupsEffect.loadConfig);',
+            '        effect.configChanged.connect(fadingPopupsEffect.loadConfig);\n'
+            '        effect.animationEnded.connect(fadingPopupsEffect.slotAnimationEnded);')
     elif name in ('maximize', 'fullscreen'):
         text = replace(text, 'animationTime(250)', duration(240))
     elif name == 'login':

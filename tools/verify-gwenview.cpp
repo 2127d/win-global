@@ -2312,8 +2312,17 @@ static void startup() {
             globalInput.button(true); QTest::qWait(30); globalInput.button(false); QTest::qWait(300);
 #endif
             const QString runtime = qEnvironmentVariable("XDG_RUNTIME_DIR");
+            if (qEnvironmentVariableIsSet("SEQUOIA_GLOBAL_MENU_SWITCH_CHECK")) {
+                QFile ready(runtime + "/global-menu-input-ready");
+                require(ready.open(QIODevice::WriteOnly), "hand off pointer input to the Plasma switch check"); ready.close();
+            }
             for (int i = 0; i < 120 && !QFile::exists(runtime + "/global-menu-ready"); ++i) QTest::qWait(100);
             require(QFile::exists(runtime + "/global-menu-ready"), "real Plasma widget imports Gwenview menu categories");
+            if (qEnvironmentVariableIsSet("SEQUOIA_GLOBAL_MENU_SWITCH_CHECK")) {
+                for (int i = 0; i < 900 && !QFile::exists(runtime + "/global-menu-switches-done")
+                     && !QFile::exists(runtime + "/global-menu-switches-failed"); ++i) QTest::qWait(100);
+                require(QFile::exists(runtime + "/global-menu-switches-done"), "real Plasma category switching completes");
+            }
             verifyStableMenuActions(window);
             for (int i = 0; i < 60; ++i) {
                 if (i == 20 || i == 40) findAction(window, "fullscreen")->trigger();

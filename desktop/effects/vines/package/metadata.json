@@ -1,0 +1,15 @@
+{
+  "KPackageStructure": "KWin/Effect",
+  "KPlugin": {
+    "Id": "sequoia-vines-v2",
+    "Name": "Jungle Vines",
+    "Description": "Full-width vines and a monkey that swings across the desktop. Toggle with Meta+Ctrl+M.",
+    "Icon": "face-smile",
+    "Category": "Appearance",
+    "License": "GPL-2.0-or-later",
+    "Version": "2.0",
+    "EnabledByDefault": false
+  },
+  "X-Plasma-API": "declarativescript",
+  "X-KDE-Ordering": 99
+}

@@ -21,6 +21,14 @@ surfaces, 8px content insets, rounded accent selections, symbolic icon tinting,
 switches for independent actions and radio indicators for exclusive actions.
 The surface uses the application Window palette, including its material alpha;
 the native shadow and blur regions follow the same rounded outline.
+Submenus keep a 6px surface gap, including cascades that open toward the left
+at screen edges. Antialiased borders and an inset blur mask keep rounded corners
+smooth. On Qt 6.10 and later, building the Wayland positioning support requires
+Qt GUI private development headers (included in the installer dependencies).
+Open menus coalesce action changes into one resize and redraw the final backing
+buffer without remapping the popup. This prevents old menu contents stretching
+during Wayland repositioning while preserving native input grabs and embedded
+widget actions. The same behavior covers desktop and application context menus.
 
 Applications should create ordinary `QMenu`, `QAction` and `QActionGroup`
 objects. No custom menu painter, stylesheet, shadow gutter or proxy style is
