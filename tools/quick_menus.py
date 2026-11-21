@@ -47,12 +47,17 @@ def item(text, replace):
     text = replace(text, '            color: label.color', '            color: Qt.alpha(label.color, 0.4)')
     text = replace(text, '            Private.SwitchIndicator { control: controlRoot }',
                    '            Private.SwitchIndicator { control: controlRoot; implicitWidth: 42; implicitHeight: 24 }')
-    text = replace(text, '        opacity: (controlRoot.highlighted || controlRoot.down) ? 1 : 0',
-                   '        opacity: controlRoot.enabled && (controlRoot.highlighted || controlRoot.down) ? 1 : 0')
-    text = replace(text, '        color: controlRoot.pressed ? Kirigami.Theme.focusColor : Qt.alpha(Kirigami.Theme.focusColor, 0.3);',
-                   '        color: Qt.alpha(Kirigami.Theme.highlightColor, 0.14)')
-    text = replace(text, '        border.width: 1', '        border.width: 0')
-    return replace(text, '        radius: Kirigami.Units.cornerRadius', '        radius: 13')
+    # Embed the canonical material so even the minimal desktop overlay and
+    # switch-only installer remain self-contained.
+    from pathlib import Path
+    from quick_islands import background
+    source = (Path(__file__).resolve().parents[1] / 'desktop/components/popups/MenuHighlight.qml').read_text()
+    material = source[source.index('Rectangle {'):]
+    material = material.replace('Rectangle {', '    background: Rectangle {', 1)
+    material = material.replace('property bool pressed: false', 'property bool pressed: controlRoot.down')
+    material = material.replace('property bool focused: false', 'property bool focused: controlRoot.visualFocus')
+    material = material.replace('    id: menuGlass', '    id: menuGlass\n    implicitWidth: Kirigami.Units.gridUnit * 8\n    opacity: controlRoot.enabled && (controlRoot.highlighted || controlRoot.down || controlRoot.visualFocus) ? 1 : 0')
+    return background(text, material.rstrip())
 
 
 def separator(text, replace):

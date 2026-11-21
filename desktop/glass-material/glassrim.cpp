@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MIT
 #include "glassrim.h"
+#include "tooltippolicy.h"
+#include <QQuickWindow>
+#include <QPainterPath>
 #include <QApplication>
 #include <QDir>
 #include <QPainter>
@@ -32,11 +35,42 @@ void Settings::reload()
     if (!m_watcher.files().contains(m_path) && QFile::exists(m_path)) m_watcher.addPath(m_path);
     QSettings config(m_path, QSettings::IniFormat);
     const qreal value = qBound(0, config.value(QStringLiteral("Windeco/GlassRimIntensity"), 100).toInt(), 200) / 100.0;
+    const auto tooltipPath = tooltipConfigPath();
+    if (QFile::exists(tooltipPath) && !m_watcher.files().contains(tooltipPath)) m_watcher.addPath(tooltipPath);
+    QStringList shapes;
+    for (const auto section : {"Applications", "Settings", "Desktop", "RunningApps"}) shapes << SequoiaGlass::tooltipShape(QString::fromLatin1(section));
+    if (shapes != m_shapes) { m_shapes = shapes; ++m_tooltipRevision; Q_EMIT tooltipsChanged(); }
     if (qFuzzyCompare(value, m_intensity)) return;
     m_intensity = value;
     Q_EMIT intensityChanged();
     if (qobject_cast<QApplication *>(QCoreApplication::instance()))
         for (QWidget *widget : QApplication::allWidgets()) widget->update();
+}
+QString Settings::applicationSection() const { return tooltipApplicationSection(); }
+QString Settings::tooltipShape(const QString &section) const { return SequoiaGlass::tooltipShape(section); }
+TooltipSurface::TooltipSurface(QQuickItem *parent) : QQuickPaintedItem(parent) {
+    setAntialiasing(true); setSmooth(true);
+    const auto refresh = [this] { update(); Q_EMIT maskChanged(); };
+    connect(this, &TooltipSurface::radiusChanged, this, refresh);
+    connect(this, &TooltipSurface::colorChanged, this, refresh);
+    connect(this, &QQuickItem::widthChanged, this, refresh);
+    connect(this, &QQuickItem::heightChanged, this, refresh);
+}
+QRegion TooltipSurface::mask() const {
+    QPainterPath path; const auto rect = boundingRect().adjusted(1,1,-1,-1);
+    if (rect.isEmpty()) return {};
+    path.addRoundedRect(rect, qMax(0., m_radius-1), qMax(0., m_radius-1));
+    return QRegion(path.toFillPolygon().toPolygon());
+}
+void TooltipSurface::paint(QPainter *painter) {
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(m_color); painter->setPen(Qt::NoPen);
+    painter->drawRoundedRect(boundingRect().adjusted(.5,.5,-.5,-.5), qMax(0.,m_radius-.5), qMax(0.,m_radius-.5));
+    paintRim(painter, boundingRect(), m_radius, .8);
+}
+int TooltipSurface::popupMargin() const { return window() ? window()->property("margin").toInt() : 0; }
+void TooltipSurface::setPopupMargin(int margin) {
+    if (window() && window()->isVisible() && window()->metaObject()->indexOfProperty("margin") >= 0) window()->setProperty("margin", margin);
 }
 void paintRim(QPainter *painter, const QRectF &rect, qreal radius, qreal intensity, bool active)
 {
@@ -76,6 +110,7 @@ void registerTypes()
     auto app = QCoreApplication::instance();
     if (app->property("sequoiaGlassTypesRegistered").toBool()) return;
     app->setProperty("sequoiaGlassTypesRegistered", true);
+    qmlRegisterType<TooltipSurface>("org.sequoia.glass", 1, 0, "TooltipSurface");
     qmlRegisterType<Rim>("org.sequoia.glass", 1, 0, "Rim");
     qmlRegisterSingletonType<Settings>("org.sequoia.glass", 1, 0, "Settings", [](QQmlEngine *, QJSEngine *) -> QObject * {
         auto settings = Settings::instance();

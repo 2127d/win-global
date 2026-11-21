@@ -42,12 +42,11 @@ T.MenuItem {
             isMask: true; color: Kirigami.Theme.textColor
         }
     }
-    background: Details.DetailSurface {
+    background: Details.DetailMenuHighlight {
         objectName: "audioMenuHighlight"
         radius: height / 2
-        shadow.size: 0
-        visible: !item.section && (item.checked || item.highlighted || item.hovered || item.down || item.visualFocus)
-        color: Qt.alpha(Kirigami.Theme.highlightColor, item.down ? 0.25 : item.highlighted || item.hovered ? 0.20 : 0.12)
+        visible: item.enabled && !item.section && (item.checked || item.highlighted || item.hovered || item.down || item.visualFocus)
+        pressed: item.down
         focused: item.visualFocus
     }
     PC.ToolTip { text: item.text; visible: item.hovered && label.truncated; delay: Kirigami.Units.toolTipDelay }

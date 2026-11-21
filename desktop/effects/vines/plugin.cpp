@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "jungle.h"
+#include "metrics.h"
 #include <QElapsedTimer>
+#include <QDebug>
+#include <QQuickWindow>
 #include <QQmlExtensionPlugin>
 #include <QQuickPaintedItem>
 #include <QTimer>
@@ -8,38 +11,58 @@
 #include <effect/effecthandler.h>
 #include <effect/effectwindow.h>
 
-class Jungle2 : public QQuickPaintedItem {
+class Jungle7 : public QQuickPaintedItem {
     Q_OBJECT
     Q_PROPERTY(bool running READ running WRITE setRunning NOTIFY runningChanged)
 public:
-    explicit Jungle2(QQuickItem *parent=nullptr):QQuickPaintedItem(parent) {
-        setAntialiasing(true);m_clock.start();m_timer.setInterval(33);
-        connect(&m_timer,&QTimer::timeout,this,[this]{m_seconds=m_clock.elapsed()/1000.0;update();});
+    explicit Jungle7(QQuickItem *parent=nullptr):QQuickPaintedItem(parent) {
+        m_metrics=new VinesFrameMetrics7(this);setAntialiasing(true);m_clock.start();
+        connect(this,&QQuickItem::windowChanged,this,[this](QQuickWindow *window) {
+            if(!window)return;
+            connect(window,&QQuickWindow::frameSwapped,this,[this] {
+                m_metrics->swapped();
+                if(m_profile)qInfo("VINES_SWAP %.6f",m_clock.nsecsElapsed()/1e9);
+            },Qt::DirectConnection);
+        });
     }
-    bool running() const {return m_timer.isActive();}
+    bool running() const {return m_running;}
     void setRunning(bool active) {
-        if(active==running())return;
-        if(active){m_clock.restart();m_seconds=0;m_timer.start();update();}else m_timer.stop();
+        if(active==m_running)return;
+        m_running=active;
+        if(active){m_clock.restart();m_seconds=0;update();}
         emit runningChanged();
     }
-    void paint(QPainter *p) override {paintJungle(*p,size(),m_seconds);}
+    // Called by Qt Quick's FrameAnimation in its animation phase, before
+    // scene synchronization. No independent timer can miss that phase.
+    Q_INVOKABLE void advance(double seconds) {
+        if(!m_running)return;
+        m_seconds=seconds;update();
+    }
+    void paint(QPainter *p) override {
+        QElapsedTimer timer;timer.start();
+        paintJungle(*p,size(),m_seconds);
+        m_metrics->painted(timer.nsecsElapsed());
+        if(m_profile)qInfo("VINES_PAINT %.6f %lld",m_clock.nsecsElapsed()/1e9,static_cast<long long>(timer.nsecsElapsed()));
+    }
 signals:
     void runningChanged();
 private:
-    QTimer m_timer;QElapsedTimer m_clock;double m_seconds=0;
+    VinesFrameMetrics7 *m_metrics=nullptr;
+    QElapsedTimer m_clock;double m_seconds=0;bool m_running=false;
+    const bool m_profile=qEnvironmentVariableIntValue("SEQUOIA_VINES_PROFILE")!=0;
 };
 
-class Environment2 : public QObject {
+class Environment7 : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool canShow READ canShow NOTIFY canShowChanged)
 public:
-    explicit Environment2(QObject *parent=nullptr):QObject(parent) {
+    explicit Environment7(QObject *parent=nullptr):QObject(parent) {
         // A cheap poll also catches an already-active app entering fullscreen.
         m_poll.setInterval(250);
-        connect(&m_poll,&QTimer::timeout,this,&Environment2::refresh);
-        connect(KWin::effects,&KWin::EffectsHandler::screenLockingChanged,this,&Environment2::refresh);
-        connect(KWin::effects,&KWin::EffectsHandler::hasActiveFullScreenEffectChanged,this,&Environment2::refresh);
-        connect(KWin::effects,&KWin::EffectsHandler::windowActivated,this,&Environment2::refresh);
+        connect(&m_poll,&QTimer::timeout,this,&Environment7::refresh);
+        connect(KWin::effects,&KWin::EffectsHandler::screenLockingChanged,this,&Environment7::refresh);
+        connect(KWin::effects,&KWin::EffectsHandler::hasActiveFullScreenEffectChanged,this,&Environment7::refresh);
+        connect(KWin::effects,&KWin::EffectsHandler::windowActivated,this,&Environment7::refresh);
         m_poll.start();refresh();
     }
     bool canShow() const {return m_canShow;}
@@ -73,13 +96,13 @@ private:
     QTimer m_poll;bool m_canShow=false;
 };
 
-class VinesPlugin2 : public QQmlExtensionPlugin {
+class VinesPlugin7 : public QQmlExtensionPlugin {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
     void registerTypes(const char *uri) override {
-        qmlRegisterType<Jungle2>(uri,1,0,"Jungle");
-        qmlRegisterType<Environment2>(uri,1,0,"Environment");
+        qmlRegisterType<Jungle7>(uri,1,0,"Jungle");
+        qmlRegisterType<Environment7>(uri,1,0,"Environment");
     }
 };
 #include "plugin.moc"

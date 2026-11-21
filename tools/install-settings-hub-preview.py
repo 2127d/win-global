@@ -46,6 +46,15 @@ for source in module.rglob('*'):
         destination=target/'qml/org/sequoia/components'/source.relative_to(module)
         destination.parent.mkdir(parents=True,exist_ok=True)
         temp=destination.with_name(destination.name+'.new');shutil.copy2(source,temp);temp.replace(destination)
+glass_module=args.binary.parent/'qml/org/sequoia/glass'
+for source in glass_module.iterdir():
+    if source.is_file():
+        destination=target/'qml/org/sequoia/glass'/source.name
+        destination.parent.mkdir(parents=True,exist_ok=True)
+        temp=destination.with_name(destination.name+'.new');shutil.copy2(source,temp);temp.replace(destination)
+# Generate from fingerprint-checked system controls and the canonical Sequoia materials.
+from settings_popup_style import build as build_popups
+build_popups(target/'qml/org/kde/desktop')
 manifest = {'upstream_sha256':hashlib.sha256(Path('/usr/bin/systemsettings').read_bytes()).hexdigest(),'version':'6.8.2'}
 (target/'build.json').write_text(json.dumps(manifest,indent=2)+'\n')
 launcher.write_text('''#!/usr/bin/env python3

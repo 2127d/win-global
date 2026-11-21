@@ -45,6 +45,7 @@ StyleConfig::StyleConfig(QWidget *parent)
     : QWidget(parent)
 {
     setupUi(this);
+    setupHub();
 
     _shadowSize->addItems({i18n("None"), i18n("Small"), i18n("Medium"), i18n("Large"), i18n("Very large")});
 
@@ -199,6 +200,7 @@ void StyleConfig::save()
     StyleConfigData::setScrollBarTransient(_scrollBarTransient->isChecked());
     StyleConfigData::setScrollBarTransientAlwaysShowSlim(_scrollBarTransientAlwaysShowSlim->isChecked());
 
+    saveTooltips();
     StyleConfigData::self()->save();
     updateChanged();
 
@@ -215,6 +217,7 @@ void StyleConfig::defaults()
     StyleConfigData::self()->useDefaults(true);
     populate();
     StyleConfigData::self()->useDefaults(false);
+    loadTooltips(true);
     updateChanged();
 }
 
@@ -381,6 +384,8 @@ void StyleConfig::updateChanged()
     _tabBarTabExpandFullWidth->setEnabled(_documentModeTabs->isChecked());
     _fullOutline->setEnabled(!_noOutline->isChecked());
 
+    for(auto it=_tooltipChoices.cbegin();it!=_tooltipChoices.cend();++it)
+        modified |= it.value()->currentData().toString() != _savedTooltips.value(it.key());
     emit changed(modified);
 }
 
@@ -389,6 +394,7 @@ void StyleConfig::load()
 {
     StyleConfigData::self()->load();
     populate();
+    loadTooltips();
     updateChanged();
 }
 

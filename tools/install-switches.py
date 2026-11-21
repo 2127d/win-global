@@ -9,7 +9,7 @@ from pathlib import Path
 import tempfile
 
 from quick_islands import QML, replace
-from menu_toggles import desktop_menu
+from quick_menus import item as desktop_menu
 from theme_files import Receipt, copy_file, exists, fingerprint
 
 ROOT = Path(__file__).resolve().parents[1]

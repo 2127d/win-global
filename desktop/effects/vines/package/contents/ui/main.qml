@@ -2,7 +2,7 @@
 import QtQuick
 import QtQuick.Window
 import org.kde.kwin as KWin
-import "native2" as Vines
+import "native7" as Vines
 
 // An internal output-only window avoids SceneEffect's fullscreen input grab.
 // Its lifetime still belongs to the KWin effect: unloading destroys everything.
@@ -29,13 +29,19 @@ KWin.SceneEffect {
                | Qt.WindowTransparentForInput | Qt.WindowDoesNotAcceptFocus | Qt.WindowStaysOnTopHint
         color: "transparent"
         width: effect.output ? effect.output.geometry.width : 1280
-        height: Math.min(396, Math.round((effect.output ? effect.output.geometry.height : 900) * 0.48))
+        height: Math.min(480, Math.round((effect.output ? effect.output.geometry.height : 900) * 0.58))
         x: effect.output ? effect.output.geometry.x : 0
         y: Math.max(effect.output ? effect.output.geometry.y : 0, effect.workArea.y)
         visible: ready && effect.jungleEnabled && environment.canShow && effect.output !== undefined
         Vines.Jungle {
+            id: jungle
             anchors.fill: parent
             running: canopy.visible
+            FrameAnimation {
+                running: jungle.running
+                onRunningChanged: { if (running) reset(); }
+                onTriggered: jungle.advance(elapsedTime)
+            }
         }
     }
 }

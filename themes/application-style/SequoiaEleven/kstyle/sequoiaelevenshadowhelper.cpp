@@ -1,3 +1,5 @@
+#include "../../../../desktop/glass-material/tooltippolicy.h"
+#include "../../../../desktop/glass-material/glassrim.h"
 /*************************************************************************
  * Copyright (C) 2014 by Hugo Pereira Da Costa <hugo.pereira@free.fr>    *
  * Copyright (C) 2018, 2020 by Vlad Zahorodnii <vlad.zahorodnii@kde.org> *
@@ -220,7 +222,8 @@ bool ShadowHelper::eventFilter(QObject *object, QEvent *event)
 TileSet ShadowHelper::shadowTiles(QWidget *widget)
 {
     CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
-    const qreal frameRadius = isMenu(widget) ? Metrics::Menu_SurfaceRadius
+    const qreal frameRadius = isToolTip(widget) ? SequoiaGlass::tooltipRadius(SequoiaGlass::tooltipShape(SequoiaGlass::tooltipApplicationSection()), widget->width(), widget->height())
+        : isMenu(widget) ? Metrics::Menu_SurfaceRadius
         : FilePicker::popupRadius(widget) ? FilePicker::popupRadius(widget) : _helper.frameRadius();
 
     if (params.isNone()) {

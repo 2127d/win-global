@@ -1,0 +1,53 @@
+-- The CXX compiler identification is GNU 16.2.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Performing Test HAVE_STDATOMIC
+-- Performing Test HAVE_STDATOMIC - Success
+-- Found WrapAtomic: TRUE
+-- Found OpenGL: /usr/lib64/libOpenGL.so
+-- Found WrapOpenGL: TRUE
+-- Found WrapVulkanHeaders: /usr/include
+-- Found X11: /usr/include
+-- Looking for XOpenDisplay in /usr/lib64/libX11.so
+-- Looking for XOpenDisplay in /usr/lib64/libX11.so - found
+-- Looking for gethostbyname
+-- Looking for gethostbyname - found
+-- Looking for connect
+-- Looking for connect - found
+-- Looking for remove
+-- Looking for remove - found
+-- Looking for shmat
+-- Looking for shmat - found
+-- Found Wayland_Server: /usr/lib64/libwayland-server.so (found version "1.26.0")
+-- Found Wayland: /usr/lib64/libwayland-server.so (found version "1.26.0") found components: Server
+-- Found epoxy: /usr/lib64/libepoxy.so (found version "1.5.10")
+-- Found PkgConfig: /usr/bin/pkg-config (found version "2.5.1")
+-- Found Libdrm: /usr/lib64/libdrm.so (found version "2.4.134")
+-- Found Vulkan: /usr/lib64/libvulkan.so (found version "1.4.341")  missing components: glslc glslangValidator
+-- Configuring done (1.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/jeffreygustafson/sandbox/win-global/build/vines-v7
+[1/18] Automatic MOC for target render-vines
+[2/18] Automatic MOC for target test-vines-motion
+[3/18] Building CXX object CMakeFiles/render-vines.dir/render-vines_autogen/mocs_compilation.cpp.o
+[4/18] Automatic MOC for target sequoiavines7
+[5/18] Building CXX object CMakeFiles/render-vines.dir/motion.cpp.o
+[6/18] Building CXX object CMakeFiles/render-vines.dir/jungle.cpp.o
+[7/18] Building CXX object CMakeFiles/render-vines.dir/render.cpp.o
+[8/18] Building CXX object CMakeFiles/sequoiavines7.dir/sequoiavines7_autogen/mocs_compilation.cpp.o
+[9/18] Building CXX object CMakeFiles/sequoiavines7.dir/motion.cpp.o
+[10/18] Building CXX object CMakeFiles/test-vines-motion.dir/test-vines-motion_autogen/mocs_compilation.cpp.o
+[11/18] Building CXX object CMakeFiles/sequoiavines7.dir/jungle.cpp.o
+[12/18] Building CXX object CMakeFiles/sequoiavines7.dir/plugin.cpp.o
+[13/18] Building CXX object CMakeFiles/test-vines-motion.dir/tests/motion.cpp.o
+[14/18] Linking CXX executable render-vines
+[15/18] Building CXX object CMakeFiles/test-vines-motion.dir/motion.cpp.o
+[16/18] Linking CXX executable test-vines-motion
+[17/18] Building CXX object CMakeFiles/sequoiavines7.dir/metrics.cpp.o
+[18/18] Linking CXX shared module package/contents/ui/native7/libsequoiavines7.so

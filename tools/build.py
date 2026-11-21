@@ -230,8 +230,6 @@ def build_theme(mode,p):
                  ('toolbutton-pressed','widget_active',None,widget_alpha),('toolbutton-focus','surface','accent',0)],
       'lineedit': [('base','raised','border',1),('hover','surface','accent',0),
                    ('focus','surface','accent',0),('focusframe','surface','accent',0)],
-      'viewitem': [('normal','surface',None,0),('hover','hover',None,1),
-                   ('selected','accent',None,1),('selected+hover','accent','accent',1)],
       'pager': [('normal','raised','border',0.45),('hover','hover','border',1),('active','selected','accent',1)],
     }
     for file,states in files.items():
@@ -245,6 +243,8 @@ def build_theme(mode,p):
                 s.hint(f'{state}-hint-no-border-padding')
         if file=='lineedit': s.hint('hint-focus-over-base')
         s.save(base/'widgets'/f'{file}.svg')
+    from menu_highlight_assets import build_viewitem
+    build_viewitem(base, p, Svg)
     build_tabbar(base, p, widget_alpha)
     s=Svg()
     # Pinned launchers have no running window and use the unprefixed frame.

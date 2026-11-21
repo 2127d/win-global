@@ -1,0 +1,6 @@
+set(__QT_DEPLOY_TARGET_sequoiavines5_FILE /home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/package/contents/ui/native5/libsequoiavines5.so)
+set(__QT_DEPLOY_TARGET_sequoiavines5_TYPE MODULE_LIBRARY)
+set(__QT_DEPLOY_TARGET_render-vines_FILE /home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/render-vines)
+set(__QT_DEPLOY_TARGET_render-vines_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_test-vines-motion_FILE /home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/test-vines-motion)
+set(__QT_DEPLOY_TARGET_test-vines-motion_TYPE EXECUTABLE)

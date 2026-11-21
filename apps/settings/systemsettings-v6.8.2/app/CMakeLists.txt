@@ -4,6 +4,20 @@ find_package(Plasma REQUIRED)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../../../desktop/components/library" "${CMAKE_CURRENT_BINARY_DIR}/component-library")
 add_executable(systemsettings)
 add_dependencies(systemsettings sequoiacomponentsplugin)
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../../../desktop/glass-material" "${CMAKE_CURRENT_BINARY_DIR}/tooltip-policy")
+set_target_properties(sequoiaglassplugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/qml/org/sequoia/glass")
+file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/bin/qml/org/sequoia/glass")
+file(WRITE "${CMAKE_BINARY_DIR}/bin/qml/org/sequoia/glass/qmldir" "module org.sequoia.glass\nplugin sequoiaglassplugin\n")
+add_dependencies(systemsettings sequoiaglassplugin)
+
+# Private desktop controls cover attached tooltips and context menus in all KCMs.
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+add_custom_target(sequoia_hub_popups
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/../../../../tools/settings_popup_style.py"
+        --destination "${CMAKE_BINARY_DIR}/bin/qml/org/kde/desktop"
+    VERBATIM)
+add_dependencies(systemsettings sequoia_hub_popups)
+
 ecm_add_qml_module(systemsettings URI org.kde.systemsettings GENERATE_PLUGIN_SOURCE)
 
 ki18n_wrap_ui(systemsettings externalModule.ui)

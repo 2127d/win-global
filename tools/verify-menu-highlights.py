@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check the actual packaged menu delegates under the user's Qt Quick desktop style."""
 import argparse
+import configparser
 import os
 from pathlib import Path
 import shutil
@@ -131,6 +132,17 @@ Item {
         original = Path.home() / '.config' / name
         if original.exists():
             shutil.copy2(original, config / name)
+    # Quick controls can instantiate the configured Widgets style even with
+    # QT_STYLE_OVERRIDE. Keep the private fixture on Sequoia, rather than
+    # loading the user's unrelated style (Union can double-free at shutdown).
+    palette = configparser.ConfigParser(interpolation=None, strict=False)
+    palette.optionxform = str
+    palette.read(config / 'kdeglobals')
+    if not palette.has_section('KDE'):
+        palette.add_section('KDE')
+    palette['KDE']['widgetStyle'] = 'SequoiaEleven'
+    with (config / 'kdeglobals').open('w') as handle:
+        palette.write(handle, space_around_delimiters=False)
     env = dict(os.environ, QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software',
                QT_QPA_PLATFORMTHEME='kde', QT_QUICK_CONTROLS_STYLE='org.kde.desktop',
                QML_IMPORT_PATH=str(Path.home() / '.local/share/sequoia-eleven/motion/qml'))

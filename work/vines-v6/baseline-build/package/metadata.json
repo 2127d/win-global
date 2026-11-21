@@ -1,0 +1,15 @@
+{
+  "KPackageStructure": "KWin/Effect",
+  "KPlugin": {
+    "Id": "sequoia-vines-v5",
+    "Name": "Jungle Vines",
+    "Description": "Retracting vines and a monkey with continuous alternating swings. Toggle with Meta+Ctrl+M.",
+    "Icon": "face-smile",
+    "Category": "Appearance",
+    "License": "GPL-2.0-or-later",
+    "Version": "5.0",
+    "EnabledByDefault": false
+  },
+  "X-Plasma-API": "declarativescript",
+  "X-KDE-Ordering": 99
+}

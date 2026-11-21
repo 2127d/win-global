@@ -1,0 +1,10 @@
+KWIN environment variables: QList("KWIN_SCREENSHOT_NO_PERMISSION_CHECKS=1")
+Accepting client connections on sockets: QList("gwenview-menu-test")
+kwin_screencast: Failed to connect PipeWire context
+kf.svg: Could not locate metadata for theme "sequoia-eleven-dark"
+kf.plasma.core: Could not locate metadata for theme "sequoia-eleven-dark"
+Failed to load overview: "qrc:/qt/qml/org/kde/kwin/overview/Main.qml:344:9: Type DesktopBar unavailable\nqrc:/qt/qml/org/kde/kwin/overview/DesktopBar.qml: module \"SequoiaElevenGlass\" is not installed\n"
+kf.iconthemes: Icon theme "SequoiaTahoe-dark" not found.
+kwin_core: Failed to allocate a graphics buffer for a swapchain
+kwin_core: Failed to allocate a graphics buffer for a swapchain
+PASS: full-width vines, traveling monkey, offscreen exit and retracted canopy, no background blur, click-through, focus, shortcut, fullscreen hiding and reload

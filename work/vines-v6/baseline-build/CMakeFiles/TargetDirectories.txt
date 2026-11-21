@@ -1,0 +1,12 @@
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/sequoiavines5.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/render-vines.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/test-vines-motion.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/test.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/edit_cache.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/rebuild_cache.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/sequoiavines5_autogen_timestamp_deps.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/sequoiavines5_autogen.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/render-vines_autogen_timestamp_deps.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/render-vines_autogen.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/test-vines-motion_autogen_timestamp_deps.dir
+/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/CMakeFiles/test-vines-motion_autogen.dir

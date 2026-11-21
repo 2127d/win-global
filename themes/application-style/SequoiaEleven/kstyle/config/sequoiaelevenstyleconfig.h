@@ -40,6 +40,14 @@ public:
 
 private:
     void populate();
+    void setupHub();
+    void applyHubPalette();
+    void loadTooltips(bool defaults = false);
+    void saveTooltips();
+    void changeEvent(QEvent *event) override;
+    QMap<QString, QComboBox *> _tooltipChoices;
+    QMap<QString, QString> _savedTooltips;
+    bool _updatingPalette = false;
     bool _loading = false;
 
 Q_SIGNALS:

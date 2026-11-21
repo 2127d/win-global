@@ -438,6 +438,23 @@ check checksums, source freshness and widget completeness with
 | --- | --- |
 | ![Light wallpaper](themes/wallpapers/MichiganGlass/contents/images/1920x1080.png) | ![Dark wallpaper](themes/wallpapers/MichiganGlass/contents/images_dark/1920x1080.png) |
 
+## Accent-aware menu highlights
+
+Sequoia right-click and cascading menu highlights use translucent glass tinted
+by the current accent, with a specular sheen and a fine rim. The accent must
+remain live; do not replace it with a fixed blue or neutral selection color.
+This applies to native Qt menus, desktop Qt Quick menus, Plasma menu artwork,
+tray detail menus, Start menu actions, and the Firefox context-menu stylesheet.
+Text and icons keep their normal contrast, and disabled actions stay unhighlighted.
+
+`desktop/components/popups/MenuHighlight.qml` is the canonical QML material;
+`tools/quick_menus.py` embeds it in the minimal desktop overlay. Regenerate bundled
+copies with `python3 tools/popup_components.py`. Plasma artwork comes from
+`tools/menu_highlight_assets.py` and uses `ColorScheme-Highlight` at runtime.
+Run `python3 tools/verify-menu-glass.py` after building both native styles to check
+rendered translucency, sheen, and live accent changes in native, QML, and Plasma
+highlights. Existing menu suites cover navigation, toggles, RTL, and containment.
+
 ## Accent-aware switches
 
 Plasma and the styled Qt Quick applications use compact macOS/iOS-style switches:

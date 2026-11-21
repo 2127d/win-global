@@ -1,3 +1,5 @@
+#include "../../../../desktop/glass-material/tooltippolicy.h"
+#include "../../../../desktop/glass-material/glassrim.h"
 /*************************************************************************
  * Copyright (C) 2014 by Hugo Pereira Da Costa <hugo.pereira@free.fr>    *
  *                                                                       *
@@ -4888,12 +4890,14 @@ bool Style::drawPanelTipLabelPrimitive(const QStyleOption *option, QPainter *pai
         _shadowHelper->registerWidget(widget->window(), true);
     }
 
-    const auto &palette(option->palette);
-    const auto &background = palette.color(QPalette::ToolTipBase);
-    // const auto outline( KColorUtils::mix( palette.color( QPalette::ToolTipBase ), palette.color( QPalette::ToolTipText ), 0.25 ) );
-    const bool hasAlpha(_helper->hasAlphaChannel(widget));
-
-    _helper->renderMenuFrame(painter, option->rect, background, QColor(), hasAlpha);
+    const auto rect = QRectF(option->rect).adjusted(.5,.5,-.5,-.5);
+    const auto shape = SequoiaGlass::tooltipShape(SequoiaGlass::tooltipApplicationSection());
+    const qreal radius = SequoiaGlass::tooltipRadius(shape, rect.width(), rect.height());
+    painter->save(); painter->setRenderHint(QPainter::Antialiasing);
+    painter->setPen(Qt::NoPen); painter->setBrush(option->palette.color(QPalette::ToolTipBase));
+    painter->drawRoundedRect(rect,radius,radius);
+    SequoiaGlass::paintRim(painter,rect,radius,.8);
+    painter->restore();
     return true;
 }
 
@@ -6134,7 +6138,8 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
     // render hover and focus
     if (selected || sunken) {
         auto color = palette.color(QPalette::Highlight);
-        color.setAlphaF(0.14);
+        color.setAlphaF(sunken ? 0.30 : 0.20);
+        painter->save();
         painter->setRenderHints(QPainter::Antialiasing);
         painter->setBrush(color);
         painter->setPen(Qt::NoPen);
@@ -6146,8 +6151,24 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
             : rect;
         const int inset = 1;
         const QRect fill = selection.adjusted(inset, inset, -inset, -inset);
-        if (fill.isValid())
-            painter->drawRoundedRect(fill, radius, radius);
+        if (fill.isValid()) {
+            const bool dark = palette.color(QPalette::Window).lightnessF() < 0.5;
+            const QColor accent = palette.color(QPalette::Highlight);
+            auto tint = [](QColor value, qreal alpha) { value.setAlphaF(alpha); return value; };
+            // Half-pixel inset keeps the glass rim within the existing row bounds.
+            const QRectF outer = QRectF(fill).adjusted(0.5, 0.5, -0.5, -0.5);
+            painter->setPen(QPen(tint(accent, dark ? 0.60 : 0.42), 1));
+            painter->drawRoundedRect(outer, radius, radius);
+            const QRectF inner = outer.adjusted(1, 1, -1, -1);
+            QLinearGradient sheen(inner.topLeft(), inner.bottomLeft());
+            sheen.setColorAt(0, tint(Qt::white, dark ? 0.16 : 0.38));
+            sheen.setColorAt(0.48, tint(accent, 0.03));
+            sheen.setColorAt(1, tint(accent, dark ? 0.16 : 0.12));
+            painter->setBrush(sheen);
+            painter->setPen(QPen(tint(Qt::white, dark ? 0.10 : 0.25), 1));
+            painter->drawRoundedRect(inner, qMax(0.0, radius - 1), qMax(0.0, radius - 1));
+        }
+        painter->restore();
     }
 
     // get rect available for contents

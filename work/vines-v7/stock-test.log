@@ -1,0 +1,21 @@
+In file included from /usr/include/qt6/QtTest/qtesttostring.h:15,
+                 from /usr/include/qt6/QtTest/qtestcase.h:8,
+                 from /usr/include/qt6/QtTest/qtest.h:13,
+                 from /usr/include/qt6/QtTest/QTest:1,
+                 from /home/jeffreygustafson/sandbox/win-global/desktop/effects/vines/tests/probe.cpp:7:
+/usr/include/qt6/QtCore/qbitarray.h:13:21: warning: defining ‘QBitArray’, which previously failed to be complete in a SFINAE context [-Wsfinae-incomplete=]
+   13 | class Q_CORE_EXPORT QBitArray
+      |                     ^~~~~~~~~
+In file included from /usr/include/c++/16/unordered_map:44,
+                 from /usr/include/c++/16/functional:80,
+                 from /usr/include/qt6/QtCore/qcomparehelpers.h:29,
+                 from /usr/include/qt6/QtCore/qcompare.h:661,
+                 from /usr/include/qt6/QtCore/qcheckedint_impl.h:9,
+                 from /usr/include/qt6/QtCore/qpoint.h:8,
+                 from /usr/include/qt6/QtCore/QPointF:1,
+                 from /home/jeffreygustafson/sandbox/win-global/desktop/effects/vines/tests/../motion.h:3,
+                 from /home/jeffreygustafson/sandbox/win-global/desktop/effects/vines/tests/probe.cpp:2:
+/usr/include/c++/16/bits/range_access.h:325:24: note: here.  Use ‘-Wsfinae-incomplete=2’ for a diagnostic at that point
+  325 |     -> decltype(__cont.data())
+      |                 ~~~~~~~^~~~
+PASS: full-width vines, traveling monkey, offscreen exit and retracted canopy, no background blur, click-through, focus, shortcut, fullscreen hiding and reload

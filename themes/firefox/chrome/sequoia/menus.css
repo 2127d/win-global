@@ -42,7 +42,10 @@ menupopup > :is(menu, menuitem) {
   color: var(--se-text) !important;
 }
 menupopup > :is(menu, menuitem):is([_moz-menuactive="true"], :hover):not([disabled="true"]) {
-  background: var(--se-selected) !important;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 28%), transparent 48%, color-mix(in srgb, AccentColor 12%, transparent)),
+    color-mix(in srgb, AccentColor 20%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, AccentColor 45%, transparent),
+    inset 0 2px 0 rgb(255 255 255 / 25%) !important;
   color: var(--se-text) !important;
 }
 menupopup > :is(menu, menuitem)[disabled="true"] { color: var(--se-muted) !important; }

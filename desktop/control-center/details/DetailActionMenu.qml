@@ -85,12 +85,11 @@ DetailInsetMenu {
                     color: row.enabled ? Kirigami.Theme.textColor : Kirigami.Theme.disabledTextColor
                 }
             }
-            background: Rectangle {
+            background: DetailMenuHighlight {
                 radius: height / 2
                 visible: row.enabled && (row.highlighted || row.hovered || row.down || row.visualFocus || row.checked)
-                color: Qt.alpha(Kirigami.Theme.highlightColor, row.down ? 0.25 : row.hovered || row.highlighted ? 0.20 : 0.12)
-                border.color: Kirigami.Theme.highlightColor
-                border.width: row.visualFocus ? 1 : 0
+                pressed: row.down
+                focused: row.visualFocus
             }
             PC.ToolTip { text: label.text; visible: row.hovered && label.truncated; delay: Kirigami.Units.toolTipDelay }
             onTriggered: modelData.trigger()

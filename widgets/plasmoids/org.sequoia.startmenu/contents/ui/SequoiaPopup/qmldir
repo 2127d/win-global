@@ -6,3 +6,4 @@ GlassSurface 1.0 GlassSurface.qml
 GlassActionSurface 1.0 GlassActionSurface.qml
 GlassToolButton 1.0 GlassToolButton.qml
 GlassButton 1.0 GlassButton.qml
+MenuHighlight 1.0 MenuHighlight.qml

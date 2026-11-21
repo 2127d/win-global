@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma ComponentBehavior: Bound
 import QtQuick
+import "SequoiaPopup" as Popup
 import QtQuick.Window
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.components as PC
@@ -91,11 +92,10 @@ PlasmaCore.Dialog {
                 onHoveredChanged: if (hovered) popup.currentIndex = index
                 onClicked: popup.choose(index)
                 padding: 0
-                background: Rectangle {
-                    radius: 13
-                    color: entry.index === popup.currentIndex
-                        ? Qt.alpha(Kirigami.Theme.highlightColor, 0.16) : "transparent"
-                    Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration > 1 ? Kirigami.Units.shortDuration : 0 } }
+                background: Popup.MenuHighlight {
+                    visible: entry.enabled && entry.index === popup.currentIndex
+                    pressed: entry.down
+                    focused: entry.visualFocus
                 }
                 contentItem: Item {
                     Kirigami.Icon {

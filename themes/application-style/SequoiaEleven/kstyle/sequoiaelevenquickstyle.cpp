@@ -12,6 +12,7 @@
 #include <QStandardPaths>
 #include <QStringList>
 #include <QDebug>
+#include <QtQml>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QQuickStyle>
 #endif
@@ -38,6 +39,11 @@ void initializeQuickStyle()
                 && hash.result().toHex() == it.value().toString().toLatin1();
         }
         if (valid) {
+            const auto tooltipBackground = shared + QStringLiteral("/org/kde/plasma/core/DialogBackground.qml");
+            if (QFileInfo::exists(tooltipBackground) && !QCoreApplication::instance()->property("sequoiaTooltipBackgroundRegistered").toBool()) {
+                QCoreApplication::instance()->setProperty("sequoiaTooltipBackgroundRegistered", true);
+                qmlRegisterType(QUrl::fromLocalFile(tooltipBackground), "org.kde.plasma.core", 2, 99, "DialogBackground");
+            }
             // Sequoia is a QWidget style, not a Qt Quick style module. Avoid
             // Qt treating its native key as a missing QML controls import in
             // mixed-widget applications opening their first NewStuff window.

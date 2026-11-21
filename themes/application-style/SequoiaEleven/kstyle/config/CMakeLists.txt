@@ -1,6 +1,6 @@
 ### configuration plugin
 add_definitions(-DTRANSLATION_DOMAIN=\"sequoiaeleven_style_config\")
-set(kstyle_sequoiaeleven_config_PART_SRCS sequoiaelevenstyleconfig.cpp)
+set(kstyle_sequoiaeleven_config_PART_SRCS sequoiaelevenstyleconfig.cpp sequoiaelevenstyleconfighub.cpp)
 
 set(kstyle_sequoiaeleven_config_PART_SRCS ${kstyle_sequoiaeleven_config_PART_SRCS} sequoiaelevenstyleconfigmodule.cpp)
 

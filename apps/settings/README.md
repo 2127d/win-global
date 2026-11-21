@@ -280,6 +280,15 @@ native Apply/Reset/Defaults/Help remain in KDE's existing implementation.
 Appearance Hub’s panels, action pills, menus, mode/theme selectors and icon tiles
 now use the [shared component library](../../desktop/components/library/README.md).
 The local QML names are adapters; edit the canonical library to change appearance.
+The Hub bundles private desktop popup controls for every Appearance subpage,
+including native KCMs and their dialogs. Attached tooltips have antialiased capsule
+edges and a polished rim without a rectangular shadow backing. Context menus,
+text-field menus, and the Hub's custom dropdowns share the desktop's live accent
+glass highlights. The build and preview installer generate this bundle from the
+installed KDE controls; the desktop style selection is not changed. Verify it with
+`qmltestrunner -input apps/settings/tests -import .staging/settings-hub-build/bin/qml`
+using the `org.kde.desktop` Quick Controls style.
+
 
 The desktop preview and Solid / Transparent / Liquid Glass cards use real rendered
 frames from the installed KWin, Plasma, Gwenview, and Weather. A private D-Bus session,

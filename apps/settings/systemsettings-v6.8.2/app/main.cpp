@@ -50,6 +50,18 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(binaryName);
 
     QApplication application(argc, argv);
+    if (qEnvironmentVariableIsSet("SEQUOIA_APPEARANCE_HUB")) {
+        // Include dialogs/KCMs that create their own engine, as well as the
+        // shared sidebar engine. Preserve the inherited paths after ours.
+        const QByteArray controls = (QCoreApplication::applicationDirPath() + QStringLiteral("/qml")).toUtf8();
+        for (const auto variable : {"QML_IMPORT_PATH", "QML2_IMPORT_PATH"}) {
+            const auto inherited = qgetenv(variable);
+            QByteArray paths = controls;
+            if (!inherited.isEmpty()) paths.append(":").append(inherited);
+            qputenv(variable, paths);
+        }
+    }
+
     // The ki18n application domain must be set before we make any i18n() calls.
     KLocalizedString::setApplicationDomain(QByteArrayLiteral("systemsettings"));
 

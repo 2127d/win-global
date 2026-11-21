@@ -53,7 +53,7 @@ Item {
             const toggle=menu.itemAt(0), first=menu.itemAt(1), second=menu.itemAt(2);
             verify(toggle.indicator.width===42 && first.indicator.width===42, "Aligned toggle/radio column");
             compare(toggle.background.radius,13);
-            toggle.highlighted=true; compare(toggle.background.color.a.toFixed(2),"0.14");
+            toggle.highlighted=true; compare(toggle.background.color.a.toFixed(2),"0.20");
             verify(findChild(toggle,"sequoiaSwitchTrack")!==null, "Native switch delegate");
             compare(menu.itemAt(4).height,0);
             const old=toggle.checked;

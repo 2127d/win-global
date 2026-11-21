@@ -1,0 +1,10 @@
+# ninja log v7
+2	257	1795147731445346186	sequoiavines5_autogen/timestamp	10fd115c9b439b79
+2	257	1795147731445346186	sequoiavines5_autogen/mocs_compilation.cpp	10fd115c9b439b79
+2	257	1795147731445346186	/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/sequoiavines5_autogen/timestamp	10fd115c9b439b79
+2	257	1795147731445346186	/home/jeffreygustafson/sandbox/win-global/work/vines-v6/baseline-build/sequoiavines5_autogen/mocs_compilation.cpp	10fd115c9b439b79
+260	269	1795147731456346173	CMakeFiles/sequoiavines5.dir/sequoiavines5_autogen/mocs_compilation.cpp.o	c9523531bc9437fb
+261	1134	1795147731458681920	CMakeFiles/sequoiavines5.dir/motion.cpp.o	d789911a6538b68b
+261	1624	1795147731458580570	CMakeFiles/sequoiavines5.dir/jungle.cpp.o	9fa637a4f3744db5
+261	2267	1795147731457346172	CMakeFiles/sequoiavines5.dir/plugin.cpp.o	fb62102b37554da4
+2267	2551	1795147733463343743	package/contents/ui/native5/libsequoiavines5.so	933ca3cbf01adc7
