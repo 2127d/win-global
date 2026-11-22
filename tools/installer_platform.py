@@ -29,10 +29,10 @@ COMPONENTS = {
     'animation-kit': ('Animation kit — Your palette', 'Optional system animations from Motion Lab. Saves a restorable snapshot before applying; restarts Plasma. Includes desktop widgets and Qt Quick styling.'),
 }
 OPTIONAL_COMPONENTS = {'animation-kit', 'modal-dimming'}
-APPS = {'settings': ('Settings makeover', 'Requires System Settings 6.8.2.'),
-        'gwenview': ('Gwenview makeover', 'Requires Gwenview 26.08.2.'),
-        'kcalc': ('KCalc makeover', 'Modern keys and mode-aware resizing. Requires KCalc 26.08.2.'),
-        'qrca': ('QRCA makeover', 'Sequoia scanner, creator and QR export. Requires Qrca 26.08.2.'),
+APPS = {'settings': ('Settings makeover', 'Requires System Settings 6.8.3.'),
+        'gwenview': ('Gwenview makeover', 'Requires Gwenview 26.08.3.'),
+        'kcalc': ('KCalc makeover', 'Modern keys and mode-aware resizing. Requires KCalc 26.08.3.'),
+        'qrca': ('QRCA makeover', 'Sequoia scanner, creator and QR export. Requires Qrca 26.08.3.'),
         'kweather': ('Weather makeover', 'Atmospheric skies and Sequoia forecast cards. Requires KWeather 26.08.1 from Flatpak.')}
 NATIVE = {'application-style', 'decorations'}
 
@@ -303,7 +303,7 @@ def app_problem(app):
         except (OSError, ValueError, KeyError, StopIteration, subprocess.SubprocessError):
             pass
         return 'Weather makeover requires KWeather 26.08.1 installed through Flatpak (org.kde.kweather).'
-    executable, required = {'settings': ('systemsettings', '6.8.2'), 'gwenview': ('gwenview', '26.08.2'), 'kcalc': ('kcalc', '26.08.2'), 'qrca': ('qrca', '26.08.2')}[app]
+    executable, required = {'settings': ('systemsettings', '6.8.3'), 'gwenview': ('gwenview', '26.08.3'), 'kcalc': ('kcalc', '26.08.3'), 'qrca': ('qrca', '26.08.3')}[app]
     version = application_version(executable)
     if version != required:
         return f'{APPS[app][0]} requires {executable} {required}; found {version or "not installed"}.'

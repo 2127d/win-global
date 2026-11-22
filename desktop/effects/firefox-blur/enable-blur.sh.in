@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if [[ $(kwin_wayland --version) != 'kwin @KWin_VERSION@' ]]; then
+  echo 'Sequoia Firefox blur needs rebuilding for this KWin version.' >&2
+  exit 1
+fi
+for attempt in {1..20}; do
+  if qdbus-qt6 org.kde.KWin /Effects org.kde.kwin.Effects.isEffectLoaded sequoia_firefox_blur_v2 2>/dev/null | grep -qx true; then exit 0; fi
+  if qdbus-qt6 org.kde.KWin /Effects org.kde.kwin.Effects.loadEffect sequoia_firefox_blur_v2 2>/dev/null | grep -qx true; then
+    echo 'Sequoia Firefox blur enabled.'; exit 0
+  fi
+  sleep 0.5
+done
+echo 'Could not load Sequoia Firefox blur.' >&2
+exit 1

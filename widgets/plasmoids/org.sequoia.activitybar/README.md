@@ -4,6 +4,13 @@ Desktop activities form one centered group inside a pill. The complete footprint
 is at least 2×1 cells on Sequoia's 96 logical-pixel grid, with a six-pixel inset.
 Width rounds up to whole columns as activities are added, removed or renamed;
 extra width is split equally around the group. Height accommodates the font.
+The desktop surface uses untinted glass: a live wallpaper sample, blur,
+refracted edges and the thin bright/dark rim used by Sequoia menus. It has no
+light or dark surface fill. White labels have a subtle dark outline. Hidden
+panel instances do not allocate a wallpaper effect. The shared material lives
+in `desktop/glass-widget`; rebuild/export it with
+`python3 tools/build-activitybar-glass.py`.
+
 Matching minimum and maximum sizes describe its fixed footprint. A gesture guard
 on Plasma's existing handles blocks manual resizing before any geometry changes
 and uses their existing red surface feedback. This also avoids the native handle

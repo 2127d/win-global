@@ -22,15 +22,43 @@ def build(module, fingerprints, replace):
         text = text.replace('import "private" as Private', '').replace("import 'private' as Private", '')
         text = text.replace("import './private' as Private", '').replace('import "./private" as Private', '')
         text = text.replace('Private.FormInlineMessage', 'SequoiaSettingsInlineMessage')
+        text = text.replace('Private.SpinButton', 'SequoiaSettingsSpinButton')
         text = text.replace('Private.FormCardUnits.verticalSpacing', 'Kirigami.Units.smallSpacing')
         text = text.replace('Private.FormCardUnits.horizontalSpacing', 'Kirigami.Units.largeSpacing')
         return text.replace('import QtQuick\n', 'import QtQuick\nimport org.kde.kirigamiaddons.formcard\n', 1)
 
-    copy(forms + 'private/FormInlineMessage.qml', 'SequoiaSettingsInlineMessage')
+    if (imports / forms / 'private/FormInlineMessage.qml').is_file():
+        copy(forms + 'private/FormInlineMessage.qml', 'SequoiaSettingsInlineMessage')
+    else:
+        # New Kirigami Addons uses Kirigami.InlineMessage directly. Do not
+        # require the retired private helper unless a delegate still needs it.
+        for name in ('FormComboBoxDelegate', 'FormSpinBoxDelegate',
+                     'FormTextFieldDelegate', 'FormPasswordFieldDelegate'):
+            if 'Private.FormInlineMessage' in (imports / forms / (name + '.qml')).read_text():
+                raise RuntimeError('Kirigami Addons references a missing FormInlineMessage helper')
+
+    if (imports / forms / 'private/SpinButton.qml').is_file():
+        copy(forms + 'private/SpinButton.qml', 'SequoiaSettingsSpinButton')
 
     def card(text):
         text = text.replace('import "private" as Private', 'import org.kde.kirigamiaddons.formcard')
         text = replace(text, 'property real padding: 0', 'property real padding: 6')
+        if 'Kirigami.ShadowedRectangle {' in text:
+            # New Addons inlines the old private background. Retain its layout
+            # and native delegates while using the shared Sequoia panel.
+            text = replace(text, 'Kirigami.ShadowedRectangle {', 'S.Panel {')
+            start = text.index('        readonly property real borderWidth: 1')
+            end = text.index('        anchors {', start)
+            text = text[:start] + '''        objectName: "sequoiaSettingsCard"
+        readonly property real borderWidth: border.width
+        radius: S.Tokens.panelRadius
+        color: Qt.alpha(theme.windowColor, theme.glass ? .48 : theme.translucent ? .76 : 1)
+
+''' + text[end:]
+            start = text.index('        border {', start)
+            end = text.index('        ColumnLayout {', start)
+            text = text[:start] + text[end:]
+            return text.replace(': -1', ': 0')
         text = replace(text, 'Private.FormCardBackground {', 'S.Panel {\n        objectName: "sequoiaSettingsCard"\n        readonly property real borderWidth: border.width\n        color: Qt.alpha(theme.windowColor, theme.glass ? .48 : theme.translucent ? .76 : 1)')
         text = replace(text, 'rounded: root.cardWidthRestricted', 'radius: S.Tokens.panelRadius')
         text = text.replace(': -1', ': 0')
@@ -50,9 +78,9 @@ def build(module, fingerprints, replace):
     copy(forms + 'FormSpinBoxDelegate.qml', 'SequoiaSettingsSpin',
          lambda t: form_imports(t).replace('QQC2.SpinBox {', 'S.SpinPill {'))
     copy(forms + 'FormTextFieldDelegate.qml', 'SequoiaSettingsField',
-         lambda t: form_imports(t).replace('                TextField {', '                S.TextFieldPill {'))
+         lambda t: replace(form_imports(t), 'TextField {', 'S.TextFieldPill {'))
     copy(forms + 'FormPasswordFieldDelegate.qml', 'SequoiaSettingsPassword',
-         lambda t: replace(form_imports(t), '            Kirigami.PasswordField {', '''            Kirigami.PasswordField {
+         lambda t: replace(form_imports(t), 'Kirigami.PasswordField {', '''Kirigami.PasswordField {
                 background: S.Panel {
                     radius: height / 2
                     emphasized: textField.activeFocus

@@ -1,6 +1,6 @@
 # Sequoia Liquid Glass — experimental
 
-A native KWin **6.8.2** effect. This is a working compositor shader, not a tint or
+A native KWin **6.8.2 / 6.8.3** effect (rebuild for the installed version). This is a working compositor shader, not a tint or
 wallpaper simulation. It captures the actual scene behind blur-requesting windows,
 uses KWin's Dual Kawase blur, and refracts that texture before the application is
 composed. Opaque controls, screenshots and text therefore remain sharp.
@@ -151,6 +151,22 @@ MIT license. The names, resource paths and configuration group are distinct from
 stock Blur so loading/unloading the experiment does not replace upstream files.
 `shaders/glass.glsl` and the final-pass uniform setup implement the new material.
 The build rejects other KWin versions pending an API and rendering review.
+
+### KWin 6.8.3 rebuild
+
+Upstream `src/plugins/blur/blur.cpp` and `blur.h` are identical between v6.8.2
+and v6.8.3. No renderer changes were required, but native plugins must be rebuilt
+to publish `org.kde.kwin.EffectPluginFactory6.8.3`. Only these two reviewed
+releases are accepted by the build guard.
+
+`python3 tools/rebuild-kwin-effects.py` rebuilds Liquid Glass, modal dimming,
+and Firefox blur with the installed SDK. Outputs are under
+`.staging/kwin-<version>/`; the command does not install or activate them.
+
+Verified on 6.8.3 in private virtual compositors: refraction and lighting,
+unchanged opaque content, exact backdrop and partial-damage restoration,
+three stock Blur toggles and capability recovery, plus coexistence with
+Firefox blur and modal dimming.
 
 Revision 5 uses distinct plugin, C++ class and resource identities so it can load
 in the same KWin process as a previously tested revision without restarting the

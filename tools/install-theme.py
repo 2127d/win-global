@@ -95,7 +95,11 @@ def validate_system_payload(payload, components):
 
 
 def user_allowed(name):
-    return (name in COLOR_FILES or name in {'applications/' + app for app in APP_FILES}
+    # Earlier shared-material updates tracked these Get New components in the
+    # main receipt. Keep accepting them without claiming the separate overlay.
+    legacy_shared = {'sequoia-eleven/newstuff/qml/org/sequoia/components/' + item
+                     for item in ('GlassPillSurface.qml', 'GlassPillSwitcher.qml', 'GlassPillTab.qml')}
+    return (name in COLOR_FILES or name in legacy_shared or name in {'applications/' + app for app in APP_FILES}
             or name.startswith('plasma/plasmoids/org.sequoia.downloads/')
             or any(name.startswith(tree + '/') for tree in USER_TREES))
 

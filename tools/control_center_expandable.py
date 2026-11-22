@@ -15,6 +15,14 @@ def build_expandable(destination):
     if text.count(anchor) != 1:
         raise RuntimeError('KDE default action changed; review its presentation integration.')
     text = text.replace(anchor, anchor + '\n    readonly property alias defaultActionControl: defaultActionButton')
+    # Network rows expose a roomier inset than other detail delegates. This
+    # property belongs to our adapter and must survive regenerating KDE QML.
+    text = text.replace(anchor, anchor + '\n    property real contentPadding: Kirigami.Units.smallSpacing')
+    for binding in ('Layout.margins', 'anchors.margins'):
+        original_margin = binding + ': Kirigami.Units.smallSpacing'
+        if text.count(original_margin) != 1:
+            raise RuntimeError('KDE expandable content margins changed; review its layout integration.')
+        text = text.replace(original_margin, binding + ': listItem.contentPadding')
     text = text.replace('    readonly property alias defaultActionControl: defaultActionButton',
         '    readonly property alias defaultActionControl: defaultActionButton\n'
         '    readonly property alias expandToggleControl: expandToggleButton\n'

@@ -22,6 +22,12 @@ spec.loader.exec_module(installer)
 
 
 class ThemeTests(unittest.TestCase):
+    def test_legacy_shared_material_receipt_is_retained_without_widening_scope(self):
+        name = 'sequoia-eleven/newstuff/qml/org/sequoia/components/GlassPillSurface.qml'
+        self.assertTrue(installer.user_allowed(name))
+        self.assertFalse(installer.user_scope(name, {'quick-style'}))
+        self.assertFalse(installer.user_allowed('sequoia-eleven/newstuff/unrelated.txt'))
+
     def test_michigan_wallpaper_install_refresh_remove(self):
         installer.stage_user(self.stage, self.live, {'wallpaper'})
         incoming = payload_files(self.stage)

@@ -63,20 +63,27 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
-                background: Rectangle {
-                    radius: height / 2
-                    color: Qt.alpha(Kirigami.Theme.highlightColor, tab.down ? .20 : tab.hovered ? .10 : 0)
-                    border.width: tab.visualFocus ? 1 : 0
-                    border.color: Kirigami.Theme.highlightColor
-                    Rectangle {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 3
-                        width: label.implicitWidth
-                        height: 3
-                        radius: 1.5
+                background: Item {
+                    PureGlassSurface {
+                        objectName: "activitySelectionPill"
+                        anchors.fill: parent
+                        anchors.leftMargin: 2
+                        anchors.rightMargin: 2
+                        anchors.topMargin: 4
+                        anchors.bottomMargin: 4
                         visible: tab.current
-                        color: Kirigami.Theme.highlightColor
+                        wallpaper: pill.wallpaper
+                    }
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.leftMargin: 2
+                        anchors.rightMargin: 2
+                        anchors.topMargin: 4
+                        anchors.bottomMargin: 4
+                        radius: height / 2
+                        color: tab.current ? "transparent" : Qt.alpha(Kirigami.Theme.highlightColor, tab.down ? .20 : tab.hovered ? .10 : 0)
+                        border.width: tab.visualFocus ? 1 : 0
+                        border.color: Kirigami.Theme.highlightColor
                     }
                 }
             }

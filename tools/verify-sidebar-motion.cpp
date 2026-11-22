@@ -1,4 +1,4 @@
-#include "../apps/gwenview/gwenview-26.08.2/app/sidebarmotion.h"
+#include "../apps/gwenview/gwenview-26.08.3/app/sidebarmotion.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTest>

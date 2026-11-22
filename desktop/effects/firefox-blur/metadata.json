@@ -1,0 +1,14 @@
+{
+  "KPlugin": {
+    "Name": "Sequoia Firefox Background Blur",
+    "Description": "Blurs behind Firefox\u2019s native translucent Sequoia window canvas without changing browser pixels.",
+    "Version": "0.2.0",
+    "License": "GPL-2.0-or-later",
+    "EnabledByDefault": false,
+    "Category": "Appearance"
+  },
+  "org.kde.kwin.effect": {
+    "exclusiveGroup": "",
+    "enabledByDefaultMethod": false
+  }
+}

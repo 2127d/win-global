@@ -557,7 +557,7 @@ The [QRCA makeover](apps/qrca/README.md) adds Sequoia Scan and Create pages,
 pill navigation, rounded panels, and themed result dialogs while keeping KDE's
 scanner, QR export, clipboard, and Wi-Fi features. Its source package lives in
 `sandbox/apps/qrca`, and the portable installer embeds it. Select **QRCA makeover**
-(Qrca 26.08.2), or use `tools/build-qrca.py` and `tools/install-qrca.py`.
+(Qrca 26.08.3), or use `tools/build-qrca.py` and `tools/install-qrca.py`.
 
 The [KCalc makeover](apps/kcalc/README.md) adds rounded keys, calculation history
 above the input, live inline answers, a visible mode selector, and automatic

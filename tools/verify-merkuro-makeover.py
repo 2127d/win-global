@@ -8,6 +8,7 @@ parser.add_argument('--overlay',type=Path,default=ROOT/'.staging/merkuro-makeove
 parser.add_argument('--mode',choices=['light','dark'],default='light')
 parser.add_argument('--material',choices=['solid','transparent','glass'],default='solid')
 parser.add_argument('--settings-only',action='store_true')
+parser.add_argument('--style-plugins',type=Path,help='Test rebuilt native styles before system installation')
 args=parser.parse_args()
 helper=ROOT/'.staging/verify-merkuro-makeover.so'
 flags=shlex.split(subprocess.check_output(['pkg-config','--cflags','--libs','Qt6Quick','Qt6Test'],text=True))
@@ -38,6 +39,7 @@ with tempfile.TemporaryDirectory(prefix='mm-') as temp:
     if args.settings_only:env['SEQUOIA_MERKURO_SETTINGS_VERIFY']='1'
     for kind in ('CONFIG','DATA','CACHE','STATE','RUNTIME'):env['XDG_'+kind+('_DIR' if kind=='RUNTIME' else '_HOME')]=str(root/kind.lower())
     for key in ('LD_PRELOAD','QT_STYLE_OVERRIDE','QT_PLUGIN_PATH','QML_IMPORT_PATH','QML2_IMPORT_PATH','KDE_APPLICATIONS_AS_SCOPE'):env.pop(key,None)
+    if args.style_plugins:env['QT_PLUGIN_PATH']=str(args.style_plugins.resolve())
     command=['dbus-run-session','--config-file='+str(bus),'--','python3',str(ROOT/'tools/quick-preview-session.py'),'env','LD_PRELOAD='+str(helper),str(args.overlay.resolve()/'sequoia-quick'),'merkuro-calendar']
     with (output/'verify.log').open('w') as log:result=subprocess.run(command,env=env,stdout=log,stderr=log,timeout=60)
     text=(output/'verify.log').read_text()

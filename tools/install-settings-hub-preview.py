@@ -55,7 +55,7 @@ for source in glass_module.iterdir():
 # Generate from fingerprint-checked system controls and the canonical Sequoia materials.
 from settings_popup_style import build as build_popups
 build_popups(target/'qml/org/kde/desktop')
-manifest = {'upstream_sha256':hashlib.sha256(Path('/usr/bin/systemsettings').read_bytes()).hexdigest(),'version':'6.8.2'}
+manifest = {'upstream_sha256':hashlib.sha256(Path('/usr/bin/systemsettings').read_bytes()).hexdigest(),'version':'6.8.3'}
 (target/'build.json').write_text(json.dumps(manifest,indent=2)+'\n')
 launcher.write_text('''#!/usr/bin/env python3
 import hashlib,json,os,subprocess,sys

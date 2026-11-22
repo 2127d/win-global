@@ -16,6 +16,17 @@ RELOAD = motion.reload
 
 
 class KWinPaletteTests(unittest.TestCase):
+    def test_tooltip_refresh_keeps_desktop_and_plasma_adapters_separate(self):
+        from motion_palette import qml_timings
+        from quick_islands import QML
+        from tooltip_styles import desktop
+        styled = desktop((QML / 'org/kde/desktop/ToolTip.qml').read_text())
+        self.assertEqual(qml_timings(styled, 'ToolTip.qml'), styled)
+        plasma = qml_timings((QML / 'org/kde/plasma/components/ToolTip.qml').read_text(),
+                             'ToolTip.qml', plasma_controls=True)
+        self.assertIn('sequoiaTooltipCapsule', plasma)
+        self.assertNotIn('backgroundItem.margins', plasma)
+
     def test_installed_effects_accept_the_current_kwin_sources(self):
         source = effect_sources()
         for name in EFFECTS:

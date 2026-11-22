@@ -42,6 +42,12 @@ that baseline. Removal restores it while preserving other settings and a later
 explicit user disable. `--keep-system` removes activation but retains the shared
 plugin for other accounts. Rebuild the plugin after KWin upgrades if its ABI changes.
 
+KWin 6.8.3 requires a rebuild but no source-level API changes. Use
+`python3 tools/rebuild-kwin-effects.py` to build this effect together with
+Liquid Glass and Firefox blur. The 6.8.3 private-compositor probe passed
+decoration and popup rendering, native modals, sender ownership checks,
+window destruction, and unload/reload checks.
+
 ## App integration (Wayland)
 
 Link `client/` as a CMake subdirectory and create a `SequoiaModalBridge` owned by the

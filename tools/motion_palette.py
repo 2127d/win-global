@@ -128,10 +128,14 @@ def dock_task(text):
     return text
 
 
-def qml_timings(text, name):
+def qml_timings(text, name, *, plasma_controls=False):
     if name == 'ToolTip.qml':
-        from tooltip_styles import plasma
-        return plasma(text)
+        # Desktop tooltips already carry the shared visual policy. Only the
+        # stock Plasma module uses FrameSvg margins and needs this conversion.
+        if plasma_controls:
+            from tooltip_styles import plasma
+            return plasma(text)
+        return text
     if name == 'Menu.qml':
         # Preserve the native menu's input/positioning; only its transition changes.
         for marker, milliseconds, curve in [('enter: Transition', 160, 'OutCubic'), ('exit: Transition', 112, 'InCubic')]:
@@ -224,7 +228,7 @@ def prepare(stage, data, config):
         if not target.is_file():
             continue
         if target.suffix == '.qml':
-            target.write_text(qml_timings(target.read_text(), target.name))
+            target.write_text(qml_timings(target.read_text(), target.name, plasma_controls=True))
         elif target.name == 'qmldir':
             target.write_text(re.sub(r'^prefer .*\n', '', target.read_text(), flags=re.M))
         elif '.so' in target.name:

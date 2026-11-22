@@ -62,7 +62,8 @@ def style_details(destination, source, plugin_dir, extract, replace):
                     text = replace(text, highlight, 'highlight: null // The rounded delegate owns its highlight.')
                 if name == 'cameraindicator' and path.name == 'FullRepresentation.qml':
                     text = replace(text, 'PlasmaComponents.Page {', 'Details.DetailRepresentation {')
-                if name == 'brightness' and path.name == 'PopupDialog.qml':
+                if (name == 'brightness' and path.name == 'PopupDialog.qml'
+                        and 'function updateKeyNavigation()' not in text):
                     # Repeater.count includes displays whose delegates have not
                     # been constructed yet. Link each neighbor when it exists.
                     for neighbor, prop, value in (
