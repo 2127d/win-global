@@ -118,15 +118,23 @@ double JunglePose::deployment(double x) const {
     return down*(1-up);
 }
 
-JunglePose junglePose(double width,double seconds) {
+JunglePose junglePose(double width,double seconds,double speed,double pause) {
     JunglePose pose;pose.width=std::max(1.0,width);
     for(double x=-320;x<pose.width+1100;x+=spacing)pose.anchors.append(x);
     pose.route.append(0);
     while(pose.anchors[pose.route.last()]<pose.width+720)pose.route.append(pose.route.last()+3);
     pose.journey=(pose.route.size()-2)*stepTime;
-    pose.cycle=1.8+pose.journey+4.2;
+    speed=std::isfinite(speed)?std::clamp(speed,.25,3.0):1.0;
+    pause=std::isfinite(pause)?std::clamp(pause,0.0,3600.0):2.6;
+    pose.cycle=1.8+pose.journey/speed+1.6+pause;
     pose.pass=int(std::max(0.0,seconds)/pose.cycle);
     pose.localTime=std::fmod(std::max(0.0,seconds),pose.cycle);
+    // Keep descent/retraction and the user's pause in real seconds. Only the
+    // crossing runs at the chosen speed; map it onto the original pose clock.
+    if(pose.localTime>1.8) {
+        const double crossing=std::min(pose.localTime-1.8,pose.journey/speed);
+        pose.localTime+=crossing*(speed-1.0);
+    }
     const double travel=(pose.localTime-1.8)/stepTime;
     pose.visible=travel>=0 && travel<pose.route.size()-2;
     for(double x:pose.anchors)pose.grips.append(QPointF(x,vineLength));

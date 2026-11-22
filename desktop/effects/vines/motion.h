@@ -16,4 +16,4 @@ struct JunglePose {
     bool visible=false;
     double deployment(double x) const;
 };
-JunglePose junglePose(double width,double seconds);
+JunglePose junglePose(double width,double seconds,double speed=1,double pause=2.6);

@@ -1,0 +1,19 @@
+{
+    "version": 1,
+    "minimumColumns": 2,
+    "minimumRows": 1,
+    "panel": true,
+    "preview": "contents/ui/ActivityPreview.qml",
+    "presets": [
+        {
+            "name": "Automatic",
+            "columns": 2,
+            "rows": 1
+        }
+    ],
+    "previewFiles": [
+        "contents/ui/ActivityPill.qml",
+        "contents/ui/PureGlassSurface.qml",
+        "contents/ui/pure-glass.frag.qsb"
+    ]
+}

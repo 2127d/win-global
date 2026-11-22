@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>JungleVinesConfig</class>
+ <widget class="QWidget" name="JungleVinesConfig">
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0"><widget class="QLabel" name="speedLabel">
+    <property name="text"><string>Swing speed:</string></property>
+    <property name="buddy"><cstring>kcfg_SwingSpeed</cstring></property>
+   </widget></item>
+   <item row="0" column="1"><widget class="QSpinBox" name="kcfg_SwingSpeed">
+    <property name="minimum"><number>25</number></property>
+    <property name="maximum"><number>300</number></property>
+    <property name="singleStep"><number>25</number></property>
+    <property name="suffix"><string>%</string></property>
+   </widget></item>
+   <item row="1" column="0"><widget class="QLabel" name="pauseLabel">
+    <property name="text"><string>Pause between visits:</string></property>
+    <property name="buddy"><cstring>kcfg_PauseSeconds</cstring></property>
+   </widget></item>
+   <item row="1" column="1"><widget class="QDoubleSpinBox" name="kcfg_PauseSeconds">
+    <property name="minimum"><double>0.0</double></property>
+    <property name="maximum"><double>3600.0</double></property>
+    <property name="decimals"><number>1</number></property>
+    <property name="singleStep"><double>1.0</double></property>
+    <property name="suffix"><string> seconds</string></property>
+   </widget></item>
+   <item row="2" column="0" colspan="2"><widget class="QLabel" name="description">
+    <property name="text"><string>100% is the original swing speed. The pause starts after the vines retract. Changes restart the animation when applied.</string></property>
+    <property name="wordWrap"><bool>true</bool></property>
+   </widget></item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

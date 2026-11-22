@@ -9,12 +9,12 @@
 #include <deque>
 
 // Opt-in, bounded in-memory timing sample; no desktop pixels are captured.
-class VinesFrameMetrics7 : public QObject {
+class VinesFrameMetrics9 : public QObject {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.SequoiaVines.Diagnostics")
 public:
-    explicit VinesFrameMetrics7(QQuickItem *item);
-    ~VinesFrameMetrics7() override;
+    explicit VinesFrameMetrics9(QQuickItem *item);
+    ~VinesFrameMetrics9() override;
     void painted(qint64 duration);
     void swapped();
 public slots:

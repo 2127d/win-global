@@ -63,7 +63,7 @@ APP_FILES = {
 LAYOUT_WIDGETS = {
     'org.sequoia.startmenu', 'org.sequoia.folderstack', 'org.sequoia.dockseparator',
     'org.kpple.kppleMenu', 'org.kde.windowtitle.Fork', 'org.sequoia.desktopmenu',
-    'org.sequoia.gridtest', 'org.sequoia.analogclock',
+    'org.sequoia.gridtest', 'org.sequoia.analogclock', 'org.sequoia.activitybar',
 }
 USER_TREES = {
     'icons/SequoiaTahoe', 'icons/SequoiaTahoe-light', 'icons/SequoiaTahoe-dark',

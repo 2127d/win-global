@@ -7,7 +7,7 @@ add_dependencies(systemsettings sequoiacomponentsplugin)
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../../../desktop/glass-material" "${CMAKE_CURRENT_BINARY_DIR}/tooltip-policy")
 set_target_properties(sequoiaglassplugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/qml/org/sequoia/glass")
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/bin/qml/org/sequoia/glass")
-file(WRITE "${CMAKE_BINARY_DIR}/bin/qml/org/sequoia/glass/qmldir" "module org.sequoia.glass\nplugin sequoiaglassplugin\n")
+file(WRITE "${CMAKE_BINARY_DIR}/bin/qml/org/sequoia/glass/qmldir" "module org.sequoia.glass\noptional plugin sequoiaglassplugin\n")
 add_dependencies(systemsettings sequoiaglassplugin)
 
 # Private desktop controls cover attached tooltips and context menus in all KCMs.

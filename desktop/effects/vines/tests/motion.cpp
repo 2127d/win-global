@@ -13,6 +13,18 @@ static QPointF shoulder(const JunglePose &p,int hand) {
     return p.body+QPointF(v.x()*std::cos(r)-v.y()*std::sin(r),v.x()*std::sin(r)+v.y()*std::cos(r));
 }
 int main() {
+    for(double speed:{.25,1.,2.,3.}) {
+        const auto base=junglePose(1600,0), timed=junglePose(1600,0,speed,60);
+        require(std::abs(timed.cycle-(1.8+base.journey/speed+1.6+60))<1e-7,"speed and pause independently set visit cadence");
+        for(double t=0;t<base.journey;t+=.031) {
+            const auto expected=junglePose(1600,1.8+t);
+            const auto actual=junglePose(1600,1.8+t/speed,speed,60);
+            require(distance(expected.body,actual.body)<1e-6,"speed preserves swing geometry and catches");
+        }
+        const auto resting=junglePose(1600,timed.cycle-30,speed,60);
+        require(!resting.visible && resting.deployment(1600)==0,"long pause keeps monkey and vines fully retracted");
+        require(junglePose(1600,timed.cycle+1.9,speed,60).visible,"next visit starts after configured pause");
+    }
     double reach=0,minTurn=0,maxTurn=-1e9;
     const auto back=junglePose(1600,1.8),bottom=junglePose(1600,2.2),forward=junglePose(1600,2.6),repeat=junglePose(1600,3.4);
     require(back.rotation>-20 && forward.rotation<-100,"hips and feet alternate between trailing and leading");

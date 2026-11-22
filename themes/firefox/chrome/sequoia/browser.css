@@ -125,8 +125,11 @@ sidebar-main {
 /* Clip content at the island boundary, never change web-page colors. */
 #tabbrowser-tabpanels { border-radius: inherit !important; }
 .browserContainer { background: var(--se-surface) !important; }
-findbar {
+/* Hidden findbars need Firefox's negative bottom margin to reclaim their space. */
+findbar:not([hidden]) {
   margin: var(--se-gap) !important;
+}
+findbar {
   border: 0 !important;
   border-radius: 11px !important;
   background: var(--se-surface) !important;

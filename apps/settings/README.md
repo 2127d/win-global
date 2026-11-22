@@ -570,3 +570,23 @@ It checks native scheme/accent persistence, search/filter/reset, automatic-to-cu
 accent selection, custom chooser validation/cancel/accept, active-scheme protection,
 removal/undo/import, repeated menu toggle, unsaved Back and responsive layouts in
 all six material/mode combinations. No live desktop theme is applied by this test.
+
+## Sequoia Eleven style dialog and tooltip shapes
+
+The native style configuration keeps all eight original pages in a rounded
+Appearance Hub sidebar, with a ninth **Tooltips** page. Pill, Rounded rectangle,
+and Square are independent choices for Qt applications, Sequoia settings,
+Plasma desktop/panel tooltips, and running-app previews. Previews are staged;
+Apply/OK writes `sequoiatooltipsrc`, Reset reloads saved values, and Defaults
+stages the defaults without saving. Desktop controls observe changes without
+polling. Running-app previews retain their 12 px panel gap for every shape.
+Custom-drawn GTK, browser, and Electron tooltips are outside this policy.
+
+After building the native styles, glass module, and Hub, run
+`python3 tools/install-settings-hub-preview.py` and
+`python3 tools/install-tooltip-policy.py`, then reopen settings and reload Plasma.
+The policy installer backs up changed files and replaces loaded libraries atomically.
+Check `tools/verify-tooltip-policy.py` for rendered geometry, live updates, blur
+masks, panel direction/margins, and constructor safety. Run
+`tools/verify-style-config.py --output /path/to/previews` to check all dialog pages
+and the save/reset/defaults lifecycle with isolated configuration.

@@ -129,6 +129,9 @@ def dock_task(text):
 
 
 def qml_timings(text, name):
+    if name == 'ToolTip.qml':
+        from tooltip_styles import plasma
+        return plasma(text)
     if name == 'Menu.qml':
         # Preserve the native menu's input/positioning; only its transition changes.
         for marker, milliseconds, curve in [('enter: Transition', 160, 'OutCubic'), ('exit: Transition', 112, 'InCubic')]:

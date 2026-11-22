@@ -1,0 +1,151 @@
+/*
+    SPDX-FileCopyrightText: 2013 Bhushan Shah <bhush94@gmail.com>
+
+    SPDX-License-Identifier: GPL-2.0-or-later
+*/
+pragma ComponentBehavior: Bound
+
+import QtQuick
+import QtQuick.Layouts
+
+import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.components as PlasmaComponents // FIXME: PC3 Tabbar only has top and bottom tab positions, not left and right
+
+import org.kde.activities as Activities
+import org.kde.plasma.activityswitcher as ActivitySwitcher
+import org.kde.kcmutils // KCMLauncher
+import org.kde.kirigami as Kirigami
+import org.kde.config // KAuthorized
+
+PlasmoidItem {
+    id: root
+    objectName: "sequoiaActivityBar"
+    readonly property bool panel: Plasmoid.formFactor === PlasmaCore.Types.Horizontal || Plasmoid.formFactor === PlasmaCore.Types.Vertical
+    readonly property bool sequoiaAutomaticSize: !panel
+    readonly property Item wallpaperSource: {
+        let ancestor = parent;
+        while (ancestor) {
+            if (ancestor.layout?.containmentItem?.wallpaper) return ancestor.layout.containmentItem.wallpaper;
+            ancestor = ancestor.parent;
+        }
+        return null;
+    }
+    readonly property int desktopWidth: pill.implicitWidth
+    readonly property int desktopHeight: pill.implicitHeight
+    Layout.minimumWidth: panel ? (Plasmoid.formFactor === PlasmaCore.Types.Vertical ? tabBar.implicitHeight : tabBar.implicitWidth) : desktopWidth
+    Layout.minimumHeight: panel ? (Plasmoid.formFactor === PlasmaCore.Types.Vertical ? tabBar.implicitWidth : tabBar.implicitHeight) : desktopHeight
+    Layout.preferredWidth: panel ? -1 : desktopWidth
+    Layout.preferredHeight: panel ? -1 : desktopHeight
+    Layout.maximumWidth: panel ? Infinity : desktopWidth
+    Layout.maximumHeight: panel ? Infinity : desktopHeight
+
+    Plasmoid.backgroundHints: panel ? PlasmaCore.Types.StandardBackground : PlasmaCore.Types.NoBackground
+    Plasmoid.constraintHints: panel ? Plasmoid.CanFillArea : 0
+    Activities.ActivityModel { id: activityModel }
+
+    ActivityPill {
+        id: pill
+        visible: !root.panel
+        anchors.fill: parent
+        model: activityModel
+        wallpaper: root.wallpaperSource
+        onActivated: activityId => activityModel.setCurrentActivity(activityId, function() {})
+    }
+
+    preferredRepresentation: fullRepresentation
+
+    PlasmaComponents.TabBar {
+        id: tabBar
+        visible: root.panel
+
+        anchors.centerIn: parent
+        rotation: Plasmoid.formFactor === PlasmaCore.Types.Vertical ?  -90 : 0
+        transformOrigin: Item.Center
+        width: Plasmoid.formFactor === PlasmaCore.Types.Vertical ? parent.height : parent.width
+        height: Plasmoid.formFactor === PlasmaCore.Types.Vertical ? parent.width : parent.height
+
+        // The QQuickTabBar template will resize every of the tabbutton to its contentHeight
+        // This means we need a contentHeight which makes sense, but this comes from the
+        // internal ListView to the TabBar which is a value we can't control directly.
+        // so make sure the contentHeight is actually our height
+        contentHeight: height
+
+        position: {
+            switch (Plasmoid.location) {
+            case PlasmaCore.Types.LeftEdge:
+            case PlasmaCore.Types.TopEdge:
+                return PlasmaComponents.TabBar.Header;
+            default:
+                return PlasmaComponents.TabBar.Footer;
+            }
+        }
+
+        Component.onCompleted: {
+            // in a panel, the ListView arrow key navigation interacts very badly with the
+            // key navigation that panelview injects, which does the job just fine.
+            const listView = tabBar.contentItem as ListView;
+            listView.keyNavigationEnabled = Plasmoid.location === PlasmaCore.Types.Floating
+        }
+
+        Repeater {
+            model: activityModel
+            delegate: PlasmaComponents.TabButton {
+                id: tab
+
+                required property bool current
+                required property string name
+                required property string id
+
+                topPadding: Kirigami.Units.smallSpacing
+                bottomPadding: Kirigami.Units.smallSpacing
+
+                checked: current
+                text: name
+                activeFocusOnTab: true
+                width: implicitWidth
+                height: tabBar.contentHeight
+
+                Keys.onPressed: event => {
+                    switch (event.key) {
+                    case Qt.Key_Space:
+                    case Qt.Key_Enter:
+                    case Qt.Key_Return:
+                    case Qt.Key_Select:
+                        activityModel.setCurrentActivity(id, function() {});
+                        event.accepted = true;
+                        break;
+                    }
+                }
+                Accessible.checked: current
+                Accessible.name: name
+                Accessible.description: i18n("Switch to activity %1", name)
+                Accessible.role: Accessible.Button
+
+                onClicked: {
+                    activityModel.setCurrentActivity(id, function() {});
+                }
+            }
+        }
+    }
+
+    Plasmoid.contextualActions: [
+        PlasmaCore.Action {
+            text: i18nc("@action:inmenu widget context menu", "Show Activity Manager")
+            icon.name: "activities"
+            onTriggered: ActivitySwitcher.Backend.toggleActivityManager()
+        }
+    ]
+
+    PlasmaCore.Action {
+        id: configureAction
+        text: i18nc("@action:inmenu", "&Configure Activities…")
+        icon.name: "configure"
+        visible: KAuthorized.authorizeControlModule("kcm_activities")
+        onTriggered: KCMLauncher.openSystemSettings("kcm_activities")
+    }
+
+    Component.onCompleted: {
+        Plasmoid.setInternalAction("configure", configureAction);
+    }
+}

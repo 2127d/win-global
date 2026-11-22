@@ -22,15 +22,15 @@ QJsonObject stats(const QVector<double> &times) {
         {"max_ms",intervals.last()}};
 }
 }
-VinesFrameMetrics7::VinesFrameMetrics7(QQuickItem *item):QObject(item),m_item(item) {
+VinesFrameMetrics9::VinesFrameMetrics9(QQuickItem *item):QObject(item),m_item(item) {
     QDBusConnection::sessionBus().registerObject(path,this,QDBusConnection::ExportAllSlots);
 }
-VinesFrameMetrics7::~VinesFrameMetrics7() {
+VinesFrameMetrics9::~VinesFrameMetrics9() {
     m_active=false;
     disconnect(m_requested);disconnect(m_presented);
     QDBusConnection::sessionBus().unregisterObject(path);
 }
-void VinesFrameMetrics7::Start() {
+void VinesFrameMetrics9::Start() {
     m_active=false;disconnect(m_requested);disconnect(m_presented);
     {
         QMutexLocker lock(&m_mutex);
@@ -59,23 +59,26 @@ void VinesFrameMetrics7::Start() {
     }
     m_active=true;
 }
-QString VinesFrameMetrics7::Stop() {
+QString VinesFrameMetrics9::Stop() {
     m_active=false;disconnect(m_requested);disconnect(m_presented);
     QMutexLocker lock(&m_mutex);
     std::sort(m_costs.begin(),m_costs.end());
     return QString::fromUtf8(QJsonDocument(QJsonObject{
+        {"swing_speed",m_item->property("swingSpeed").toDouble()},
+        {"pause_seconds",m_item->property("pauseSeconds").toDouble()},
+        {"running",m_item->property("running").toBool()},
         {"paint",stats(m_paints)},{"submitted",stats(m_submits)},{"presented",stats(m_presentations)},
         {"paint_cpu_median_ms",m_costs.isEmpty()?0:m_costs[m_costs.size()/2]},
         {"paint_cpu_p95_ms",m_costs.isEmpty()?0:m_costs[int((m_costs.size()-1)*.95)]}
     }).toJson(QJsonDocument::Compact));
 }
-void VinesFrameMetrics7::painted(qint64 duration) {
+void VinesFrameMetrics9::painted(qint64 duration) {
     ++m_serial;
     if(!m_active)return;
     QMutexLocker lock(&m_mutex);
     if(m_paints.size()<10000) {m_paints.append(m_clock.nsecsElapsed()/1e6);m_costs.append(duration/1e6);}
 }
-void VinesFrameMetrics7::swapped() {
+void VinesFrameMetrics9::swapped() {
     m_swapped=m_serial.load();
     if(!m_active)return;
     QMutexLocker lock(&m_mutex);

@@ -91,6 +91,9 @@ def _build(destination):
     for name, transform in [('Menu.qml', quick_menus.menu), ('MenuItem.qml', quick_menus.item), ('MenuSeparator.qml', quick_menus.separator)]:
         menu = destination / 'org/kde/desktop' / name
         menu.write_text(transform(menu.read_text(), replace))
+    from tooltip_styles import desktop as style_tooltip
+    tip = destination / 'org/kde/desktop/ToolTip.qml'
+    tip.write_text(style_tooltip(tip.read_text()))
     shared = destination / 'org/sequoia/eleven'
     shared.mkdir(parents=True)
     for component in ('Island', 'Canvas', 'SidebarIcon', 'SidebarHighlight'):

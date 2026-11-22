@@ -93,7 +93,7 @@ def install_rim_module():
     target.mkdir(parents=True,exist_ok=True)
     temp=target/'libsequoiaglassplugin.so.tmp'
     shutil.copy2(build/'libsequoiaglassplugin.so',temp);temp.replace(target/'libsequoiaglassplugin.so')
-    (target/'qmldir').write_text('module org.sequoia.glass\nplugin sequoiaglassplugin\n')
+    (target/'qmldir').write_text('module org.sequoia.glass\noptional plugin sequoiaglassplugin\n')
 
 
 def quick_changes(originals=None):

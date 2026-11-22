@@ -9,10 +9,31 @@
 #include <QPainter>
 #include <QScrollArea>
 #include <QTabBar>
+#include <QStyledItemDelegate>
 #include <QVBoxLayout>
 #include <KLocalizedString>
 
 namespace SequoiaEleven {
+class GlassChoiceDelegate final : public QStyledItemDelegate {
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override {
+        auto size=QStyledItemDelegate::sizeHint(option,index);size.setHeight(qMax(36,size.height()+8));return size;
+    }
+    void paint(QPainter *painter,const QStyleOptionViewItem &option,const QModelIndex &index) const override {
+        auto plain=option;
+        if ((option.state & QStyle::State_Enabled) && (option.state & (QStyle::State_Selected | QStyle::State_MouseOver))) {
+            painter->save();painter->setRenderHint(QPainter::Antialiasing);
+            auto accent=option.palette.color(QPalette::Highlight);auto fill=accent;fill.setAlpha(52);
+            auto edge=accent;edge.setAlpha(110);const auto rect=QRectF(option.rect).adjusted(3,2,-3,-2);
+            painter->setPen(QPen(edge,1));painter->setBrush(fill);painter->drawRoundedRect(rect,13,13);
+            QLinearGradient sheen(rect.topLeft(),rect.bottomLeft());sheen.setColorAt(0,QColor(255,255,255,70));sheen.setColorAt(.5,QColor(255,255,255,0));sheen.setColorAt(1,QColor(accent.red(),accent.green(),accent.blue(),28));
+            painter->setPen(Qt::NoPen);painter->setBrush(sheen);painter->drawRoundedRect(rect.adjusted(1,1,-1,-1),12,12);painter->restore();
+        }
+        plain.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver | QStyle::State_HasFocus);
+        QStyledItemDelegate::paint(painter,plain,index);
+    }
+};
 class TooltipSample final : public QWidget {
 public:
     QString shape;
@@ -69,6 +90,7 @@ void StyleConfig::setupHub() {
     }
     connect(navigation,&QListWidget::currentRowChanged,tabWidget,&QTabWidget::setCurrentIndex);
     navigation->setCurrentRow(0);body->addWidget(navigation);body->addWidget(tabWidget,1);outer->addLayout(body,1);
+    for(auto combo:findChildren<QComboBox *>()) combo->setItemDelegate(new GlassChoiceDelegate(combo));
     applyHubPalette();
 }
 void StyleConfig::applyHubPalette() {

@@ -1,15 +1,15 @@
 {
-  "KPackageStructure": "KWin/Effect",
+  "KPackageStructure": "KWin/Script",
   "KPlugin": {
-    "Id": "sequoia-vines-v7",
+    "Id": "sequoia-vines-v9",
     "Name": "Jungle Vines",
-    "Description": "Retracting vines and a monkey with continuous alternating swings. Toggle with Meta+Ctrl+M.",
+    "Description": "A monkey swings across retracting vines. Runs only while this script is enabled. Toggle visibility with Meta+Ctrl+M.",
     "Icon": "face-smile",
     "Category": "Appearance",
     "License": "GPL-2.0-or-later",
-    "Version": "7.0",
+    "Version": "9.0",
     "EnabledByDefault": false
   },
   "X-Plasma-API": "declarativescript",
-  "X-KDE-Ordering": 99
+  "X-KDE-ConfigModule": "kwin/effects/configs/kcm_kwin4_genericscripted"
 }

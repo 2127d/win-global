@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QWindow>
+#include <QProcess>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <cstdlib>
@@ -29,10 +30,26 @@ public:
     }
     void mousePressEvent(QMouseEvent *) override {++clicks;}
 };
-static QVariant effect(const QString &method) {
-    auto request=QDBusMessage::createMethodCall("org.kde.KWin","/Effects","org.kde.kwin.Effects",method);
-    request<<qEnvironmentVariable("VINES_EFFECT_ID","sequoia-vines-v7");auto reply=QDBusConnection::sessionBus().call(request);
-    require(reply.type()==QDBusMessage::ReplyMessage,"effect D-Bus call");return reply.arguments().isEmpty()?QVariant():reply.arguments().first();
+static QVariant script(const QString &method) {
+    const auto id=qEnvironmentVariable("VINES_SCRIPT_ID","sequoia-vines-v9");
+    if(method!="isScriptLoaded") {
+        require(QProcess::execute("kwriteconfig6", {"--file","kwinrc","--group","Plugins","--key",id+"Enabled",
+                    method=="enable" ? "true" : "false"})==0,"write script setting");
+        auto start=QDBusMessage::createMethodCall("org.kde.KWin","/Scripting","org.kde.kwin.Scripting","start");
+        require(QDBusConnection::sessionBus().call(start).type()==QDBusMessage::ReplyMessage,"apply script setting");
+        QTest::qWait(100);
+    }
+    auto request=QDBusMessage::createMethodCall("org.kde.KWin","/Scripting","org.kde.kwin.Scripting","isScriptLoaded");
+    request<<id;auto reply=QDBusConnection::sessionBus().call(request);
+    require(reply.type()==QDBusMessage::ReplyMessage,"script D-Bus call");
+    const bool loaded=reply.arguments().first().toBool();
+    if(method=="disable") {
+        require(!loaded,"disabled script is unloaded");
+        auto diagnostics=QDBusMessage::createMethodCall("org.kde.KWin","/SequoiaVines/Diagnostics","org.kde.SequoiaVines.Diagnostics","Start");
+        require(QDBusConnection::sessionBus().call(diagnostics).type()==QDBusMessage::ErrorMessage,
+                "disabling destroys native animation objects and diagnostics");
+    }
+    return loaded;
 }
 static int changed(const QImage &a,const QImage &b,const QRect &region) {
     int count=0;for(int y=region.top();y<=region.bottom();++y)for(int x=region.left();x<=region.right();++x)
@@ -51,7 +68,8 @@ static QRect monkeyBounds(const QImage &image) {
 int main(int argc,char **argv) {
     QApplication app(argc,argv);Backdrop window;window.setWindowTitle("Vines input probe");window.resize(1400,900);window.showMaximized();
     QTimer::singleShot(1800,&app,[&] {
-        require(effect("loadEffect").toBool() || effect("isEffectLoaded").toBool(),"load Jungle Vines effect");
+        require(!script("isScriptLoaded").toBool(),"script is disabled by default");
+        require(script("enable").toBool(),"enable Jungle Vines script through settings");
         if(qEnvironmentVariableIntValue("VINES_PROFILE_ONLY")) {
             auto request=QDBusMessage::createMethodCall("org.kde.KWin","/SequoiaVines/Diagnostics","org.kde.SequoiaVines.Diagnostics","Start");
             QDBusConnection::sessionBus().call(request);
@@ -62,7 +80,7 @@ int main(int argc,char **argv) {
                 QFile output(qEnvironmentVariable("VINES_CAPTURE")+"/frame-metrics.json");
                 require(output.open(QIODevice::WriteOnly),"save frame timing metrics");output.write(reply.arguments().first().toString().toUtf8());
             }
-            effect("unloadEffect");
+            script("disable");
             fprintf(stderr,"PASS: pacing sample at 3440 pixels\n");app.quit();return;
         }
         QElapsedTimer elapsed;elapsed.start();
@@ -96,14 +114,36 @@ int main(int argc,char **argv) {
         require(changed(first,hidden,QRect(1000,345,550,35))==0,"transparent canopy does not blur the wallpaper behind empty pixels");
         require(changed(first,hidden,QRect(0,65,150,220))>300 && changed(first,hidden,QRect(1450,65,150,220))>300,
                 "vines extend along both ends of the top edge");
-        effect("unloadEffect");QTest::qWait(500);const auto unloaded=gwenviewCompositorCapture();
+        script("disable");QTest::qWait(500);const auto unloaded=gwenviewCompositorCapture();
         require(changed(hidden,unloaded,QRect(250,40,1100,400))<10,"toggle hides entire canopy and unload leaves no orphan window");
-        require(effect("loadEffect").toBool(),"reload vines effect");QTest::qWait(1700);
+        require(script("enable").toBool(),"re-enable vines script");QTest::qWait(1700);
         const auto reloaded=gwenviewCompositorCapture();require(changed(hidden,reloaded,QRect(250,40,1100,400))>2500,"toggle test actually removed visible art");
         window.showFullScreen();QTest::qWait(900);const auto full=gwenviewCompositorCapture();full.save(folder+"/fullscreen.png");
-        effect("unloadEffect");QTest::qWait(500);const auto clean=gwenviewCompositorCapture();
+        script("disable");QTest::qWait(500);const auto clean=gwenviewCompositorCapture();
         require(changed(full,clean,QRect(250,0,1100,450))<10,"fullscreen app hides canopy");
-        fprintf(stderr,"PASS: full-width vines, traveling monkey, offscreen exit and retracted canopy, no background blur, click-through, focus, shortcut, fullscreen hiding and reload\n");app.quit();
+        // Exercise the same KCM save path as System Settings, while running.
+        window.showMaximized();QTest::qWait(400);
+        require(script("enable").toBool(),"enable before live settings change");
+        const auto configProbe=qEnvironmentVariable("VINES_CONFIG_PROBE");
+        require(QProcess::execute(configProbe,{})==0,"save real settings dialog");
+        QTest::qWait(400);
+        auto stateRequest=QDBusMessage::createMethodCall("org.kde.KWin","/SequoiaVines/Diagnostics","org.kde.SequoiaVines.Diagnostics","Stop");
+        const auto state=[&] {
+            const auto reply=QDBusConnection::sessionBus().call(stateRequest);
+            require(reply.type()==QDBusMessage::ReplyMessage && !reply.arguments().isEmpty(),"animation instantiated, not just marked loaded");
+            return QJsonDocument::fromJson(reply.arguments().first().toString().toUtf8()).object();
+        };
+        require(state()["swing_speed"].toDouble()==2 && state()["pause_seconds"].toDouble()==60,"settings apply live without script reload");
+        require(state()["running"].toBool(),"updated script is animating");
+        QDBusConnection::sessionBus().call(toggle);QTest::qWait(200);
+        require(!state()["running"].toBool(),"shortcut stops animation after re-enable");
+        QDBusConnection::sessionBus().call(toggle);QTest::qWait(200);
+        require(state()["running"].toBool(),"shortcut resumes animation after re-enable");
+        require(QProcess::execute(configProbe,{"defaults"})==0,"restore defaults from settings dialog");
+        QTest::qWait(400);
+        require(state()["swing_speed"].toDouble()==1 && qAbs(state()["pause_seconds"].toDouble()-2.6)<.001,"defaults apply live");
+        script("disable");
+        fprintf(stderr,"PASS: full-width vines, traveling monkey, offscreen exit and retracted canopy, no background blur, click-through, focus, shortcut, fullscreen hiding, settings activation, live configuration, shortcut reactivation and complete teardown\n");app.quit();
     });
     return app.exec();
 }

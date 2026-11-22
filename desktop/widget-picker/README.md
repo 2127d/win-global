@@ -59,6 +59,15 @@ It keeps all content inside the footprint and has a separate panel presentation.
 The preview and installed widget use the same QML face. Future widgets should
 follow this contract and retain all their native functionality.
 
+Content-sized widgets may expose `sequoiaAutomaticSize: true` on their root and
+set matching minimum/maximum layout dimensions in whole cells. The grid guard
+then applies size changes outside Edit Mode and lets Plasma update occupancy.
+Activity Bar uses this for a centered pill whose width follows activity names.
+For these widgets, `FixedSizeHandleGuard` consumes manual resize gestures before
+Plasma's native handles can change geometry, using their existing red surface
+feedback. Only initial placement and changed content constraints apply automatic
+dimensions; width/height notifications do not trigger corrective snap-back.
+
 Presets may include a `configuration` map of scalar settings declared in the
 widget's config schema. Guided placement applies that map to the new instance;
 panel placement uses the first preset's settings. Native dragging uses the

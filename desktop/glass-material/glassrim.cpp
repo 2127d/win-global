@@ -117,5 +117,7 @@ void registerTypes()
         QQmlEngine::setObjectOwnership(settings, QQmlEngine::CppOwnership);
         return settings;
     });
+    qmlRegisterModule("org.sequoia.glass", 1, 0);
+    qmlProtectModule("org.sequoia.glass", 1);
 }
 }

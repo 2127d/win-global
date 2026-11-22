@@ -35,13 +35,13 @@ void vine(QPainter &p, double x, QPointF end, double sway, QColor color, double 
 }
 }
 
-void paintJungle(QPainter &p, const QSizeF &size, double seconds) {
+void paintJungle(QPainter &p, const QSizeF &size, double seconds, double speed, double pause) {
     p.save(); p.setRenderHint(QPainter::Antialiasing);
     const double scale=size.height()/480.0;
     if(scale<=0){p.restore();return;}
     p.scale(scale,scale);
     const double width=size.width()/scale;
-    const auto pose=junglePose(width,seconds);
+    const auto pose=junglePose(width,seconds,speed,pause);
     const auto &anchors=pose.anchors;
     const double limbGait=pose.gait-.08;
     const double phase=limbGait*pi;

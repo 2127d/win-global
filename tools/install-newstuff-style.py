@@ -29,8 +29,17 @@ def stage(destination):
         elif path.name=='qmldir':
             path.write_text(''.join(line for line in path.read_text().splitlines(True) if not line.startswith('prefer ')))
     shutil.copy2(source/'org/kde/desktop/ToolBar.qml',desktop/'ToolBar.qml')
-    for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'private/SwitchIndicator.qml'):
+    for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'ToolTip.qml', 'private/SwitchIndicator.qml'):
         shutil.copy2(source/'org/kde/desktop'/name, desktop/name)
+    from tooltip_styles import desktop as style_tooltip
+    (desktop/'ToolTip.qml').write_text(style_tooltip((QML/'org/kde/desktop/ToolTip.qml').read_text()))
+    core=destination/'org/kde/plasma/core';core.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(ROOT/'themes/application-style/quick/plasma/DialogBackground.qml',core/'DialogBackground.qml')
+    glass=ROOT/'.staging/glass-material/libsequoiaglassplugin.so'
+    if glass.exists():
+        module=destination/'org/sequoia/glass';module.mkdir(parents=True,exist_ok=True)
+        shutil.copy2(glass,module/glass.name)
+        (module/'qmldir').write_text('module org.sequoia.glass\noptional plugin sequoiaglassplugin\n')
     island=destination/'org/sequoia/eleven';island.mkdir(parents=True,exist_ok=True)
     shutil.copy2(ROOT/'themes/application-style/quick/Island.qml',island/'Island.qml')
     (island/'qmldir').write_text('module org.sequoia.eleven\nIsland 1.0 Island.qml\n')
@@ -64,7 +73,7 @@ target=data/'sequoia-eleven/newstuff/qml'
 paths=[target,quick/'org/kde/newstuff',quick/'org/sequoia/components',quick/'manifest.json',
        quick/'org/kde/desktop/ToolBar.qml',quick/'org/kde/desktop/Popup.qml',STATE,
        style_dir/'sequoiaeleven6.so',style_dir/'sequoiaeleven_glass6.so']
-paths += [quick/'org/kde/desktop'/name for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'private/SwitchIndicator.qml')]
+paths += [quick/'org/kde/desktop'/name for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'ToolTip.qml', 'private/SwitchIndicator.qml')]
 records=[]
 for i,path in enumerate(paths):
     record={'path':str(path),'backup':str(backup/str(i)) if path.exists() else None};records.append(record)
@@ -83,7 +92,7 @@ try:
             prepared.rename(dest)
     current=json.loads((quick/'manifest.json').read_text());current['sources'].update(shared_sources)
     pending=quick/'manifest.json.new';pending.write_text(json.dumps(current,indent=2)+'\n');pending.replace(quick/'manifest.json')
-    for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'private/SwitchIndicator.qml'):
+    for name in ('Menu.qml', 'MenuItem.qml', 'MenuSeparator.qml', 'ToolTip.qml', 'private/SwitchIndicator.qml'):
         pending=quick/'org/kde/desktop'/(name+'.new')
         shutil.copy2(source/'org/kde/desktop'/name,pending);pending.replace(quick/'org/kde/desktop'/name)
     from glass_surfaces import refresh_quick
