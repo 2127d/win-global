@@ -8,10 +8,11 @@ parser.add_argument('--overlay',type=Path,default=ROOT/'.staging/merkuro-makeove
 parser.add_argument('--mode',choices=['light','dark'],default='light')
 parser.add_argument('--material',choices=['solid','transparent','glass'],default='solid')
 parser.add_argument('--settings-only',action='store_true')
+parser.add_argument('--composited',action='store_true',help='Exercise real GPU rendering inside a private Wayland compositor')
 parser.add_argument('--style-plugins',type=Path,help='Test rebuilt native styles before system installation')
 args=parser.parse_args()
 helper=ROOT/'.staging/verify-merkuro-makeover.so'
-flags=shlex.split(subprocess.check_output(['pkg-config','--cflags','--libs','Qt6Quick','Qt6Test'],text=True))
+flags=shlex.split(subprocess.check_output(['pkg-config','--cflags','--libs','Qt6Quick','Qt6QuickWidgets','Qt6Test','Qt6DBus'],text=True))
 if not helper.exists() or helper.stat().st_mtime < (ROOT/'apps/merkuro/verify.cpp').stat().st_mtime:
     subprocess.run(['c++','-std=c++17','-shared','-fPIC',str(ROOT/'apps/merkuro/verify.cpp'),'-o',str(helper),*flags],check=True)
 output=ROOT/'preview'/('merkuro-makeover-'+args.mode+'-'+args.material);output.mkdir(parents=True,exist_ok=True)
@@ -41,6 +42,24 @@ with tempfile.TemporaryDirectory(prefix='mm-') as temp:
     for key in ('LD_PRELOAD','QT_STYLE_OVERRIDE','QT_PLUGIN_PATH','QML_IMPORT_PATH','QML2_IMPORT_PATH','KDE_APPLICATIONS_AS_SCOPE'):env.pop(key,None)
     if args.style_plugins:env['QT_PLUGIN_PATH']=str(args.style_plugins.resolve())
     command=['dbus-run-session','--config-file='+str(bus),'--','python3',str(ROOT/'tools/quick-preview-session.py'),'env','LD_PRELOAD='+str(helper),str(args.overlay.resolve()/'sequoia-quick'),'merkuro-calendar']
+    if args.composited:
+        launcher=root/'composited.py'
+        launcher.write_text('''import os,subprocess,sys,time
+from pathlib import Path
+env=dict(os.environ,QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='rhi',QSG_RHI_BACKEND='opengl',LIBGL_ALWAYS_SOFTWARE='1',KWIN_COMPOSE='O2',KWIN_SCREENSHOT_NO_PERMISSION_CHECKS='1')
+compositor=subprocess.Popen(['kwin_wayland','--virtual','--width','1600','--height','1200','--no-lockscreen','--no-global-shortcuts','--no-kactivities','--inputmethod','/bin/true','--socket','merkuro-test'],env=env)
+try:
+    for _ in range(100):
+        if compositor.poll() is not None: raise RuntimeError('Private compositor exited')
+        if (Path(env['XDG_RUNTIME_DIR'])/'merkuro-test').exists(): break
+        time.sleep(.05)
+    env.update(QT_QPA_PLATFORM='wayland',WAYLAND_DISPLAY='merkuro-test')
+    result=subprocess.run(sys.argv[1:],env=env)
+finally:
+    compositor.terminate();compositor.wait(timeout=10)
+sys.exit(result.returncode)
+''')
+        command=command[:3]+['python3',str(launcher)]+command[3:]
     with (output/'verify.log').open('w') as log:result=subprocess.run(command,env=env,stdout=log,stderr=log,timeout=60)
     text=(output/'verify.log').read_text()
     errors=[line for line in text.split('MAKEOVER FINISHED')[0].splitlines() if any(x in line for x in ('ReferenceError','TypeError','is not a type','Cannot assign','Unable to assign','Binding loop','MAKEOVER FAIL','failed to load component'))]
@@ -53,6 +72,7 @@ with tempfile.TemporaryDirectory(prefix='mm-') as temp:
         restart_text=(output/'verify-settings-restart.log').read_text()
         assert restarted.returncode==0 and 'MAKEOVER SETTINGS RESTART PASS' in restart_text,restart_text[-5000:]
         print('PASS: settings size, last page and independent scroll positions survive closing and application restart')
+        print('PASS: glass source picker, Google/birthday/iCal editors, native action pills, Modify/Apply/Cancel, compact scrolling')
         print('PASS: native settings pages, glass cards, navigation, and holiday selector',args.mode,args.material)
         print(output)
         raise SystemExit(0)

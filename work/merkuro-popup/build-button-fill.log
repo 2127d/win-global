@@ -1,0 +1,39 @@
+In file included from /usr/include/qt6/QtCore/qstring.h:15,
+                 from /usr/include/qt6/QtCore/qurl.h:12,
+                 from /usr/include/qt6/QtQml/qqmlengine.h:8,
+                 from /usr/include/qt6/QtQml/qqmlapplicationengine.h:8,
+                 from /usr/include/qt6/QtQml/QQmlApplicationEngine:1,
+                 from /home/jeffreygustafson/sandbox/win-global/themes/application-style/quick/discover-qml.cpp:4:
+/usr/include/qt6/QtCore/qchar.h:48:31: warning: defining ‘QChar’, which previously failed to be complete in a SFINAE context [-Wsfinae-incomplete=]
+   48 | class QT6_ONLY(Q_CORE_EXPORT) QChar {
+      |                               ^~~~~
+In file included from /usr/include/c++/16/unordered_map:44,
+                 from /usr/include/c++/16/functional:80,
+                 from /usr/include/qt6/QtCore/qcomparehelpers.h:29,
+                 from /usr/include/qt6/QtCore/qcompare.h:661,
+                 from /usr/include/qt6/QtCore/qnamespace.h:14,
+                 from /usr/include/qt6/QtCore/qbytearray.h:10,
+                 from /usr/include/qt6/QtCore/qurl.h:9:
+/usr/include/c++/16/bits/range_access.h:325:24: note: here.  Use ‘-Wsfinae-incomplete=2’ for a diagnostic at that point
+  325 |     -> decltype(__cont.data())
+      |                 ~~~~~~~^~~~
+In file included from /usr/include/qt6/QtCore/qstring.h:15,
+                 from /usr/include/qt6/QtCore/qurl.h:12,
+                 from /usr/include/qt6/QtQml/qqmlengine.h:8,
+                 from /usr/include/qt6/QtQml/qqmlapplicationengine.h:8,
+                 from /usr/include/qt6/QtQml/QQmlApplicationEngine:1,
+                 from /home/jeffreygustafson/sandbox/win-global/themes/application-style/quick/merkuro-qml.cpp:3:
+/usr/include/qt6/QtCore/qchar.h:48:31: warning: defining ‘QChar’, which previously failed to be complete in a SFINAE context [-Wsfinae-incomplete=]
+   48 | class QT6_ONLY(Q_CORE_EXPORT) QChar {
+      |                               ^~~~~
+In file included from /usr/include/c++/16/unordered_map:44,
+                 from /usr/include/c++/16/functional:80,
+                 from /usr/include/qt6/QtCore/qcomparehelpers.h:29,
+                 from /usr/include/qt6/QtCore/qcompare.h:661,
+                 from /usr/include/qt6/QtCore/qnamespace.h:14,
+                 from /usr/include/qt6/QtCore/qbytearray.h:10,
+                 from /usr/include/qt6/QtCore/qurl.h:9:
+/usr/include/c++/16/bits/range_access.h:325:24: note: here.  Use ‘-Wsfinae-incomplete=2’ for a diagnostic at that point
+  325 |     -> decltype(__cont.data())
+      |                 ~~~~~~~^~~~
+.staging/merkuro-settings/qml

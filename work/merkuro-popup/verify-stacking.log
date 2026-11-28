@@ -1,0 +1,25 @@
+In file included from /usr/include/qt6/QtTest/qtesttostring.h:15,
+                 from /usr/include/qt6/QtTest/qtestcase.h:8,
+                 from /usr/include/qt6/QtTest/qtest.h:13,
+                 from /usr/include/qt6/QtTest/QTest:1,
+                 from /home/jeffreygustafson/sandbox/win-global/apps/merkuro/verify.cpp:13:
+/usr/include/qt6/QtCore/qbitarray.h:13:21: warning: defining ‘QBitArray’, which previously failed to be complete in a SFINAE context [-Wsfinae-incomplete=]
+   13 | class Q_CORE_EXPORT QBitArray
+      |                     ^~~~~~~~~
+In file included from /usr/include/c++/16/unordered_map:44,
+                 from /usr/include/c++/16/functional:80,
+                 from /usr/include/qt6/QtCore/qcomparehelpers.h:29,
+                 from /usr/include/qt6/QtCore/qcompare.h:661,
+                 from /usr/include/qt6/QtCore/qchar.h:9,
+                 from /usr/include/qt6/QtCore/qstring.h:15,
+                 from /usr/include/qt6/QtCore/qcoreapplication.h:9,
+                 from /usr/include/qt6/QtGui/qguiapplication.h:8,
+                 from /usr/include/qt6/QtGui/QGuiApplication:1,
+                 from /home/jeffreygustafson/sandbox/win-global/apps/merkuro/verify.cpp:3:
+/usr/include/c++/16/bits/range_access.h:325:24: note: here.  Use ‘-Wsfinae-incomplete=2’ for a diagnostic at that point
+  325 |     -> decltype(__cont.data())
+      |                 ~~~~~~~^~~~
+PASS: settings size, last page and independent scroll positions survive closing and application restart
+PASS: glass source picker, Google/birthday/iCal editors, native action pills, Modify/Apply/Cancel, compact scrolling
+PASS: native settings pages, glass cards, navigation, and holiday selector light glass
+/home/jeffreygustafson/sandbox/win-global/preview/merkuro-makeover-light-glass

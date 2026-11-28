@@ -19,6 +19,7 @@
 
 #include "sequoiaelevenhelper.h"
 #include "../../../../desktop/glass-material/glassrim.h"
+#include "../../../../desktop/glass-material/controlsurface.h"
 
 #include "sequoiaeleven.h"
 #include "sequoiaelevenpropertynames.h"
@@ -790,99 +791,45 @@ void Helper::renderButtonFrame(QPainter *painter,
                                const AnimationMode mode,
                                const qreal opacity) const
 {
-    // setup painter
-    painter->setRenderHint(QPainter::Antialiasing, true);
-
-    painter->setPen(Qt::NoPen);
-
-    // reduce the size of the actual button, the rest will be the shadow
-    QRectF frameRect(rect.adjusted(Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, -Metrics::Frame_FrameWidth, -Metrics::Frame_FrameWidth));
-    qreal radius(frameRadius() - qreal(Metrics::Frame_FrameWidth));
-
-    if (sunken) {
-        frameRect.translate(0, 1);
-        renderBoxShadow(painter, frameRect, 0, 1, 2, QColor(0, 0, 0, 120), radius, windowActive);
-
-    } else if (enabled && color.alphaF() == 1) { // shadow
-
-        if (mouseOver || hasFocus) {
-            // frameRect.translate( 0, -1 ); feels cheap without animations
-
-            QColor shadowColor = hasFocus ? color.darker(220) : QColor(0, 0, 0, 170);
-            renderBoxShadow(painter, frameRect, 0, 1, 6, shadowColor, radius, windowActive);
-
-        } else
-            renderBoxShadow(painter, frameRect, 0, 1, 3, QColor(0, 0, 0, 120), radius, windowActive);
-    }
-
-    // content
-    if (color.isValid())
-        painter->setBrush(sunken ? focusColor(palette).darker(110) : mouseOver ? color.lighter(hasFocus ? 102 : 105) : color);
-
-    else
-        painter->setBrush(Qt::NoBrush);
-
-    // render
-    painter->drawRoundedRect(frameRect, radius, radius);
-
-    if (isDarkTheme(palette) && enabled)
-        topHighlight(painter, frameRect, StyleConfigData::cornerRadius());
-
-    // pressed animation
-    if (mode == AnimationPressed) {
-        QRegion oldRegion(painter->clipRegion());
-        // constrain ripple effect area
-        painter->setClipRect(frameRect, Qt::IntersectClip);
-
-        // ripple color
-        painter->setBrush(alphaColor(color.darker(200), sunken ? 0.5 : 0.5 * (1 - opacity)));
-
-        // Pythagorean theorem
-        int finalRadius = qCeil(qSqrt(qPow(frameRect.width() / 2, 2) + qPow(frameRect.height() / 2, 2)));
-
-        // the animaiton looks choppy if the initial radius is 0, we choose something else
-        int initRadius = qCeil(frameRect.height() / 2);
-        painter->drawEllipse(frameRect.center(), initRadius + (finalRadius - initRadius) * opacity, initRadius + (finalRadius - initRadius) * opacity);
-        painter->setClipRegion(oldRegion);
-
-    }
-
-    // pressed button background when animation is done
-    else if (sunken && mouseOver) {
-        // fix kcharselect combobox sunken: use the same background color when combobox is sunken
-        const auto fc = focusColor(palette);
-        painter->setBrush(alphaColor(fc.darker(200), 0.5));
-        painter->drawRoundedRect(frameRect, radius, radius);
-    }
+    Q_UNUSED(mode)
+    Q_UNUSED(opacity)
+    QRectF face = QRectF(rect).adjusted(Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth,
+                                      -Metrics::Frame_FrameWidth, -Metrics::Frame_FrameWidth);
+    if (sunken && StyleConfigData::sunkenEffect()) face.translate(0, 1);
+    SequoiaGlass::ControlSurface surface;
+    surface.fill = sunken ? focusColor(palette).darker(110) : mouseOver ? color.lighter(hasFocus ? 102 : 105) : color;
+    surface.foreground = palette.color(QPalette::ButtonText);
+    surface.accent = palette.color(QPalette::Highlight);
+    surface.radius = face.height() / 2;
+    surface.enabled = enabled;
+    surface.hovered = mouseOver;
+    surface.pressed = sunken;
+    surface.focused = hasFocus;
+    surface.active = windowActive;
+    surface.opaque = hasFocus || sunken;
+#ifdef SEQUOIA_GLASS_TRIAL
+    surface.glass = true;
+#endif
+    SequoiaGlass::paintControl(painter, face, surface);
 }
 
 //______________________________________________________________________________
 void Helper::renderToolButtonFrame(QPainter *painter, const QRect &rect, const QColor &color, bool sunken) const
 {
-    // do nothing for invalid color
-    if (!color.isValid())
-        return;
-
-    // setup painter
-    painter->setRenderHints(QPainter::Antialiasing);
-
-    const QRectF baseRect(rect.adjusted(1, 1, -1, -1));
-
-    if (sunken) {
-        const qreal radius(frameRadius(PenWidth::NoPen));
-
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(color);
-
-        painter->drawRoundedRect(baseRect, radius, radius);
-
-    } else {
-        const qreal radius(frameRadius(PenWidth::Frame));
-
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(color);
-        painter->drawRoundedRect(baseRect, radius, radius);
-    }
+    if (!color.isValid() || color.alpha() == 0) return;
+    const QRectF face = QRectF(rect).adjusted(1, 1, -1, -1);
+    SequoiaGlass::ControlSurface surface;
+    surface.fill = color;
+    surface.foreground = color.lightnessF() < .5 ? QColor(Qt::white) : QColor(Qt::black);
+    surface.radius = qMin(face.width(), face.height()) / 2;
+    surface.pressed = sunken;
+    surface.opaque = sunken;
+    // Auto-raise controls keep the native hover/selection alpha.
+    surface.glassOpacity = color.alphaF();
+#ifdef SEQUOIA_GLASS_TRIAL
+    surface.glass = true;
+#endif
+    SequoiaGlass::paintControl(painter, face, surface);
 }
 
 //______________________________________________________________________________
@@ -989,140 +936,24 @@ void Helper::renderLineEdit(QPainter *painter,
                             const AnimationMode mode,
                             const qreal opacity) const
 {
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    QRectF frameRect(rect.adjusted(Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, -Metrics::Frame_FrameWidth, -Metrics::Frame_FrameWidth));
-    qreal radius(frameRadius(PenWidth::NoPen, -1));
-
-    painter->setPen(Qt::NoPen);
-    if (enabled) {
-        // draw shadow
-        if (hasFocus) {
-            frameRect.adjust(1, 1, -1, -1);
-            // focus in animation
-            if (mode == 2 && opacity > 0 && opacity < 1) {
-                // shadow opacity animation
-                // old shadow
-                // renderBoxShadow( painter, frameRect, 0, 1, 5, QColor(0,0,0,84*(1-opacity)), radius, windowActive );
-                // renderOutline(painter, frameRect, radius, 6*(1-opacity));
-                // painter->setPen( Qt::NoPen );
-                // new shadow
-                // renderBoxShadow( painter, frameRect, 0, 1, 6, alphaColor(outline.darker(120), opacity) , radius, windowActive );
-                // renderBoxShadow( painter, frameRect, 0, 1, 4, alphaColor(outline.darker(120), opacity) , radius, windowActive );
-
-                const qreal finalRadius((frameRect.width() + static_cast<qreal>(Metrics::Frame_FrameWidth)) * opacity);
-
-                QPixmap mask = QPixmap(rect.width(), rect.height());
-                mask.fill(Qt::transparent);
-
-                QPainter pmask(&mask);
-                pmask.setRenderHint(QPainter::Antialiasing);
-                pmask.fillRect(rect, Qt::black);
-                pmask.setPen(Qt::NoPen);
-                pmask.setBrush(Qt::black);
-                pmask.setCompositionMode(QPainter::CompositionMode_SourceOut);
-                pmask.drawEllipse(QPointF(frameRect.x(), frameRect.y() + frameRect.height() / 2), finalRadius, finalRadius);
-                pmask.end();
-
-                QPixmap pixmap = QPixmap(rect.width(), rect.height());
-                pixmap.fill(Qt::transparent);
-                QPainter p(&pixmap);
-                p.setOpacity(0.3 + 0.7 * opacity);
-                p.setRenderHint(QPainter::Antialiasing);
-                p.setCompositionMode(QPainter::CompositionMode_SourceOver);
-                p.setPen(Qt::NoPen);
-                renderBoxShadow(&p, frameRect, 0, 1, 6, outline.darker(120), radius, windowActive); // comment this out for only the outline animation
-                p.setBrush(alphaColor(outline, 0.6));
-                QRectF focusFrame = frameRect.adjusted(-2, -2, 2, 2);
-                p.drawRoundedRect(focusFrame, radius + 1, radius + 1); // outline around lineedit
-
-                // mask
-                // p.setOpacity(1);  // uncomment this for only outline animation
-                p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-                p.drawPixmap(rect, mask);
-                p.end();
-
-                painter->drawPixmap(rect, pixmap);
-            }
-
-            // focus animation done
-            else {
-                renderBoxShadow(painter, frameRect, 0, 1, 7, outline.darker(120), radius, windowActive);
-                painter->setBrush(alphaColor(outline, 0.6));
-                QRectF focusFrame = frameRect.adjusted(-2, -2, 2, 2);
-                painter->drawRoundedRect(focusFrame, radius + 1, radius + 1);
-            }
-        }
-
-        // mouse over or normal state
-        else {
-            // focus out animation
-            if (mode == 2 && opacity > 0 && opacity < 1) {
-                const qreal finalRadius((frameRect.width() + static_cast<qreal>(Metrics::Frame_FrameWidth)) * opacity);
-
-                QPixmap mask = QPixmap(rect.width(), rect.height());
-                mask.fill(Qt::transparent);
-
-                QPainter pmask(&mask);
-                pmask.setOpacity(1);
-                pmask.setRenderHint(QPainter::Antialiasing);
-                pmask.fillRect(rect, Qt::black);
-                pmask.setPen(Qt::NoPen);
-                pmask.setBrush(Qt::black);
-                pmask.setCompositionMode(QPainter::CompositionMode_SourceOut);
-                pmask.drawEllipse(QPointF(frameRect.x(), frameRect.y() + frameRect.height() / 2), finalRadius, finalRadius);
-                pmask.end();
-
-                QPixmap pixmap = QPixmap(rect.width(), rect.height());
-                pixmap.fill(Qt::transparent);
-                QPainter p(&pixmap);
-                // p.setOpacity(0.3 + 0.6*opacity);
-                p.setRenderHint(QPainter::Antialiasing);
-                p.setCompositionMode(QPainter::CompositionMode_SourceOver);
-                p.setPen(Qt::NoPen);
-                renderBoxShadow(&p, frameRect, 0, 1, 6, outline.darker(120), radius, windowActive);
-                p.setBrush(alphaColor(outline, 0.6));
-                QRectF focusFrame = frameRect.adjusted(-1, -1, 1, 1);
-                p.drawRoundedRect(focusFrame, radius + 1, radius + 1);
-
-                // mask
-                p.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-                p.drawPixmap(rect, mask);
-                p.end();
-
-                painter->drawPixmap(rect, pixmap);
-
-                // unfocused lineedit shadow effect
-                renderBoxShadow(painter, frameRect, 0, 1, 5, QColor(0, 0, 0, 84 * (1 - opacity)), radius, windowActive);
-                renderOutline(painter, frameRect, radius, 6 * (1 - opacity));
-                painter->setPen(Qt::NoPen);
-
-            }
-
-            // normal or mouse over
-            else {
-                if (mouseOver && !hasFocus)
-                    renderBoxShadow(painter, frameRect, 0, 1, 5, QColor(0, 0, 0, 84), radius, windowActive);
-                else {
-                    renderBoxShadow(painter, frameRect, 0, 1, 5, QColor(0, 0, 0, 84), radius, windowActive);
-                    renderOutline(painter, frameRect, radius, 6);
-                    painter->setPen(Qt::NoPen);
-                }
-            }
-        }
-    }
-
-    // set brush
-    if (background.isValid())
-        painter->setBrush(background);
-    else
-        painter->setBrush(Qt::NoBrush);
-
-    if (hasFocus)
-        radius--;
-
-    // render
-    painter->drawRoundedRect(frameRect, radius, radius);
+    Q_UNUSED(mode)
+    Q_UNUSED(opacity)
+    const QRectF face = QRectF(rect).adjusted(Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth,
+                                            -Metrics::Frame_FrameWidth, -Metrics::Frame_FrameWidth);
+    SequoiaGlass::ControlSurface surface;
+    surface.fill = background;
+    surface.foreground = background.lightnessF() < .5 ? QColor(Qt::white) : QColor(Qt::black);
+    surface.accent = outline;
+    surface.radius = face.height() / 2;
+    surface.focused = hasFocus;
+    surface.hovered = mouseOver;
+    surface.enabled = enabled;
+    surface.active = windowActive;
+    surface.glassOpacity = .50;
+#ifdef SEQUOIA_GLASS_TRIAL
+    surface.glass = true;
+#endif
+    SequoiaGlass::paintControl(painter, face, surface);
 }
 
 //______________________________________________________________________________
@@ -1364,8 +1195,14 @@ void Helper::renderCheckBox(QPainter *painter,
         }
     }
 
+#ifdef SEQUOIA_GLASS_TRIAL
+    SequoiaGlass::paintRim(painter, frameRect, radius,
+                          SequoiaGlass::Settings::instance()->intensity(),
+                          palette.currentColorGroup() != QPalette::Disabled);
+#else
     if (darkTheme)
         topHighlight(painter, frameRect, radius);
+#endif
 }
 
 //______________________________________________________________________________
@@ -1489,8 +1326,14 @@ void Helper::renderRadioButton(QPainter *painter,
             painter->drawEllipse(markerRect);
         }
     }
+#ifdef SEQUOIA_GLASS_TRIAL
+    SequoiaGlass::paintRim(painter, frameRect, frameRect.width() / 2,
+                          SequoiaGlass::Settings::instance()->intensity(),
+                          palette.currentColorGroup() != QPalette::Disabled);
+#else
     if (darkTheme)
         topHighlight(painter, frameRect, frameRect.width() / 2);
+#endif
 }
 
 //______________________________________________________________________________
@@ -1583,30 +1426,19 @@ void Helper::renderDialContents(QPainter *painter, const QRect &rect, const QCol
 //______________________________________________________________________________
 void Helper::renderSliderHandle(QPainter *painter, const QRect &rect, const QColor &color, const bool focus, bool sunken) const
 {
-    // setup painter
-    painter->setRenderHint(QPainter::Antialiasing, true);
-
-    // copy rect
-    QRectF frameRect(rect);
-    frameRect.adjust(3, 3, -3, -3);
-
-    // shadow
-    if (!sunken) {
-        renderEllipseShadow(painter, frameRect, focus ? QColor(0, 0, 0) : QColor(0, 0, 0), 5, 2, 5, 0, 1, true, 20);
-    }
-
-    painter->setPen(Qt::NoPen);
-
-    // set brush
-    if (color.isValid())
-        painter->setBrush(color);
-    else
-        painter->setBrush(Qt::NoBrush);
-
-    // render
-    painter->drawEllipse(frameRect);
-
-    topHighlight(painter, frameRect, frameRect.width() / 2);
+    const QRectF face = QRectF(rect).adjusted(3, 3, -3, -3);
+    SequoiaGlass::ControlSurface surface;
+    surface.fill = color;
+    surface.foreground = color.lightnessF() < .5 ? QColor(Qt::white) : QColor(Qt::black);
+    surface.accent = color;
+    surface.radius = qMin(face.width(), face.height()) / 2;
+    surface.focused = focus;
+    surface.pressed = sunken;
+    surface.glassOpacity = .80;
+#ifdef SEQUOIA_GLASS_TRIAL
+    surface.glass = true;
+#endif
+    SequoiaGlass::paintControl(painter, face, surface);
 }
 
 //______________________________________________________________________________

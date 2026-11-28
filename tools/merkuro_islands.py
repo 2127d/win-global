@@ -35,9 +35,9 @@ def build(root, destination, fingerprints, replace, background):
     moc = Path(QLibraryInfo.path(QLibraryInfo.LibraryExecutablesPath)) / 'moc'
     weather_moc = destination / 'moc_scheduleweather.cpp'
     subprocess.run([str(moc), str(package / 'scheduleweather.h'), '-o', str(weather_moc)], check=True)
-    flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Qml', 'Qt6Network'], text=True))
+    flags = shlex.split(subprocess.check_output(['pkg-config', '--cflags', '--libs', 'Qt6Qml', 'Qt6Network', 'Qt6QuickWidgets'], text=True))
     subprocess.run(['c++', '-std=c++17', '-shared', '-fPIC', str(bridge_source), '-o',
-                    str(destination / 'merkuro-qml.so'), str(package / 'scheduleweather.cpp'), str(weather_moc),
+                    str(destination / 'merkuro-qml.so'), str(package / 'scheduleweather.cpp'), str(package / 'accountdialogs.cpp'), str(weather_moc),
                     '-I' + str(package), '-I/usr/include/KF6/KConfigCore', '-I/usr/include/KF6/KConfig',
                     *flags, '-lKF6ConfigCore', '-ldl'], check=True)
     weather_moc.unlink()

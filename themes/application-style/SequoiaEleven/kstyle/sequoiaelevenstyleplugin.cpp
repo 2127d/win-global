@@ -23,6 +23,9 @@
 #include "sequoiaelevenquickstyle.h"
 
 #include <QApplication>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QQuickStyle>
+#endif
 
 namespace SequoiaEleven
 {
@@ -37,6 +40,16 @@ QStyle *StylePlugin::create(const QString &key)
 {
     if (key.compare(QLatin1String(styleName), Qt::CaseInsensitive) == 0) {
         initializeQuickStyle();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        // Standard KDE Quick controls already delegate their visual primitives
+        // to QStyle. Enable that bridge even without a per-application makeover
+        // or a validated Quick-islands overlay. Respect explicit other styles.
+        const auto quickStyle = QQuickStyle::name();
+        if (quickStyle.isEmpty() || quickStyle.compare(QStringLiteral("SequoiaEleven"), Qt::CaseInsensitive) == 0
+            || quickStyle.compare(QStringLiteral("SequoiaElevenGlass"), Qt::CaseInsensitive) == 0) {
+            QQuickStyle::setStyle(QStringLiteral("org.kde.desktop"));
+        }
+#endif
         return new Style;
     }
     return nullptr;

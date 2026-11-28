@@ -7,6 +7,7 @@
 #include <dlfcn.h>
 #include <cstdlib>
 #include "scheduleweather.h"
+void installMerkuroAccountDialogs(const QString &module);
 
 class MerkuroUrls final : public QQmlAbstractUrlInterceptor {
 public:
@@ -30,6 +31,7 @@ void QQmlApplicationEngine::loadFromModule(QAnyStringView uri, QAnyStringView ty
     if (!original) std::abort();
     const auto directory = qEnvironmentVariable("SEQUOIA_MERKURO_QML");
     if (!directory.isEmpty() && uri.toString() == QStringLiteral("org.kde.merkuro.calendar")) {
+        installMerkuroAccountDialogs(directory);
         static const int weatherType = qmlRegisterType<ScheduleWeather>("org.sequoia.merkuro", 1, 0, "ScheduleWeather");
         Q_UNUSED(weatherType);
         auto interceptor = new MerkuroUrls(directory);

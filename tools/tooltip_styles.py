@@ -5,7 +5,7 @@ from quick_islands import background, replace
 
 def desktop(text):
     text = replace(text, '    padding: 6', '''    padding: 10
-    horizontalPadding: Math.max(18, implicitHeight / 4)
+    horizontalPadding: 18
     leftInset: 0
     rightInset: 0
     topInset: 0
@@ -49,5 +49,5 @@ def plasma(text):
     for edge in ('top', 'bottom'):
         text = replace(text, edge+'Padding: backgroundItem.margins.'+edge, edge+'Padding: 10')
     for edge in ('left', 'right'):
-        text = replace(text, edge+'Padding: backgroundItem.margins.'+edge, edge+'Padding: Math.max(18, implicitHeight / 4)')
+        text = replace(text, edge+'Padding: backgroundItem.margins.'+edge, edge+'Padding: 18')
     return background(text, surface)

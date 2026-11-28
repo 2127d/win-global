@@ -16,12 +16,12 @@ if '--child' not in sys.argv:
         shutil.copy2(ROOT/'themes/application-style/quick/plasma/DialogBackground.qml',core)
         fingerprint=Path('/usr/lib64/qt6/qml/org/kde/desktop/ToolTip.qml')
         (qml/'manifest.json').write_text(json.dumps({'sources':{str(fingerprint):hashlib.sha256(fingerprint.read_bytes()).hexdigest()}}))
-        env=dict(os.environ,QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QT_STYLE_OVERRIDE='SequoiaEleven',QT_QPA_PLATFORMTHEME='generic',QT_PLUGIN_PATH=str(ROOT/'.staging/desktop/usr/lib64/qt6/plugins'),QML_IMPORT_PATH=str(qml),QML2_IMPORT_PATH=str(qml),QT_QUICK_CONTROLS_STYLE='org.kde.desktop')
+        env=dict(os.environ,QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QT_STYLE_OVERRIDE='SequoiaEleven',QT_QPA_PLATFORMTHEME='generic',QT_PLUGIN_PATH=os.environ.get('SEQUOIA_STYLE_PLUGIN_DIR',str(ROOT/'.staging/desktop/usr/lib64/qt6/plugins')),QML_IMPORT_PATH=str(qml),QML2_IMPORT_PATH=str(qml),QT_QUICK_CONTROLS_STYLE='org.kde.desktop')
         for key in ('DATA','CONFIG','CACHE','STATE'):env['XDG_'+key+'_HOME']=str(base/key.lower())
         subprocess.run([sys.executable,__file__,'--child'],env=env,check=True)
     raise SystemExit()
 from PySide6.QtWidgets import QApplication,QStyle,QStyleOption,QWidget
-from PySide6.QtCore import QUrl,QObject,QMetaObject,QPoint,QRect,QSettings,Qt
+from PySide6.QtCore import QUrl,QObject,QMetaObject,QPoint,QRect,QSettings,Qt,qInstallMessageHandler
 from PySide6.QtQuick import QQuickView
 from PySide6.QtQml import QQmlComponent
 from PySide6.QtGui import QImage,QPainter
@@ -37,6 +37,32 @@ Item { width:500; height:300; readonly property int topLocation:PC.Types.TopEdge
  C.ToolTip { objectName:"quickTip"; text:"A longer tooltip for checking rounded rectangle corners"; visible:true }
 }''',QUrl())
 root=component.create();assert root,component.errors();view.setContent(QUrl(),component,root);view.show();QTest.qWait(200)
+# Replacing a native QWidget style must not repeat QML startup registration.
+# Exercise both plugins after Controls has already loaded in the same process.
+messages=[]
+previous=qInstallMessageHandler(lambda kind,context,message:messages.append(message))
+try:
+    for name in ('SequoiaElevenGlass','SequoiaEleven')*3:
+        assert app.setStyle(name) is not None,name
+        QTest.qWait(30)
+finally:
+    qInstallMessageHandler(previous)
+assert not any('QQuickStyle::setStyle' in message or 'Cannot install type' in message for message in messages),messages
+print('PASS: native material switches preserve initialized QML style')
+# Fixed margins are layout inputs, never a function of the resulting window
+# height. Tall/wrapped tooltips used to feed height back into horizontal padding.
+backgroundComponent=QQmlComponent(view.engine(),QUrl.fromLocalFile(str(Path(os.environ['XDG_DATA_HOME'])/'sequoia-eleven/newstuff/qml/org/kde/plasma/core/DialogBackground.qml')))
+background=backgroundComponent.create();assert background,backgroundComponent.errors()
+background.setProperty('imagePath','widgets/tooltip')
+padding=background.property('fixedMargins')
+if hasattr(padding,'toQObject'):padding=padding.toQObject()
+sizes=[]
+for height in (40,80,160,320,640,40):
+    background.setProperty('width',320);background.setProperty('height',height);QTest.qWait(10)
+    sizes.append((padding.property('left'),padding.property('right')))
+assert len(set(sizes))==1,sizes
+background.deleteLater()
+print('PASS: tooltip layout padding is independent of allocated size')
 area=root.findChild(QObject,'area');quick=root.findChild(QObject,'quickTip')
 policy=QSettings(str(Path(os.environ['XDG_CONFIG_HOME'])/'sequoiatooltipsrc'),QSettings.IniFormat)
 def set_shape(section,shape):policy.setValue('Tooltips/'+section,shape);policy.sync();QTest.qWait(180)

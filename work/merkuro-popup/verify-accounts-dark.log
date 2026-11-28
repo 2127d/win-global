@@ -1,0 +1,3 @@
+PASS: settings size, last page and independent scroll positions survive closing and application restart
+PASS: native settings pages, glass cards, navigation, and holiday selector dark glass
+/home/jeffreygustafson/sandbox/win-global/preview/merkuro-makeover-dark-glass

@@ -41,7 +41,10 @@ Item {
     readonly property var inset: tooltip ? zero : frame.inset
     QtObject {
         id: padding
-        readonly property real left: root.running ? 16 : Math.max(18,root.height/4)
+        // These are inputs to Plasma's content layout. Deriving them from
+        // the resulting popup height feeds wrapping back into its own size.
+        // Keep the pill shape in the paint radius, not in layout margins.
+        readonly property real left: root.running ? 16 : 18
         readonly property real right: left
         readonly property real top: root.running ? 12 : 10
         readonly property real bottom: top

@@ -68,6 +68,12 @@ if manifest['upstream_sha256'] != hashlib.sha256(STOCK.read_bytes()).hexdigest()
     os.execv(str(STOCK),[str(STOCK),*sys.argv[1:]])
 subprocess.run([sys.executable,str(TARGET/'appearance-material.py'),'recover'],check=True,stdout=subprocess.DEVNULL)
 os.environ['SEQUOIA_APPEARANCE_HUB']='1'
+# Use the same user-installed native style as Plasma. Otherwise a repaired
+# user installation can silently fall back to an older system-wide plugin.
+native=TARGET.parent/'downloads-style'
+if all((native/'styles'/name).is_file() for name in ('sequoiaeleven6.so','sequoiaeleven_glass6.so')):
+    paths=os.environ.get('QT_PLUGIN_PATH','').split(os.pathsep)
+    os.environ['QT_PLUGIN_PATH']=os.pathsep.join([str(native)]+[p for p in paths if p and p!=str(native)])
 argv=[str(TARGET/'systemsettings'),*sys.argv[1:]]
 overlay=TARGET.parent/'quick-islands/sequoia-quick'
 if overlay.is_file() and not os.environ.get('QML_IMPORT_PATH'): argv.insert(0,str(overlay))

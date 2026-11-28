@@ -228,6 +228,7 @@ Style::Style()
 {
     // use DBus connection to update on sequoiaeleven configuration change
     setProperty("sequoiaSharedMenus", true);
+    setProperty("sequoiaSharedControls", true);
     auto dbus = QDBusConnection::sessionBus();
     dbus.connect(QString(),
                  QStringLiteral("/SequoiaElevenStyle"),

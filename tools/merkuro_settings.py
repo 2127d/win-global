@@ -151,6 +151,46 @@ def build(module, fingerprints, replace):
     def account(text):
         text = text.replace('FormCard.FormCard {', 'SequoiaSettingsCard {')
         text = text.replace('QQC2.Button {', 'S.ActionPill {')
+        if 'Components.MessageDialog {' in text:
+            text = replace(text, 'onClicked: (root.QQC2.ApplicationWindow.window as Kirigami.ApplicationWindow).pageStack.pushDialogLayer(addAccountPage)', 'onClicked: addAccountDialog.open()')
+            start = text.index('    data: Component {\n        id: addAccountPage')
+            text = text[:start] + '''    SequoiaAddAccountDialog {
+        id: addAccountDialog
+        configuration: root._configuration
+        title: root.addPageTitle
+        backdropItem: root.QQC2.ApplicationWindow.window.contentItem
+    }
+}
+'''
+            text = replace(text, 'import QtQuick\n', 'import QtQuick\nimport QtQuick as Quick\n')
+            text = replace(text, 'Components.MessageDialog {', 'S.SurfaceDialog {')
+            text = replace(text, '        id: dialog', '''        id: dialog
+        objectName: "sequoiaAccountDialog"
+        backdropItem: root.QQC2.ApplicationWindow.window.contentItem
+        width: Math.min(520, parent ? Math.max(0, parent.width - 32) : 520)
+        dim: true''')
+            text = replace(text, '        standardButtons: Kirigami.Dialog.NoButton\n        iconName: \'\'', '')
+            text = replace(text, '        QQC2.Label {', '''        contentItem: QQC2.Label {
+            color: dialog.theme.textColor''')
+            text = replace(text, '        footer: QQC2.DialogButtonBox {', '''        footer: QQC2.DialogButtonBox {
+            spacing: 8
+            alignment: Qt.AlignRight
+            // Merkuro's application-wide Escape action must not steal this key.
+            Keys.onShortcutOverride: event => { if (event.key === Qt.Key_Escape) event.accepted = true; }
+            Keys.onEscapePressed: event => { event.accepted = true; dialog.reject(); }
+            background: Quick.Item {}''')
+            text = replace(text, '            standardButtons: QQC2.Dialog.Cancel', '''            standardButtons: QQC2.Dialog.NoButton
+            S.ActionPill {
+                objectName: "sequoiaAccountCancel"
+                theme: dialog.theme
+                text: i18ndc("libakonadi6", "@action:button", "Cancel")
+                icon.name: "dialog-cancel"
+                QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.RejectRole
+                onClicked: dialog.reject()
+            }''')
+            for label in ('Modify', 'Delete'):
+                text = replace(text, '            S.ActionPill {\n                text: i18ndc("libakonadi6", "@action:button", "' + label + '")',
+                               '            S.ActionPill {\n                objectName: "sequoiaAccount' + label + '"\n                theme: dialog.theme\n                text: i18ndc("libakonadi6", "@action:button", "' + label + '")')
         if '            id: overlay' in text:
             text = replace(text, '            id: overlay', '''            id: overlay
             property SequoiaSettingsScrollEdges scrollEdges: SequoiaSettingsScrollEdges { page: overlay }''')

@@ -1,0 +1,4 @@
+PASS: settings size, last page and independent scroll positions survive closing and application restart
+PASS: glass source picker, Google/birthday/iCal editors, native action pills, Modify/Apply/Cancel, compact scrolling
+PASS: native settings pages, glass cards, navigation, and holiday selector light transparent
+/home/jeffreygustafson/sandbox/win-global/preview/merkuro-makeover-light-transparent

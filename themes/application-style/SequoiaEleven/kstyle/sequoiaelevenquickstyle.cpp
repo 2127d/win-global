@@ -20,6 +20,14 @@
 namespace SequoiaEleven {
 void initializeQuickStyle()
 {
+    // Both native style plugins call this during a live material switch.
+    // QML registrations and import/style selection belong to application
+    // startup, not to the lifetime of each replaceable QStyle instance.
+    auto app = QCoreApplication::instance();
+    if (app->property("sequoiaQuickStyleInitialized").toBool()) {
+        return;
+    }
+    app->setProperty("sequoiaQuickStyleInitialized", true);
     SequoiaGlass::registerTypes();
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     // NewStuff is also hosted by QWidget apps (Dolphin, Konsole, games)
